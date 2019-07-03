@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>概述：微信小程序概述 | Gorpeln的个人博客 - Gorpeln</title>
+
+  <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+  <meta name="description" content="一、什么是微信小程序">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/css/font-awesome.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="https://gorpeln.com//article/15599710733">
+  <link rel="alternate" type="application/rss+xml" title="Gorpeln的个人博客 - Gorpeln" href="https://gorpeln.com//feed.xml" />
+</head>
+
+
+
+
+
+<body>
+    <header class="site-header">
+	<div class="container">
+		<div class="row">
+			<nav class="navbar navbar-default" role="navigation">
+			
+				    <div class="navbar-header col-xs-12 col-sm-12 col-md-3 col-lg-3 center" >
+				   	     <button type="button" class="navbar-toggle" data-toggle="collapse"  data-target="#example-navbar-collapse">
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					     </button>
+					     <div class="sitehome">
+						 	<a href="/" title="首页"><a><a class="site-title" href="/">Gorpeln's Home
+						 	</a>
+						</div>
+				   	</div>
+				  
+				  	<div class="col-md-6 col-lg-6 hidden-xs hidden-sm center">				  			
+						<nav class="site-nav">
+							<ul class="nav nav-pills">
+								<li class="select"><a class="page-link pjaxlink" href="/">博客</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/categories">分类</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/archives">归档</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/about">关于</a></li>
+							</ul>
+						</nav>
+				  	</div>
+				  
+				   	<div class="col-md-3 col-lg-3 hidden-xs hidden-sm">
+				   		<div class="search" id="cb-search-btn">
+						  	<input type="text" class="search-query st-default-search-input" placeholder="Search">
+				   		</div>
+				   </div>
+				   
+				   <div class="collapse navbar-collapse" id="example-navbar-collapse">
+						<ul class="nav navbar-nav phone-nav center">
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/"><i class="fa fa-home"></i>&nbsp;首页</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/categories"><i class="fa fa-tasks"></i>&nbsp;分类</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/tags"><i class="fa fa-tags"></i>&nbsp;标签</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/archives"><i class="fa fa-archive"></i>&nbsp;归档</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/about"><i class="fa fa-user"></i>&nbsp;关于</a></li>
+						</ul>
+				   </div>
+				   
+			</nav>
+		</div>
+	</div>
+</header>
+
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">72</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">12</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">68</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a href="/feed.xml"><i class="fa fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">站点导航</div>
+                        <ul>
+                            <li><a href="/"><i class="fa fa-fw fa-home"></i>首页</a></li>
+                            <li><a href="/categories" target="_blank"><i class="fa fa-fw fa-th"></i>分类</a></li>
+                            <li><a href="/tags" target="_blank"><i class="fa fa-fw fa-tags"></i>标签</a></li>
+                            <li><a href="/archives" target="_blank"><i class="fa fa-fw fa-archive"></i>归档</a></li>
+                            <li><a href="/about" target="_blank"><i class="fa fa-fw fa-user"></i>关于</a></li>
+                            <li><a href="/links" target="_blank"><i class="fa fa-fw fa-commenting"></i>友链</a></li>
+                            <li><a href="/login" target="_blank"><i class="fa fa-fw fa-handshake-o"></i>简历</a></li>
+                            <li><a href="/site" target="_blank"><i class="fa fa-fw fa-internet-explorer"></i>导航</a></li>
+                            <li><a href="/works" target="_blank"><i class="fa fa-fw  fa-git"></i>项目</a></li>
+                            <li><a id="cb-search-btn-two"><i class="fa fa-fw fa-search"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">分类</div>
+                        <ul>
+                            
+                            <li>
+                                <a href="/categories#书写笔记" name="书写笔记" style="color: #6666cc;" target="_blank">书写笔记</a>
+                                <a href="/categories#书写笔记" name="书写笔记" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Linux" name="Linux" style="color: #6666cc;" target="_blank">Linux</a>
+                                <a href="/categories#Linux" name="Linux" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#web前端" name="web前端" style="color: #6666cc;" target="_blank">web前端</a>
+                                <a href="/categories#web前端" name="web前端" style="color: #6666cc;float:right;color:#999999" target="_blank">4篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#其他" name="其他" style="color: #6666cc;" target="_blank">其他</a>
+                                <a href="/categories#其他" name="其他" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#iOS" name="iOS" style="color: #6666cc;" target="_blank">iOS</a>
+                                <a href="/categories#iOS" name="iOS" style="color: #6666cc;float:right;color:#999999" target="_blank">20篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;" target="_blank">程序人生</a>
+                                <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;float:right;color:#999999" target="_blank">16篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Software MAC" name="Software MAC" style="color: #6666cc;" target="_blank">Software MAC</a>
+                                <a href="/categories#Software MAC" name="Software MAC" style="color: #6666cc;float:right;color:#999999" target="_blank">10篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#开发笔记" name="开发笔记" style="color: #6666cc;" target="_blank">开发笔记</a>
+                                <a href="/categories#开发笔记" name="开发笔记" style="color: #6666cc;float:right;color:#999999" target="_blank">5篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Git" name="Git" style="color: #6666cc;" target="_blank">Git</a>
+                                <a href="/categories#Git" name="Git" style="color: #6666cc;float:right;color:#999999" target="_blank">5篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#微信小程序" name="微信小程序" style="color: #6666cc;" target="_blank">微信小程序</a>
+                                <a href="/categories#微信小程序" name="微信小程序" style="color: #6666cc;float:right;color:#999999" target="_blank">6篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;" target="_blank">个人博客</a>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">2篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#项目" name="项目" style="color: #6666cc;" target="_blank">项目</a>
+                                <a href="/categories#项目" name="项目" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+     <!--                <div class="categoryNav">
+                        <div class="categoryNavTitle">标签</div>
+                        <div id="tagscloud">
+							
+                            <li>
+                                <a href="/tags#书写笔记" name="书写笔记">书写笔记</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Linux" name="Linux">Linux</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#web规范" name="web规范">web规范</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#MySQL" name="MySQL">MySQL</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Bug调试" name="Bug调试">Bug调试</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#程序人生" name="程序人生">程序人生</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#冒泡排序" name="冒泡排序">冒泡排序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#贝塞尔曲线" name="贝塞尔曲线">贝塞尔曲线</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#代码段" name="代码段">代码段</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#push" name="push">push</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#pop" name="pop">pop</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#NSString" name="NSString">NSString</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GIF动画" name="GIF动画">GIF动画</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#UITextField" name="UITextField">UITextField</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#开发规范" name="开发规范">开发规范</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#UIlabel" name="UIlabel">UIlabel</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#NSArray" name="NSArray">NSArray</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#倒序" name="倒序">倒序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#乱序" name="乱序">乱序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#present" name="present">present</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#dismiss" name="dismiss">dismiss</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#值传递" name="值传递">值传递</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#HTTP协议" name="HTTP协议">HTTP协议</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#APP审核" name="APP审核">APP审核</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#HTML" name="HTML">HTML</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#增删改查" name="增删改查">增删改查</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#iOS11" name="iOS11">iOS11</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#MAC使用" name="MAC使用">MAC使用</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#PhpStorm2017" name="PhpStorm2017">PhpStorm2017</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#httrack" name="httrack">httrack</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#页面流畅" name="页面流畅">页面流畅</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GCD" name="GCD">GCD</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Chrome" name="Chrome">Chrome</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#插件" name="插件">插件</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#验证码" name="验证码">验证码</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#TCP" name="TCP">TCP</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#在吗" name="在吗">在吗</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#tomcat" name="tomcat">tomcat</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#KVO" name="KVO">KVO</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Github" name="Github">Github</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Cocoapods" name="Cocoapods">Cocoapods</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#zip" name="zip">zip</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#终端" name="终端">终端</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#微信小程序" name="微信小程序">微信小程序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Automator" name="Automator">Automator</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Git" name="Git">Git</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GitHub" name="GitHub">GitHub</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#历史版本" name="历史版本">历史版本</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Coding" name="Coding">Coding</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Jekyll" name="Jekyll">Jekyll</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GitTalk" name="GitTalk">GitTalk</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#评论" name="评论">评论</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#QQ" name="QQ">QQ</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#视频路径" name="视频路径">视频路径</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#个人博客" name="个人博客">个人博客</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#App瘦身" name="App瘦身">App瘦身</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#性能优化" name="性能优化">性能优化</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Sublime Text3" name="Sublime Text3">Sublime Text3</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#网络优化" name="网络优化">网络优化</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#签名机制" name="签名机制">签名机制</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#后缀名" name="后缀名">后缀名</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#WOW" name="WOW">WOW</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#动画" name="动画">动画</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#抽奖" name="抽奖">抽奖</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#算法" name="算法">算法</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#项目" name="项目">项目</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#圈小猫" name="圈小猫">圈小猫</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#游戏" name="游戏">游戏</a>
+                            </li>
+                            
+                        </div>
+                    </div> -->
+                    <div class="contactNav">
+                        <div class="contactNavTitle">活跃站点</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="https://blog.csdn.net/chen_gp_x" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <div class="contact-name">CSDN</div>
+                            </a>
+                            <a class="contact-item" href="https://github.com/Gorpeln" target="_blank">
+                                <img src="/assets/img/social/githubLogo.png">
+                                <div class="contact-name">GitHub</div>
+                            </a>
+                            <a class="contact-item" href="/myseo" target="_blank">
+                                <img src="/assets/img/social/meLogo.png">
+                                <div class="contact-name">Gorpeln</div>
+                            </a>
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.png" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <div class="contact-name">QQ</div>
+                            </a>
+                            <a class="contact-item" href="https://blog.csdn.net/gorpeln" target="_blank">
+                                <img src="/assets/img/social/wechatLogo.png">
+                                <div class="contact-name">风未止</div>
+                            </a>
+                            <a class="contact-item" href="/assets/img/social/qqGroupQRCode.png" target="_blank">
+                                <img src="/assets/img/social/qqGroupLogo.png">
+                                <div class="contact-name">QQ群</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlink">
+                        <p>友情链接</p>
+                        <hr>
+                        <ul style="list-style-type:circle">
+                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">Gorpeln</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">CSDN</a></li>
+                        </ul>
+                    </div>
+                    <!-- 				<div class="siteNav">
+					<div style="text-align:center;padding:15px;">
+						<span id="busuanzi_container_site_uv">
+  							<i class="fa fa-fw fa-user"></i> <span id="busuanzi_value_site_uv"></span>
+						</span>
+    					<span style="color: black">&nbsp; | &nbsp;</span>
+    					<span id="busuanzi_container_site_pv">
+    						<i class="fa fa-fw fa-eye"></i> <span id="busuanzi_value_site_pv"></span>
+						</span>
+    				</div>
+	 			</div> -->
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">概述：微信小程序概述</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2019-06-08</p>
+	    
+		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		<span class="index-post-tag">
+		
+			<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
+		
+		</span>
+	    
+    </div>
+  </header>
+
+<div style="font-size: 8px;width:calc(100% + 3em);margin: 1em 0;">
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15599710733
+</div>
+
+
+  <article class="post-content">
+    <h2 id="一什么是微信小程序">一、什么是微信小程序</h2>
+
+<p>小程序是有别于传统 Web App、HTML5、原生 App 以及微信公众号的一种新的应用形式，由微信团队于 2017 年 1 月对外发布的，经过近两年的发展，小程序越来越成熟，小程序研发也越来越受到重视。什么是小程序？用张小龙自己的话来说：</p>
+
+<blockquote>
+  <p>小程序是一种不需要下载安装即可使用的应用，它实现了应用“触手可及”的梦想，用户扫一扫或者搜一下即可打开应用。也体现了“用完即走”的理念，用户不用关心是否安装太多应用的问题。应用将无处不在，随时可用，但又无须安装卸载。</p>
+</blockquote>
+
+<p>　　微信公开数据显示，当前已上线小程序总数超过100万，开发者超过150万，而用户方面，小程序日活已达2.8亿，人均使用20个小程序，人均使用时长超过10分钟，作为对比淘宝和抖音的使用时长分别是：25分钟，26分钟，可见在微信巨大的流量扶持下，小程序一开始反哺微信生态。</p>
+
+<p>　　随着微信小程序搞得风风火火，阿里巴巴和百度也开始提出自己的小程序。2017 年 8 月，阿里巴巴旗下的支付宝小程序开始对外公测；2018 年 7 月在百度的 AI 大会上，依托百度 App 的百度智能小程序宣布开始内测。至此，BAT 三家都有了自己的小程序。除了 BAT 之外，小米联合众多手机开发厂商也在 2018 年年初发布了「快应用」，而谷歌也发布了「Instant Apps」。</p>
+
+<p>有人对比了 BAT 小程序和快应用的优缺点：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>APP</th>
+      <th>特点</th>
+      <th>优势</th>
+      <th>优势</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>微信</td>
+      <td>社交平台</td>
+      <td>庞大流量与独一无二的社交资源</td>
+      <td>过分封闭，损害用户社交体验</td>
+    </tr>
+    <tr>
+      <td>百度</td>
+      <td>强调智能</td>
+      <td>搜索资本和开放体系</td>
+      <td>支付弱，开发者变现难，社交短缺</td>
+    </tr>
+    <tr>
+      <td>支付宝</td>
+      <td>工具属性强</td>
+      <td>线上与线下资源</td>
+      <td>社交短缺，流量转化率低</td>
+    </tr>
+    <tr>
+      <td>快应用</td>
+      <td>手机商入口</td>
+      <td>厂商提供用户基础</td>
+      <td>没有流量，不可转移</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="二微信小程序入口和限制">二、微信小程序入口和限制</h2>
+
+<p>　　出乎意料的是小程序排名第一的场景入口居然是聊天分享，主页下拉则屈居第二，而发现栏小程序固定回访入口则排在模板消息卡片之后，位居第四，可见小程序背靠微信大树，社交裂变依然是最重要的流量来源和获客渠道。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>微信小程序能做什么</th>
+      <th>微信小程序不能做什么</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>可以快速扫码进入，可以找到用过的小程序</td>
+      <td>没有统一入口，不能做推荐和分发</td>
+    </tr>
+    <tr>
+      <td>可以跟公众号关联并相互跳转</td>
+      <td>不能订阅，没有粉丝数</td>
+    </tr>
+    <tr>
+      <td>可向用过小程序的用户发送模板和客服消息</td>
+      <td>不能主动推送信息</td>
+    </tr>
+    <tr>
+      <td>可以分享给好友或微信群</td>
+      <td>不能分享朋友圈</td>
+    </tr>
+    <tr>
+      <td>可以切换小程序，可以做小游戏</td>
+      <td>无 Cookie，用户体系需要基于微信账号</td>
+    </tr>
+    <tr>
+      <td>可以搜索查找附近的小程序</td>
+      <td>检索具有局限性，不能模糊搜索</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="三微信小程序和-h5-对比">三、微信小程序和 H5 对比</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>项目</th>
+      <th>运行环境</th>
+      <th>入口</th>
+      <th>分享</th>
+      <th>系统权限</th>
+      <th>客户端能力</th>
+      <th>流畅度</th>
+      <th>开发成本</th>
+      <th>上线</th>
+      <th>通用性和迁移性</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>微信小程序</td>
+      <td>微信内</td>
+      <td>扫码、分享</td>
+      <td>不能分享到朋友圈</td>
+      <td>较强</td>
+      <td>较强</td>
+      <td>流畅</td>
+      <td>相对 H5 高，相对 App 低</td>
+      <td>依赖审核</td>
+      <td>私有 API 和组件实现，通用性较差</td>
+    </tr>
+    <tr>
+      <td>H5</td>
+      <td>各种浏览器和 APP 内部 WebView</td>
+      <td>通过 URL 访问，微信内部可通过链接、分享、扫描</td>
+      <td>好友、群、朋友圈、非微信 App 都可以</td>
+      <td>较弱</td>
+      <td>较弱</td>
+      <td>较差</td>
+      <td>较低</td>
+      <td>完全自主</td>
+      <td>好</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="四小程序的未来去向何方">四、小程序的未来去向何方？</h2>
+<h4 id="1细分市场找准用户">（1）细分市场，找准用户</h4>
+
+<p>　　背靠微信的10亿流量，通过社交裂变获客可以说从没有如此简单，然而基于社交流量盲目裂变的最大问题在于用户留存度不高，因此在利用社交裂变之余，细分市场，做好精准人群才能切实提高用户留存和转化率。</p>
+
+<h4 id="2新零售借势起步">（2）新零售借势起步</h4>
+
+<p>　　新零售不是什么新概念，然后喊了很多年，直到小程序上线后社交电商的崛起才打响了新零售的第一枪，拿今年大火的社区团购举例，基于社群+O2O的商业模式，成功的将线下资源和线上零售融合在一起，显然借助大数据和精准营销后，小程序和新零售的想象空间还很大。</p>
+
+<h4 id="3创业起步风投融资">（3）创业起步，风投融资</h4>
+
+<p>　　历经十多次版本迭代和功能升级后，小程序已可满足大量线下线上使用场景，可以说已能做到真正取代80%的APP。而微信10亿的用户量级几乎囊括了国内全部网络用户，相比花费高额成本开发APP，然后从0开始获客拉新，还要时刻警惕“马太效应”。</p>
+
+<p><br />
+而小程序不仅可以轻易获取用户，只需做好商业模式和用户体验即可，再加上微信小程序规范、去中心化的生态，小程序可以说是创业者的天堂。</p>
+
+<p>另一方面，对于投资者来说，小程序可变现和快速增长的特性也十分符合资本期待，因此资本未来必将会更加关注小程序生态内的创业者，因此小程序生态的成熟对于创业者和投资人来说都将是一件好事。</p>
+
+<h2 id="五如何进行微信小程序开发">五、如何进行微信小程序开发</h2>
+
+<p>　　微信小程序本质上是一套 Hybrid 解决方案，掌握基础 HTML5 知识的前端开发者就可以参与小程序的开发。微信小程序提供完善的开发工具链，熟悉客户端的开发者也可以快速上手小程序开发。如何快速开始小程序开发呢？分为下面几个步骤：</p>
+
+<ul>
+  <li>注册一个小程序开发账号</li>
+  <li>下载微信开发者工具</li>
+  <li>学习开发语言基础知识和小程序框架原理</li>
+  <li>学习小程序 API 的使用</li>
+  <li>学习小程序调试和上线操作</li>
+</ul>
+
+<p>后续将会详细讲解。</p>
+
+  </article>
+</div>
+
+  <div class="prevandnext">
+    	  
+	    <div style="margin:0.25em;">
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15605697133" title="基础篇 1：小程序开发基础知识" style="color: #6666cc"  target="_blank">基础篇 1：小程序开发基础知识</a>
+	    </div>
+	  
+  	  
+	    <div style="margin:0.25em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15589479418" title="编程到底难在哪里？" style="color: #6666cc"  target="_blank">编程到底难在哪里？</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- Link Gitalk 的支持文件  -->
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+
+    // gitalk的主要参数
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'Gorpeln',
+        admin: ['Gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script> 
+<!-- Gitalk end -->
+
+
+
+  </div>
+   
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2019 Gorpeln 版权所有&nbsp; | &nbsp;京ICP备18035462号
+    </div>
+
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+    (function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?681e470e17f5eb08ab7220e6bc883afa":"https://jspassport.ssl.qhimg.com/11.0.1.js?681e470e17f5eb08ab7220e6bc883afa";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+
+</body>
+<script type="application/javascript">
+$(document).ready(function() {
+    $("li").click(function() {
+        $("li").attr("class", "");
+        $(this).attr("class", "active");
+    });
+});
+$("li").click(function() {
+    $("a", this)[0].click();
+
+});
+</script>
+<script src="../assets/js/tag.js"> </script>
+<script>
+var i = 0;
+var oTag = null;
+oDiv = document.getElementById('tagscloud');
+aA = oDiv.getElementsByTagName('a');
+for (i = 0; i < aA.length; i++) {
+    oTag = {};
+    aA[i].onmouseover = (function(obj) {
+        return function() {
+            obj.on = true;
+            this.style.zIndex = 9999;
+            this.style.color = '#fff';
+            this.style.padding = '5px 5px';
+            this.style.filter = "alpha(opacity=100)";
+            this.style.opacity = 1;
+        }
+    })(oTag)
+    aA[i].onmouseout = (function(obj) {
+        return function() {
+            obj.on = false;
+            this.style.zIndex = obj.zIndex;
+            this.style.color = '#fff';
+            this.style.padding = '0 5px';
+            this.style.filter = "alpha(opacity=" + 100 * obj.alpha + ")";
+            this.style.opacity = obj.alpha;
+            this.style.zIndex = obj.zIndex;
+        }
+    })(oTag)
+    oTag.offsetWidth = aA[i].offsetWidth;
+    oTag.offsetHeight = aA[i].offsetHeight;
+    mcList.push(oTag);
+}
+sineCosine(0, 0, 0);
+positionAll();
+(function() {
+    update();
+    setTimeout(arguments.callee, 40);
+})();
+</script>
+
+</html>

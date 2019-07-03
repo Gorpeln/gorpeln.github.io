@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>基础篇 2：小程序·云开发基础知识 | Gorpeln的个人博客 - Gorpeln</title>
+
+  <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+  <meta name="description" content="  小程序·云开发 是微信团队联合腾讯云团队推出的一套小程序开发解决方案。小程序·云开发为开发者提供完整的云端流程，弱化后端和运维概念，开发者无需购买和管理底层计算资源，包括服务器、数据库、静态存储，只需使用平台提供的简易 API 进行核心业务等开发，实现快速上线和迭代，把握业务发展的黄金时期。">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/css/font-awesome.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="https://gorpeln.com//article/15611722666">
+  <link rel="alternate" type="application/rss+xml" title="Gorpeln的个人博客 - Gorpeln" href="https://gorpeln.com//feed.xml" />
+</head>
+
+
+
+
+
+<body>
+    <header class="site-header">
+	<div class="container">
+		<div class="row">
+			<nav class="navbar navbar-default" role="navigation">
+			
+				    <div class="navbar-header col-xs-12 col-sm-12 col-md-3 col-lg-3 center" >
+				   	     <button type="button" class="navbar-toggle" data-toggle="collapse"  data-target="#example-navbar-collapse">
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					     </button>
+					     <div class="sitehome">
+						 	<a href="/" title="首页"><a><a class="site-title" href="/">Gorpeln's Home
+						 	</a>
+						</div>
+				   	</div>
+				  
+				  	<div class="col-md-6 col-lg-6 hidden-xs hidden-sm center">				  			
+						<nav class="site-nav">
+							<ul class="nav nav-pills">
+								<li class="select"><a class="page-link pjaxlink" href="/">博客</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/categories">分类</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/archives">归档</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/about">关于</a></li>
+							</ul>
+						</nav>
+				  	</div>
+				  
+				   	<div class="col-md-3 col-lg-3 hidden-xs hidden-sm">
+				   		<div class="search" id="cb-search-btn">
+						  	<input type="text" class="search-query st-default-search-input" placeholder="Search">
+				   		</div>
+				   </div>
+				   
+				   <div class="collapse navbar-collapse" id="example-navbar-collapse">
+						<ul class="nav navbar-nav phone-nav center">
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/"><i class="fa fa-home"></i>&nbsp;首页</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/categories"><i class="fa fa-tasks"></i>&nbsp;分类</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/tags"><i class="fa fa-tags"></i>&nbsp;标签</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/archives"><i class="fa fa-archive"></i>&nbsp;归档</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/about"><i class="fa fa-user"></i>&nbsp;关于</a></li>
+						</ul>
+				   </div>
+				   
+			</nav>
+		</div>
+	</div>
+</header>
+
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">72</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">12</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">68</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a href="/feed.xml"><i class="fa fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">站点导航</div>
+                        <ul>
+                            <li><a href="/"><i class="fa fa-fw fa-home"></i>首页</a></li>
+                            <li><a href="/categories" target="_blank"><i class="fa fa-fw fa-th"></i>分类</a></li>
+                            <li><a href="/tags" target="_blank"><i class="fa fa-fw fa-tags"></i>标签</a></li>
+                            <li><a href="/archives" target="_blank"><i class="fa fa-fw fa-archive"></i>归档</a></li>
+                            <li><a href="/about" target="_blank"><i class="fa fa-fw fa-user"></i>关于</a></li>
+                            <li><a href="/links" target="_blank"><i class="fa fa-fw fa-commenting"></i>友链</a></li>
+                            <li><a href="/login" target="_blank"><i class="fa fa-fw fa-handshake-o"></i>简历</a></li>
+                            <li><a href="/site" target="_blank"><i class="fa fa-fw fa-internet-explorer"></i>导航</a></li>
+                            <li><a href="/works" target="_blank"><i class="fa fa-fw  fa-git"></i>项目</a></li>
+                            <li><a id="cb-search-btn-two"><i class="fa fa-fw fa-search"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">分类</div>
+                        <ul>
+                            
+                            <li>
+                                <a href="/categories#书写笔记" name="书写笔记" style="color: #6666cc;" target="_blank">书写笔记</a>
+                                <a href="/categories#书写笔记" name="书写笔记" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Linux" name="Linux" style="color: #6666cc;" target="_blank">Linux</a>
+                                <a href="/categories#Linux" name="Linux" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#web前端" name="web前端" style="color: #6666cc;" target="_blank">web前端</a>
+                                <a href="/categories#web前端" name="web前端" style="color: #6666cc;float:right;color:#999999" target="_blank">4篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#其他" name="其他" style="color: #6666cc;" target="_blank">其他</a>
+                                <a href="/categories#其他" name="其他" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#iOS" name="iOS" style="color: #6666cc;" target="_blank">iOS</a>
+                                <a href="/categories#iOS" name="iOS" style="color: #6666cc;float:right;color:#999999" target="_blank">20篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;" target="_blank">程序人生</a>
+                                <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;float:right;color:#999999" target="_blank">16篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Software MAC" name="Software MAC" style="color: #6666cc;" target="_blank">Software MAC</a>
+                                <a href="/categories#Software MAC" name="Software MAC" style="color: #6666cc;float:right;color:#999999" target="_blank">10篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#开发笔记" name="开发笔记" style="color: #6666cc;" target="_blank">开发笔记</a>
+                                <a href="/categories#开发笔记" name="开发笔记" style="color: #6666cc;float:right;color:#999999" target="_blank">5篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Git" name="Git" style="color: #6666cc;" target="_blank">Git</a>
+                                <a href="/categories#Git" name="Git" style="color: #6666cc;float:right;color:#999999" target="_blank">5篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#微信小程序" name="微信小程序" style="color: #6666cc;" target="_blank">微信小程序</a>
+                                <a href="/categories#微信小程序" name="微信小程序" style="color: #6666cc;float:right;color:#999999" target="_blank">6篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;" target="_blank">个人博客</a>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">2篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#项目" name="项目" style="color: #6666cc;" target="_blank">项目</a>
+                                <a href="/categories#项目" name="项目" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+     <!--                <div class="categoryNav">
+                        <div class="categoryNavTitle">标签</div>
+                        <div id="tagscloud">
+							
+                            <li>
+                                <a href="/tags#书写笔记" name="书写笔记">书写笔记</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Linux" name="Linux">Linux</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#web规范" name="web规范">web规范</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#MySQL" name="MySQL">MySQL</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Bug调试" name="Bug调试">Bug调试</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#程序人生" name="程序人生">程序人生</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#冒泡排序" name="冒泡排序">冒泡排序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#贝塞尔曲线" name="贝塞尔曲线">贝塞尔曲线</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#代码段" name="代码段">代码段</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#push" name="push">push</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#pop" name="pop">pop</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#NSString" name="NSString">NSString</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GIF动画" name="GIF动画">GIF动画</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#UITextField" name="UITextField">UITextField</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#开发规范" name="开发规范">开发规范</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#UIlabel" name="UIlabel">UIlabel</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#NSArray" name="NSArray">NSArray</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#倒序" name="倒序">倒序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#乱序" name="乱序">乱序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#present" name="present">present</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#dismiss" name="dismiss">dismiss</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#值传递" name="值传递">值传递</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#HTTP协议" name="HTTP协议">HTTP协议</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#APP审核" name="APP审核">APP审核</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#HTML" name="HTML">HTML</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#增删改查" name="增删改查">增删改查</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#iOS11" name="iOS11">iOS11</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#MAC使用" name="MAC使用">MAC使用</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#PhpStorm2017" name="PhpStorm2017">PhpStorm2017</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#httrack" name="httrack">httrack</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#页面流畅" name="页面流畅">页面流畅</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GCD" name="GCD">GCD</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Chrome" name="Chrome">Chrome</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#插件" name="插件">插件</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#验证码" name="验证码">验证码</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#TCP" name="TCP">TCP</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#在吗" name="在吗">在吗</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#tomcat" name="tomcat">tomcat</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#KVO" name="KVO">KVO</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Github" name="Github">Github</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Cocoapods" name="Cocoapods">Cocoapods</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#zip" name="zip">zip</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#终端" name="终端">终端</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#微信小程序" name="微信小程序">微信小程序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Automator" name="Automator">Automator</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Git" name="Git">Git</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GitHub" name="GitHub">GitHub</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#历史版本" name="历史版本">历史版本</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Coding" name="Coding">Coding</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Jekyll" name="Jekyll">Jekyll</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GitTalk" name="GitTalk">GitTalk</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#评论" name="评论">评论</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#QQ" name="QQ">QQ</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#视频路径" name="视频路径">视频路径</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#个人博客" name="个人博客">个人博客</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#App瘦身" name="App瘦身">App瘦身</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#性能优化" name="性能优化">性能优化</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Sublime Text3" name="Sublime Text3">Sublime Text3</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#网络优化" name="网络优化">网络优化</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#签名机制" name="签名机制">签名机制</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#后缀名" name="后缀名">后缀名</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#WOW" name="WOW">WOW</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#动画" name="动画">动画</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#抽奖" name="抽奖">抽奖</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#算法" name="算法">算法</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#项目" name="项目">项目</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#圈小猫" name="圈小猫">圈小猫</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#游戏" name="游戏">游戏</a>
+                            </li>
+                            
+                        </div>
+                    </div> -->
+                    <div class="contactNav">
+                        <div class="contactNavTitle">活跃站点</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="https://blog.csdn.net/chen_gp_x" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <div class="contact-name">CSDN</div>
+                            </a>
+                            <a class="contact-item" href="https://github.com/Gorpeln" target="_blank">
+                                <img src="/assets/img/social/githubLogo.png">
+                                <div class="contact-name">GitHub</div>
+                            </a>
+                            <a class="contact-item" href="/myseo" target="_blank">
+                                <img src="/assets/img/social/meLogo.png">
+                                <div class="contact-name">Gorpeln</div>
+                            </a>
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.png" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <div class="contact-name">QQ</div>
+                            </a>
+                            <a class="contact-item" href="https://blog.csdn.net/gorpeln" target="_blank">
+                                <img src="/assets/img/social/wechatLogo.png">
+                                <div class="contact-name">风未止</div>
+                            </a>
+                            <a class="contact-item" href="/assets/img/social/qqGroupQRCode.png" target="_blank">
+                                <img src="/assets/img/social/qqGroupLogo.png">
+                                <div class="contact-name">QQ群</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlink">
+                        <p>友情链接</p>
+                        <hr>
+                        <ul style="list-style-type:circle">
+                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">Gorpeln</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">CSDN</a></li>
+                        </ul>
+                    </div>
+                    <!-- 				<div class="siteNav">
+					<div style="text-align:center;padding:15px;">
+						<span id="busuanzi_container_site_uv">
+  							<i class="fa fa-fw fa-user"></i> <span id="busuanzi_value_site_uv"></span>
+						</span>
+    					<span style="color: black">&nbsp; | &nbsp;</span>
+    					<span id="busuanzi_container_site_pv">
+    						<i class="fa fa-fw fa-eye"></i> <span id="busuanzi_value_site_pv"></span>
+						</span>
+    				</div>
+	 			</div> -->
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">基础篇 2：小程序·云开发基础知识</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2019-06-22</p>
+	    
+		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		<span class="index-post-tag">
+		
+			<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
+		
+		</span>
+	    
+    </div>
+  </header>
+
+<div style="font-size: 8px;width:calc(100% + 3em);margin: 1em 0;">
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15611722666
+</div>
+
+
+  <article class="post-content">
+    <blockquote>
+  <p><strong><a href="https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html">小程序·云开发</a></strong> 是微信团队联合腾讯云团队推出的一套小程序开发解决方案。小程序·云开发为开发者提供完整的云端流程，弱化后端和运维概念，开发者无需购买和管理底层计算资源，包括服务器、数据库、静态存储，只需使用平台提供的简易 API 进行核心业务等开发，实现快速上线和迭代，把握业务发展的黄金时期。</p>
+</blockquote>
+
+<p>简单来说，小程序开发中用到的服务器、数据库和静态资源管理，都可以托管到「小程序·云开发」上，小程序开发者只需要关注业务功能实现，而不需要关心服务器运维等带来的问题。小程序开发主要用到的是前端技术，后端开发和服务运维对于前端开发者来说有一定的门槛，而小程序·云开发的出现就是解决这个问题的。</p>
+
+<h2 id="一小程序云开发特点">一、小程序·云开发特点</h2>
+
+<ul>
+  <li>提供完整后端服务解决方案，包括数据库、静态资源管理和云函数（功能服务）</li>
+  <li>背靠腾讯云大平台，腾讯云丰富的 API 和功能都可以简单调用</li>
+  <li>对于普通开发者，<strong>完全免费</strong></li>
+  <li>对于高级服务型小程序，提供更强服务支持、计费弹性、不使用不计费的特点</li>
+  <li>无服务器搭建，无域名配置，直接调用 API 使用</li>
+</ul>
+
+<p>对于我们普通开发者来说，小程序·云开发是个不错的练手平台。下面详细介绍下小程序·云开发提供的功能。</p>
+
+<p>小程序·云开发提供数据库、云函数和静态存储三大功能，还有小程序的用户管理功能，在用户管理界面可以轻松掌握小程序的授权用户情况。目前云开发的这些功能已经深度整合到「微信开发者工具」中，可以在顶部点击「云开发」进入。</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_003.png" alt="blog_wxmini_2_003" /></p>
+
+<h2 id="二申请小程序云开发">二、申请小程序·云开发</h2>
+
+<h3 id="1小程序云开发的开通">1.小程序·云开发的开通</h3>
+
+<p>如果还没有开通小程序·云开发账号，首次点击「云开发」会出现下面的界面，该界面主要是云开发的介绍和申请入口。</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_001.jpg" alt="blog_wxmini_2_001" /></p>
+
+<p>点击蓝色的「创建资源环境」按钮进入新建环境界面。</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_002.jpg" alt="blog_wxmini_2_002" /></p>
+
+<p>第二步出现选择套餐信息，现在公测阶段只有一个免费套餐选项，将来应该会有更多套餐选择。填写上「环境名称」点击确认之后，会使用小程序开发账号在腾讯云开通一个 <code class="highlighter-rouge">fake account</code>。到此小程序·云开发就开通了！</p>
+
+<blockquote>
+  <p><strong>TIPS</strong>：目前一个小程序账号可以免费开通两个云开发账号，免费版本的限制应该也要注意：</p>
+
+  <ul>
+    <li>数据库存储空间：2GB</li>
+    <li>文件存储空间：5GB</li>
+    <li>文件存储外网下行流量：5GB/月</li>
+    <li>云函数数量：20</li>
+    <li>云函数资源使用量：10万GBs/月</li>
+    <li>API调用次数：3万次/天</li>
+  </ul>
+
+  <p><strong>这些对于我们做普通的小程序开发练习已经足够了！</strong></p>
+</blockquote>
+
+<h3 id="2小程序云开发在小程序中的调用">2.小程序·云开发在小程序中的调用</h3>
+
+<p>小程序·云开发可以在小程序中直接通过调用 <code class="highlighter-rouge">wx.cloud.*</code> 的方式进行调用，在调用云开发 API 之前，需要先调用 <code class="highlighter-rouge">wx.cloud.init</code> 对云开发进行初始化：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wx.cloud.init({
+  env: 'tianqi-xxx'
+})
+
+</code></pre></div></div>
+
+<p>初始化时，需要传入 <code class="highlighter-rouge">env</code> 参数，该参数为创建小程序·云开发时的<code class="highlighter-rouge">环境 ID</code>，可以在「云开发」页面右上角「当前环境」下拉菜单中找到：</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_004.jpg" alt="blog_wxmini_2_004" /></p>
+
+<p>下面详细介绍下小程序·云开发的三大功能。</p>
+
+<h2 id="三数据库">三、数据库</h2>
+
+<p>小程序·云开发的数据库是一种 NoSQL 云端数据库，数据以 JSON 格式存储，在底层支持弹性可扩展、自动容灾、监控管理，所以开发者不需要关注数据库的运维。从提供的文档和接口来看，云开发的数据库应该是由 MongoDB 实现的。</p>
+
+<p>每个数据库是由多个集合（collection，类比关系型数据库中表的概念）组成，集合有多个 JSON 文档（行）组成，NoSQL 的特点是没有固定的字段，所以整个集合可以看成一个大的 JSON 数组，一个集合在数据库中的存储格式如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[
+  {
+    "_id": 1,
+    "_openid": "ax123CVadb",
+    "name": "Alice",
+    "city": "Guangzhou"
+  },
+  {
+    "_id": 2,
+    "_openid": "xj372nJdfa",
+    "name": "Bob",
+    "city": "Shenzhen"
+  }
+]
+
+</code></pre></div></div>
+
+<p>需要说明的是，文档中的 <code class="highlighter-rouge">_id</code> 是唯一的，开发者可以插入数据的时候自定义，另外 <code class="highlighter-rouge">_openid</code> 是增加文档默认创建的，代表当前小程序用户的唯一标示，后面实战部分笔者会重点介绍小程序的用户授权相关的内容。</p>
+
+<h3 id="1快速入门">1.快速入门</h3>
+
+<p>详细介绍可以见小程序·云开发的使用文档，这里笔者整理出常用的 API 使用方法：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 初始化
+wx.cloud.init({
+  env: 'tianqi-xxx'
+})
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 获取数据库实例
+const db = wx.cloud.database()
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 增
+db.collection('集合名称').add({
+  data: {} // 插入的数据
+}).then(res =&gt; {
+  // 可以通过 res._id 获取创建的记录的 id
+  console.log(res._id)
+})
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 删
+db.collection('集合名称').doc('文档 ID').remove().then(res =&gt; {
+  console.log('removed')
+})
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 改
+db.collection('集合名称').doc('文档 ID').update({
+  data: {
+    title: '我的第 1 篇文章', // 只更新 title 字段，其他不更新
+  }
+}).then(res =&gt; {
+  // 可以通过 res._id 获取创建的记录的 id
+  console.log(res._id)
+})
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 查
+db.collection('集合名称').doc('文档 ID').get().then(res =&gt; {
+  // 打印结果，res.data 即为记录的数据
+  console.log(res)
+})
+const _ = db.command // 取指令
+db.collection('集合名称').where({
+  // 查找条件
+  category: 'computer',
+  properties: {
+    memory: _.gt(8), // 表示大于 8
+  }
+})
+</code></pre></div></div>
+
+<p>小程序·云开发的数据库查询命令是可以使用查询筛选指令的，使用查询筛选指令可以缩小查询范围，找到查询条件的文档。</p>
+
+<p>以下指令挂载在 <code class="highlighter-rouge">db.command</code> 下</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>类型</th>
+      <th>接口</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>比较运算</td>
+      <td>eq</td>
+      <td>字段 ==</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>neq</td>
+      <td>字段 !=</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>gt</td>
+      <td>字段 &gt;</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>gte</td>
+      <td>字段 &gt;=</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>lt</td>
+      <td>字段 &lt;</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>lte</td>
+      <td>字段 &lt;=</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>in</td>
+      <td>字段值在数组里</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>nin</td>
+      <td>字段值不在数组里</td>
+    </tr>
+    <tr>
+      <td>逻辑运算</td>
+      <td>and</td>
+      <td>表示需同时满足指定的所有条件</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>or</td>
+      <td>表示需同时满足指定条件中的至少一个</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>举例说明：在 <code class="highlighter-rouge">diary</code> 集合中找出 <code class="highlighter-rouge">openid</code> 某个值并且创建时间（<code class="highlighter-rouge">tsModified</code>）在 <code class="highlighter-rouge">start</code> 和 <code class="highlighter-rouge">end</code> 之间的文档。</p>
+</blockquote>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>db
+  .collection('diary')
+  .where({
+    openid,
+    tsModified: _.gte(start).and(_.lt(end))
+  })
+  .get()
+
+</code></pre></div></div>
+
+<h3 id="2数据库的索引">2.数据库的索引</h3>
+
+<p>增加合适的索引可以提升文档的查找效率，比如根据时间、用户 ID 查找，可以将时间和用户 ID 字段设置为索引项，笔者在使用的时候发现：<strong>在小程序·云开发管理后台并不能对某个字段增加唯一索引。</strong></p>
+
+<h3 id="3自带权限管理">3.自带权限管理</h3>
+
+<p>在研发中，经常会针对不同的用户设置不同的数据库权限，例如：某条记录是用户 A 创建的，则只有用户 A 可以删除或者更新，其他用户只有查看的权限，这样的需求很常见，实际开发起来却非常费劲，往往要写不少权限判断的代码，小程序·云开发的数据库支持「权限管理」功能，可以针对这类需求对不同的集合进行统一处理，大大降低开发的门槛！</p>
+
+<p>集合的操作权限包括以下四种：</p>
+
+<ul>
+  <li>所有用户可读，仅创建者及管理员可写</li>
+  <li>仅创建者及管理员可读写</li>
+  <li>所有用户可读，仅管理员可写</li>
+  <li>仅管理员可读写</li>
+</ul>
+
+<p>可以在「云开发 -&gt; 数据库 -&gt; 选择某个集合 -&gt; 权限设置」页面进行设置。</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_005.jpg" alt="blog_wxmini_2_005" /></p>
+
+<h2 id="四文件存储">四、文件存储</h2>
+
+<p>小程序·云开发的文件存储功能是专为存储和提供用户生成的内容（如图片或视频）的开发者打造的。开发者可使用腾讯云的 SDK 来存储图片、音频、视频或其他由用户生成的内容。在小程序内，则可以通过云开发的 API 直接上传、下载和管理存储。</p>
+
+<p>公共使用的静态资源，可以通过「云开发 -&gt; 存储」界面直接上传和管理，上传之后，就可以在界面内找到资源的 CDN 地址。</p>
+
+<p>而对于小程序内需要上传和管理的则通过下面几个 API 来实现：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 上传，上传后会返回资源的 ID
+wx.cloud.uploadFile
+// 下载
+wx.cloud.downloadFile
+// 根据资源 ID 获取资源访问地址
+wx.cloud.getTempFileURL
+// 根据资源 ID 列表删除某资源
+wx.cloud.removeFile
+
+</code></pre></div></div>
+
+<p>跟数据库权限管理一样，如果需要用户自己上传的内容自己可以管理，那么需要设置存储的操作权限，在「云开发 -&gt; 存储」下可以设置全局的存储操作权限。</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_006.jpg" alt="blog_wxmini_2_006" /></p>
+
+<h2 id="五云函数">五、云函数</h2>
+
+<p>云函数是腾讯云提供的一套函数计算解决方案，我们可以将每个功能 API 做成单个可执行的函数，然后放到腾讯云上去托管，每个云函数是相互独立可执行的。代码编写完成后放到云端，不执行不调用不收费，执行调用按照调用次数和 CPU 等计算资源的占用情况收费。有了云函数，开发者无须搭建和购买服务器，只需要将写好的云函数代码上传部署到腾讯云，即可以在小程序内通过 <code class="highlighter-rouge">wx.cloud.callFunction</code> 的方法进行调用。</p>
+
+<h3 id="1创建云函数">1.创建云函数</h3>
+
+<p>创建云函数有两种方式，一种是直接在小程序开发者工具中进行操作：</p>
+
+<p>进入「云开发 -&gt; 云函数 -&gt; 添加」创建：</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_008.jpg" alt="blog_wxmini_2_008" /></p>
+
+<p>另外一种是直接在小程序开发者工具中上传，在上传之前需要配置小程序的 <code class="highlighter-rouge">project.config.json</code>，指明哪个路径为云函数目录：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+  "cloudfunctionRoot": "./cloud-functions/"
+}
+</code></pre></div></div>
+
+<p>配置完成后，在小程序开发者工具的编辑器中展开 <code class="highlighter-rouge">cloud-functions</code> 文件夹，选择对应的云函数文件夹，右键选择「上传并部署」即可：</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_007.png" alt="blog_wxmini_2_007" /></p>
+
+<h3 id="2写个简单云函数">2.写个简单云函数</h3>
+
+<p>小程序·云开发的云函数是执行在 Node.js 8.9.0 版本下的，云函数必须在 index.js 有 <code class="highlighter-rouge">main</code> 方法为入口，例如下面的代码：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 命名为 test 的函数内容 index.js
+exports.main = async (event, context) =&gt; {
+  let {a, b} = event
+  return new Promise((resolve, reject) =&gt; {
+    resolve({result: parseInt(a) + parseInt(b)})
+  })
+}
+
+</code></pre></div></div>
+
+<p>除了上面 Promise 的写法，还可以用回调的方式：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 命名为 test 的函数内容 index.js
+// 回调方式 callback
+exports.main = async (event, context, callback) =&gt; {
+  let {a, b} = event
+  callback(null, {result: parseInt(a) + parseInt(b)})
+}
+
+</code></pre></div></div>
+
+<blockquote>
+  <p>TIPS:</p>
+
+  <ol>
+    <li>云函数如果不存在 <code class="highlighter-rouge">main</code> 的方法，上传部署的时候会报错！</li>
+    <li>云函数回调方式写法遵循「错误优先」原则（Error-First Callback）。</li>
+  </ol>
+</blockquote>
+
+<p>云函数接受两个 JSON 格式的参数 <code class="highlighter-rouge">event</code> 和 <code class="highlighter-rouge">context</code>，两者分别代表：</p>
+
+<ul>
+  <li><code class="highlighter-rouge">event</code>：平台将 <code class="highlighter-rouge">event</code> 入参传递给执行方法，通过此 <code class="highlighter-rouge">event</code> 入参对象，代码将与触发函数的事件（event）交互，<code class="highlighter-rouge">event</code> 可以获取 <code class="highlighter-rouge">wx.cloud.callFunction</code> 调用的参数 <code class="highlighter-rouge">data</code></li>
+  <li><code class="highlighter-rouge">context</code>：平台将 <code class="highlighter-rouge">context</code> 入参传递给执行方法，通过此 <code class="highlighter-rouge">context</code> 入参对象，代码将能了解到运行环境及当前请求的相关内容</li>
+</ul>
+
+<blockquote>
+  <p>TIPS： 开发者可以在云函数内获取到每次调用的上下文（appId、openId 等），无需维护复杂的鉴权机制，即可获取天然可信任的用户登录态（openId），这俩值可以从<code class="highlighter-rouge">event.userInfo</code>中读取。</p>
+</blockquote>
+
+<p>上面 <code class="highlighter-rouge">test</code> 的函数上传到腾讯云之后，我们在小程序的 JS 代码中可以使用下面的方法进行调用：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wx.cloud.callFunction({
+  name: 'test',
+  data: {
+    a: 1,
+    b: 2
+  }
+}).then(r=&gt;{
+  // 因为 main 的方法实际是个 promisify 的返回，所以可以直接使用 then/catch
+  console.log(r)
+}).catch(e=&gt;{
+  console.log(e)
+})
+
+</code></pre></div></div>
+
+<h3 id="3云函数的依赖管理">3.云函数的依赖管理</h3>
+
+<p>在云函数中，可以像正常的 Node.js 一样，使用 <code class="highlighter-rouge">package.json</code> 和 <code class="highlighter-rouge">node_modules</code> 来对依赖进行管理，在开发完代码之后，需要将 <code class="highlighter-rouge">node_modules</code> 文件夹一起上传到云端去。下面笔者将带着大家做一个什么值得买的简单抓取的云函数，讲解函数编写、npm 模块使用、云函数本地测试整个流程。</p>
+
+<p>先说下，笔者要实现的功能：</p>
+
+<ol>
+  <li>根据传入的分类参数，获取什么值得买对应分类的最新文章内容</li>
+  <li>提取出文章列表的 title、image、mall，即文章名称、文章的配图和优惠所属的网站</li>
+</ol>
+
+<p>首先在 cloud-functions 文件夹（该文件夹是我们创建的云函数文件夹），创建一个 <code class="highlighter-rouge">smzdm</code> 的云函数，目录结构如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cloud-functions
+├── smzdm
+│   ├── index.js
+
+</code></pre></div></div>
+
+<p>然后进入 <code class="highlighter-rouge">smzdm</code> 目录，执行 <code class="highlighter-rouge">npm init</code>，按照提示填写内容以后，会在该目录下生成 <code class="highlighter-rouge">package.json</code> 文件，接下来需要安装抓取「什么值得买」手机站点的两个 npm 模块：</p>
+
+<ul>
+  <li><a href="https://www.npmjs.com/package/request">request</a>：用于做数据请求，抓取站点的 HTML 内容</li>
+  <li><a href="https://www.npmjs.com/package/cheerio">cheerio</a>：用于将 HTML 结构数据转为类似 jQuery 的对象，可以通过 CSS 选择器对 HTML 的内容进行提取</li>
+</ul>
+
+<p>安装命令如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 进入 smzdm 目录，执行
+npm install --save request cheerio
+
+</code></pre></div></div>
+
+<p>安装之后的目录结构如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cloud-functions
+├── smzdm
+│   ├── node_modules
+│   ├── index.js
+│   └── package.json
+
+</code></pre></div></div>
+
+<p>然后我们开始编写 index.js 内容，第一步引入模块，编写 <code class="highlighter-rouge">main</code> 方法：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 引入 requst 和 cheerio
+const request = require('request')
+const cheerio = require('cheerio')
+exports.main = async (event = {}) =&gt; {
+  // 获取具体什么值得买网站分类
+  let category = event.category || 'diannaoshuma'
+  return new Promise((resolve, reject) =&gt; {
+
+  })
+}
+
+</code></pre></div></div>
+
+<p>第二步，开始编写具体的逻辑，即使用 <code class="highlighter-rouge">request.get</code> 先获取 HTML 内容，然后使用 <code class="highlighter-rouge">cheerio</code> 将 HTML 内容进行结构化，经过使用 Chrome 查看器查看，发现最新文章都包含在一个 <code class="highlighter-rouge">class</code> 为 <code class="highlighter-rouge">card-group-list</code> 的 div 下，然后找到 <code class="highlighter-rouge">zm-card-title</code> 等每个文章的标题、图片和商城信息，将结果放到一个数组，最后 <code class="highlighter-rouge">resolve</code> 输出：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const request = require('request')
+const cheerio = require('cheerio')
+exports.main = async (event = {}) =&gt; {
+  let category = event.category || 'diannaoshuma'
+  return new Promise((resolve, reject) =&gt; {
+    request.get(`https://m.smzdm.com/fenlei/${category}/`, (e, req, body) =&gt; {
+      if (!e &amp;&amp; req.statusCode === 200) {
+        const $ = cheerio.load(body)
+        const result = []
+        $('.card-group-list').each((i, v) =&gt; {
+          let $v = $(v)
+          let title = $v.find('.zm-card-title').text().trim()
+          let image = $v.find('.zm-card-media img').attr('src')
+          let mall = $v.find('.card-mall').text().trim()
+          result.push({
+            title,
+            image,
+            mall
+          })
+        })
+        resolve(result)
+      }
+    })
+  })
+}
+
+</code></pre></div></div>
+
+<p>这样就完成了一个带有依赖模块的云函数编写，上传到腾讯云部署之后，在小程序中使用：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wx.cloud.callFunction({
+  name: 'smzdm',
+  data: {
+    category: 'diannaoshuma'
+  }
+}).then(r=&gt;{console.log(r)})
+
+</code></pre></div></div>
+
+<h3 id="4云函数的调试">4.云函数的调试</h3>
+
+<p>云函数有一个很不方便的地方，就是测试起来相对来说比较麻烦，我们不能每次都上传到云端，通过 <code class="highlighter-rouge">wx.cloud.callFunction</code> 的方式进行调用，下面介绍几种测试的方法。</p>
+
+<h4 id="1线下函数自己使用-node-来测试">(1)线下：函数自己使用 Node 来测试</h4>
+
+<p>这种方法就是在 index.js 的最后，增加一个测试方法，比如：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const request = require('request')
+const cheerio = require('cheerio')
+const main = (exports.main = async (event = {}) =&gt; {
+  let category = event.category || 'diannaoshuma'
+  return new Promise((resolve, reject) =&gt; {
+    request.get(`https://m.smzdm.com/fenlei/${category}/`, (e, req, body) =&gt; {
+      if (!e &amp;&amp; req.statusCode === 200) {
+        const $ = cheerio.load(body)
+        const result = []
+        $('.card-group-list').each((i, v) =&gt; {
+          let $v = $(v)
+          let title = $v.find('.zm-card-title').text().trim()
+          let image = $v.find('.zm-card-media img').attr('src')
+          let label = $v.find('.card-label').text().trim()
+          let mall = $v.find('.card-mall').text().trim()
+          result.push({
+            title,
+            image,
+            label,
+            mall
+          })
+        })
+        resolve(result)
+      }
+    })
+  })
+})
+main({category: 'diannaoshuma'}).then(r=&gt;{console.log(r)})
+
+</code></pre></div></div>
+
+<p>然后使用 Node.js 直接运行该文件：<code class="highlighter-rouge">node index.js</code></p>
+
+<h4 id="2线上使用开发者工具">(2)线上：使用开发者工具</h4>
+
+<p>在小程序开发者工具的云开发控制台内有测试的工具，进入路径为：「云开发 -&gt; 云函数列表 -&gt; 点击具体云函数 -&gt; 右上角测试」。</p>
+
+<p>对于测试的参数，还可以保存下来模板，方便以后使用。</p>
+
+<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_2_009.jpg" alt="blog_wxmini_2_009" /></p>
+
+<h3 id="5云函数的-mock-server">5.云函数的 mock server</h3>
+
+<p>上文提到的测试方法，都是将小程序的研发流程完全割裂开来，不能完整地测试小程序的代码，只能要么测试云函数要么测试小程序，那么测试小程序的代码就需要上线云函数，实际还是一种效率不高的做法。这里笔者介绍一种本地 mock server 的方式来开启云函数的测试，这种方式可以打通小程序开发的整个流程。具体做法分两步：</p>
+
+<ol>
+  <li>将云函数作为一个接受请求参数的 server 来访问</li>
+  <li>使用 <code class="highlighter-rouge">wx.request</code> 构造请求拿到云函数的处理结果，然后跑通整个研发流程</li>
+</ol>
+
+<p>笔者在 mock server 选型上，选择使用 <a href="https://www.expressjs.com/">Express</a> 自建 mock server 的方式。</p>
+
+<p>首先，启动一个 Express server：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const express = require('express')
+const app = express()
+
+app.listen(3000, () =&gt; {
+  console.log(`开发服务器启动成功：http://127.0.0.1:3000`)
+})
+
+</code></pre></div></div>
+
+<blockquote>
+  <p>nodemon index.js</p>
+</blockquote>
+
+<p>然后将云函数引入进程序中来，作为一个路由 handler 来接受http url 的参数，处理请求之后，将返回的处理结果通过 Express 的 <code class="highlighter-rouge">res.json</code>输出。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>const test = require('./cloud-functions/test/').main
+
+app.get('/api/test', (req, res, next) =&gt; {
+  // 将 req.query 传入
+  test(req.query).then(res.json.bind(res)).catch((e) =&gt; {
+    console.error(e)
+    next(e)
+  })
+  // next()
+})
+
+</code></pre></div></div>
+
+<p>这样访问 <code class="highlighter-rouge">http://127.0.0.1:3000/api/test?a=1&amp;b=2</code> 就会输出结果了。到这里笔者就将 mock server 搭建完毕了。</p>
+
+<p>关于小程序代码中如何调用，怎么保持代码的一致性，自由切换线上代码和线下开发代码的方式，在<a href="">实战篇 1：小程序开发环境搭建</a>中会有更详细的讲解。</p>
+
+<h2 id="六小结">六、小结</h2>
+
+<p>本节重点介绍了腾讯新推出的小程序云开发的基础知识，云开发由 NoSQL 数据库、文件存储和云函数三个云产品组成，其中数据库和文件存储都可以单独设置用户权限，这样极大地降低了 UGC（用户产生内容）类小程序的开发门槛。</p>
+
+<p>云函数是小程序·云开发中一个很重要的产品，本节介绍了云函数的基本用法和注意事项，同时针对小程序云函数的开发测试比较困难的情况，提出了 mock server 的解决方式。</p>
+
+  </article>
+</div>
+
+  <div class="prevandnext">
+    	  
+	    <div style="margin:0.25em;">
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15612663893" title="基础篇 3：小程序架构及其实现机制" style="color: #6666cc"  target="_blank">基础篇 3：小程序架构及其实现机制</a>
+	    </div>
+	  
+  	  
+	    <div style="margin:0.25em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15605697133" title="基础篇 1：小程序开发基础知识" style="color: #6666cc"  target="_blank">基础篇 1：小程序开发基础知识</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- Link Gitalk 的支持文件  -->
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+
+    // gitalk的主要参数
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'Gorpeln',
+        admin: ['Gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script> 
+<!-- Gitalk end -->
+
+
+
+  </div>
+   
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2019 Gorpeln 版权所有&nbsp; | &nbsp;京ICP备18035462号
+    </div>
+
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+    (function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?681e470e17f5eb08ab7220e6bc883afa":"https://jspassport.ssl.qhimg.com/11.0.1.js?681e470e17f5eb08ab7220e6bc883afa";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+
+</body>
+<script type="application/javascript">
+$(document).ready(function() {
+    $("li").click(function() {
+        $("li").attr("class", "");
+        $(this).attr("class", "active");
+    });
+});
+$("li").click(function() {
+    $("a", this)[0].click();
+
+});
+</script>
+<script src="../assets/js/tag.js"> </script>
+<script>
+var i = 0;
+var oTag = null;
+oDiv = document.getElementById('tagscloud');
+aA = oDiv.getElementsByTagName('a');
+for (i = 0; i < aA.length; i++) {
+    oTag = {};
+    aA[i].onmouseover = (function(obj) {
+        return function() {
+            obj.on = true;
+            this.style.zIndex = 9999;
+            this.style.color = '#fff';
+            this.style.padding = '5px 5px';
+            this.style.filter = "alpha(opacity=100)";
+            this.style.opacity = 1;
+        }
+    })(oTag)
+    aA[i].onmouseout = (function(obj) {
+        return function() {
+            obj.on = false;
+            this.style.zIndex = obj.zIndex;
+            this.style.color = '#fff';
+            this.style.padding = '0 5px';
+            this.style.filter = "alpha(opacity=" + 100 * obj.alpha + ")";
+            this.style.opacity = obj.alpha;
+            this.style.zIndex = obj.zIndex;
+        }
+    })(oTag)
+    oTag.offsetWidth = aA[i].offsetWidth;
+    oTag.offsetHeight = aA[i].offsetHeight;
+    mcList.push(oTag);
+}
+sineCosine(0, 0, 0);
+positionAll();
+(function() {
+    update();
+    setTimeout(arguments.callee, 40);
+})();
+</script>
+
+</html>

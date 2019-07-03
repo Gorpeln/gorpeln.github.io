@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>iOS App 签名的原理 | Gorpeln的个人博客 - Gorpeln</title>
+
+  <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+  <meta name="description" content="iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，p12，AppID，概念一堆，也很容易出错，本文尝试从原理出发，一步步推出为什么会有这么多概念，希望能有助于理解 iOS App 签名的原理和流程。">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/css/font-awesome.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="https://gorpeln.com//article/15526269575">
+  <link rel="alternate" type="application/rss+xml" title="Gorpeln的个人博客 - Gorpeln" href="https://gorpeln.com//feed.xml" />
+</head>
+
+
+
+
+
+<body>
+    <header class="site-header">
+	<div class="container">
+		<div class="row">
+			<nav class="navbar navbar-default" role="navigation">
+			
+				    <div class="navbar-header col-xs-12 col-sm-12 col-md-3 col-lg-3 center" >
+				   	     <button type="button" class="navbar-toggle" data-toggle="collapse"  data-target="#example-navbar-collapse">
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					        <span class="icon-bar"></span>
+					     </button>
+					     <div class="sitehome">
+						 	<a href="/" title="首页"><a><a class="site-title" href="/">Gorpeln's Home
+						 	</a>
+						</div>
+				   	</div>
+				  
+				  	<div class="col-md-6 col-lg-6 hidden-xs hidden-sm center">				  			
+						<nav class="site-nav">
+							<ul class="nav nav-pills">
+								<li class="select"><a class="page-link pjaxlink" href="/">博客</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/categories">分类</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/archives">归档</a></li>
+								<li class="select"><a class="page-link pjaxlink" href="/about">关于</a></li>
+							</ul>
+						</nav>
+				  	</div>
+				  
+				   	<div class="col-md-3 col-lg-3 hidden-xs hidden-sm">
+				   		<div class="search" id="cb-search-btn">
+						  	<input type="text" class="search-query st-default-search-input" placeholder="Search">
+				   		</div>
+				   </div>
+				   
+				   <div class="collapse navbar-collapse" id="example-navbar-collapse">
+						<ul class="nav navbar-nav phone-nav center">
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/"><i class="fa fa-home"></i>&nbsp;首页</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/categories"><i class="fa fa-tasks"></i>&nbsp;分类</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/tags"><i class="fa fa-tags"></i>&nbsp;标签</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/archives"><i class="fa fa-archive"></i>&nbsp;归档</a></li>
+							<li class="phoneselect"><a class="page-link pjaxlink" href="/about"><i class="fa fa-user"></i>&nbsp;关于</a></li>
+						</ul>
+				   </div>
+				   
+			</nav>
+		</div>
+	</div>
+</header>
+
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">72</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">12</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">68</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a href="/feed.xml"><i class="fa fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">站点导航</div>
+                        <ul>
+                            <li><a href="/"><i class="fa fa-fw fa-home"></i>首页</a></li>
+                            <li><a href="/categories" target="_blank"><i class="fa fa-fw fa-th"></i>分类</a></li>
+                            <li><a href="/tags" target="_blank"><i class="fa fa-fw fa-tags"></i>标签</a></li>
+                            <li><a href="/archives" target="_blank"><i class="fa fa-fw fa-archive"></i>归档</a></li>
+                            <li><a href="/about" target="_blank"><i class="fa fa-fw fa-user"></i>关于</a></li>
+                            <li><a href="/links" target="_blank"><i class="fa fa-fw fa-commenting"></i>友链</a></li>
+                            <li><a href="/login" target="_blank"><i class="fa fa-fw fa-handshake-o"></i>简历</a></li>
+                            <li><a href="/site" target="_blank"><i class="fa fa-fw fa-internet-explorer"></i>导航</a></li>
+                            <li><a href="/works" target="_blank"><i class="fa fa-fw  fa-git"></i>项目</a></li>
+                            <li><a id="cb-search-btn-two"><i class="fa fa-fw fa-search"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">分类</div>
+                        <ul>
+                            
+                            <li>
+                                <a href="/categories#书写笔记" name="书写笔记" style="color: #6666cc;" target="_blank">书写笔记</a>
+                                <a href="/categories#书写笔记" name="书写笔记" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Linux" name="Linux" style="color: #6666cc;" target="_blank">Linux</a>
+                                <a href="/categories#Linux" name="Linux" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#web前端" name="web前端" style="color: #6666cc;" target="_blank">web前端</a>
+                                <a href="/categories#web前端" name="web前端" style="color: #6666cc;float:right;color:#999999" target="_blank">4篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#其他" name="其他" style="color: #6666cc;" target="_blank">其他</a>
+                                <a href="/categories#其他" name="其他" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#iOS" name="iOS" style="color: #6666cc;" target="_blank">iOS</a>
+                                <a href="/categories#iOS" name="iOS" style="color: #6666cc;float:right;color:#999999" target="_blank">20篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;" target="_blank">程序人生</a>
+                                <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;float:right;color:#999999" target="_blank">16篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Software MAC" name="Software MAC" style="color: #6666cc;" target="_blank">Software MAC</a>
+                                <a href="/categories#Software MAC" name="Software MAC" style="color: #6666cc;float:right;color:#999999" target="_blank">10篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#开发笔记" name="开发笔记" style="color: #6666cc;" target="_blank">开发笔记</a>
+                                <a href="/categories#开发笔记" name="开发笔记" style="color: #6666cc;float:right;color:#999999" target="_blank">5篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#Git" name="Git" style="color: #6666cc;" target="_blank">Git</a>
+                                <a href="/categories#Git" name="Git" style="color: #6666cc;float:right;color:#999999" target="_blank">5篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#微信小程序" name="微信小程序" style="color: #6666cc;" target="_blank">微信小程序</a>
+                                <a href="/categories#微信小程序" name="微信小程序" style="color: #6666cc;float:right;color:#999999" target="_blank">6篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;" target="_blank">个人博客</a>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">2篇</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/categories#项目" name="项目" style="color: #6666cc;" target="_blank">项目</a>
+                                <a href="/categories#项目" name="项目" style="color: #6666cc;float:right;color:#999999" target="_blank">1篇</a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+     <!--                <div class="categoryNav">
+                        <div class="categoryNavTitle">标签</div>
+                        <div id="tagscloud">
+							
+                            <li>
+                                <a href="/tags#书写笔记" name="书写笔记">书写笔记</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Linux" name="Linux">Linux</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#web规范" name="web规范">web规范</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#MySQL" name="MySQL">MySQL</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Bug调试" name="Bug调试">Bug调试</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#程序人生" name="程序人生">程序人生</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#冒泡排序" name="冒泡排序">冒泡排序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#贝塞尔曲线" name="贝塞尔曲线">贝塞尔曲线</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#代码段" name="代码段">代码段</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#push" name="push">push</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#pop" name="pop">pop</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#NSString" name="NSString">NSString</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GIF动画" name="GIF动画">GIF动画</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#UITextField" name="UITextField">UITextField</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#开发规范" name="开发规范">开发规范</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#UIlabel" name="UIlabel">UIlabel</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#NSArray" name="NSArray">NSArray</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#倒序" name="倒序">倒序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#乱序" name="乱序">乱序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#present" name="present">present</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#dismiss" name="dismiss">dismiss</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#值传递" name="值传递">值传递</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#HTTP协议" name="HTTP协议">HTTP协议</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#APP审核" name="APP审核">APP审核</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#HTML" name="HTML">HTML</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#增删改查" name="增删改查">增删改查</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#iOS11" name="iOS11">iOS11</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#MAC使用" name="MAC使用">MAC使用</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#PhpStorm2017" name="PhpStorm2017">PhpStorm2017</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#httrack" name="httrack">httrack</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#页面流畅" name="页面流畅">页面流畅</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GCD" name="GCD">GCD</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Chrome" name="Chrome">Chrome</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#插件" name="插件">插件</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#验证码" name="验证码">验证码</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#TCP" name="TCP">TCP</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#在吗" name="在吗">在吗</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#tomcat" name="tomcat">tomcat</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#KVO" name="KVO">KVO</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Github" name="Github">Github</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Cocoapods" name="Cocoapods">Cocoapods</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#zip" name="zip">zip</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#终端" name="终端">终端</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#微信小程序" name="微信小程序">微信小程序</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Automator" name="Automator">Automator</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Git" name="Git">Git</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GitHub" name="GitHub">GitHub</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#历史版本" name="历史版本">历史版本</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Coding" name="Coding">Coding</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Jekyll" name="Jekyll">Jekyll</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#GitTalk" name="GitTalk">GitTalk</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#评论" name="评论">评论</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#QQ" name="QQ">QQ</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#视频路径" name="视频路径">视频路径</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#个人博客" name="个人博客">个人博客</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#App瘦身" name="App瘦身">App瘦身</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#性能优化" name="性能优化">性能优化</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#Sublime Text3" name="Sublime Text3">Sublime Text3</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#网络优化" name="网络优化">网络优化</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#签名机制" name="签名机制">签名机制</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#后缀名" name="后缀名">后缀名</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#WOW" name="WOW">WOW</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#动画" name="动画">动画</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#抽奖" name="抽奖">抽奖</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#算法" name="算法">算法</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#项目" name="项目">项目</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#圈小猫" name="圈小猫">圈小猫</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#游戏" name="游戏">游戏</a>
+                            </li>
+                            
+                        </div>
+                    </div> -->
+                    <div class="contactNav">
+                        <div class="contactNavTitle">活跃站点</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="https://blog.csdn.net/chen_gp_x" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <div class="contact-name">CSDN</div>
+                            </a>
+                            <a class="contact-item" href="https://github.com/Gorpeln" target="_blank">
+                                <img src="/assets/img/social/githubLogo.png">
+                                <div class="contact-name">GitHub</div>
+                            </a>
+                            <a class="contact-item" href="/myseo" target="_blank">
+                                <img src="/assets/img/social/meLogo.png">
+                                <div class="contact-name">Gorpeln</div>
+                            </a>
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.png" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <div class="contact-name">QQ</div>
+                            </a>
+                            <a class="contact-item" href="https://blog.csdn.net/gorpeln" target="_blank">
+                                <img src="/assets/img/social/wechatLogo.png">
+                                <div class="contact-name">风未止</div>
+                            </a>
+                            <a class="contact-item" href="/assets/img/social/qqGroupQRCode.png" target="_blank">
+                                <img src="/assets/img/social/qqGroupLogo.png">
+                                <div class="contact-name">QQ群</div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlink">
+                        <p>友情链接</p>
+                        <hr>
+                        <ul style="list-style-type:circle">
+                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">Gorpeln</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">CSDN</a></li>
+                        </ul>
+                    </div>
+                    <!-- 				<div class="siteNav">
+					<div style="text-align:center;padding:15px;">
+						<span id="busuanzi_container_site_uv">
+  							<i class="fa fa-fw fa-user"></i> <span id="busuanzi_value_site_uv"></span>
+						</span>
+    					<span style="color: black">&nbsp; | &nbsp;</span>
+    					<span id="busuanzi_container_site_pv">
+    						<i class="fa fa-fw fa-eye"></i> <span id="busuanzi_value_site_pv"></span>
+						</span>
+    				</div>
+	 			</div> -->
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">iOS App 签名的原理</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2019-03-15</p>
+	    
+		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		<span class="index-post-tag">
+		
+			<a class="pjaxlink" href="/tags#签名机制"  target="_blank">签名机制</a>
+		
+		</span>
+	    
+    </div>
+  </header>
+
+<div style="font-size: 8px;width:calc(100% + 3em);margin: 1em 0;">
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15526269575
+</div>
+
+
+  <article class="post-content">
+    <p>iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，p12，AppID，概念一堆，也很容易出错，本文尝试从原理出发，一步步推出为什么会有这么多概念，希望能有助于理解 iOS App 签名的原理和流程。</p>
+
+<h3 id="目的">目的</h3>
+<p>先来看看苹果的签名机制是为了做什么。在 iOS 出来之前，在主流操作系统(Mac/Windows/Linux)上开发和运行软件是不需要签名的，软件随便从哪里下载都能运行，导致平台对第三方软件难以控制，盗版流行。苹果希望解决这样的问题，在 iOS 平台对第三方 APP 有绝对的控制权，一定要保证每一个安装到 iOS 上的 APP 都是经过苹果官方允许的，怎样保证呢？就是通过签名机制。</p>
+
+<h3 id="非对称加密">非对称加密</h3>
+<p>通常我们说的签名就是数字签名，它是基于非对称加密算法实现的。对称加密是通过同一份密钥加密和解密数据，而非对称加密则有两份密钥，分别是公钥和私钥，用公钥加密的数据，要用私钥才能解密，用私钥加密的数据，要用公钥才能解密。</p>
+
+<p>简单说一下常用的非对称加密算法 RSA 的数学原理，理解简单的数学原理，就可以理解非对称加密是怎么做到的，为什么会是安全的：</p>
+
+<p>　　1、选两个质数 p 和 q，相乘得出一个大整数n，例如 p = 61，q = 53，n = pq = 3233  <br />
+　　2、选 1-n 间的随便一个质数e，例如 e = 17 <br />
+　　3、经过一系列数学公式，算出一个数字 d，满足：<br />
+　　　　a.通过 n 和 e 这两个数据一组数据进行数学运算后，可以通过 n 和 d 去反解运算，反过来也可以。<br />
+　　　　b.如果只知道 n 和 e，要推导出 d，需要知道 p 和 q，也就是要需要把 n 因数分解。</p>
+
+<p>上述的 (n,e) 这两个数据在一起就是公钥，(n,d) 这两个数据就是私钥，满足用私钥加密，公钥解密，或反过来公钥加密，私钥解密，也满足在只暴露公钥 (只知道 n 和 e)的情况下，要推导出私钥 (n,d)，需要把大整数 n 因数分解。目前因数分解只能靠暴力穷举，而 n 数字越大，越难以用穷举计算出因数 p 和 q，也就越安全，当 n 大到二进制 1024 位或 2048 位时，以目前技术要破解几乎不可能，所以非常安全。</p>
+
+<h3 id="数字签名">数字签名</h3>
+<p>现在知道了有非对称加密这东西，那数字签名是怎么回事呢？</p>
+
+<p>数字签名的作用是我对某一份数据打个标记，表示我认可了这份数据（签了个名），然后我发送给其他人，其他人可以知道这份数据是经过我认证的，数据没有被篡改过。</p>
+
+<p>有了上述非对称加密算法，就可以实现这个需求：</p>
+
+<p><img src="https://img.gorpeln.com/blog_certificate_001.png" alt="blog_certificate_001" /></p>
+
+<p>　　1、首先用一种算法，算出原始数据的摘要。需满足 <br />
+　　　　a.若原始数据有任何变化，计算出来的摘要值都会变化。 <br />
+　　　　b.摘要要够短。这里最常用的算法是MD5。  <br />
+　　2、生成一份非对称加密的公钥和私钥，私钥我自己拿着，公钥公布出去。<br />
+　　3、对一份数据，算出摘要后，用私钥加密这个摘要，得到一份加密后的数据，称为原始数据的签名。把它跟原始数据一起发送给用户。<br />
+　　4、用户收到数据和签名后，用公钥解密得到摘要。同时用户用同样的算法计算原始数据的摘要，对比这里计算出来的摘要和用公钥解密签名得到的摘要是否相等，若相等则表示这份数据中途没有被篡改过，因为如果篡改过，摘要会变化。</p>
+
+<p>之所以要有第一步计算摘要，是因为非对称加密的原理限制可加密的内容不能太大（不能大于上述 n 的位数，也就是一般不能大于 1024 位 / 2048 位），于是若要对任意大的数据签名，就需要改成对它的特征值签名，效果是一样的。</p>
+
+<p>好了，有了非对称加密的基础，知道了数字签名是什么，怎样可以保证一份数据是经过某个地方认证的，来看看怎样通过数字签名的机制保证每一个安装到 iOS 上的 APP 都是经过苹果认证允许的。</p>
+
+<h3 id="最简单的签名">最简单的签名</h3>
+<p>要实现这个需求很简单，最直接的方式，苹果官方生成一对公私钥，在 iOS 里内置一个公钥，私钥由苹果后台保存，我们传 App 上 AppStore 时，苹果后台用私钥对 APP 数据进行签名，iOS 系统下载这个 APP 后，用公钥验证这个签名，若签名正确，这个 APP 肯定是由苹果后台认证的，并且没有被修改过，也就达到了苹果的需求：保证安装的每一个 APP 都是经过苹果官方允许的。</p>
+
+<p><img src="https://img.gorpeln.com/blog_certificate_002.png" alt="blog_certificate_002" /></p>
+
+<p>如果我们 iOS 设备安装 APP 只有从 AppStore 下载这一种方式的话，这件事就结束了，没有任何复杂的东西，只有一个数字签名，非常简单地解决问题。</p>
+
+<p>但实际上因为除了从 AppStore 下载，我们还可以有三种方式安装一个 App：</p>
+
+<p>　　1、开发 App 时可以直接把开发中的应用安装进手机进行调试。<br />
+　　2、In-House 企业内部分发，可以直接安装企业证书签名后的   APP。<br />
+　　3、AD-Hoc 相当于企业分发的限制版，限制安装设备数量，较少用。</p>
+
+<p>苹果要对用这三种方式安装的 App 进行控制，就有了新的需求，无法像上面这样简单了。</p>
+
+<h3 id="新的需求">新的需求</h3>
+<p>我们先来看第一个，开发时安装APP，它有两个需求：</p>
+
+<p>　　1、安装包不需要传到苹果服务器，可以直接安装到手机上。如果你编译一个 APP 到手机前要先传到苹果服务器签名，这显然是不能接受的。<br />
+　　2、苹果必须对这里的安装有控制权，包括<br />
+　　　　a. 经过苹果允许才可以这样安装。<br />
+　　　　b. 不能被滥用导致非开发app也能被安装。</p>
+
+<p>为了实现这些需求，iOS 签名的复杂度也就开始增加了。</p>
+
+<p>苹果这里给出的方案是使用了双层签名，会比较绕，流程大概是这样的：</p>
+
+<p><img src="https://img.gorpeln.com/blog_certificate_003.png" alt="blog_certificate_003" /></p>
+
+<p>　　1、在你的 Mac 开发机器生成一对公私钥，这里称为公钥L，私钥L。L:Local<br />
+　　2、苹果自己有固定的一对公私钥，跟上面 AppStore 例子一样，私钥在苹果后台，公钥在每个 iOS 设备上。这里称为公钥A，私钥A。A:Apple<br />
+　　3、私把公钥 L 传到苹果后台，用苹果后台里的私钥 A 去签名公钥 L。得到一份数据包含了公钥 L 以及其签名，把这份数据称为证书。<br />
+  　　4、在开发时，编译完一个 APP 后，用本地的私钥 L 对这个 APP 进行签名，同时把第三步得到的证书一起打包进 APP 里，安装到手机上。<br />
+　　5、在安装时，iOS 系统取得证书，通过系统内置的公钥 A，去验证证书的数字签名是否正确。<br />
+　　6、验证证书后确保了公钥 L 是苹果认证过的，再用公钥 L 去验证 APP 的签名，这里就间接验证了这个 APP 安装行为是否经过苹果官方允许。（这里只验证安装行为，不验证APP 是否被改动，因为开发阶段 APP 内容总是不断变化的，苹果不需要管。）</p>
+
+<h3 id="加点东西">加点东西</h3>
+<p>上述流程只解决了上面第一个需求，也就是需要经过苹果允许才可以安装，还未解决第二个避免被滥用的问题。怎么解决呢？苹果再加了两个限制，一是限制在苹果后台注册过的设备才可以安装，二是限制签名只能针对某一个具体的 APP。</p>
+
+<p>怎么加的？在上述第三步，苹果用私钥 A 签名我们本地公钥 L 时，实际上除了签名公钥 L，还可以加上无限多数据，这些数据都可以保证是经过苹果官方认证的，不会有被篡改的可能。</p>
+
+<p><img src="https://img.gorpeln.com/blog_certificate_004.png" alt="blog_certificate_004" /></p>
+
+<p>可以想到把 允许安装的设备 ID 列表 和 App对应的 AppID 等数据，都在第三步这里跟公钥L一起组成证书，再用苹果私钥 A 对这个证书签名。在最后第 5 步验证时就可以拿到设备 ID 列表，判断当前设备是否符合要求。根据数字签名的原理，只要数字签名通过验证，第 5 步这里的设备 IDs / AppID / 公钥 L 就都是经过苹果认证的，无法被修改，苹果就可以限制可安装的设备和 APP，避免滥用。</p>
+
+<h3 id="最终流程">最终流程</h3>
+<p>到这里这个证书已经变得很复杂了，有很多额外信息，实际上除了 设备 ID / AppID，还有其他信息也需要在这里用苹果签名，像这个 APP 里 iCloud / push / 后台运行 等权限苹果都想控制，苹果把这些权限开关统一称为 Entitlements，它也需要通过签名去授权。</p>
+
+<p>实际上一个“证书”本来就有规定的格式规范，上面我们把各种额外信息塞入证书里是不合适的，于是苹果另外搞了个东西，叫 Provisioning Profile，一个 Provisioning Profile 里就包含了证书以及上述提到的所有额外信息，以及所有信息的签名。</p>
+
+<p>所以整个流程稍微变一下，就变成这样了：</p>
+
+<p><img src="https://img.gorpeln.com/blog_certificate_005.png" alt="blog_certificate_005" /></p>
+
+<p>因为步骤有小变动，这里我们不辞啰嗦重新再列一遍整个流程：</p>
+
+<p>　　1、在你的 Mac 开发机器生成一对公私钥，这里称为公钥L，私钥L。L:Local<br />
+　　2、苹果自己有固定的一对公私钥，跟上面 AppStore 例子一样，私钥在苹果后台，公钥在每个 iOS 设备上。这里称为公钥A，私钥A。A:Apple  <br />
+　　3、把公钥 L 传到苹果后台，用苹果后台里的私钥 A 去签名公钥 L。得到一份数据包含了公钥 L 以及其签名，把这份数据称为证书。<br />
+　　4、在苹果后台申请 AppID，配置好设备 ID 列表和 APP 可使用的权限，再加上第③步的证书，组成的数据用私钥 A 签名，把数据和签名一起组成一个 Provisioning Profile 文件，下载到本地 Mac 开发机。<br />
+　　5、在开发时，编译完一个 APP 后，用本地的私钥 L 对这个 APP 进行签名，同时把第④步得到的 Provisioning Profile 文件打包进 APP 里，文件名为 embedded.mobileprovision，把 APP 安装到手机上。<br />
+　　6、在安装时，iOS 系统取得证书，通过系统内置的公钥 A，去验证 embedded.mobileprovision 的数字签名是否正确，里面的证书签名也会再验一遍。<br />
+　　7、确保了 embedded.mobileprovision 里的数据都是苹果授权以后，就可以取出里面的数据，做各种验证，包括用公钥 L 验证APP签名，验证设备 ID 是否在 ID 列表上，AppID 是否对应得上，权限开关是否跟 APP 里的 Entitlements 对应等。 　　</p>
+
+<p>开发者证书从签名到认证最终苹果采用的流程大致是这样，还有一些细节像证书有效期/证书类型等就不细说了。</p>
+
+<h3 id="概念和操作">概念和操作</h3>
+<p>上面的步骤对应到我们平常具体的操作和概念是这样的：</p>
+
+<p>　　1、第 1 步对应的是 keychain 里的 “从证书颁发机构请求证书”，这里就本地生成了一对公私钥，保存的 CertificateSigningRequest 就是公钥，私钥保存在本地电脑里。<br />
+　　2、第 2 步苹果处理，不用管。<br />
+　　3、第 3 步对应把 CertificateSigningRequest 传到苹果后台生成证书，并下载到本地。这时本地有两个证书，一个是第 1 步生成的，一个是这里下载回来的，keychain 会把这两个证书关联起来，因为他们公私钥是对应的，在XCode选择下载回来的证书时，实际上会找到 keychain 里对应的私钥去签名。这里私钥只有生成它的这台 Mac 有，如果别的 Mac 也要编译签名这个 App 怎么办？答案是把私钥导出给其他 Mac 用，在 keychain 里导出私钥，就会存成 .p12 文件，其他 Mac 打开后就导入了这个私钥。<br />
+　　4、第 4 步都是在苹果网站上操作，配置 AppID / 权限 / 设备等，最后下载 Provisioning Profile 文件。 <br />
+　　5、第 5 步 XCode 会通过第 3 步下载回来的证书（存着公钥），在本地找到对应的私钥（第一步生成的），用本地私钥去签名 App，并把 Provisioning Profile 文件命名为 embedded.mobileprovision 一起打包进去。这里对 App 的签名数据保存分两部分，Mach-O 可执行文件会把签名直接写入这个文件里，其他资源文件则会保存在 _CodeSignature 目录下。<br />
+第 6 – 7 步的打包和验证都是 Xcode 和 iOS 系统自动做的事。</p>
+
+<p>这里再总结一下这些概念：</p>
+
+<p>　　1、<strong>证书</strong>：内容是公钥或私钥，由其他机构对其签名组成的数据包。<br />
+　　2、<strong>Entitlements</strong>：包含了 App 权限开关列表。<br />
+　　3、<strong>CertificateSigningRequest</strong>：本地公钥。<br />
+　　4、<strong>p12</strong>：本地私钥，可以导入到其他电脑。<br />
+　　5、<strong>Provisioning Profile</strong>：包含了 证书 / Entitlements 等数据，并由苹果后台私钥签名的数据包。<br />
+　　</p>
+<h3 id="其他发布方式">其他发布方式</h3>
+<p>前面以开发包为例子说了签名和验证的流程，另外两种方式 In-House 企业签名和 AD-Hoc 流程也是差不多的，只是企业签名不限制安装的设备数，另外需要用户在 iOS 系统设置上手动点击信任这个企业才能通过验证。</p>
+
+<p>而 AppStore 的签名验证方式有些不一样，前面我们说到最简单的签名方式，苹果在后台直接用私钥签名 App 就可以了，实际上苹果确实是这样做的，如果去下载一个 AppStore 的安装包，会发现它里面是没有 embedded.mobileprovision 文件的，也就是它安装和启动的流程是不依赖这个文件，验证流程也就跟上述几种类型不一样了。</p>
+
+<p>据猜测，因为上传到 AppStore 的包苹果会重新对内容加密，原来的本地私钥签名就没有用了，需要重新签名，从 AppStore 下载的包苹果也并不打算控制它的有效期，不需要内置一个 embedded.mobileprovision 去做校验，直接在苹果用后台的私钥重新签名，iOS 安装时用本地公钥验证 App 签名就可以了。</p>
+
+<p>那为什么发布 AppStore 的包还是要跟开发版一样搞各种证书和 Provisioning Profile？猜测因为苹果想做统一管理，Provisioning Profile 里包含一些权限控制，AppID 的检验等，苹果不想在上传 AppStore 包时重新用另一种协议做一遍这些验证，就不如统一把这部分放在 Provisioning Profile 里，上传 AppStore 时只要用同样的流程验证这个 Provisioning Profile 是否合法就可以了。</p>
+
+<p>所以 App 上传到 AppStore 后，就跟你的 证书 / Provisioning Profile 都没有关系了，无论他们是否过期或被废除，都不会影响 AppStore 上的安装包。</p>
+
+<p>到这里 iOS 签名机制的原理和主流程大致说完了，希望能对理解苹果签名和排查日常签名问题有所帮助。</p>
+
+<h3 id="ps一些疑问">P.S.一些疑问</h3>
+<p>最后这里再提一下我关于签名流程的一些的疑问。</p>
+
+<h3 id="企业证书">企业证书</h3>
+<p>企业证书签名因为限制少，在国内被广泛用于测试和盗版，fir.im / 蒲公英等测试平台都是通过企业证书分发，国内一些市场像 PP 助手，爱思助手，一部分安装手段也是通过企业证书重签名。通过企业证书签名安装的 App，启动时都会验证证书的有效期，并且不定期请求苹果服务器看证书是否被吊销，若已过期或被吊销，就会无法启动 App。对于这种助手的盗版安装手段，苹果想打击只能一个个吊销企业证书，并没有太好的办法。</p>
+
+<p>这里我的疑问是，苹果做了那么多签名和验证机制去限制在 iOS 安装 App，为什么又要出这样一个限制很少的方式让盗版钻空子呢？若真的是企业用途不适合上 AppStore，也完全可以在 AppStore 开辟一个小的私密版块，还是通过 AppStore 去安装，就不会有这个问题了。</p>
+
+<h3 id="appstore-加密">AppStore 加密</h3>
+<p>另一个问题是我们把 App 传上 AppStore 后，苹果会对 App 进行加密，导致 App 体积增大不少，这个加密实际上是没卵用的，只是让破解的人要多做一个步骤，运行 App 去内存 dump 出可执行文件而已，无论怎样加密，都可以用这种方式拿出加密前的可执行文件。所以为什么要做这样的加密呢？想不到有什么好处。</p>
+
+<h3 id="本地私钥">本地私钥</h3>
+<p>我们看到前面说的签名流程很绕很复杂，经常出现各种问题，像有 Provisioning Profile 文件但证书又不对，本地有公钥证书没对应私钥等情况，不理解原理的情况下会被绕晕，我的疑问是，这里为什么不能简化呢？还是以开发证书为例，为什么一定要用本地 Mac 生成的私钥去签名？苹果要的只是本地签名，私钥不一定是要本地生成的，苹果也可以自己生成一对公私钥给我们，放在 Provisioning Profile 里，我们用里面的私钥去加密就行了，这样就不会有 CertificateSigningRequest 和 p12 的概念，跟本地 keychain 没有关系，不需要关心证书，只要有 Provisioning Profile 就能签名，流程会减少，易用性会提高很多，同时苹果想要的控制一点都不会少，也没有什么安全问题，为什么不这样设计呢？</p>
+
+<p>能想到的一个原因是 Provisioning Profile 在非 AppStore 安装时会打包进安装包，第三方拿到这个 Provisioning Profile 文件就能直接用起来给他自己的 App 签名了。但这种问题也挺好解决，只需要打包时去掉文件里的私钥就行了，所以仍不明白为什么这样设计。</p>
+
+  </article>
+</div>
+
+  <div class="prevandnext">
+    	  
+	    <div style="margin:0.25em;">
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15547100706" title="批量修改文件后缀名" style="color: #6666cc"  target="_blank">批量修改文件后缀名</a>
+	    </div>
+	  
+  	  
+	    <div style="margin:0.25em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15524857215" title="移动 APP 网络优化概述" style="color: #6666cc"  target="_blank">移动 APP 网络优化概述</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- Link Gitalk 的支持文件  -->
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+
+    // gitalk的主要参数
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'Gorpeln',
+        admin: ['Gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script> 
+<!-- Gitalk end -->
+
+
+
+  </div>
+   
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2019 Gorpeln 版权所有&nbsp; | &nbsp;京ICP备18035462号
+    </div>
+
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+    (function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?681e470e17f5eb08ab7220e6bc883afa":"https://jspassport.ssl.qhimg.com/11.0.1.js?681e470e17f5eb08ab7220e6bc883afa";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+
+</body>
+<script type="application/javascript">
+$(document).ready(function() {
+    $("li").click(function() {
+        $("li").attr("class", "");
+        $(this).attr("class", "active");
+    });
+});
+$("li").click(function() {
+    $("a", this)[0].click();
+
+});
+</script>
+<script src="../assets/js/tag.js"> </script>
+<script>
+var i = 0;
+var oTag = null;
+oDiv = document.getElementById('tagscloud');
+aA = oDiv.getElementsByTagName('a');
+for (i = 0; i < aA.length; i++) {
+    oTag = {};
+    aA[i].onmouseover = (function(obj) {
+        return function() {
+            obj.on = true;
+            this.style.zIndex = 9999;
+            this.style.color = '#fff';
+            this.style.padding = '5px 5px';
+            this.style.filter = "alpha(opacity=100)";
+            this.style.opacity = 1;
+        }
+    })(oTag)
+    aA[i].onmouseout = (function(obj) {
+        return function() {
+            obj.on = false;
+            this.style.zIndex = obj.zIndex;
+            this.style.color = '#fff';
+            this.style.padding = '0 5px';
+            this.style.filter = "alpha(opacity=" + 100 * obj.alpha + ")";
+            this.style.opacity = obj.alpha;
+            this.style.zIndex = obj.zIndex;
+        }
+    })(oTag)
+    oTag.offsetWidth = aA[i].offsetWidth;
+    oTag.offsetHeight = aA[i].offsetHeight;
+    mcList.push(oTag);
+}
+sineCosine(0, 0, 0);
+positionAll();
+(function() {
+    update();
+    setTimeout(arguments.callee, 40);
+})();
+</script>
+
+</html>

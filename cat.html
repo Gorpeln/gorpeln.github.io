@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>圈小猫 - Gorpeln</title>
+    <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+    <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0
+        }
+
+        body {
+            background-color: #eeeeee;
+        }
+
+        #catch-the-cat {
+            width: 100%;
+            margin-top: 32px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <script src="/assets/js/catch-the-cat/phaser.min.js"></script>
+    <script src="/assets/js/catch-the-cat/catch-the-cat.js"></script>
+    <div id="catch-the-cat" style="width: 100%;text-align: center;margin-top: 10;"></div>
+    <script>
+      window.game = new CatchTheCatGame({
+        w: 11,
+        h: 11,
+        r: 20,
+        backgroundColor: 0xffffff,
+        parent: 'catch-the-cat',
+        statusBarAlign: 'center',
+        credit: 'github.com/gorpeln'
+      });
+    </script>
+</body>
+</html>

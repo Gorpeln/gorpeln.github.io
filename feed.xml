@@ -1,0 +1,2983 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Gorpeln的个人博客 - Gorpeln</title>
+    <link>https://gorpeln.com/</link>
+    <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）</description>
+    
+      <item>
+        <title>基础篇 3：小程序架构及其实现机制</title>
+        <link>https://gorpeln.com//article/15612663893</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15612663893</guid>
+        <pubDate>Sun, 23 Jun 2019 00:00:00 +0800</pubDate>
+        <description>&lt;h2 id=&quot;一小程序-vs-html5&quot;&gt;一、小程序 VS HTML5&lt;/h2&gt;
+
+&lt;p&gt;小程序并不是 HTML5 应用，而是更偏向于传统的 CS 架构，它是基于&lt;strong&gt;数据驱动&lt;/strong&gt;的模式，一切皆组件（视图组件）。下面是小程序与普通 Web App 的对比。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;普通 HTML5 都是执行在浏览器的宿主环境，浏览器提供 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;document&lt;/code&gt; 等 BOM 对象，但小程序没有 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;document&lt;/code&gt;，它更像是一个类似 Node.js 的宿主环境；因此在小程序内不能使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;document.querySelector&lt;/code&gt; 这类 DOM 选择器，也不支持 &lt;code class=&quot;highlighter-rouge&quot;&gt;XMLHttpRequest&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;location&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;localStorage&lt;/code&gt; 等这些浏览器提供的 API，只能使用小程序自己实现的 API&lt;/li&gt;
+  &lt;li&gt;小程序并非是直接通过 URL 访问的，而是通过信道服务进行通信和会话管理，所以它不支持 Cookie 存储，同时访问资源使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.request&lt;/code&gt; 则不存在跨域的问题&lt;/li&gt;
+  &lt;li&gt;小程序在 JavaScript 的模块化上支持 CommonJS，通过 require 加载，跟 Node.js 类似&lt;/li&gt;
+  &lt;li&gt;小程序的页面样式完全继承了 CSS 的语法，但是在选择器上面会少一些，布局支持 flex 布局&lt;/li&gt;
+  &lt;li&gt;小程序的整体框架采用面向状态编程方式，状态管理从 API 来看采用类似 Redux 的设计方式；单向数据绑定方式，当 View 在 Action 操作后，只能通过 Action 的业务处理来更新 View&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;页面组件模块上，WXML 提供了一整套的「自定义 UI 组件标签」，有些组件实际是 HTML5 实现的，有些组件为了解决权限、性能和适配等问题实际是 Native 实现的（如 map、input、canvas、video）。&lt;/p&gt;
+
+&lt;h2 id=&quot;二小程序架构解密&quot;&gt;二、小程序架构解密&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_001.jpg&quot; alt=&quot;blog_wxmini_3_001&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;小程序架构如上图所示，分为视图层和逻辑层，视图层是在 WebView 内渲染，逻辑层则有 JavaScriptCore 来渲染；其中视图层可以多个（考虑到整体性能，最多可以 5 个），逻辑层则全局只有一个（实际通过开启 X5 内核另起一个 JavascriptCore 线程）。&lt;/p&gt;
+
+&lt;p&gt;在小程序内，视图层负责页面渲染，逻辑层负责逻辑处理、全局状态管理、请求和接口调用。逻辑层在小程序中称为 &lt;code class=&quot;highlighter-rouge&quot;&gt;APP Service&lt;/code&gt;，视图层称为 &lt;code class=&quot;highlighter-rouge&quot;&gt;View&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;逻辑层和视图层通过微信的 &lt;code class=&quot;highlighter-rouge&quot;&gt;JSBridge&lt;/code&gt; 来实现通信的，逻辑层数据变化通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;JSBridge&lt;/code&gt; 通知视图层，触发视图层更新；当视图层触发事件，则继续通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;JSBridge&lt;/code&gt; 将事件通知到逻辑层做处理，如此交互进行。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;JSBridge&lt;/code&gt; 在三个环境（开发者工具、iOS 和 Android）中实现机制不同，在调用 Native 能力时主要使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;invokeHandler&lt;/code&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;开发者工具：通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;window.postMessage&lt;/code&gt; 来封装&lt;/li&gt;
+  &lt;li&gt;iOS：通过 WKWebview 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;window.webkit.messageHandlers.invokeHandler.postMessage&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Android：通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;WeixinJSCore.invokeHandler&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在消息分发的时候，则使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;publishHandler&lt;/code&gt;：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;开发者工具：通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;addEventListener('message')&lt;/code&gt; 来监听消息，然后处理分发&lt;/li&gt;
+  &lt;li&gt;iOS：使用 WKWebview 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;window.webkit.messageHandlers.publishHandler.postMessage&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;Android：通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;WeixinJSCore.publishHandler&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;其中，Android 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;WeixinJSCore&lt;/code&gt; 是 X5 内核暴露出来的对象，其作为 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt; 对象的一个属性，提供一些供 JavaScript 调用的能力。&lt;/p&gt;
+
+&lt;p&gt;这部分可以在开发者工具或者 X5 内核 debug 模式下，找到 &lt;code class=&quot;highlighter-rouge&quot;&gt;WAService.js&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;WeixinJSBridge 提供的方法有 &lt;code class=&quot;highlighter-rouge&quot;&gt;invoke&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;publish&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;subscribe&lt;/code&gt; 等，&lt;code class=&quot;highlighter-rouge&quot;&gt;invoke&lt;/code&gt; 就是关键的调用 Native 端能力的方法，&lt;code class=&quot;highlighter-rouge&quot;&gt;publish&lt;/code&gt; 是消息分发的方法。注意下图的 &lt;code class=&quot;highlighter-rouge&quot;&gt;invoke&lt;/code&gt; 实际是来自&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;publish&lt;/code&gt; 来自 &lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;e&lt;/code&gt; 为 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_002.jpg&quot; alt=&quot;blog_wxmini_3_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; 的实现最后调用了&lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt; 的实现最后调用了&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_003.jpg&quot; alt=&quot;blog_wxmini_3_003&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;继续查找&lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt; 的实现，发现 &lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt; 最后都调用了 &lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;f&lt;/code&gt; 的方法（显现了关键字&lt;code class=&quot;highlighter-rouge&quot;&gt;invokeHandler&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;publishHandler&lt;/code&gt;）。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_004.jpg&quot; alt=&quot;blog_wxmini_3_004&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;继续查找，发现 &lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;f&lt;/code&gt; 分别是来自 &lt;code class=&quot;highlighter-rouge&quot;&gt;window.webkit&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;window.WeixinJSCore&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_005.jpg&quot; alt=&quot;blog_wxmini_3_005&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;因为在一个小程序中可以打开多个视图层（webview），要保证发送的消息准确送到每个具体的 webview 中，需要通过每个 webview 唯一标识 &lt;code class=&quot;highlighter-rouge&quot;&gt;webviewId&lt;/code&gt; 来实现。发送消息时，携带 &lt;code class=&quot;highlighter-rouge&quot;&gt;webviewId&lt;/code&gt;，然后逻辑层处理完对应的逻辑，如果需要通知或者执行对应 webview 的代码，则可以通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;webviewId&lt;/code&gt; 找到对应的 webview，下发通知。&lt;/p&gt;
+
+&lt;h2 id=&quot;三小程序生命周期&quot;&gt;三、小程序生命周期&lt;/h2&gt;
+
+&lt;p&gt;小程序生命周期包括应用的生命周期（逻辑层 App Service）和页面的生命周期（视图层 View），两者支持的事件不同，详见官方文档中的这张配图。&lt;/p&gt;
+
+&lt;p&gt;!&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_006.jpg&quot; alt=&quot;blog_wxmini_3_006&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;掌握了上面小程序实现原理的内容，再来看小程序的生命周期就很好理解了。&lt;/p&gt;
+
+&lt;p&gt;小程序启动时，会同时启动两个线程，一个负责页面渲染的 WebView（实际不止一个，后面讲解），一个负责逻辑的 JavaScriptCore。逻辑层初始化后会将初始化数据（app.js 中的 global data）通过 JSBridge 传递给渲染层进行渲染，渲染层 WebView 页面渲染完之后又会跟逻辑层通信。&lt;/p&gt;
+
+&lt;p&gt;理解了小程序架构和启动流程，小程序整个生命周期的流程只需要对着上面的流程图就可以很容易理解。&lt;/p&gt;
+
+&lt;h2 id=&quot;四小程序为什么感觉快&quot;&gt;四、小程序为什么感觉快&lt;/h2&gt;
+
+&lt;p&gt;小程序在体验上不仅仅页面流畅，而且点击之后，页面跳转也会比普通的 HTML5 要快很多，这是因为小程序的视图层做了预加载处理。下图是通过 X5 内核开启 inspect 版本之后，在 Chrome 中看到的手机 WebView 的页面情况。小程序选择今日头条，打开了两个页面（热点新闻列表和某条新闻详情），但实际在 Chrome 中看到的 WebView 页面总是比真实打开的页面要多一个，这个多出来的隐藏 WebView 就是提前初始化预热的，方便打开下一个小程序页面来使用，这样就节省了 WebView 初始化的时间，从而大幅提升了跳页效率。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_007.jpg&quot; alt=&quot;blog_wxmini_3_007&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;五小程序-wxml-是怎么转成-html-的&quot;&gt;五、小程序 WXML 是怎么转成 HTML 的&lt;/h2&gt;
+
+&lt;p&gt;小程序的视图层最终是渲染在一个 webview 中的，通过下图就可以看到我们在 WXML 中写的 &lt;code class=&quot;highlighter-rouge&quot;&gt;view&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;icon&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;text&lt;/code&gt; 等标签最终会转换成 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx-*&lt;/code&gt; 等标签。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_008.jpg&quot; alt=&quot;blog_wxmini_3_008&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;那么 WXML 到 HTML 的过程发生了什么呢？&lt;/p&gt;
+
+&lt;p&gt;首先，WXML 写完之后经过编译工具 &lt;code class=&quot;highlighter-rouge&quot;&gt;wcc&lt;/code&gt; 转成可执行的 JS，下面的命令可以将某个页面转为 JS：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wcc -d index.wxml -o index.js
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;TIPS：&lt;/strong&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;wcc&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;wcsc&lt;/code&gt; 是小程序的 WXML 和 WXSS 的编译工具，是二进制文件，在 macOS 中可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;/Applications/wechatwebdevtools.app/Contents/Resources/package.nw/js/vendor/&lt;/code&gt; 路径中找到（应用 → 右键微信开发者工具 → 查看包文件）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_009.jpg&quot; alt=&quot;blog_wxmini_3_009&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这个 JS 里面有个重要的函数是 &lt;code class=&quot;highlighter-rouge&quot;&gt;$gwx&lt;/code&gt;：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_010.jpg&quot; alt=&quot;blog_wxmini_3_010&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这个 JS 主要接收一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;path&lt;/code&gt; 将 &lt;code class=&quot;highlighter-rouge&quot;&gt;path&lt;/code&gt; 的页面转换成一个 Virtual DOM：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_011.jpg&quot; alt=&quot;blog_wxmini_3_011&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在这个 VDOM 结构里面就会找到以&lt;code class=&quot;highlighter-rouge&quot;&gt;wx-*&lt;/code&gt; 开头的 tag，有了这个 VDOM 结构，就可以使用对应的 tag 创建 HTML 片段了。&lt;/p&gt;
+
+&lt;p&gt;整个流程梳理如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_012.jpg&quot; alt=&quot;blog_wxmini_3_012&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;六小结&quot;&gt;六、小结&lt;/h2&gt;
+
+&lt;p&gt;本节重点介绍了小程序和普通的 HTML5 有什么区别，从小程序底层机制上来说明小程序是如何最终展现在 WebView 界面上的。本节涉及较多的源码和反编译技巧，对于初学者来说只需要了解微信小程序由逻辑层和视图层两个不同的线程进行交互而形成，而视图层是通过将 WXML 转换成 JS，最终由 JS 生成 HTML 片段放在 WebView 中显示的。&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>基础篇 2：小程序·云开发基础知识</title>
+        <link>https://gorpeln.com//article/15611722666</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15611722666</guid>
+        <pubDate>Sat, 22 Jun 2019 00:00:00 +0800</pubDate>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html&quot;&gt;小程序·云开发&lt;/a&gt;&lt;/strong&gt; 是微信团队联合腾讯云团队推出的一套小程序开发解决方案。小程序·云开发为开发者提供完整的云端流程，弱化后端和运维概念，开发者无需购买和管理底层计算资源，包括服务器、数据库、静态存储，只需使用平台提供的简易 API 进行核心业务等开发，实现快速上线和迭代，把握业务发展的黄金时期。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;简单来说，小程序开发中用到的服务器、数据库和静态资源管理，都可以托管到「小程序·云开发」上，小程序开发者只需要关注业务功能实现，而不需要关心服务器运维等带来的问题。小程序开发主要用到的是前端技术，后端开发和服务运维对于前端开发者来说有一定的门槛，而小程序·云开发的出现就是解决这个问题的。&lt;/p&gt;
+
+&lt;h2 id=&quot;一小程序云开发特点&quot;&gt;一、小程序·云开发特点&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;提供完整后端服务解决方案，包括数据库、静态资源管理和云函数（功能服务）&lt;/li&gt;
+  &lt;li&gt;背靠腾讯云大平台，腾讯云丰富的 API 和功能都可以简单调用&lt;/li&gt;
+  &lt;li&gt;对于普通开发者，&lt;strong&gt;完全免费&lt;/strong&gt;&lt;/li&gt;
+  &lt;li&gt;对于高级服务型小程序，提供更强服务支持、计费弹性、不使用不计费的特点&lt;/li&gt;
+  &lt;li&gt;无服务器搭建，无域名配置，直接调用 API 使用&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;对于我们普通开发者来说，小程序·云开发是个不错的练手平台。下面详细介绍下小程序·云开发提供的功能。&lt;/p&gt;
+
+&lt;p&gt;小程序·云开发提供数据库、云函数和静态存储三大功能，还有小程序的用户管理功能，在用户管理界面可以轻松掌握小程序的授权用户情况。目前云开发的这些功能已经深度整合到「微信开发者工具」中，可以在顶部点击「云开发」进入。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_003.png&quot; alt=&quot;blog_wxmini_2_003&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;二申请小程序云开发&quot;&gt;二、申请小程序·云开发&lt;/h2&gt;
+
+&lt;h3 id=&quot;1小程序云开发的开通&quot;&gt;1.小程序·云开发的开通&lt;/h3&gt;
+
+&lt;p&gt;如果还没有开通小程序·云开发账号，首次点击「云开发」会出现下面的界面，该界面主要是云开发的介绍和申请入口。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_001.jpg&quot; alt=&quot;blog_wxmini_2_001&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;点击蓝色的「创建资源环境」按钮进入新建环境界面。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_002.jpg&quot; alt=&quot;blog_wxmini_2_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;第二步出现选择套餐信息，现在公测阶段只有一个免费套餐选项，将来应该会有更多套餐选择。填写上「环境名称」点击确认之后，会使用小程序开发账号在腾讯云开通一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;fake account&lt;/code&gt;。到此小程序·云开发就开通了！&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;TIPS&lt;/strong&gt;：目前一个小程序账号可以免费开通两个云开发账号，免费版本的限制应该也要注意：&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;数据库存储空间：2GB&lt;/li&gt;
+    &lt;li&gt;文件存储空间：5GB&lt;/li&gt;
+    &lt;li&gt;文件存储外网下行流量：5GB/月&lt;/li&gt;
+    &lt;li&gt;云函数数量：20&lt;/li&gt;
+    &lt;li&gt;云函数资源使用量：10万GBs/月&lt;/li&gt;
+    &lt;li&gt;API调用次数：3万次/天&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;p&gt;&lt;strong&gt;这些对于我们做普通的小程序开发练习已经足够了！&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;2小程序云开发在小程序中的调用&quot;&gt;2.小程序·云开发在小程序中的调用&lt;/h3&gt;
+
+&lt;p&gt;小程序·云开发可以在小程序中直接通过调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.*&lt;/code&gt; 的方式进行调用，在调用云开发 API 之前，需要先调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.init&lt;/code&gt; 对云开发进行初始化：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wx.cloud.init({
+  env: 'tianqi-xxx'
+})
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;初始化时，需要传入 &lt;code class=&quot;highlighter-rouge&quot;&gt;env&lt;/code&gt; 参数，该参数为创建小程序·云开发时的&lt;code class=&quot;highlighter-rouge&quot;&gt;环境 ID&lt;/code&gt;，可以在「云开发」页面右上角「当前环境」下拉菜单中找到：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_004.jpg&quot; alt=&quot;blog_wxmini_2_004&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;下面详细介绍下小程序·云开发的三大功能。&lt;/p&gt;
+
+&lt;h2 id=&quot;三数据库&quot;&gt;三、数据库&lt;/h2&gt;
+
+&lt;p&gt;小程序·云开发的数据库是一种 NoSQL 云端数据库，数据以 JSON 格式存储，在底层支持弹性可扩展、自动容灾、监控管理，所以开发者不需要关注数据库的运维。从提供的文档和接口来看，云开发的数据库应该是由 MongoDB 实现的。&lt;/p&gt;
+
+&lt;p&gt;每个数据库是由多个集合（collection，类比关系型数据库中表的概念）组成，集合有多个 JSON 文档（行）组成，NoSQL 的特点是没有固定的字段，所以整个集合可以看成一个大的 JSON 数组，一个集合在数据库中的存储格式如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[
+  {
+    &quot;_id&quot;: 1,
+    &quot;_openid&quot;: &quot;ax123CVadb&quot;,
+    &quot;name&quot;: &quot;Alice&quot;,
+    &quot;city&quot;: &quot;Guangzhou&quot;
+  },
+  {
+    &quot;_id&quot;: 2,
+    &quot;_openid&quot;: &quot;xj372nJdfa&quot;,
+    &quot;name&quot;: &quot;Bob&quot;,
+    &quot;city&quot;: &quot;Shenzhen&quot;
+  }
+]
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;需要说明的是，文档中的 &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; 是唯一的，开发者可以插入数据的时候自定义，另外 &lt;code class=&quot;highlighter-rouge&quot;&gt;_openid&lt;/code&gt; 是增加文档默认创建的，代表当前小程序用户的唯一标示，后面实战部分笔者会重点介绍小程序的用户授权相关的内容。&lt;/p&gt;
+
+&lt;h3 id=&quot;1快速入门&quot;&gt;1.快速入门&lt;/h3&gt;
+
+&lt;p&gt;详细介绍可以见小程序·云开发的使用文档，这里笔者整理出常用的 API 使用方法：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 初始化
+wx.cloud.init({
+  env: 'tianqi-xxx'
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 获取数据库实例
+const db = wx.cloud.database()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 增
+db.collection('集合名称').add({
+  data: {} // 插入的数据
+}).then(res =&amp;gt; {
+  // 可以通过 res._id 获取创建的记录的 id
+  console.log(res._id)
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 删
+db.collection('集合名称').doc('文档 ID').remove().then(res =&amp;gt; {
+  console.log('removed')
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 改
+db.collection('集合名称').doc('文档 ID').update({
+  data: {
+    title: '我的第 1 篇文章', // 只更新 title 字段，其他不更新
+  }
+}).then(res =&amp;gt; {
+  // 可以通过 res._id 获取创建的记录的 id
+  console.log(res._id)
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 查
+db.collection('集合名称').doc('文档 ID').get().then(res =&amp;gt; {
+  // 打印结果，res.data 即为记录的数据
+  console.log(res)
+})
+const _ = db.command // 取指令
+db.collection('集合名称').where({
+  // 查找条件
+  category: 'computer',
+  properties: {
+    memory: _.gt(8), // 表示大于 8
+  }
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;小程序·云开发的数据库查询命令是可以使用查询筛选指令的，使用查询筛选指令可以缩小查询范围，找到查询条件的文档。&lt;/p&gt;
+
+&lt;p&gt;以下指令挂载在 &lt;code class=&quot;highlighter-rouge&quot;&gt;db.command&lt;/code&gt; 下&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;类型&lt;/th&gt;
+      &lt;th&gt;接口&lt;/th&gt;
+      &lt;th&gt;说明&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;比较运算&lt;/td&gt;
+      &lt;td&gt;eq&lt;/td&gt;
+      &lt;td&gt;字段 ==&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;neq&lt;/td&gt;
+      &lt;td&gt;字段 !=&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;gt&lt;/td&gt;
+      &lt;td&gt;字段 &amp;gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;gte&lt;/td&gt;
+      &lt;td&gt;字段 &amp;gt;=&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;lt&lt;/td&gt;
+      &lt;td&gt;字段 &amp;lt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;lte&lt;/td&gt;
+      &lt;td&gt;字段 &amp;lt;=&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;in&lt;/td&gt;
+      &lt;td&gt;字段值在数组里&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;nin&lt;/td&gt;
+      &lt;td&gt;字段值不在数组里&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;逻辑运算&lt;/td&gt;
+      &lt;td&gt;and&lt;/td&gt;
+      &lt;td&gt;表示需同时满足指定的所有条件&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;or&lt;/td&gt;
+      &lt;td&gt;表示需同时满足指定条件中的至少一个&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;举例说明：在 &lt;code class=&quot;highlighter-rouge&quot;&gt;diary&lt;/code&gt; 集合中找出 &lt;code class=&quot;highlighter-rouge&quot;&gt;openid&lt;/code&gt; 某个值并且创建时间（&lt;code class=&quot;highlighter-rouge&quot;&gt;tsModified&lt;/code&gt;）在 &lt;code class=&quot;highlighter-rouge&quot;&gt;start&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;end&lt;/code&gt; 之间的文档。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;db
+  .collection('diary')
+  .where({
+    openid,
+    tsModified: _.gte(start).and(_.lt(end))
+  })
+  .get()
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2数据库的索引&quot;&gt;2.数据库的索引&lt;/h3&gt;
+
+&lt;p&gt;增加合适的索引可以提升文档的查找效率，比如根据时间、用户 ID 查找，可以将时间和用户 ID 字段设置为索引项，笔者在使用的时候发现：&lt;strong&gt;在小程序·云开发管理后台并不能对某个字段增加唯一索引。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;3自带权限管理&quot;&gt;3.自带权限管理&lt;/h3&gt;
+
+&lt;p&gt;在研发中，经常会针对不同的用户设置不同的数据库权限，例如：某条记录是用户 A 创建的，则只有用户 A 可以删除或者更新，其他用户只有查看的权限，这样的需求很常见，实际开发起来却非常费劲，往往要写不少权限判断的代码，小程序·云开发的数据库支持「权限管理」功能，可以针对这类需求对不同的集合进行统一处理，大大降低开发的门槛！&lt;/p&gt;
+
+&lt;p&gt;集合的操作权限包括以下四种：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;所有用户可读，仅创建者及管理员可写&lt;/li&gt;
+  &lt;li&gt;仅创建者及管理员可读写&lt;/li&gt;
+  &lt;li&gt;所有用户可读，仅管理员可写&lt;/li&gt;
+  &lt;li&gt;仅管理员可读写&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可以在「云开发 -&amp;gt; 数据库 -&amp;gt; 选择某个集合 -&amp;gt; 权限设置」页面进行设置。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_005.jpg&quot; alt=&quot;blog_wxmini_2_005&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;四文件存储&quot;&gt;四、文件存储&lt;/h2&gt;
+
+&lt;p&gt;小程序·云开发的文件存储功能是专为存储和提供用户生成的内容（如图片或视频）的开发者打造的。开发者可使用腾讯云的 SDK 来存储图片、音频、视频或其他由用户生成的内容。在小程序内，则可以通过云开发的 API 直接上传、下载和管理存储。&lt;/p&gt;
+
+&lt;p&gt;公共使用的静态资源，可以通过「云开发 -&amp;gt; 存储」界面直接上传和管理，上传之后，就可以在界面内找到资源的 CDN 地址。&lt;/p&gt;
+
+&lt;p&gt;而对于小程序内需要上传和管理的则通过下面几个 API 来实现：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 上传，上传后会返回资源的 ID
+wx.cloud.uploadFile
+// 下载
+wx.cloud.downloadFile
+// 根据资源 ID 获取资源访问地址
+wx.cloud.getTempFileURL
+// 根据资源 ID 列表删除某资源
+wx.cloud.removeFile
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;跟数据库权限管理一样，如果需要用户自己上传的内容自己可以管理，那么需要设置存储的操作权限，在「云开发 -&amp;gt; 存储」下可以设置全局的存储操作权限。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_006.jpg&quot; alt=&quot;blog_wxmini_2_006&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;五云函数&quot;&gt;五、云函数&lt;/h2&gt;
+
+&lt;p&gt;云函数是腾讯云提供的一套函数计算解决方案，我们可以将每个功能 API 做成单个可执行的函数，然后放到腾讯云上去托管，每个云函数是相互独立可执行的。代码编写完成后放到云端，不执行不调用不收费，执行调用按照调用次数和 CPU 等计算资源的占用情况收费。有了云函数，开发者无须搭建和购买服务器，只需要将写好的云函数代码上传部署到腾讯云，即可以在小程序内通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.callFunction&lt;/code&gt; 的方法进行调用。&lt;/p&gt;
+
+&lt;h3 id=&quot;1创建云函数&quot;&gt;1.创建云函数&lt;/h3&gt;
+
+&lt;p&gt;创建云函数有两种方式，一种是直接在小程序开发者工具中进行操作：&lt;/p&gt;
+
+&lt;p&gt;进入「云开发 -&amp;gt; 云函数 -&amp;gt; 添加」创建：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_008.jpg&quot; alt=&quot;blog_wxmini_2_008&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;另外一种是直接在小程序开发者工具中上传，在上传之前需要配置小程序的 &lt;code class=&quot;highlighter-rouge&quot;&gt;project.config.json&lt;/code&gt;，指明哪个路径为云函数目录：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
+  &quot;cloudfunctionRoot&quot;: &quot;./cloud-functions/&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;配置完成后，在小程序开发者工具的编辑器中展开 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloud-functions&lt;/code&gt; 文件夹，选择对应的云函数文件夹，右键选择「上传并部署」即可：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_007.png&quot; alt=&quot;blog_wxmini_2_007&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;2写个简单云函数&quot;&gt;2.写个简单云函数&lt;/h3&gt;
+
+&lt;p&gt;小程序·云开发的云函数是执行在 Node.js 8.9.0 版本下的，云函数必须在 index.js 有 &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; 方法为入口，例如下面的代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 命名为 test 的函数内容 index.js
+exports.main = async (event, context) =&amp;gt; {
+  let {a, b} = event
+  return new Promise((resolve, reject) =&amp;gt; {
+    resolve({result: parseInt(a) + parseInt(b)})
+  })
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;除了上面 Promise 的写法，还可以用回调的方式：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 命名为 test 的函数内容 index.js
+// 回调方式 callback
+exports.main = async (event, context, callback) =&amp;gt; {
+  let {a, b} = event
+  callback(null, {result: parseInt(a) + parseInt(b)})
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;TIPS:&lt;/p&gt;
+
+  &lt;ol&gt;
+    &lt;li&gt;云函数如果不存在 &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; 的方法，上传部署的时候会报错！&lt;/li&gt;
+    &lt;li&gt;云函数回调方式写法遵循「错误优先」原则（Error-First Callback）。&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;云函数接受两个 JSON 格式的参数 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt;，两者分别代表：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt;：平台将 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 入参传递给执行方法，通过此 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 入参对象，代码将与触发函数的事件（event）交互，&lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 可以获取 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.callFunction&lt;/code&gt; 调用的参数 &lt;code class=&quot;highlighter-rouge&quot;&gt;data&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt;：平台将 &lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt; 入参传递给执行方法，通过此 &lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt; 入参对象，代码将能了解到运行环境及当前请求的相关内容&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;TIPS： 开发者可以在云函数内获取到每次调用的上下文（appId、openId 等），无需维护复杂的鉴权机制，即可获取天然可信任的用户登录态（openId），这俩值可以从&lt;code class=&quot;highlighter-rouge&quot;&gt;event.userInfo&lt;/code&gt;中读取。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;上面 &lt;code class=&quot;highlighter-rouge&quot;&gt;test&lt;/code&gt; 的函数上传到腾讯云之后，我们在小程序的 JS 代码中可以使用下面的方法进行调用：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wx.cloud.callFunction({
+  name: 'test',
+  data: {
+    a: 1,
+    b: 2
+  }
+}).then(r=&amp;gt;{
+  // 因为 main 的方法实际是个 promisify 的返回，所以可以直接使用 then/catch
+  console.log(r)
+}).catch(e=&amp;gt;{
+  console.log(e)
+})
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;3云函数的依赖管理&quot;&gt;3.云函数的依赖管理&lt;/h3&gt;
+
+&lt;p&gt;在云函数中，可以像正常的 Node.js 一样，使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;node_modules&lt;/code&gt; 来对依赖进行管理，在开发完代码之后，需要将 &lt;code class=&quot;highlighter-rouge&quot;&gt;node_modules&lt;/code&gt; 文件夹一起上传到云端去。下面笔者将带着大家做一个什么值得买的简单抓取的云函数，讲解函数编写、npm 模块使用、云函数本地测试整个流程。&lt;/p&gt;
+
+&lt;p&gt;先说下，笔者要实现的功能：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;根据传入的分类参数，获取什么值得买对应分类的最新文章内容&lt;/li&gt;
+  &lt;li&gt;提取出文章列表的 title、image、mall，即文章名称、文章的配图和优惠所属的网站&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;首先在 cloud-functions 文件夹（该文件夹是我们创建的云函数文件夹），创建一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;smzdm&lt;/code&gt; 的云函数，目录结构如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cloud-functions
+├── smzdm
+│   ├── index.js
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后进入 &lt;code class=&quot;highlighter-rouge&quot;&gt;smzdm&lt;/code&gt; 目录，执行 &lt;code class=&quot;highlighter-rouge&quot;&gt;npm init&lt;/code&gt;，按照提示填写内容以后，会在该目录下生成 &lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt; 文件，接下来需要安装抓取「什么值得买」手机站点的两个 npm 模块：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.npmjs.com/package/request&quot;&gt;request&lt;/a&gt;：用于做数据请求，抓取站点的 HTML 内容&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.npmjs.com/package/cheerio&quot;&gt;cheerio&lt;/a&gt;：用于将 HTML 结构数据转为类似 jQuery 的对象，可以通过 CSS 选择器对 HTML 的内容进行提取&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;安装命令如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 进入 smzdm 目录，执行
+npm install --save request cheerio
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;安装之后的目录结构如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cloud-functions
+├── smzdm
+│   ├── node_modules
+│   ├── index.js
+│   └── package.json
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后我们开始编写 index.js 内容，第一步引入模块，编写 &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; 方法：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 引入 requst 和 cheerio
+const request = require('request')
+const cheerio = require('cheerio')
+exports.main = async (event = {}) =&amp;gt; {
+  // 获取具体什么值得买网站分类
+  let category = event.category || 'diannaoshuma'
+  return new Promise((resolve, reject) =&amp;gt; {
+
+  })
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;第二步，开始编写具体的逻辑，即使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;request.get&lt;/code&gt; 先获取 HTML 内容，然后使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;cheerio&lt;/code&gt; 将 HTML 内容进行结构化，经过使用 Chrome 查看器查看，发现最新文章都包含在一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt; 为 &lt;code class=&quot;highlighter-rouge&quot;&gt;card-group-list&lt;/code&gt; 的 div 下，然后找到 &lt;code class=&quot;highlighter-rouge&quot;&gt;zm-card-title&lt;/code&gt; 等每个文章的标题、图片和商城信息，将结果放到一个数组，最后 &lt;code class=&quot;highlighter-rouge&quot;&gt;resolve&lt;/code&gt; 输出：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const request = require('request')
+const cheerio = require('cheerio')
+exports.main = async (event = {}) =&amp;gt; {
+  let category = event.category || 'diannaoshuma'
+  return new Promise((resolve, reject) =&amp;gt; {
+    request.get(`https://m.smzdm.com/fenlei/${category}/`, (e, req, body) =&amp;gt; {
+      if (!e &amp;amp;&amp;amp; req.statusCode === 200) {
+        const $ = cheerio.load(body)
+        const result = []
+        $('.card-group-list').each((i, v) =&amp;gt; {
+          let $v = $(v)
+          let title = $v.find('.zm-card-title').text().trim()
+          let image = $v.find('.zm-card-media img').attr('src')
+          let mall = $v.find('.card-mall').text().trim()
+          result.push({
+            title,
+            image,
+            mall
+          })
+        })
+        resolve(result)
+      }
+    })
+  })
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这样就完成了一个带有依赖模块的云函数编写，上传到腾讯云部署之后，在小程序中使用：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wx.cloud.callFunction({
+  name: 'smzdm',
+  data: {
+    category: 'diannaoshuma'
+  }
+}).then(r=&amp;gt;{console.log(r)})
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;4云函数的调试&quot;&gt;4.云函数的调试&lt;/h3&gt;
+
+&lt;p&gt;云函数有一个很不方便的地方，就是测试起来相对来说比较麻烦，我们不能每次都上传到云端，通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.callFunction&lt;/code&gt; 的方式进行调用，下面介绍几种测试的方法。&lt;/p&gt;
+
+&lt;h4 id=&quot;1线下函数自己使用-node-来测试&quot;&gt;(1)线下：函数自己使用 Node 来测试&lt;/h4&gt;
+
+&lt;p&gt;这种方法就是在 index.js 的最后，增加一个测试方法，比如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const request = require('request')
+const cheerio = require('cheerio')
+const main = (exports.main = async (event = {}) =&amp;gt; {
+  let category = event.category || 'diannaoshuma'
+  return new Promise((resolve, reject) =&amp;gt; {
+    request.get(`https://m.smzdm.com/fenlei/${category}/`, (e, req, body) =&amp;gt; {
+      if (!e &amp;amp;&amp;amp; req.statusCode === 200) {
+        const $ = cheerio.load(body)
+        const result = []
+        $('.card-group-list').each((i, v) =&amp;gt; {
+          let $v = $(v)
+          let title = $v.find('.zm-card-title').text().trim()
+          let image = $v.find('.zm-card-media img').attr('src')
+          let label = $v.find('.card-label').text().trim()
+          let mall = $v.find('.card-mall').text().trim()
+          result.push({
+            title,
+            image,
+            label,
+            mall
+          })
+        })
+        resolve(result)
+      }
+    })
+  })
+})
+main({category: 'diannaoshuma'}).then(r=&amp;gt;{console.log(r)})
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后使用 Node.js 直接运行该文件：&lt;code class=&quot;highlighter-rouge&quot;&gt;node index.js&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;2线上使用开发者工具&quot;&gt;(2)线上：使用开发者工具&lt;/h4&gt;
+
+&lt;p&gt;在小程序开发者工具的云开发控制台内有测试的工具，进入路径为：「云开发 -&amp;gt; 云函数列表 -&amp;gt; 点击具体云函数 -&amp;gt; 右上角测试」。&lt;/p&gt;
+
+&lt;p&gt;对于测试的参数，还可以保存下来模板，方便以后使用。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_009.jpg&quot; alt=&quot;blog_wxmini_2_009&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;5云函数的-mock-server&quot;&gt;5.云函数的 mock server&lt;/h3&gt;
+
+&lt;p&gt;上文提到的测试方法，都是将小程序的研发流程完全割裂开来，不能完整地测试小程序的代码，只能要么测试云函数要么测试小程序，那么测试小程序的代码就需要上线云函数，实际还是一种效率不高的做法。这里笔者介绍一种本地 mock server 的方式来开启云函数的测试，这种方式可以打通小程序开发的整个流程。具体做法分两步：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;将云函数作为一个接受请求参数的 server 来访问&lt;/li&gt;
+  &lt;li&gt;使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.request&lt;/code&gt; 构造请求拿到云函数的处理结果，然后跑通整个研发流程&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;笔者在 mock server 选型上，选择使用 &lt;a href=&quot;https://www.expressjs.com/&quot;&gt;Express&lt;/a&gt; 自建 mock server 的方式。&lt;/p&gt;
+
+&lt;p&gt;首先，启动一个 Express server：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const express = require('express')
+const app = express()
+
+app.listen(3000, () =&amp;gt; {
+  console.log(`开发服务器启动成功：http://127.0.0.1:3000`)
+})
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;nodemon index.js&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;然后将云函数引入进程序中来，作为一个路由 handler 来接受http url 的参数，处理请求之后，将返回的处理结果通过 Express 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;res.json&lt;/code&gt;输出。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const test = require('./cloud-functions/test/').main
+
+app.get('/api/test', (req, res, next) =&amp;gt; {
+  // 将 req.query 传入
+  test(req.query).then(res.json.bind(res)).catch((e) =&amp;gt; {
+    console.error(e)
+    next(e)
+  })
+  // next()
+})
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这样访问 &lt;code class=&quot;highlighter-rouge&quot;&gt;http://127.0.0.1:3000/api/test?a=1&amp;amp;b=2&lt;/code&gt; 就会输出结果了。到这里笔者就将 mock server 搭建完毕了。&lt;/p&gt;
+
+&lt;p&gt;关于小程序代码中如何调用，怎么保持代码的一致性，自由切换线上代码和线下开发代码的方式，在&lt;a href=&quot;&quot;&gt;实战篇 1：小程序开发环境搭建&lt;/a&gt;中会有更详细的讲解。&lt;/p&gt;
+
+&lt;h2 id=&quot;六小结&quot;&gt;六、小结&lt;/h2&gt;
+
+&lt;p&gt;本节重点介绍了腾讯新推出的小程序云开发的基础知识，云开发由 NoSQL 数据库、文件存储和云函数三个云产品组成，其中数据库和文件存储都可以单独设置用户权限，这样极大地降低了 UGC（用户产生内容）类小程序的开发门槛。&lt;/p&gt;
+
+&lt;p&gt;云函数是小程序·云开发中一个很重要的产品，本节介绍了云函数的基本用法和注意事项，同时针对小程序云函数的开发测试比较困难的情况，提出了 mock server 的解决方式。&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>基础篇 1：小程序开发基础知识</title>
+        <link>https://gorpeln.com//article/15605697133</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15605697133</guid>
+        <pubDate>Sat, 15 Jun 2019 00:00:00 +0800</pubDate>
+        <description>&lt;h2 id=&quot;一准备工作&quot;&gt;一、准备工作&lt;/h2&gt;
+
+&lt;p&gt;小程序开发要先注册小程序账号，有了小程序账号才可以使用开发者工具。小程序是一种特殊的开发形式，里面的 API 和组件都是自己定制的，因此在普通的浏览器中不能预览，要预览功能和页面就需要使用开发者工具。&lt;/p&gt;
+
+&lt;h3 id=&quot;1注册小程序账号&quot;&gt;1.注册小程序账号&lt;/h3&gt;
+
+&lt;p&gt;先准备一个没有注册过公众号的邮箱，然后访问&lt;a href=&quot;https://mp.weixin.qq.com/cgi-bin/wx?token=&amp;amp;lang=zh_CN&quot;&gt;小程序介绍页面&lt;/a&gt;并点击底部的「前往注册」按钮，再按照提示填写个人信息，最后进入邮箱激活账号即可。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-17-blog_wxmini_001.png&quot; alt=&quot;blog_wxmini_001&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;2安装开发者工具&quot;&gt;2.安装开发者工具&lt;/h3&gt;
+
+&lt;p&gt;小程序有自己的开发者工具，可以编写代码，实时查看页面和功能效果，还能在开发者工具中进行 debug。小程序开发者工具是使用 NW.js 编写的。&lt;/p&gt;
+
+&lt;p&gt;开发者工具下载地址：&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html&quot;&gt;微信开发者工具&lt;/a&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;3使用开发者工具演示-weui&quot;&gt;3.使用开发者工具演示 WeUI&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;WeUI 是一套同微信原生视觉体验一致的基础样式库，由微信官方设计团队为微信内网页和微信小程序量身设计，令用户的使用感知更加统一。包含 button、cell、dialog、 progress、 toast、article、actionsheet、icon 等各式组件。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;WeUI 有两个版本，一个是&lt;a href=&quot;https://github.com/Tencent/weui&quot;&gt;普通的 HTML5 版本&lt;/a&gt;，另外是&lt;a href=&quot;https://github.com/Tencent/weui-wxss&quot;&gt;小程序版本&lt;/a&gt;。本节我们通过 WeUI 来简单学习开发者工具的使用。&lt;/p&gt;
+
+&lt;p&gt;首先下载 WeUI 源码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# https 方式（推荐）
+git clone https://github.com/Tencent/weui-wxss.git
+# 或者 ssh 方式
+git clone git@github.com:Tencent/weui-wxss.git
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;打开开发者工具，使用注册时绑定的微信账号扫码登录，这时在进入的界面中选择「小程序项目」，如果是初次使用小程序开发者工具，没有创建过小程序项目，就会进入下面的页面：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-17-blog_wxmini_002.jpg&quot; alt=&quot;blog_wxmini_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在这个页面，先选择我们 clone 下来的 WeUI 项目的 dist 文件夹。对于 AppID 选项，如果已经有了小程序账号，可以在账号后台找到 AppID 并填写上；若还没有注册小程序账号，可以直接在「或使用测试号：」后面单击「小程序」，就会自动填好。然后给项目起个名字，比如「WeUI 演示」，点击确定后就打开了 WeUI 项目。这时候看到的是开发者工具的开发界面，如下图所示，开发界面主要由三部分组成：模拟器、编辑器和调试器。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-17-blog_wxmini_003.png&quot; alt=&quot;blog_wxmini_003&quot; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;模拟器：提供小程序的运行环境，模拟小程序在手机上的界面效果&lt;/li&gt;
+  &lt;li&gt;编辑器：简单 IDE 功能，点击左侧树形菜单可以打开多个文件直接编写保存，做到实时预览效果，但是开发者工具的编辑器做得比较简单，而且使用体验并不好，建议选择自己顺手的 IDE 增加 WXML 和 WXSS 的语法高亮插件等来编辑代码&lt;/li&gt;
+  &lt;li&gt;调试器：订制版的 Chrome 开发者工具，提供从页面结构到网络请求等多个面板支持，会用 Chrome DevTools 就很容易上手该工具&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Tips：&lt;/strong&gt; 常用 IDE 推荐&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;VS Code + &lt;a href=&quot;https://marketplace.visualstudio.com/items?itemName=qiu8310.minapp-vscode&quot;&gt;minapp 插件&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Sublime Text 3 + &lt;a href=&quot;https://github.com/springlong/Sublime-wxapp/blob/master/docs/README.zh-ch.md&quot;&gt;Sublime wxapp 插件&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;Vim + &lt;a href=&quot;https://github.com/chemzqm/wxapp.vim&quot;&gt;wxapp&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;除了三个重要组成部分之外，在开发者工具的顶部还有各种操作按钮。左侧主要是模拟器、编辑器、调试器和小程序云开发控制台的视图开关，可以控制对应视图的开启关闭。&lt;/p&gt;
+
+&lt;p&gt;中间部分是跟开发、编译、测试和上线相关的各种按钮，我们在开发和测试小程序中会经常使用，最常用的有：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;预览、远程调试：是可以在手机上直接预览效果，开启远程 debug 功能的&lt;/li&gt;
+  &lt;li&gt;清缓存：对于一些授权登录、缓存、数据之类的操作，我们需要清理状态和数据，可以通过这个按钮操作&lt;/li&gt;
+  &lt;li&gt;上传：如果是创建项目的时候填写了 AppID，那么会出现这个按钮，小程序开发完毕后可以通过这个来上传，上传之后可以在小程序后台申请测试版和审核，审核通过后就可以正式上线了&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;最后介绍的是开发者工具右上角的「详情」。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-17-blog_wxmini_004.jpeg&quot; alt=&quot;blog_wxmini_004&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;详情下面主要有三个 Tab：项目设置、域名信息和腾讯云状态。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;项目设置：这个是用得比较多的，可以指定上传代码时候的编译情况，比如支持 ES6 语法、支持 css autoprefixer、代码压缩等&lt;/li&gt;
+  &lt;li&gt;域名信息：小程序的&lt;code class=&quot;highlighter-rouge&quot;&gt;request&lt;/code&gt;等访问的域名采用了白名单形式，在这里可以看到小程序管理后台设置的域名白名单&lt;/li&gt;
+  &lt;li&gt;腾讯云状态：可以看到小程序账号和腾讯云的绑定情况&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;二小程序开发语言&quot;&gt;二、小程序开发语言&lt;/h2&gt;
+
+&lt;p&gt;小程序的开发语言跟前端开发者比较熟悉的 HTML5 非常相似（甚至相同），小程序的视图层由 &lt;code class=&quot;highlighter-rouge&quot;&gt;WXML&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;WXSS&lt;/code&gt; 组成，分别对应 HTML 和 CSS，逻辑层则跟 HTML5 一样，也是 JavaScript 语言实现。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;WXML：小程序自己发明的 XML 语法描述，用来构造小程序的页面结构&lt;/li&gt;
+  &lt;li&gt;WXSS：小程序的页面的样式表语言，描述 WXML 的样式&lt;/li&gt;
+  &lt;li&gt;JavaScript：小程序 JS 的执行环境并不是普通的 WebView 浏览器，也不是 Node.js 环境，它执行在微信 App 内上下文， 跟 Node.js 一样，也不能像在浏览器内一样对页面 DOM 进行操作&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;微信小程序运行在三端：iOS、Android 和用于调试的开发者工具&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;在 iOS 上，小程序的 JavaScript 代码运行在 JavaScriptCore 中&lt;/li&gt;
+    &lt;li&gt;在 Android 上，小程序的 JavaScript 代码通过 X5 内核来解析&lt;/li&gt;
+    &lt;li&gt;在 开发工具上， 小程序的 JavaScript 代码运行在 NW.js（Chromium 内核） 中&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;除了普通的 JavaScript，小程序还支持一种类似 JS 的 &lt;strong&gt;WXS&lt;/strong&gt; 语言，WXS 对于小程序开发不是必需的，它的主要目的是为了增强 WXML 的数据处理能力而新引入一种技术实现，其实际解析的语言规范还是 JS，并没有引入新的语法，仅仅对 JS 做了上层的封装和限制，所以学习上基本没什么成本，大致了解下开发文档马上就能上手。本小册实战部分也会涉及简单的 WXS 编写。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;对于 WXS 和 JavaScript 的性能比较，官方给出的数据是：&lt;strong&gt;由于运行环境的差异，在 iOS 设备上小程序内的 WXS 会比 JavaScript 代码快 2 ~ 20 倍。在 Android 设备上二者运行效率无差异。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;三小程序项目相关知识&quot;&gt;三、小程序项目相关知识&lt;/h2&gt;
+
+&lt;h3 id=&quot;1小程序目录结构&quot;&gt;1.小程序目录结构&lt;/h3&gt;
+
+&lt;p&gt;小程序项目由配置文件、页面文件、静态资源和其他相关（比如组件、小程序云函数等）内容组成，一般小程序会由四类文件组成：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.json&lt;/code&gt; 后缀的 JSON 配置文件&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.wxml&lt;/code&gt; 后缀的 WXML 模板文件&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.wxss&lt;/code&gt; 后缀的 WXSS 样式文件&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;.js&lt;/code&gt; 后缀的 JS 脚本逻辑文件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;小程序项目的目录结构组成没有严格的要求，按照前端项目的经验，一般会分为：配置、页面、静态资源、基础库、组件等多个目录，例如下面的目录结构：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;├── app.js            小程序全局app相关js
+├── app.json          小程序配置文件
+├── app.wxss          小程序全局app样式
+├── cloud-functions   云函数目录
+│   ├── decrypt
+│   ├── geocoder
+│   ├── he-air
+│   ├── he-weather
+│   ├── jscode2session
+│   └── weather
+├── components        组件库
+│   └── icon
+├── images            图片等静态资源
+│   └── cloud.jpg
+├── pages             页面目录
+│   ├── diary
+│   └── weather
+└── project.config.json  工具项目配置文件
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;当然根据不同的项目，可能目录结构不同，但是小程序必需的 &lt;code class=&quot;highlighter-rouge&quot;&gt;app.json&lt;/code&gt; 和页面组成是必不可少的。另外，在开发复杂的项目时，我们会用到开发框架或者编译工具，这时候目录结构只需要保证编译之后的目录结构符合规范即可。&lt;/p&gt;
+
+&lt;h3 id=&quot;2小程序的配置&quot;&gt;2.小程序的配置&lt;/h3&gt;
+
+&lt;p&gt;小程序有三个重要的配置，分别放在三个 JSON 文件内：&lt;code class=&quot;highlighter-rouge&quot;&gt;project.config.json&lt;/code&gt;（工具项目配置）、&lt;code class=&quot;highlighter-rouge&quot;&gt;app.json&lt;/code&gt;（小程序配置）、&lt;code class=&quot;highlighter-rouge&quot;&gt;page.json&lt;/code&gt;（单页面配置）&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;project.config.json&lt;/code&gt;：这个是配置项目工具相关的，比如开发者工具的编译设置（是否使用 ES6 语法等）、界面设置，以及云函数相关的 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloudfunctionRoot&lt;/code&gt;，详细可以参考&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html&quot;&gt;项目配置文件&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;app.json&lt;/code&gt;：小程序的全局配置，包括了所有页面路径、界面表现、网络超时时间、底部 tab、插件等，常用的两个配置是 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;pages&lt;/code&gt;，详细配置参考&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/framework/config.html&quot;&gt;全局配置&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;page.json&lt;/code&gt;：是相对于 &lt;code class=&quot;highlighter-rouge&quot;&gt;app.json&lt;/code&gt; 更细粒度的单页面配置，详细参考&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/framework/config.html#%E9%A1%B5%E9%9D%A2%E9%85%8D%E7%BD%AE&quot;&gt;页面配置&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;四组件和插件&quot;&gt;四、组件和插件&lt;/h2&gt;
+
+&lt;p&gt;小程序页面是由各种组件组成的，组件可以类比成原生 HTML5 的标签。&lt;/p&gt;
+
+&lt;h3 id=&quot;1组件&quot;&gt;1.组件&lt;/h3&gt;
+
+&lt;p&gt;小程序内部定义了很多组件，可以对应 HTML5 的标签和基础能力来理解，小程序的组件根据实现不同，可以分为 Web 组件和 Native 组件，Web 组件是由 HTML5 原生 Web 组件封装的组件，比如 &lt;code class=&quot;highlighter-rouge&quot;&gt;view&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;image&lt;/code&gt; 等；Native 组件是为了增强小程序的体验，用客户端技术实现的组件，包括一些交互复杂、原生 Web 组件性能不高的组件，例如 &lt;code class=&quot;highlighter-rouge&quot;&gt;input&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;map&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;canvas&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;video&lt;/code&gt; 等。&lt;/p&gt;
+
+&lt;p&gt;小程序一共提供 8 大类 30 多个组件：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;视图容器：主要是实现页面布局的，对常见的布局形式进行了封装，比如滚动 sroll-view 等&lt;/li&gt;
+  &lt;li&gt;基本内容：类似 HTML5 中内容相关的 p、em 等&lt;/li&gt;
+  &lt;li&gt;表单相关：要比 HTML5 的 form 表单丰富一些&lt;/li&gt;
+  &lt;li&gt;导航：类似 a 标签&lt;/li&gt;
+  &lt;li&gt;媒体：类比 HTML5 中的 video、audio 和 img 等，但是提供更标准的界面和更丰富的 API 支持&lt;/li&gt;
+  &lt;li&gt;画布：Native 实现的 Canvas&lt;/li&gt;
+  &lt;li&gt;地图：结合腾讯地图数据 Native 实现的组件&lt;/li&gt;
+  &lt;li&gt;开放能力：这部分组件偏通用和小程序业务&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;2自定义组件&quot;&gt;2.自定义组件&lt;/h3&gt;
+
+&lt;p&gt;小程序本身支持很多组件，比如地图、按钮等，开发者也可以自己做项目内公共组件，比如我们后面实战部分会介绍做一个 icon 组件，放在 &lt;code class=&quot;highlighter-rouge&quot;&gt;components&lt;/code&gt; 目录下面，这样此小程序的任何页面如果要使用这个 icon 公共组件，只需在自己的 &lt;code class=&quot;highlighter-rouge&quot;&gt;page.json&lt;/code&gt; 中添加如下字段：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;usingComponents&quot;: {
+  &quot;icon&quot;: &quot;../../components/icon/index&quot;
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;添加完成之后，在页面代码中就可以直接使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;icon&amp;gt;&lt;/code&gt; 的 tag 了。&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/framework/custom-component/&quot;&gt;官方文档&lt;/a&gt;有更加详细的介绍。&lt;/p&gt;
+
+&lt;h3 id=&quot;3插件&quot;&gt;3.插件&lt;/h3&gt;
+
+&lt;p&gt;插件是对一组 JS 接口、自定义组件或页面的封装，用于提供给第三方小程序调用。简单来说，插件是组件的升级版本，组件只能在自己项目中使用，插件则更独立，是可以发布到全网，供其他开发者使用的。例如实战中，笔者使用了一款日历插件，则需要在 &lt;code class=&quot;highlighter-rouge&quot;&gt;app.json&lt;/code&gt; 中增加 &lt;code class=&quot;highlighter-rouge&quot;&gt;plugins&lt;/code&gt; 字段：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;plugins&quot;: {
+  &quot;calendar&quot;: {
+    &quot;version&quot;: &quot;1.1.3&quot;,
+    &quot;provider&quot;: &quot;wx92c68dae5a8bb046&quot;
+  }
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;如果想开发一个插件，则可以参考&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/framework/plugin/development.html&quot;&gt;官方文档&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;五小程序开发基础&quot;&gt;五、小程序开发基础&lt;/h2&gt;
+
+&lt;p&gt;微信小程序是由数据驱动的开发框架，本小节主要介绍小程序开发中的基础概念和知识。&lt;/p&gt;
+
+&lt;h3 id=&quot;1数据驱动&quot;&gt;1.数据驱动&lt;/h3&gt;
+
+&lt;p&gt;微信小程序是数据驱动模型，在 WXML 中可以对页面的数据进行绑定，小程序的 WXML 内使用的是 Mustache 语法，在 &lt;code class=&quot;highlighter-rouge&quot;&gt;{/{}/}&lt;/code&gt;(去掉双括号中间的&lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;) 内可以将变量名包裹起来。 例如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//(去掉双括号中间的`/`)
+&amp;lt;view&amp;gt;{/{ message }/}&amp;lt;/view&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Page({
+  data: {
+    message: 'Hello MINA!'
+  }
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;但是小程序不支持复杂的表达式，目前支持简单的三元、加减和逻辑判断，如果要使用形如 &lt;code class=&quot;highlighter-rouge&quot;&gt;{/{parseInt(num)}/}&lt;/code&gt;(去掉双括号中间的&lt;code class=&quot;highlighter-rouge&quot;&gt;/&lt;/code&gt;) 的函数调用语法，需要 &lt;code class=&quot;highlighter-rouge&quot;&gt;WXS&lt;/code&gt; 支持：&lt;/p&gt;
+
+&lt;p&gt;WXML 内容：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//(去掉双括号中间的`/`)
+&amp;lt;wxs src=&quot;./demo.wxs&quot; module=&quot;tools&quot; /&amp;gt;
+&amp;lt;view&amp;gt;{/{ tools.toNumber(num) }/}&amp;lt;/view&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;WXS 内容：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// demo.wxs
+function toNumber(n){
+  return parseInt(n)
+}
+module.exports.toNumber = toNumber
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;小程序内对页面的数据修改只能通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;setData&lt;/code&gt; 方法，不能使用直接赋值的方式 &lt;code class=&quot;highlighter-rouge&quot;&gt;this.data.key = value&lt;/code&gt;：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Page({
+  data: {
+    message: 'Hello MINA!'
+  },
+  onLoad(){
+    this.setData({
+      message: 'hello world~'
+    })
+  }
+})
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;记住：修改页面数据，只能使用 this.setData 修改！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;2事件绑定和处理&quot;&gt;2.事件绑定和处理&lt;/h3&gt;
+
+&lt;p&gt;在小程序内，除了标准 HTML5 中遇见的 &lt;code class=&quot;highlighter-rouge&quot;&gt;touchstart&lt;/code&gt; 等事件外，增加了 &lt;code class=&quot;highlighter-rouge&quot;&gt;tap&lt;/code&gt; 类的事件，主要包括以下几种：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;事件名称&lt;/th&gt;
+      &lt;th&gt;说明&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;tap&lt;/td&gt;
+      &lt;td&gt;手指触摸后马上离开&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;longpress&lt;/td&gt;
+      &lt;td&gt;手指触摸后，超过 350ms 再离开，如果指定了事件回调函数并触发了这个事件，tap 事件将不被触发&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;longtap&lt;/td&gt;
+      &lt;td&gt;手指触摸后，超过 350ms 再离开（推荐使用 longpress 事件代替）&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;小程序内，事件的绑定是通过在 WXML 标签增加 &lt;code class=&quot;highlighter-rouge&quot;&gt;bind*&lt;/code&gt; 属性来实现的，当用户点击之后，会响应对应页面 JS 的函数：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;view class=&quot;life-style&quot;&amp;gt;
+    &amp;lt;view class=&quot;item&quot; wx:for=&quot;&quot; data-name=&quot;&quot; data-detail=&quot;&quot; bindtap=&quot;indexDetail&quot;&amp;gt;
+      &amp;lt;view class=&quot;title&quot;&amp;gt;
+        &amp;lt;icon type=&quot;&quot;&amp;gt;&amp;lt;/icon&amp;gt;
+        
+      &amp;lt;/view&amp;gt;
+      &amp;lt;view class=&quot;content&quot;&amp;gt;&amp;lt;/view&amp;gt;
+    &amp;lt;/view&amp;gt;
+&amp;lt;/view&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上面的代码绑定了 &lt;code class=&quot;highlighter-rouge&quot;&gt;tap&lt;/code&gt; 事件，事件处理函数为 &lt;code class=&quot;highlighter-rouge&quot;&gt;indexDetail&lt;/code&gt;。&lt;/p&gt;
+
+&lt;h4 id=&quot;1事件冒泡&quot;&gt;（1）事件冒泡&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;小程序内的事件分为可冒泡和不可冒泡的事件，除了 submit、input 之类的事件，多数是可冒泡的事件&lt;/strong&gt;，对于事件的绑定，除了 &lt;code class=&quot;highlighter-rouge&quot;&gt;bind*&lt;/code&gt; 的方式，还可以通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;catch*&lt;/code&gt; 的方式来绑定，两者的区别在于：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;bind&lt;/code&gt; 不会阻止冒泡，变形写法为 &lt;code class=&quot;highlighter-rouge&quot;&gt;bind:*&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;catch&lt;/code&gt; 会阻止事件继续冒泡，变形写法为 &lt;code class=&quot;highlighter-rouge&quot;&gt;catch:*&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;2事件捕获&quot;&gt;（2）事件捕获&lt;/h4&gt;
+
+&lt;p&gt;小程序内，触摸类事件支持捕获阶段，捕获是先于冒泡的触发，绑定捕获事件，可以使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;capture-bind&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;capture-catch&lt;/code&gt;，后者将中断捕获阶段和取消冒泡阶段，下面是官方的示例：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在下面的代码中，点击 inner view 会先后调用 handleTap2、handleTap4、handleTap3、handleTap1。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;view id=&quot;outer&quot; bind:touchstart=&quot;handleTap1&quot; capture-bind:touchstart=&quot;handleTap2&quot;&amp;gt;
+  outer view
+  &amp;lt;view id=&quot;inner&quot; bind:touchstart=&quot;handleTap3&quot; capture-bind:touchstart=&quot;handleTap4&quot;&amp;gt;
+    inner view
+  &amp;lt;/view&amp;gt;
+&amp;lt;/view&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;如果将上面代码中的第一个 capture-bind 改为 capture-catch，将只触发 handleTap2。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;view id=&quot;outer&quot; bind:touchstart=&quot;handleTap1&quot; capture-catch:touchstart=&quot;handleTap2&quot;&amp;gt;
+  outer view
+  &amp;lt;view id=&quot;inner&quot; bind:touchstart=&quot;handleTap3&quot; capture-bind:touchstart=&quot;handleTap4&quot;&amp;gt;
+    inner view
+  &amp;lt;/view&amp;gt;
+&amp;lt;/view&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;关于事件的详细说明，建议阅读&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/framework/view/wxml/event.html&quot;&gt;官方的文档&lt;/a&gt;，以获取更大的帮助。&lt;/p&gt;
+
+&lt;h4 id=&quot;3事件对象&quot;&gt;（3）事件对象&lt;/h4&gt;
+
+&lt;p&gt;当事件触发时，处理函数会响应，传入 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 对象，通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 对象可以获取事件触发时候的一些信息，包括时间戳、&lt;code class=&quot;highlighter-rouge&quot;&gt;detail&lt;/code&gt; 等。&lt;/p&gt;
+
+&lt;p&gt;因为小程序内的事件绑定都是在 WXML 中实现的，所以传递参数只能通过 WXML 上面的属性值来传递，例如下面的代码中，&lt;code class=&quot;highlighter-rouge&quot;&gt;indexDetail&lt;/code&gt; 处理函数需要接收生活指数的名称和详情，来弹出弹层提示，这时候需要在标签上增加 &lt;code class=&quot;highlighter-rouge&quot;&gt;data-xx&lt;/code&gt; 这样的属性，&lt;code class=&quot;highlighter-rouge&quot;&gt;data-name&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;data-detail&lt;/code&gt; 就是两个属性，通过这两个值，可以在 &lt;code class=&quot;highlighter-rouge&quot;&gt;indexDetail&lt;/code&gt; 内 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 对象的 &lt;code class=&quot;highlighter-rouge&quot;&gt;target/currentTarget&lt;/code&gt; 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;dataset&lt;/code&gt; 获取参数。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;view class=&quot;life-style&quot;&amp;gt;
+    &amp;lt;view class=&quot;item&quot; wx:for=&quot;&quot; data-name=&quot;&quot; data-detail=&quot;&quot; bindtap=&quot;indexDetail&quot;&amp;gt;
+      &amp;lt;view class=&quot;title&quot;&amp;gt;
+        &amp;lt;icon type=&quot;&quot;&amp;gt;&amp;lt;/icon&amp;gt;
+        
+      &amp;lt;/view&amp;gt;
+      &amp;lt;view class=&quot;content&quot;&amp;gt;&amp;lt;/view&amp;gt;
+    &amp;lt;/view&amp;gt;
+&amp;lt;/view&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// weather/index.js
+// 响应事件的处理函数
+indexDetail(e) {
+  const {name, detail} = e.currentTarget.dataset
+  wx.showModal({
+    title: name,
+    content: detail,
+    showCancel: false
+  })
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;按照官方文档，&lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;currentTarget&lt;/code&gt; 都有个 &lt;code class=&quot;highlighter-rouge&quot;&gt;dataset&lt;/code&gt;，&lt;strong&gt;正确获取 &lt;code class=&quot;highlighter-rouge&quot;&gt;dataset&lt;/code&gt; 的姿势是使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;currentTarget&lt;/code&gt; 的&lt;/strong&gt;，但是有时候 &lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;currentTarget&lt;/code&gt; 的数据又是完全一样的，如果这里使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt; 的话，那么有时候点击会弹出弹窗，有时候不会弹出，这两者究竟是怎样的关系呢？官方的解释有点模棱两可：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt;：触发事件的源组件&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;currentTarget&lt;/code&gt;：事件绑定的当前组件&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这里笔者做下详细解释：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt;：触发事件的源组件，上面的代码中，&lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt; 可能是 &lt;code class=&quot;highlighter-rouge&quot;&gt;view.title&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;view.content&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;view.item&lt;/code&gt; 任意触发事件的组件&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;currentTarget&lt;/code&gt;：事件绑定的当前组件，上面的代码中，只能是真正绑定了 &lt;code class=&quot;highlighter-rouge&quot;&gt;bindtap&lt;/code&gt; 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;view.item&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;下面再来看下例子：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;view id=&quot;outer&quot; bindtap=&quot;handleTap1&quot;&amp;gt;
+  outer view
+  &amp;lt;view id=&quot;middle&quot; catchtap=&quot;handleTap2&quot;&amp;gt;
+    middle view
+    &amp;lt;view id=&quot;inner&quot; bindtap=&quot;handleTap3&quot;&amp;gt;
+      inner view
+    &amp;lt;/view&amp;gt;
+  &amp;lt;/view&amp;gt;
+&amp;lt;/view&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;点击 inner view 时，handleTap3 收到的事件对象 target 和 currentTarget 都是 inner，而 handleTap2 收到的事件对象 target 就是 inner，currentTarget 就是 middle。&lt;/p&gt;
+
+  &lt;p&gt;由此一看，可以简单总结出来：&lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt; 是事件触发源头的地方，即事件开始的地方，可以冒泡到父节点触发父节点的绑定事件；而 &lt;code class=&quot;highlighter-rouge&quot;&gt;currentTarget&lt;/code&gt; 是开发者自己绑定事件的地方，即实际的绑定事件的节点。&lt;strong&gt;所以，如果绑定的事件有子节点，那么 &lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt; 不会等于 &lt;code class=&quot;highlighter-rouge&quot;&gt;currentTarget&lt;/code&gt;，有可能是冒泡触发的，由此可见，获取 &lt;code class=&quot;highlighter-rouge&quot;&gt;dataset&lt;/code&gt; 的时候使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;currentTarget&lt;/code&gt; 是靠谱的。&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;3小程序的事件驱动和数据绑定模型&quot;&gt;3.小程序的事件驱动和数据绑定模型&lt;/h3&gt;
+
+&lt;p&gt;由上面数据驱动和事件监听的处理方式可见，小程序是一套数据和事件驱动的模型，即下面的形式：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-17-blog_wxmini_005.jpg&quot; alt=&quot;blog_wxmini_005&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;关于小程序的运行机制，在&lt;a href=&quot;/article/15606901443&quot;&gt;第 4 节&lt;/a&gt;中会有更加详细的介绍。&lt;/p&gt;
+
+&lt;h3 id=&quot;4路由&quot;&gt;4.路由&lt;/h3&gt;
+
+&lt;p&gt;在小程序内，不能像 HTML5 中 a 标签那样，随便跳转，也不能像 &lt;code class=&quot;highlighter-rouge&quot;&gt;location&lt;/code&gt; 对象中对应的属性那样随意跳转，小程序提供了对应 a 标签和 &lt;code class=&quot;highlighter-rouge&quot;&gt;location&lt;/code&gt; 对象的方法：&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/component/navigator.html&quot;&gt;navigator 组件&lt;/a&gt;。&lt;/p&gt;
+
+&lt;p&gt;在小程序中，路由是由路由栈来维护的，小程序的路由栈中最多维护 5 个页面，这样在 5 个页面内，小程序维护其渲染页面，可以实现快速的切换。&lt;/p&gt;
+
+&lt;p&gt;小程序中跳转页面可以通过下面两种方式：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;使用 navigator 组件：&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;navigator url=&quot;跳转页面URL&quot; &amp;gt;跳转到新页面&amp;lt;/navigator&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx&lt;/code&gt; 中的导航相关函数：&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;view bindtap=&quot;gotoUrl&quot;&amp;gt;跳转页面&amp;lt;/view&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Page({
+  gotoUrl(){
+    let url = 'pages/another/url'
+    wx.navigateTo({
+      url
+    })
+  }
+})
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;5javascript-的限制和增强&quot;&gt;5.JavaScript 的限制和增强&lt;/h3&gt;
+
+&lt;p&gt;微信内的 JavaScript 相对于浏览器中的有限制也有增强，增强的部分是基于小程序 Native 端能力做的增强，比如增强的文件操作类（相册、录音等）；除了增强，跟 HTML5 浏览器环境最大的不同是限制部分。&lt;/p&gt;
+
+&lt;p&gt;小程序的执行环境是没有浏览器了，所以浏览器环境特有的 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt; 对象、BOM 和 DOM 等相关 API 都存在缺失（有对应的补充 API），小程序的执行环境是类似于 Node.js 的一种执行环境。因为没有浏览器环境，所以跟浏览器相关的操作如 cookie、Ajax 请求（&lt;code class=&quot;highlighter-rouge&quot;&gt;XMLHttpRequest&lt;/code&gt;）、DOM 选择器、DOM 事件、路由 history、缓存、设备信息、位置等都不存在，与之相对应的是小程序的私有 API，比如我们在小程序中不能使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;XMLHttpRequest&lt;/code&gt;，但是可以使用功能更加强大的 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.request&lt;/code&gt; 方法。&lt;/p&gt;
+
+&lt;h2 id=&quot;六小程序布局相关知识&quot;&gt;六、小程序布局相关知识&lt;/h2&gt;
+
+&lt;p&gt;本小节介绍小程序布局相关的知识。&lt;/p&gt;
+
+&lt;h3 id=&quot;1rpx&quot;&gt;1.rpx&lt;/h3&gt;
+
+&lt;p&gt;小程序 WXSS 中使用了 rpx 这个长度单位，可以用于表示元素的宽高和边距、字体的大小等。对于习惯使用 px 或者 rem 来做页面的前端来说，这可能让人有点迷糊。rpx 是以小程序容器宽度（等于设备宽度）恒等于 &lt;code class=&quot;highlighter-rouge&quot;&gt;750rpx&lt;/code&gt; 来做定义的。对于 iPhone 6 来说，因为 dpr 为 2，所以 iPhone 的宽度为 375px，这样在 iPhone 6 上使用 rpx 的话，换算关系为 &lt;code class=&quot;highlighter-rouge&quot;&gt;2rpx=1px&lt;/code&gt;。根据这样的关系类推，得到官方给的表格：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;设备&lt;/th&gt;
+      &lt;th&gt;rpx换算 px (屏幕宽度/750)&lt;/th&gt;
+      &lt;th&gt;px 换算 rpx (750/屏幕宽度)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;iPhone 5&lt;/td&gt;
+      &lt;td&gt;1rpx = 0.42px&lt;/td&gt;
+      &lt;td&gt;1px = 2.34rpx&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;iPhone 6&lt;/td&gt;
+      &lt;td&gt;1rpx = 0.5px&lt;/td&gt;
+      &lt;td&gt;1px = 2rpx&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;iPhone 6 Plus&lt;/td&gt;
+      &lt;td&gt;1rpx = 0.552px&lt;/td&gt;
+      &lt;td&gt;1px = 1.81rpx&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;看起来很麻烦，但是只需要&lt;strong&gt;按照官方建议，让设计师按照 iPhone 6 的视觉稿标准出图即可，即宽度为 750px&lt;/strong&gt;，按照 750px 出图，那么我们写页面时直接使用测量的尺寸来设置 rpx 就行了。&lt;/p&gt;
+
+&lt;h3 id=&quot;2flex-布局&quot;&gt;2.flex 布局&lt;/h3&gt;
+
+&lt;p&gt;在 HTML5 标准中，flex 布局可以简便、完整、响应式地实现各种页面布局，小程序作为晚于 flex 标准创建的 Hybrid 解决方案，自然在布局设计上采用了先进的 flex 布局。&lt;/p&gt;
+
+&lt;p&gt;关于 flex 布局相关知识，可以参考阮一峰的 &lt;a href=&quot;http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html&quot;&gt;flex 布局教程：语法篇&lt;/a&gt;和&lt;a href=&quot;http://www.ruanyifeng.com/blog/2015/07/flex-examples.html&quot;&gt;实例篇&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;七小结&quot;&gt;七、小结&lt;/h2&gt;
+
+&lt;p&gt;本节从小程序账号注册说起，依次介绍了小程序开发者工具、小程序开发语言、小程序项目、开发和布局相关的基础知识，内容由浅到深，全面地帮助大家入门小程序开发。&lt;/p&gt;
+
+&lt;p&gt;更多微信小程序的基础知识可以参考官方文档：&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/index.html&quot;&gt;简易教程&lt;/a&gt;、&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/framework/MINA.html&quot;&gt;框架&lt;/a&gt;、&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/component/&quot;&gt;组件&lt;/a&gt;、&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/api/&quot;&gt;API&lt;/a&gt;。&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>概述：微信小程序概述</title>
+        <link>https://gorpeln.com//article/15599710733</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15599710733</guid>
+        <pubDate>Sat, 08 Jun 2019 00:00:00 +0800</pubDate>
+        <description>&lt;h2 id=&quot;一什么是微信小程序&quot;&gt;一、什么是微信小程序&lt;/h2&gt;
+
+&lt;p&gt;小程序是有别于传统 Web App、HTML5、原生 App 以及微信公众号的一种新的应用形式，由微信团队于 2017 年 1 月对外发布的，经过近两年的发展，小程序越来越成熟，小程序研发也越来越受到重视。什么是小程序？用张小龙自己的话来说：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;小程序是一种不需要下载安装即可使用的应用，它实现了应用“触手可及”的梦想，用户扫一扫或者搜一下即可打开应用。也体现了“用完即走”的理念，用户不用关心是否安装太多应用的问题。应用将无处不在，随时可用，但又无须安装卸载。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;　　微信公开数据显示，当前已上线小程序总数超过100万，开发者超过150万，而用户方面，小程序日活已达2.8亿，人均使用20个小程序，人均使用时长超过10分钟，作为对比淘宝和抖音的使用时长分别是：25分钟，26分钟，可见在微信巨大的流量扶持下，小程序一开始反哺微信生态。&lt;/p&gt;
+
+&lt;p&gt;　　随着微信小程序搞得风风火火，阿里巴巴和百度也开始提出自己的小程序。2017 年 8 月，阿里巴巴旗下的支付宝小程序开始对外公测；2018 年 7 月在百度的 AI 大会上，依托百度 App 的百度智能小程序宣布开始内测。至此，BAT 三家都有了自己的小程序。除了 BAT 之外，小米联合众多手机开发厂商也在 2018 年年初发布了「快应用」，而谷歌也发布了「Instant Apps」。&lt;/p&gt;
+
+&lt;p&gt;有人对比了 BAT 小程序和快应用的优缺点：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;APP&lt;/th&gt;
+      &lt;th&gt;特点&lt;/th&gt;
+      &lt;th&gt;优势&lt;/th&gt;
+      &lt;th&gt;优势&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;微信&lt;/td&gt;
+      &lt;td&gt;社交平台&lt;/td&gt;
+      &lt;td&gt;庞大流量与独一无二的社交资源&lt;/td&gt;
+      &lt;td&gt;过分封闭，损害用户社交体验&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;百度&lt;/td&gt;
+      &lt;td&gt;强调智能&lt;/td&gt;
+      &lt;td&gt;搜索资本和开放体系&lt;/td&gt;
+      &lt;td&gt;支付弱，开发者变现难，社交短缺&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;支付宝&lt;/td&gt;
+      &lt;td&gt;工具属性强&lt;/td&gt;
+      &lt;td&gt;线上与线下资源&lt;/td&gt;
+      &lt;td&gt;社交短缺，流量转化率低&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;快应用&lt;/td&gt;
+      &lt;td&gt;手机商入口&lt;/td&gt;
+      &lt;td&gt;厂商提供用户基础&lt;/td&gt;
+      &lt;td&gt;没有流量，不可转移&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;二微信小程序入口和限制&quot;&gt;二、微信小程序入口和限制&lt;/h2&gt;
+
+&lt;p&gt;　　出乎意料的是小程序排名第一的场景入口居然是聊天分享，主页下拉则屈居第二，而发现栏小程序固定回访入口则排在模板消息卡片之后，位居第四，可见小程序背靠微信大树，社交裂变依然是最重要的流量来源和获客渠道。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;微信小程序能做什么&lt;/th&gt;
+      &lt;th&gt;微信小程序不能做什么&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;可以快速扫码进入，可以找到用过的小程序&lt;/td&gt;
+      &lt;td&gt;没有统一入口，不能做推荐和分发&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;可以跟公众号关联并相互跳转&lt;/td&gt;
+      &lt;td&gt;不能订阅，没有粉丝数&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;可向用过小程序的用户发送模板和客服消息&lt;/td&gt;
+      &lt;td&gt;不能主动推送信息&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;可以分享给好友或微信群&lt;/td&gt;
+      &lt;td&gt;不能分享朋友圈&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;可以切换小程序，可以做小游戏&lt;/td&gt;
+      &lt;td&gt;无 Cookie，用户体系需要基于微信账号&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;可以搜索查找附近的小程序&lt;/td&gt;
+      &lt;td&gt;检索具有局限性，不能模糊搜索&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;三微信小程序和-h5-对比&quot;&gt;三、微信小程序和 H5 对比&lt;/h2&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;项目&lt;/th&gt;
+      &lt;th&gt;运行环境&lt;/th&gt;
+      &lt;th&gt;入口&lt;/th&gt;
+      &lt;th&gt;分享&lt;/th&gt;
+      &lt;th&gt;系统权限&lt;/th&gt;
+      &lt;th&gt;客户端能力&lt;/th&gt;
+      &lt;th&gt;流畅度&lt;/th&gt;
+      &lt;th&gt;开发成本&lt;/th&gt;
+      &lt;th&gt;上线&lt;/th&gt;
+      &lt;th&gt;通用性和迁移性&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;微信小程序&lt;/td&gt;
+      &lt;td&gt;微信内&lt;/td&gt;
+      &lt;td&gt;扫码、分享&lt;/td&gt;
+      &lt;td&gt;不能分享到朋友圈&lt;/td&gt;
+      &lt;td&gt;较强&lt;/td&gt;
+      &lt;td&gt;较强&lt;/td&gt;
+      &lt;td&gt;流畅&lt;/td&gt;
+      &lt;td&gt;相对 H5 高，相对 App 低&lt;/td&gt;
+      &lt;td&gt;依赖审核&lt;/td&gt;
+      &lt;td&gt;私有 API 和组件实现，通用性较差&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;H5&lt;/td&gt;
+      &lt;td&gt;各种浏览器和 APP 内部 WebView&lt;/td&gt;
+      &lt;td&gt;通过 URL 访问，微信内部可通过链接、分享、扫描&lt;/td&gt;
+      &lt;td&gt;好友、群、朋友圈、非微信 App 都可以&lt;/td&gt;
+      &lt;td&gt;较弱&lt;/td&gt;
+      &lt;td&gt;较弱&lt;/td&gt;
+      &lt;td&gt;较差&lt;/td&gt;
+      &lt;td&gt;较低&lt;/td&gt;
+      &lt;td&gt;完全自主&lt;/td&gt;
+      &lt;td&gt;好&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;四小程序的未来去向何方&quot;&gt;四、小程序的未来去向何方？&lt;/h2&gt;
+&lt;h4 id=&quot;1细分市场找准用户&quot;&gt;（1）细分市场，找准用户&lt;/h4&gt;
+
+&lt;p&gt;　　背靠微信的10亿流量，通过社交裂变获客可以说从没有如此简单，然而基于社交流量盲目裂变的最大问题在于用户留存度不高，因此在利用社交裂变之余，细分市场，做好精准人群才能切实提高用户留存和转化率。&lt;/p&gt;
+
+&lt;h4 id=&quot;2新零售借势起步&quot;&gt;（2）新零售借势起步&lt;/h4&gt;
+
+&lt;p&gt;　　新零售不是什么新概念，然后喊了很多年，直到小程序上线后社交电商的崛起才打响了新零售的第一枪，拿今年大火的社区团购举例，基于社群+O2O的商业模式，成功的将线下资源和线上零售融合在一起，显然借助大数据和精准营销后，小程序和新零售的想象空间还很大。&lt;/p&gt;
+
+&lt;h4 id=&quot;3创业起步风投融资&quot;&gt;（3）创业起步，风投融资&lt;/h4&gt;
+
+&lt;p&gt;　　历经十多次版本迭代和功能升级后，小程序已可满足大量线下线上使用场景，可以说已能做到真正取代80%的APP。而微信10亿的用户量级几乎囊括了国内全部网络用户，相比花费高额成本开发APP，然后从0开始获客拉新，还要时刻警惕“马太效应”。&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;
+而小程序不仅可以轻易获取用户，只需做好商业模式和用户体验即可，再加上微信小程序规范、去中心化的生态，小程序可以说是创业者的天堂。&lt;/p&gt;
+
+&lt;p&gt;另一方面，对于投资者来说，小程序可变现和快速增长的特性也十分符合资本期待，因此资本未来必将会更加关注小程序生态内的创业者，因此小程序生态的成熟对于创业者和投资人来说都将是一件好事。&lt;/p&gt;
+
+&lt;h2 id=&quot;五如何进行微信小程序开发&quot;&gt;五、如何进行微信小程序开发&lt;/h2&gt;
+
+&lt;p&gt;　　微信小程序本质上是一套 Hybrid 解决方案，掌握基础 HTML5 知识的前端开发者就可以参与小程序的开发。微信小程序提供完善的开发工具链，熟悉客户端的开发者也可以快速上手小程序开发。如何快速开始小程序开发呢？分为下面几个步骤：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;注册一个小程序开发账号&lt;/li&gt;
+  &lt;li&gt;下载微信开发者工具&lt;/li&gt;
+  &lt;li&gt;学习开发语言基础知识和小程序框架原理&lt;/li&gt;
+  &lt;li&gt;学习小程序 API 的使用&lt;/li&gt;
+  &lt;li&gt;学习小程序调试和上线操作&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;后续将会详细讲解。&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>编程到底难在哪里？</title>
+        <link>https://gorpeln.com//article/15589479418</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15589479418</guid>
+        <pubDate>Mon, 27 May 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;这篇回答并不是讲述在生活中程序员如何买苹果，而是以买苹果为例说明程序员如何解决问题。程序员需要对问题进行透彻的分析，理清其涉及的所有细节，预测可能发生的所有意外与非意外的情况，列出解决方案的所有步骤，以及对解决方案进行尽量全面的测试。而这些正是编程难的地方。任何一点遗漏都会成为bug，轻则导致挨骂，重则导致经济损失甚至危害安全&lt;/p&gt;
+
+&lt;h4 id=&quot;普通人&quot;&gt;普通人：&lt;/h4&gt;
+&lt;p&gt;我今天要买一斤苹果。&lt;/p&gt;
+
+&lt;h4 id=&quot;程序员&quot;&gt;程序员：&lt;/h4&gt;
+&lt;p&gt;我今天要买一斤苹果。&lt;/p&gt;
+
+&lt;p&gt;因为我只喜欢红富士苹果，所以我只买红富士苹果。&lt;br /&gt;
+我能接受的最高价格是 10 元 / 斤。&lt;br /&gt;
+正常情况下一斤苹果用一个袋子能装下，但是为防万一，我会带两个袋子。&lt;br /&gt;
+我知道附近的 3 家水果店，所以我会依次访问这 3 家水果店。&lt;br /&gt;
+根据上述条件，我设计出以下的买苹果的流程：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-05-29-blog_coding_hard_001.jpg&quot; alt=&quot;blog_coding_hard_001&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这个流程怎么样？我来设计一些测试样例，测试一下这个流程。&lt;/p&gt;
+
+&lt;p&gt;测试发现一个问题：如果水果店 0 和水果店 1 都有红富士苹果并且价格都低于 10 元 / 斤，而且水果店 1 的价格比水果店 0 更低，那么我希望买水果店 1 的苹果，但我设计的流程会让我买水果店 0 的苹果。&lt;/p&gt;
+
+&lt;p&gt;为了解决这个问题，我应该先询问所有水果店的价格，然后去价格最低的那一家买苹果。&lt;br /&gt;
+经过修改，我重新设计出以下的买苹果的流程：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-05-29-blog_coding_hard_002.jpg&quot; alt=&quot;blog_coding_hard_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;现在这个流程是不是完美了呢？不是，我还能发现很多问题。&lt;/p&gt;
+
+&lt;p&gt;如果 3 家水果店都有红富士苹果但都不到一斤，但是三家店加起来能达到一斤，那么我不应该结束流程回家，而是应该把三家店的红富士苹果都买下来。&lt;/p&gt;
+
+&lt;p&gt;如果我向水果店询问价格的时候这家店还有红富士苹果，但我询问完所有水果店的价格后这家店的红富士苹果卖完了，那么我的流程会让我试图处理不存在的红富士苹果。&lt;/p&gt;
+
+&lt;p&gt;我走路的过程中可能会遇到突发事件，比如发现了新的水果店，比如袋子破掉了苹果掉一地，对于这些情况我的流程都无法进行处理。&lt;/p&gt;
+
+&lt;p&gt;啊问题太多了我懒得再改流程了。我还是去 X 宝买吧。那么接下来我要设计一个在 X 宝买红富士苹果的流程……&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>好玩的H5小游戏·圈小猫~</title>
+        <link>https://gorpeln.com//article/15583474979</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15583474979</guid>
+        <pubDate>Mon, 20 May 2019 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;玩法&quot;&gt;玩法&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;点击小圆点，围住小猫。&lt;/li&gt;
+  &lt;li&gt;你点击一次，小猫走一次。&lt;/li&gt;
+  &lt;li&gt;直到你把小猫围住（赢），或者小猫走到边界并逃跑（输）。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div&gt;
+
+    &lt;script src=&quot;/assets/js/catch-the-cat/phaser.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;/assets/js/catch-the-cat/catch-the-cat.js&quot;&gt;&lt;/script&gt;
+    &lt;div id=&quot;catch-the-cat&quot; style=&quot;border:1px #37374c solid;width: 100%;text-align: center;&quot;&gt;&lt;/div&gt;
+    &lt;script&gt;
+      window.game = new CatchTheCatGame({
+        w: 11,
+        h: 11,
+        r: 20,
+        backgroundColor: 0xffffff,
+        parent: 'catch-the-cat',
+        statusBarAlign: 'center',
+        credit: 'github.com/gorpeln'
+      });
+    &lt;/script&gt;
+    
+&lt;/div&gt;
+
+&lt;h3 id=&quot;赢游戏小技巧&quot;&gt;赢游戏小技巧&lt;/h3&gt;
+&lt;p&gt;　　刚开始玩的时候觉得很难赢，静下心来仔细想想，算法肯定是按照离边界的最短距离路线来移动小猫，这么一来甚至可以给小猫挖坑，游戏难度瞬间就下来了~。 &lt;br /&gt;
+　　一开始算法应该是随机选一个方向，为了更容易赢，我们可以落子在 四边中最少子的，最边缘的那部分。接着看小猫移动方向，然后在小猫前进方向的最边缘，能有多远离离多远落子，注意别把它的活路堵死，留一个出个在哪里，小猫会根据算法傻傻的来到距离最短的位置，我们守株待猫就很容易赢了。&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>微信红包算法</title>
+        <link>https://gorpeln.com//article/15575387722</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15575387722</guid>
+        <pubDate>Sat, 11 May 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;微信是采用什么样的算法做到的？简单百度了下，目前尚未有官方的说明。&lt;/p&gt;
+
+&lt;p&gt;我按照自己的逻辑尝试了下，这个算法需要满足以下几点要求：&lt;/p&gt;
+
+&lt;p&gt;1、每个人都要能够领取到红包；&lt;br /&gt;
+2、每个人领取到的红包金额总和=总金额；&lt;br /&gt;
+3、每个人领取到的红包金额不等，但也不能差的太离谱，不然就没趣味；&lt;br /&gt;
+4、算法一定要简单，不然对不起腾讯这个招牌；&lt;/p&gt;
+
+&lt;p&gt;正式编码之前，先搭建一个递进的模型来分析规律&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;设定总金额为10元，有N个人随机领取：  
+  
+N=1 
+则红包金额=X元； 
+  
+N=2 
+为保证第二个红包可以正常发出，第一个红包金额=0.01至9.99之间的某个随机数 
+第二个红包=10-第一个红包金额； 
+  
+N=3 
+红包1=0.01至0.98之间的某个随机数 
+红包2=0.01至(10-红包1-0.01)的某个随机数 
+红包3=10-红包1-红包2 
+  
+……
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;至此，规律出现啦！开始编码！&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;header(&quot;Content-Type: text/html;charset=utf-8&quot;);//输出不乱码，你懂的
+$total=10;//红包总额
+$num=8;// 分成8个红包，支持8人随机领取
+$min=0.01;//每个人最少能收到0.01元
+
+for ($i=1;$i&amp;lt;$num;$i++)
+{
+    $safe_total=$total-($num-$i)*$min;//随机安全上限
+    $money=mt_rand($min*100,$safe_total*100)/100;
+    $total=$total-$money;
+    echo '第'.$i.'个红包：'.$money.' 元，余额：'.$total.' 元 &amp;lt;br/&amp;gt;';
+}
+echo '第'.$num.'个红包：'.$total.' 元，余额：0 元';
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出一看，波动太大，这数据太无趣了！&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;第1个红包：7.48 元，余额：2.52 元 
+第2个红包：1.90 元，余额：0.62 元 
+第3个红包：0.49 元，余额：0.13 元 
+第4个红包：0.04 元，余额：0.09 元 
+第5个红包：0.03 元，余额：0.06 元 
+第6个红包：0.03 元，余额：0.03 元 
+第7个红包：0.01 元，余额：0.02 元 
+第8个红包：0.02 元，余额：0 元
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;改良一下，将平均值作为随机安全上限来控制波动差&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;header(&quot;Content-Type: text/html;charset=utf-8&quot;);//输出不乱码，你懂的
+$total=10;//红包总额
+$num=8;// 分成8个红包，支持8人随机领取
+$min=0.01;//每个人最少能收到0.01元
+
+for ($i=1;$i&amp;lt;$num;$i++)
+{
+    $safe_total=($total-($num-$i)*$min)/($num-$i);//随机安全上限
+    $money=mt_rand($min*100,$safe_total*100)/100;
+    $total=$total-$money;
+    echo '第'.$i.'个红包：'.$money.' 元，余额：'.$total.' 元 &amp;lt;br/&amp;gt;';
+}
+echo '第'.$num.'个红包：'.$total.' 元，余额：0 元';
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;第1个红包：0.06 元，余额：9.94 元 
+第2个红包：1.55 元，余额：8.39 元 
+第3个红包：0.25 元，余额：8.14 元 
+第4个红包：0.98 元，余额：7.16 元 
+第5个红包：1.88 元，余额：5.28 元 
+第6个红包：1.92 元，余额：3.36 元 
+第7个红包：2.98 元，余额：0.38 元 
+第8个红包：0.38 元，余额：0 元
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;﹣﹣﹣﹣﹣ java version ﹣﹣﹣﹣﹣&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 微信红包分配算法
+ * 
+ * @author Michael282694
+ * */
+public class wechat_money {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		double total_money; // 红包总金额
+		int total_people; // 抢红包总人数
+		double min_money; // 每个人最少能收到0.01元
+
+		total_money = 10.0;
+		total_people = 8;
+		min_money = 0.01;
+
+		for (int i = 0; i &amp;lt; total_people - 1; i++) {
+			int j = i + 1;
+			double safe_money = (total_money - (total_people - j) * min_money)
+					/ (total_people - j);
+			double tmp_money = (Math.random()
+					* (safe_money * 100 - min_money * 100) + min_money * 100) / 100;
+			total_money = total_money - tmp_money;
+			System.out.format(&quot;第 %d 个红包： %.2f 元，剩下： %.2f 元\n&quot;, j, tmp_money,
+					total_money);
+		}
+		System.out.format(&quot;第 %d 个红包： %.2f 元，剩下： 0 元\n&quot;, total_people,
+				total_money);
+	}
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;某一次的結果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;第 1 个红包： 0.54 元，剩下： 9.46 元
+第 2 个红包： 1.04 元，剩下： 8.42 元
+第 3 个红包： 0.60 元，剩下： 7.83 元
+第 4 个红包： 0.17 元，剩下： 7.66 元
+第 5 个红包： 1.54 元，剩下： 6.11 元
+第 6 个红包： 0.58 元，剩下： 5.53 元
+第 7 个红包： 3.60 元，剩下： 1.93 元
+第 8 个红包： 1.93 元，剩下： 0 元
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;因为保留两位小数时存在四舍五入，有时候所有金额相加会存在0.01元的误差（实际并不存在）。&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>抽奖 - 算法</title>
+        <link>https://gorpeln.com//article/15573877312</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15573877312</guid>
+        <pubDate>Thu, 09 May 2019 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;目标&quot;&gt;目标&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;奖品尽量在活动期间被平均分布（不要在活动一开始就被抽完）&lt;/li&gt;
+  &lt;li&gt;大奖尽量在后面才被抽中&lt;/li&gt;
+  &lt;li&gt;奖品尽量不要有剩余&lt;/li&gt;
+  &lt;li&gt;每个奖品可以设置抽中概率&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;对于最后一点，因为活动前并不知道参加活动人数，所以设置的概率反而影响了前面几点。如果概率大了可能活动一开始就被抽完，如果太小参与人数不多可能到活动结束之后奖品还余了一半。&lt;/p&gt;
+
+&lt;p&gt;其实平均分布才是最关键的。满足了这个条件之后可以根据奖品的数量或概率让奖品在活动时间内靠前或者靠后被抽中。我们来分析一下如何满足这点&lt;/p&gt;
+
+&lt;h3 id=&quot;分析&quot;&gt;分析&lt;/h3&gt;
+&lt;p&gt;要让奖品平均分布在活动时间段内，可以把时间段分成n（奖品总数）段，每一小段时间抽走一个奖品即可
+n = (endTime-startTime)/amount&lt;/p&gt;
+
+&lt;p&gt;活动结束时间-开始时间 然后除奖品总数就得到时间分片&lt;/p&gt;
+
+&lt;p&gt;在每一个时间片段里随机选一个点让用户中奖，随机是为了避免暴露精确的时间点&lt;/p&gt;
+
+&lt;p&gt;time(x)=startTime + (x-1)*n + random(n)&lt;/p&gt;
+
+&lt;p&gt;第x次抽奖中奖时间点：开始时间+此次抽奖之前的时间片总和+此次抽奖片段内的随机点&lt;/p&gt;
+
+&lt;h3 id=&quot;实现&quot;&gt;实现&lt;/h3&gt;
+&lt;p&gt;实现分成两步&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;随机抽取一个奖品（可以根据奖品数量，概率，奖品重要程度等）&lt;/li&gt;
+  &lt;li&gt;判断当前时间片的中奖时间和当前时间的大小，如果大于当前时间则中奖&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;具体实现看代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//随机抽取一个奖品
+public static AwardTo randomGetAward(List&amp;lt;AwardTo&amp;gt; awardToList) {
+        if (awardToList == null || awardToList.isEmpty()) {
+            return null;
+        }
+
+        double weight = 0;
+        for (AwardTo awardTo : awardToList) {
+            //此处用了奖品的概率，实际结果并不好
+            weight += awardTo.getAwardBalance() * awardTo.getPossible();
+        }
+
+        if (weight == 0) {
+            return null;
+        }
+        //每次的种子数都是奖品的总量，所以只要奖品没被抽中，当前时间片的中奖时间点始终是固定的
+        Random random = new Random((long) weight);
+        int num = random.nextInt((int) weight);
+
+        for (AwardTo awardTo : awardToList) {
+            //数量少的奖品在一开始被抽走的概率很小，数量越多越容易被抽中
+            num -= awardTo.getAwardBalance() * awardTo.getPossible();
+            if (num &amp;lt; 0) {
+                return awardTo;
+            }
+        }
+        return null;
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//判断是否中奖
+//LotteryVO为抽奖活动实体对象，包含活动开始，结束时间等
+public AwardVO lottery(LotteryVO lottery) {
+    List&amp;lt;AwardVO&amp;gt; awards = lottery.getAwardList();
+    long now = System.currentTimeMillis();
+    long startTime = lottery.getStartTime().getTime();
+    long endTime = lottery.getEndTime().getTime();
+
+    int amount = 0;
+    int abalance = 0;
+    for (AwardVO award : awards) {
+        amount += award.getAwardAmount();
+        abalance += award.getAwardBalance();
+    }
+
+    AwardVO award = randomGetAward(awards);
+
+    //如果当前奖品没被抽走，出奖时间点要求不变，所以需要一个种子。我们在奖品类上保存该奖品上一次被抽中时间
+    long lastUpdateTime = award.getLastUpdateTime().getTime();
+    int amount = award.getAwardAmount();
+    //时间片数
+    long deltaTime = (endTime - startTime) / amount;
+    // 使用lastUpdateTime做为随机因子，保证下一个奖品的随机时间对每个抽奖者都一样
+    Random random = new Random(lastUpdateTime);
+    // 计算下一个奖品释放时间
+    long releaseTime = startTime + (amount - abalance)*deltaTime + Math.abs(random.nextLong()) % deltaTime;
+
+    // 未达到下一奖品发放时间
+    if (now &amp;lt; releaseTime) {
+        return null;
+    }
+    return award;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;如果每次抽奖必中，省略第二步即可。另外可通过调整第一步中的算法实现不同的需求。&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>WOW.js – 有趣的页面滚动效果</title>
+        <link>https://gorpeln.com//article/15549830140</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15549830140</guid>
+        <pubDate>Thu, 11 Apr 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;WOW.js支持多种动画效果，让你的页面滚动效果更加有趣。&lt;/p&gt;
+
+&lt;p&gt;WOW.js 依赖 &lt;code class=&quot;highlighter-rouge&quot;&gt;animate.css&lt;/code&gt;，所以它支持 animate.css 多达 60 多种的动画效果，能满足你的各种需求。&lt;/p&gt;
+
+&lt;p&gt;WOW.js 使用了 querySelectorAll 方法，IE 低版本会报错，支持IE10+。为了达到更好的兼容，最好加一个浏览器及版本判断。&lt;/p&gt;
+
+&lt;h3 id=&quot;使用方法&quot;&gt;使用方法&lt;/h3&gt;
+&lt;h4 id=&quot;1引入文件&quot;&gt;1、引入文件&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;link rel=&quot;stylesheet&quot; href=&quot;css/animate.min.css&quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;2html&quot;&gt;2、HTML&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div class=&quot;wow slideInLeft&quot;&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&quot;wow slideInRight&quot;&amp;gt;&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;可以加入 data-wow-duration（动画持续时间）和 data-wow-delay（动画延迟时间）属性，如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div class=&quot;wow slideInLeft&quot; data-wow-duration=&quot;2s&quot; data-wow-delay=&quot;5s&quot;&amp;gt;&amp;lt;/div&amp;gt;
+&amp;lt;div class=&quot;wow slideInRight&quot; data-wow-offset=&quot;10&quot;  data-wow-iteration=&quot;10&quot;&amp;gt;&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;data-wow-duration&lt;/code&gt;：更改动画持续时间&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;data-wow-delay&lt;/code&gt;：动画开始前的延迟&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;data-wow-offset&lt;/code&gt;：开始动画的距离（与浏览器底部相关）&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;data-wow-iteration&lt;/code&gt;：动画的次数重复（无限次：infinite）&lt;/p&gt;
+
+&lt;h4 id=&quot;3javascript&quot;&gt;3、JavaScript&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;new WOW().init();
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;如果需要自定义配置，可如下使用：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var wow = new WOW({
+    boxClass: 'wow',
+    animateClass: 'animated',
+    offset: 0,
+    mobile: true,
+    live: true
+});
+wow.init();
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;选项配置&quot;&gt;选项配置&lt;/h4&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;属性/方法&lt;/th&gt;
+      &lt;th&gt;说明&lt;/th&gt;
+      &lt;th&gt;默认值&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;boxClass&lt;/td&gt;
+      &lt;td&gt;需要执行动画的元素的class，字符串&lt;/td&gt;
+      &lt;td&gt;‘wow’&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;animateClass&lt;/td&gt;
+      &lt;td&gt;animation.css 动画的class，字符串&lt;/td&gt;
+      &lt;td&gt;‘animated’&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;offset&lt;/td&gt;
+      &lt;td&gt;距离可视区域多少开始执行动画,整数&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;mobile&lt;/td&gt;
+      &lt;td&gt;是否在移动设备上执行动画，布尔值&lt;/td&gt;
+      &lt;td&gt;true&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;live&lt;/td&gt;
+      &lt;td&gt;异步加载的内容是否有效，布尔值&lt;/td&gt;
+      &lt;td&gt;true&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;动画效果&quot;&gt;【动画效果】&lt;/h3&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;参数&lt;/th&gt;
+      &lt;th&gt;说明&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;rollIn&lt;/td&gt;
+      &lt;td&gt;从左到右、顺时针滚动、透明度从100%变化至设定值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;bounceIn&lt;/td&gt;
+      &lt;td&gt;从原位置出现，由小变大超出设定值，再变小小于设定值，再回归设定值、透明度从100%变化至设定值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;bounceInUp&lt;/td&gt;
+      &lt;td&gt;从下往上、窜上来以后会向上超出一部分然后弹回去、透明度为设定值不变&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;bounceInDown&lt;/td&gt;
+      &lt;td&gt;从上往下、掉下来以后会向下超出一部分然后弹跳一下、透明度为设定值不变&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;bounceInLeft&lt;/td&gt;
+      &lt;td&gt;从左往右、移过来以后会向右超出一部分然后往左弹一下、透明度为设定值不变&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;bounceInRight&lt;/td&gt;
+      &lt;td&gt;从右往左、移过来以后会向左超出一部分然后往右弹一下、透明度为设定值不变&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;slideInUp&lt;/td&gt;
+      &lt;td&gt;从下往上、上来后固定到设定位置、透明度为设定值不变（up是从下往上）（如果元素在最下面，会撑开盒子高度）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;slideInDown&lt;/td&gt;
+      &lt;td&gt;从上往下、上来后固定到设定位置、透明度为设定值不变&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;slideInLeft&lt;/td&gt;
+      &lt;td&gt;从左往右、上来后固定到设定位置、透明度为设定值不变（left却是从左往右）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;slideInRight&lt;/td&gt;
+      &lt;td&gt;从右往左、上来后固定到设定位置、透明度为设定值不变&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;lightSpeedIn&lt;/td&gt;
+      &lt;td&gt;从右往左、头部先向右倾斜，又向左倾斜，最后变为原来的形状、透明度从100%变化至设定值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;pulse&lt;/td&gt;
+      &lt;td&gt;原位置放大一点点在缩小至原本大小、透明度为设定值不变（配合动画执行次数属性效果更佳）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;flipInX&lt;/td&gt;
+      &lt;td&gt;原位置后仰前栽、透明度从100%变化至设定值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;flipInY&lt;/td&gt;
+      &lt;td&gt;原位置左右旋动、透明度从100%变化至设定值&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;bounce&lt;/td&gt;
+      &lt;td&gt;上下抖动、透明度为设定值不变（配合动画执行次数和动画持续时间属性可以实现剧烈抖动亦或是慢慢抖）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;shake&lt;/td&gt;
+      &lt;td&gt;左右抖动、透明度为设定值不变（配合动画执行次数和动画持续时间属性可以实现剧烈抖动亦或是慢慢抖）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;swing&lt;/td&gt;
+      &lt;td&gt;从右往左、头部先向右倾斜，又向左倾斜，最后变为原来的形状、透明度为设定值不变&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;bounceInU&lt;/td&gt;
+      &lt;td&gt;原位置不变、直接从不显示到显示（无过过渡效果）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;wobble&lt;/td&gt;
+      &lt;td&gt;原位置不变、类似于一个人站在那左右晃头、透明度为设定值不变&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>批量修改文件后缀名</title>
+        <link>https://gorpeln.com//article/15547100706</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15547100706</guid>
+        <pubDate>Mon, 08 Apr 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;新建一个FormatConver.sh文件，写入下面代码，打开终端，把脚本文件拖进来，然后空格在后面写上参数，即可。&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;参数说明：&lt;/p&gt;
+
+  &lt;p&gt;用法:FormatConvert.sh arg0 arg1 arg2&lt;br /&gt;
+arg0:指定路径。arg1:需要查找并且替换的文件名后缀不要有点。arg2:替换成的后缀&lt;/p&gt;
+
+  &lt;p&gt;用法示例：将桌面gorpeln文件夹中的txt文件后缀统一修改为bat&lt;br /&gt;
+终端输入：/Users/gorpeln/Desktop/FormatConver.sh /Users/gorpeln/Desktop/gorpeln txt bat&lt;/p&gt;
+
+  &lt;p&gt;注意：添加权限：chmod 777 FormatConver.sh&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#Programm:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#此程序用于批量修改文件后缀名&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#用法:FormatConver.sh arg0,arg1,arg2&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#	arg0:指定路径。&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#	arg1:需要查找并且替换的文件名后缀不要有点。&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#	arg2:替换成的后缀		&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#PATH&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;old&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;.&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;.&lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
+find &lt;span class=&quot;nv&quot;&gt;$path&lt;/span&gt;|grep &lt;span class=&quot;nv&quot;&gt;$old&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;/tmp/MidTempResult.txt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#cat MidTempResult.txt&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#从文件中取出每一行的数据&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /tmp/MidTempResult.txt|while &lt;span class=&quot;nb&quot;&gt;read &lt;/span&gt;line
+&lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#变量的删除，取得文件名并添加新后缀&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;convertTemp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;%.*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$new&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$line&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$convertTemp&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mv&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$line&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$convertTemp&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$str&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;done
+&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;convert finished&quot;&lt;/span&gt;
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;a href=&quot;https://drive.gorpeln.com/?/FormatConver.sh&quot;&gt;文件下载&lt;/a&gt;&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>iOS App 签名的原理</title>
+        <link>https://gorpeln.com//article/15526269575</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15526269575</guid>
+        <pubDate>Fri, 15 Mar 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，p12，AppID，概念一堆，也很容易出错，本文尝试从原理出发，一步步推出为什么会有这么多概念，希望能有助于理解 iOS App 签名的原理和流程。&lt;/p&gt;
+
+&lt;h3 id=&quot;目的&quot;&gt;目的&lt;/h3&gt;
+&lt;p&gt;先来看看苹果的签名机制是为了做什么。在 iOS 出来之前，在主流操作系统(Mac/Windows/Linux)上开发和运行软件是不需要签名的，软件随便从哪里下载都能运行，导致平台对第三方软件难以控制，盗版流行。苹果希望解决这样的问题，在 iOS 平台对第三方 APP 有绝对的控制权，一定要保证每一个安装到 iOS 上的 APP 都是经过苹果官方允许的，怎样保证呢？就是通过签名机制。&lt;/p&gt;
+
+&lt;h3 id=&quot;非对称加密&quot;&gt;非对称加密&lt;/h3&gt;
+&lt;p&gt;通常我们说的签名就是数字签名，它是基于非对称加密算法实现的。对称加密是通过同一份密钥加密和解密数据，而非对称加密则有两份密钥，分别是公钥和私钥，用公钥加密的数据，要用私钥才能解密，用私钥加密的数据，要用公钥才能解密。&lt;/p&gt;
+
+&lt;p&gt;简单说一下常用的非对称加密算法 RSA 的数学原理，理解简单的数学原理，就可以理解非对称加密是怎么做到的，为什么会是安全的：&lt;/p&gt;
+
+&lt;p&gt;　　1、选两个质数 p 和 q，相乘得出一个大整数n，例如 p = 61，q = 53，n = pq = 3233  &lt;br /&gt;
+　　2、选 1-n 间的随便一个质数e，例如 e = 17 &lt;br /&gt;
+　　3、经过一系列数学公式，算出一个数字 d，满足：&lt;br /&gt;
+　　　　a.通过 n 和 e 这两个数据一组数据进行数学运算后，可以通过 n 和 d 去反解运算，反过来也可以。&lt;br /&gt;
+　　　　b.如果只知道 n 和 e，要推导出 d，需要知道 p 和 q，也就是要需要把 n 因数分解。&lt;/p&gt;
+
+&lt;p&gt;上述的 (n,e) 这两个数据在一起就是公钥，(n,d) 这两个数据就是私钥，满足用私钥加密，公钥解密，或反过来公钥加密，私钥解密，也满足在只暴露公钥 (只知道 n 和 e)的情况下，要推导出私钥 (n,d)，需要把大整数 n 因数分解。目前因数分解只能靠暴力穷举，而 n 数字越大，越难以用穷举计算出因数 p 和 q，也就越安全，当 n 大到二进制 1024 位或 2048 位时，以目前技术要破解几乎不可能，所以非常安全。&lt;/p&gt;
+
+&lt;h3 id=&quot;数字签名&quot;&gt;数字签名&lt;/h3&gt;
+&lt;p&gt;现在知道了有非对称加密这东西，那数字签名是怎么回事呢？&lt;/p&gt;
+
+&lt;p&gt;数字签名的作用是我对某一份数据打个标记，表示我认可了这份数据（签了个名），然后我发送给其他人，其他人可以知道这份数据是经过我认证的，数据没有被篡改过。&lt;/p&gt;
+
+&lt;p&gt;有了上述非对称加密算法，就可以实现这个需求：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_certificate_001.png&quot; alt=&quot;blog_certificate_001&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;　　1、首先用一种算法，算出原始数据的摘要。需满足 &lt;br /&gt;
+　　　　a.若原始数据有任何变化，计算出来的摘要值都会变化。 &lt;br /&gt;
+　　　　b.摘要要够短。这里最常用的算法是MD5。  &lt;br /&gt;
+　　2、生成一份非对称加密的公钥和私钥，私钥我自己拿着，公钥公布出去。&lt;br /&gt;
+　　3、对一份数据，算出摘要后，用私钥加密这个摘要，得到一份加密后的数据，称为原始数据的签名。把它跟原始数据一起发送给用户。&lt;br /&gt;
+　　4、用户收到数据和签名后，用公钥解密得到摘要。同时用户用同样的算法计算原始数据的摘要，对比这里计算出来的摘要和用公钥解密签名得到的摘要是否相等，若相等则表示这份数据中途没有被篡改过，因为如果篡改过，摘要会变化。&lt;/p&gt;
+
+&lt;p&gt;之所以要有第一步计算摘要，是因为非对称加密的原理限制可加密的内容不能太大（不能大于上述 n 的位数，也就是一般不能大于 1024 位 / 2048 位），于是若要对任意大的数据签名，就需要改成对它的特征值签名，效果是一样的。&lt;/p&gt;
+
+&lt;p&gt;好了，有了非对称加密的基础，知道了数字签名是什么，怎样可以保证一份数据是经过某个地方认证的，来看看怎样通过数字签名的机制保证每一个安装到 iOS 上的 APP 都是经过苹果认证允许的。&lt;/p&gt;
+
+&lt;h3 id=&quot;最简单的签名&quot;&gt;最简单的签名&lt;/h3&gt;
+&lt;p&gt;要实现这个需求很简单，最直接的方式，苹果官方生成一对公私钥，在 iOS 里内置一个公钥，私钥由苹果后台保存，我们传 App 上 AppStore 时，苹果后台用私钥对 APP 数据进行签名，iOS 系统下载这个 APP 后，用公钥验证这个签名，若签名正确，这个 APP 肯定是由苹果后台认证的，并且没有被修改过，也就达到了苹果的需求：保证安装的每一个 APP 都是经过苹果官方允许的。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_certificate_002.png&quot; alt=&quot;blog_certificate_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;如果我们 iOS 设备安装 APP 只有从 AppStore 下载这一种方式的话，这件事就结束了，没有任何复杂的东西，只有一个数字签名，非常简单地解决问题。&lt;/p&gt;
+
+&lt;p&gt;但实际上因为除了从 AppStore 下载，我们还可以有三种方式安装一个 App：&lt;/p&gt;
+
+&lt;p&gt;　　1、开发 App 时可以直接把开发中的应用安装进手机进行调试。&lt;br /&gt;
+　　2、In-House 企业内部分发，可以直接安装企业证书签名后的   APP。&lt;br /&gt;
+　　3、AD-Hoc 相当于企业分发的限制版，限制安装设备数量，较少用。&lt;/p&gt;
+
+&lt;p&gt;苹果要对用这三种方式安装的 App 进行控制，就有了新的需求，无法像上面这样简单了。&lt;/p&gt;
+
+&lt;h3 id=&quot;新的需求&quot;&gt;新的需求&lt;/h3&gt;
+&lt;p&gt;我们先来看第一个，开发时安装APP，它有两个需求：&lt;/p&gt;
+
+&lt;p&gt;　　1、安装包不需要传到苹果服务器，可以直接安装到手机上。如果你编译一个 APP 到手机前要先传到苹果服务器签名，这显然是不能接受的。&lt;br /&gt;
+　　2、苹果必须对这里的安装有控制权，包括&lt;br /&gt;
+　　　　a. 经过苹果允许才可以这样安装。&lt;br /&gt;
+　　　　b. 不能被滥用导致非开发app也能被安装。&lt;/p&gt;
+
+&lt;p&gt;为了实现这些需求，iOS 签名的复杂度也就开始增加了。&lt;/p&gt;
+
+&lt;p&gt;苹果这里给出的方案是使用了双层签名，会比较绕，流程大概是这样的：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_certificate_003.png&quot; alt=&quot;blog_certificate_003&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;　　1、在你的 Mac 开发机器生成一对公私钥，这里称为公钥L，私钥L。L:Local&lt;br /&gt;
+　　2、苹果自己有固定的一对公私钥，跟上面 AppStore 例子一样，私钥在苹果后台，公钥在每个 iOS 设备上。这里称为公钥A，私钥A。A:Apple&lt;br /&gt;
+　　3、私把公钥 L 传到苹果后台，用苹果后台里的私钥 A 去签名公钥 L。得到一份数据包含了公钥 L 以及其签名，把这份数据称为证书。&lt;br /&gt;
+  　　4、在开发时，编译完一个 APP 后，用本地的私钥 L 对这个 APP 进行签名，同时把第三步得到的证书一起打包进 APP 里，安装到手机上。&lt;br /&gt;
+　　5、在安装时，iOS 系统取得证书，通过系统内置的公钥 A，去验证证书的数字签名是否正确。&lt;br /&gt;
+　　6、验证证书后确保了公钥 L 是苹果认证过的，再用公钥 L 去验证 APP 的签名，这里就间接验证了这个 APP 安装行为是否经过苹果官方允许。（这里只验证安装行为，不验证APP 是否被改动，因为开发阶段 APP 内容总是不断变化的，苹果不需要管。）&lt;/p&gt;
+
+&lt;h3 id=&quot;加点东西&quot;&gt;加点东西&lt;/h3&gt;
+&lt;p&gt;上述流程只解决了上面第一个需求，也就是需要经过苹果允许才可以安装，还未解决第二个避免被滥用的问题。怎么解决呢？苹果再加了两个限制，一是限制在苹果后台注册过的设备才可以安装，二是限制签名只能针对某一个具体的 APP。&lt;/p&gt;
+
+&lt;p&gt;怎么加的？在上述第三步，苹果用私钥 A 签名我们本地公钥 L 时，实际上除了签名公钥 L，还可以加上无限多数据，这些数据都可以保证是经过苹果官方认证的，不会有被篡改的可能。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_certificate_004.png&quot; alt=&quot;blog_certificate_004&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以想到把 允许安装的设备 ID 列表 和 App对应的 AppID 等数据，都在第三步这里跟公钥L一起组成证书，再用苹果私钥 A 对这个证书签名。在最后第 5 步验证时就可以拿到设备 ID 列表，判断当前设备是否符合要求。根据数字签名的原理，只要数字签名通过验证，第 5 步这里的设备 IDs / AppID / 公钥 L 就都是经过苹果认证的，无法被修改，苹果就可以限制可安装的设备和 APP，避免滥用。&lt;/p&gt;
+
+&lt;h3 id=&quot;最终流程&quot;&gt;最终流程&lt;/h3&gt;
+&lt;p&gt;到这里这个证书已经变得很复杂了，有很多额外信息，实际上除了 设备 ID / AppID，还有其他信息也需要在这里用苹果签名，像这个 APP 里 iCloud / push / 后台运行 等权限苹果都想控制，苹果把这些权限开关统一称为 Entitlements，它也需要通过签名去授权。&lt;/p&gt;
+
+&lt;p&gt;实际上一个“证书”本来就有规定的格式规范，上面我们把各种额外信息塞入证书里是不合适的，于是苹果另外搞了个东西，叫 Provisioning Profile，一个 Provisioning Profile 里就包含了证书以及上述提到的所有额外信息，以及所有信息的签名。&lt;/p&gt;
+
+&lt;p&gt;所以整个流程稍微变一下，就变成这样了：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_certificate_005.png&quot; alt=&quot;blog_certificate_005&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;因为步骤有小变动，这里我们不辞啰嗦重新再列一遍整个流程：&lt;/p&gt;
+
+&lt;p&gt;　　1、在你的 Mac 开发机器生成一对公私钥，这里称为公钥L，私钥L。L:Local&lt;br /&gt;
+　　2、苹果自己有固定的一对公私钥，跟上面 AppStore 例子一样，私钥在苹果后台，公钥在每个 iOS 设备上。这里称为公钥A，私钥A。A:Apple  &lt;br /&gt;
+　　3、把公钥 L 传到苹果后台，用苹果后台里的私钥 A 去签名公钥 L。得到一份数据包含了公钥 L 以及其签名，把这份数据称为证书。&lt;br /&gt;
+　　4、在苹果后台申请 AppID，配置好设备 ID 列表和 APP 可使用的权限，再加上第③步的证书，组成的数据用私钥 A 签名，把数据和签名一起组成一个 Provisioning Profile 文件，下载到本地 Mac 开发机。&lt;br /&gt;
+　　5、在开发时，编译完一个 APP 后，用本地的私钥 L 对这个 APP 进行签名，同时把第④步得到的 Provisioning Profile 文件打包进 APP 里，文件名为 embedded.mobileprovision，把 APP 安装到手机上。&lt;br /&gt;
+　　6、在安装时，iOS 系统取得证书，通过系统内置的公钥 A，去验证 embedded.mobileprovision 的数字签名是否正确，里面的证书签名也会再验一遍。&lt;br /&gt;
+　　7、确保了 embedded.mobileprovision 里的数据都是苹果授权以后，就可以取出里面的数据，做各种验证，包括用公钥 L 验证APP签名，验证设备 ID 是否在 ID 列表上，AppID 是否对应得上，权限开关是否跟 APP 里的 Entitlements 对应等。 　　&lt;/p&gt;
+
+&lt;p&gt;开发者证书从签名到认证最终苹果采用的流程大致是这样，还有一些细节像证书有效期/证书类型等就不细说了。&lt;/p&gt;
+
+&lt;h3 id=&quot;概念和操作&quot;&gt;概念和操作&lt;/h3&gt;
+&lt;p&gt;上面的步骤对应到我们平常具体的操作和概念是这样的：&lt;/p&gt;
+
+&lt;p&gt;　　1、第 1 步对应的是 keychain 里的 “从证书颁发机构请求证书”，这里就本地生成了一对公私钥，保存的 CertificateSigningRequest 就是公钥，私钥保存在本地电脑里。&lt;br /&gt;
+　　2、第 2 步苹果处理，不用管。&lt;br /&gt;
+　　3、第 3 步对应把 CertificateSigningRequest 传到苹果后台生成证书，并下载到本地。这时本地有两个证书，一个是第 1 步生成的，一个是这里下载回来的，keychain 会把这两个证书关联起来，因为他们公私钥是对应的，在XCode选择下载回来的证书时，实际上会找到 keychain 里对应的私钥去签名。这里私钥只有生成它的这台 Mac 有，如果别的 Mac 也要编译签名这个 App 怎么办？答案是把私钥导出给其他 Mac 用，在 keychain 里导出私钥，就会存成 .p12 文件，其他 Mac 打开后就导入了这个私钥。&lt;br /&gt;
+　　4、第 4 步都是在苹果网站上操作，配置 AppID / 权限 / 设备等，最后下载 Provisioning Profile 文件。 &lt;br /&gt;
+　　5、第 5 步 XCode 会通过第 3 步下载回来的证书（存着公钥），在本地找到对应的私钥（第一步生成的），用本地私钥去签名 App，并把 Provisioning Profile 文件命名为 embedded.mobileprovision 一起打包进去。这里对 App 的签名数据保存分两部分，Mach-O 可执行文件会把签名直接写入这个文件里，其他资源文件则会保存在 _CodeSignature 目录下。&lt;br /&gt;
+第 6 – 7 步的打包和验证都是 Xcode 和 iOS 系统自动做的事。&lt;/p&gt;
+
+&lt;p&gt;这里再总结一下这些概念：&lt;/p&gt;
+
+&lt;p&gt;　　1、&lt;strong&gt;证书&lt;/strong&gt;：内容是公钥或私钥，由其他机构对其签名组成的数据包。&lt;br /&gt;
+　　2、&lt;strong&gt;Entitlements&lt;/strong&gt;：包含了 App 权限开关列表。&lt;br /&gt;
+　　3、&lt;strong&gt;CertificateSigningRequest&lt;/strong&gt;：本地公钥。&lt;br /&gt;
+　　4、&lt;strong&gt;p12&lt;/strong&gt;：本地私钥，可以导入到其他电脑。&lt;br /&gt;
+　　5、&lt;strong&gt;Provisioning Profile&lt;/strong&gt;：包含了 证书 / Entitlements 等数据，并由苹果后台私钥签名的数据包。&lt;br /&gt;
+　　&lt;/p&gt;
+&lt;h3 id=&quot;其他发布方式&quot;&gt;其他发布方式&lt;/h3&gt;
+&lt;p&gt;前面以开发包为例子说了签名和验证的流程，另外两种方式 In-House 企业签名和 AD-Hoc 流程也是差不多的，只是企业签名不限制安装的设备数，另外需要用户在 iOS 系统设置上手动点击信任这个企业才能通过验证。&lt;/p&gt;
+
+&lt;p&gt;而 AppStore 的签名验证方式有些不一样，前面我们说到最简单的签名方式，苹果在后台直接用私钥签名 App 就可以了，实际上苹果确实是这样做的，如果去下载一个 AppStore 的安装包，会发现它里面是没有 embedded.mobileprovision 文件的，也就是它安装和启动的流程是不依赖这个文件，验证流程也就跟上述几种类型不一样了。&lt;/p&gt;
+
+&lt;p&gt;据猜测，因为上传到 AppStore 的包苹果会重新对内容加密，原来的本地私钥签名就没有用了，需要重新签名，从 AppStore 下载的包苹果也并不打算控制它的有效期，不需要内置一个 embedded.mobileprovision 去做校验，直接在苹果用后台的私钥重新签名，iOS 安装时用本地公钥验证 App 签名就可以了。&lt;/p&gt;
+
+&lt;p&gt;那为什么发布 AppStore 的包还是要跟开发版一样搞各种证书和 Provisioning Profile？猜测因为苹果想做统一管理，Provisioning Profile 里包含一些权限控制，AppID 的检验等，苹果不想在上传 AppStore 包时重新用另一种协议做一遍这些验证，就不如统一把这部分放在 Provisioning Profile 里，上传 AppStore 时只要用同样的流程验证这个 Provisioning Profile 是否合法就可以了。&lt;/p&gt;
+
+&lt;p&gt;所以 App 上传到 AppStore 后，就跟你的 证书 / Provisioning Profile 都没有关系了，无论他们是否过期或被废除，都不会影响 AppStore 上的安装包。&lt;/p&gt;
+
+&lt;p&gt;到这里 iOS 签名机制的原理和主流程大致说完了，希望能对理解苹果签名和排查日常签名问题有所帮助。&lt;/p&gt;
+
+&lt;h3 id=&quot;ps一些疑问&quot;&gt;P.S.一些疑问&lt;/h3&gt;
+&lt;p&gt;最后这里再提一下我关于签名流程的一些的疑问。&lt;/p&gt;
+
+&lt;h3 id=&quot;企业证书&quot;&gt;企业证书&lt;/h3&gt;
+&lt;p&gt;企业证书签名因为限制少，在国内被广泛用于测试和盗版，fir.im / 蒲公英等测试平台都是通过企业证书分发，国内一些市场像 PP 助手，爱思助手，一部分安装手段也是通过企业证书重签名。通过企业证书签名安装的 App，启动时都会验证证书的有效期，并且不定期请求苹果服务器看证书是否被吊销，若已过期或被吊销，就会无法启动 App。对于这种助手的盗版安装手段，苹果想打击只能一个个吊销企业证书，并没有太好的办法。&lt;/p&gt;
+
+&lt;p&gt;这里我的疑问是，苹果做了那么多签名和验证机制去限制在 iOS 安装 App，为什么又要出这样一个限制很少的方式让盗版钻空子呢？若真的是企业用途不适合上 AppStore，也完全可以在 AppStore 开辟一个小的私密版块，还是通过 AppStore 去安装，就不会有这个问题了。&lt;/p&gt;
+
+&lt;h3 id=&quot;appstore-加密&quot;&gt;AppStore 加密&lt;/h3&gt;
+&lt;p&gt;另一个问题是我们把 App 传上 AppStore 后，苹果会对 App 进行加密，导致 App 体积增大不少，这个加密实际上是没卵用的，只是让破解的人要多做一个步骤，运行 App 去内存 dump 出可执行文件而已，无论怎样加密，都可以用这种方式拿出加密前的可执行文件。所以为什么要做这样的加密呢？想不到有什么好处。&lt;/p&gt;
+
+&lt;h3 id=&quot;本地私钥&quot;&gt;本地私钥&lt;/h3&gt;
+&lt;p&gt;我们看到前面说的签名流程很绕很复杂，经常出现各种问题，像有 Provisioning Profile 文件但证书又不对，本地有公钥证书没对应私钥等情况，不理解原理的情况下会被绕晕，我的疑问是，这里为什么不能简化呢？还是以开发证书为例，为什么一定要用本地 Mac 生成的私钥去签名？苹果要的只是本地签名，私钥不一定是要本地生成的，苹果也可以自己生成一对公私钥给我们，放在 Provisioning Profile 里，我们用里面的私钥去加密就行了，这样就不会有 CertificateSigningRequest 和 p12 的概念，跟本地 keychain 没有关系，不需要关心证书，只要有 Provisioning Profile 就能签名，流程会减少，易用性会提高很多，同时苹果想要的控制一点都不会少，也没有什么安全问题，为什么不这样设计呢？&lt;/p&gt;
+
+&lt;p&gt;能想到的一个原因是 Provisioning Profile 在非 AppStore 安装时会打包进安装包，第三方拿到这个 Provisioning Profile 文件就能直接用起来给他自己的 App 签名了。但这种问题也挺好解决，只需要打包时去掉文件里的私钥就行了，所以仍不明白为什么这样设计。&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>移动 APP 网络优化概述</title>
+        <link>https://gorpeln.com//article/15524857215</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15524857215</guid>
+        <pubDate>Wed, 13 Mar 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;一般开发一个 APP，会直接调用系统提供的网络请求接口去服务端请求数据，再针对返回的数据进行一些处理，或者使用AFNetworking/OKHttp这样的网络库，管理好请求线程和队列，再自动做一些数据解析，就结束了。&lt;/p&gt;
+
+&lt;p&gt;但对于一些大型 APP，还会想针对网络的一些问题进行进一步优化，包括：&lt;/p&gt;
+
+&lt;p&gt;　　1、&lt;strong&gt;速度&lt;/strong&gt;：网络请求的速度怎样能进一步提升？&lt;br /&gt;
+　　2、&lt;strong&gt;弱网&lt;/strong&gt;：移动端网络环境随时变化，经常出现网络连接很不稳定可用性差的情况，怎样在这种情况下最大限度最快地成功请求？&lt;br /&gt;
+　　3、&lt;strong&gt;安全&lt;/strong&gt;：怎样防止被第三方窃听/篡改或冒充，防止运营商劫持，同时又不影响性能？&lt;/p&gt;
+
+&lt;p&gt;对基于浏览器的前端开发来说，网络这块能做的事情很少，但对于客户端 APP 来说，整个网络请求过程是自由控制的，可以做很多事情，很多大型 APP 都针对这三个问题做了很多网络层的优化，一些新的网络层协议像 HTTP2 / QUIC 也是在这些方面进行了不少优化，在这里边学习边整理，大致列举一下常见的做法。&lt;/p&gt;
+
+&lt;h3 id=&quot;速度&quot;&gt;速度&lt;/h3&gt;
+&lt;p&gt;正常一条网络请求需要经过的流程是这样：&lt;br /&gt;
+　　1、DNS 解析，请求DNS服务器，获取域名对应的 IP 地址。&lt;br /&gt;
+　　2、与服务端建立连接，包括 tcp 三次握手，安全协议同步流程。&lt;br /&gt;
+　　3、连接建立完成，发送和接收数据，解码数据。&lt;/p&gt;
+
+&lt;p&gt;这里有明显的三个优化点：&lt;br /&gt;
+　　1、直接使用 IP 地址，去除 DNS 解析步骤。&lt;br /&gt;
+　　2、不要每次请求都重新建立连接，复用连接或一直使用同一条连接(长连接)。&lt;br /&gt;
+　　3、压缩数据，减小传输的数据大小。&lt;/p&gt;
+
+&lt;p&gt;逐条来看能做什么。&lt;/p&gt;
+
+&lt;h4 id=&quot;1dns&quot;&gt;1.DNS&lt;/h4&gt;
+&lt;p&gt;DNS 完整的解析流程很长，会先从本地系统缓存取，若没有就到最近的 DNS 服务器取，若没有再到主域名服务器取，每一层都有缓存，但为了域名解析的实时性，每一层缓存都有过期时间，这种 DNS 解析机制有几个缺点：&lt;/p&gt;
+
+&lt;p&gt;　　1、缓存时间设置得长，域名更新不及时，设置得短，大量 DNS 解析请求影响请求速度。&lt;br /&gt;
+　　2、域名劫持，容易被中间人攻击，或被运营商劫持，把域名解析到第三方 IP 地址，据统计劫持率会达到7%。&lt;br /&gt;
+　　3、DNS 解析过程不受控制，无法保证解析到最快的IP&lt;br /&gt;
+　　4、一次请求只能解析一个域名。&lt;/p&gt;
+
+&lt;p&gt;为了解决这些问题，就有了 HTTPDNS，原理很简单，就是自己做域名解析的工作，通过 HTTP 请求后台去拿到域名对应的 IP 地址，直接解决上述所有问题：&lt;/p&gt;
+
+&lt;p&gt;　　1、域名解析与请求分离，所有请求都直接用IP地址，无需 DNS 解析，APP 定时请求 HTTPDNS 服务器更新IP地址即可。&lt;br /&gt;
+　　2、通过签名等方式，保证 HTTPDNS 请求的安全，避免被劫持。&lt;br /&gt;
+　　3、DNS 解析由自己控制，可以确保根据用户所在地返回就近的 IP 地址，或根据客户端测速结果使用速度最快的 IP。&lt;br /&gt;
+　　4、一次请求可以解析多个域名。&lt;/p&gt;
+
+&lt;p&gt;其余细节就不多说了，HTTPDNS 优点这么多，几乎成为中大型 APP 的标配。至此解决了第一个问题 — DNS 解析耗时的问题，顺便把一部分安全问题 — DNS 劫持也解决了。&lt;/p&gt;
+
+&lt;h4 id=&quot;2连接&quot;&gt;2.连接&lt;/h4&gt;
+&lt;p&gt;第二个问题，连接建立耗时的问题，这里主要的优化思路是复用连接，不用每次请求都重新建立连接，如何更有效率地复用连接，可以说是网络请求速度优化里最主要的点了，并且这里的优化仍在演进过程中，值得了解下。&lt;/p&gt;
+
+&lt;h5 id=&quot;keep-alive&quot;&gt;keep-alive&lt;/h5&gt;
+&lt;p&gt;HTTP 协议里有个 keep-alive，HTTP1.1默认开启，一定程度上缓解了每次请求都要进行TCP三次握手建立连接的耗时。原理是请求完成后不立即释放连接，而是放入连接池中，若这时有另一个请求要发出，请求的域名和端口是一样的，就直接拿出连接池中的连接进行发送和接收数据，少了建立连接的耗时。&lt;/p&gt;
+
+&lt;p&gt;实际上现在无论是客户端还是浏览器都默认开启了keep-alive，对同个域名不会再有每发一个请求就进行一次建连的情况，纯短连接已经不存在了。但有个问题，就是这个 keep-alive 的连接一次只能发送接收一个请求，在上一个请求处理完成之前，无法接受新的请求。若同时发起多个请求，就有两种情况：&lt;/p&gt;
+
+&lt;p&gt;　　1、若串行发送请求，可以一直复用一个连接，但速度很慢，每个请求都要等待上个请求完成再进行发送。&lt;br /&gt;
+　　2、若并行发送这些请求，那么首次每个请求都要进行tcp三次握手建立新的连接，虽然第二次可以复用连接池里这堆连接，但若连接池里保持的连接过多，对服务端资源产生较大浪费，若限制了保持的连接数，并行请求里超出的连接仍每次要建连。&lt;/p&gt;
+
+&lt;p&gt;对这个问题，新一代协议 HTTP2 提出了多路复用去解决。&lt;/p&gt;
+
+&lt;h5 id=&quot;多路复用&quot;&gt;多路复用&lt;/h5&gt;
+&lt;p&gt;HTTP2 的多路复用机制一样是复用连接，但它复用的这条连接支持同时处理多条请求，所有请求都可以并发在这条连接上进行，也就解决了上面说的并发请求需要建立多条连接带来的问题，网络上有张图可以较形象地表现这个过程：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_network_001.png&quot; alt=&quot;blog_network_001&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;HTTP1.1的协议里，在一个连接里传送数据都是串行顺序传送的，必须等上一个请求全部处理完后，下一个请求才能进行处理，导致这些请求期间这条连接并不是满带宽传输的，即使是HTTP1.1的pipelining可以同时发送多个request，但response仍是按请求的顺序串行返回，只要其中一个请求的response稍微大一点或发生错误，就会阻塞住后面的请求。&lt;/p&gt;
+
+&lt;p&gt;HTTP2 这里的多路复用协议解决了这些问题，它把在连接里传输的数据都封装成一个个stream，每个stream都有标识，stream的发送和接收可以是乱序的，不依赖顺序，也就不会有阻塞的问题，接收端可以根据stream的标识去区分属于哪个请求，再进行数据拼接，得到最终数据。&lt;/p&gt;
+
+&lt;p&gt;解释下多路复用这个词，多路可以认为是多个连接，多个操作，复用就是字面上的意思，复用一条连接或一个线程。HTTP2这里是连接的多路复用，网络相关的还有一个I/O的多路复用(select/epoll)，指通过事件驱动的方式让多个网络请求返回的数据在同一条线程里完成读写。&lt;/p&gt;
+
+&lt;p&gt;客户端来说，iOS9 以上 NSURLSession 原生支持 HTTP2，只要服务端也支持就可以直接使用，Android 的 okhttp3 以上也支持了 HTTP2，国内一些大型 APP 会自建网络层，支持 HTTP2 的多路复用，避免系统的限制以及根据自身业务需要增加一些特性，例如微信的开源网络库 mars，做到一条长连接处理微信上的大部分请求，多路复用的特性上基本跟 HTTP2 一致。&lt;/p&gt;
+
+&lt;h5 id=&quot;tcp队头阻塞&quot;&gt;TCP队头阻塞&lt;/h5&gt;
+&lt;p&gt;HTTP2 的多路复用看起来是完美的解决方案，但还有个问题，就是队头阻塞，这是受限于 TCP 协议，TCP 协议为了保证数据的可靠性，若传输过程中一个 TCP 包丢失，会等待这个包重传后，才会处理后续的包。HTTP2的多路复用让所有请求都在同一条连接进行，中间有一个包丢失，就会阻塞等待重传，所有请求也就被阻塞了。&lt;/p&gt;
+
+&lt;p&gt;对于这个问题不改变 TCP 协议就无法优化，但 TCP 协议依赖操作系统实现以及部分硬件的定制，改进缓慢，于是 GOOGLE 提出 QUIC 协议，相当于在 UDP 协议之上再定义一套可靠传输协议，解决 TCP 的一些缺陷，包括队头阻塞。具体解决原理网上资料较多，可以看看。&lt;/p&gt;
+
+&lt;p&gt;QUIC 处于起步阶段，少有客户端接入，QUIC 协议相对于 HTTP2 最大的优势是对TCP队头阻塞的解决，其他的像安全握手 0RTT / 证书压缩等优化 TLS1.3 已跟进，可以用于 HTTP2，并不是独有特性。TCP 队头阻塞在 HTTP2 上对性能的影响有多大，在速度上 QUIC 能带来多大提升待研究。&lt;/p&gt;
+
+&lt;h4 id=&quot;3数据&quot;&gt;3.数据&lt;/h4&gt;
+&lt;p&gt;第三个问题，传输数据大小的问题。数据对请求速度的影响分两方面，一是压缩率，二是解压序列化反序列化的速度。目前最流行的两种数据格式是 json 和 protobuf，json 是字符串，protobuf 是二进制，即使用各种压缩算法压缩后，protobuf 仍会比 json 小，数据量上 protobuf 有优势，序列化速度 protobuf 也有一些优势，这两者的对比就不细说了。&lt;/p&gt;
+
+&lt;p&gt;压缩算法多种多样，也在不断演进，最新出的 Brotli 和Z-standard实现了更高的压缩率，Z-standard 可以根据业务数据样本训练出适合的字典，进一步提高压缩率，目前压缩率表现最好的算法。&lt;/p&gt;
+
+&lt;p&gt;除了传输的 body 数据，每个请求 HTTP 协议头的数据也是不可忽视，HTTP2 里对 HTTP 协议头也进行了压缩，HTTP 头大多是重复数据，固定的字段如 method 可以用静态字典，不固定但多个请求重复的字段例如 cookie 用动态字典，可以达到非常高的压缩率，&lt;a href=&quot;https://imququ.com/post/header-compression-in-http2.html&quot;&gt;这里&lt;/a&gt;有详细介绍。&lt;/p&gt;
+
+&lt;p&gt;通过 HTTPDNS，连接多路复用，更好的数据压缩算法，可以把网络请求的速度优化到较不错的程度了，接下来再看看弱网和安全上可以做的事情。&lt;/p&gt;
+
+&lt;h3 id=&quot;弱网&quot;&gt;弱网&lt;/h3&gt;
+&lt;p&gt;手机无线网络环境不稳定，针对弱网的优化，微信有较多实践和分享，包括：&lt;br /&gt;
+　　1、提升连接成功率&lt;br /&gt;
+　　复合连接，建立连接时，阶梯式并发连接，其中一条连通后其他连接都关闭。这个方案结合串行和并发的优势，提高弱网下的连接成功率，同时又不会增加服务器资源消耗：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_network_002.png&quot; alt=&quot;blog_network_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;　　2、制定最合适的超时时间&lt;br /&gt;
+　　对总读写超时(从请求到响应的超时)、首包超时、包包超时(两个数据段之间的超时)时间制定不同的计算方案，加快对超时的判断，减少等待时间，尽早重试。这里的超时时间还可以根据网络状态动态设定。&lt;/p&gt;
+
+&lt;p&gt;　　3、调优TCP参数，使用TCP优化算法。&lt;br /&gt;
+　　对服务端的TCP协议参数进行调优，以及开启各种优化算法，使得适合业务特性和移动端网络环境，包括RTO初始值，混合慢启动，TLP，F-RTO等。&lt;/p&gt;
+
+&lt;p&gt;针对弱网的这些细致优化未成为标准，系统网络库没有内置，不过前两个客户端优化微信的开源网络库 mars 有实现，若有需要可以使用。&lt;/p&gt;
+
+&lt;h3 id=&quot;安全&quot;&gt;安全&lt;/h3&gt;
+&lt;p&gt;标准协议 TLS 保证了网络传输的安全，前身是 SSL，不断在演进，目前最新是 TLS1.3。常见的 HTTPS 就是 HTTP 协议加上 TLS 安全协议。&lt;/p&gt;
+
+&lt;p&gt;安全协议概括性地说解决两个问题：1.保证安全 2. 降低加密成本&lt;/p&gt;
+
+&lt;p&gt;在保证安全上：&lt;/p&gt;
+
+&lt;p&gt;　　1、使用加密算法组合对传输数据加密，避免被窃听和篡改。&lt;br /&gt;
+　　2、认证对方身份，避免被第三方冒充。&lt;br /&gt;
+　　3、加密算法保持灵活可更新，防止定死算法被破解后无法更换，禁用已被破解的算法。&lt;/p&gt;
+
+&lt;p&gt;降低加密成本上：&lt;/p&gt;
+
+&lt;p&gt;　　1、用对称加密算法加密传输数据，解决非对称加密算法的性能低以及长度限制问题。&lt;br /&gt;
+　　2、缓存安全协议握手后的密钥等数据，加快第二次建连的速度。&lt;br /&gt;
+　　3、加快握手过程：2RTT-&amp;gt; 0RTT。加快握手的思路，就是原本客户端和服务端需要协商使 用什么算法后才能加密发送数据，变成通过内置的公钥和默认的算法，在握手的同时就把数据发出去，也就是不需要等待握手就开始发送数据，达到0RTT。&lt;/p&gt;
+
+&lt;p&gt;这些点涉及的细节非常多，对 TLS 的介绍有一篇雄文，说得很详细，在此推荐。&lt;/p&gt;
+
+&lt;p&gt;目前基本主流都支持 TLS1.2，iOS 网络库默认使用 TLS1.2，Android4.4 以上支持 1.2。TLS1.3 iOS 还处于测试阶段，Android 未查到消息。对于普通 APP，只要正确配置证书，TLS1.2 已经能保证传输安全，只是在建连速度上会有所损耗，有一些大型 APP 像微信就自行实现了 TLS1.3 的部分协议，早一步全平台支持。&lt;/p&gt;
+
+&lt;h3 id=&quot;最后&quot;&gt;最后&lt;/h3&gt;
+&lt;p&gt;网络优化这个话题非常庞大，本文只是在学习过程中从优化思路上列举了目前业界常见的优化点，还有很多细节很多更深入的优化没涉及到，网络层实践开发经验不足，若有错误欢迎指出。&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>Sublime Text 3安装使用 MAC</title>
+        <link>https://gorpeln.com//article/15501213244</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15501213244</guid>
+        <pubDate>Thu, 14 Feb 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;Sublime Text：一款具有代码高亮、语法提示、自动完成且反应快速的编辑器软件，不仅具有华丽的界面，还支持插件扩展机制，用她来写代码，绝对是一种享受。相比于难于上手的Vim，浮肿沉重的Eclipse，VS，即便体积轻巧迅速启动的Editplus、Notepad++，在SublimeText面前大略显失色，无疑这款性感无比的编辑器是Coding和Writing最佳的选择，没有之一。&lt;/p&gt;
+
+&lt;h3 id=&quot;安装&quot;&gt;安装&lt;/h3&gt;
+&lt;p&gt;官网：&lt;a href=&quot;http://www.sublimetext.com/3&quot;&gt;http://www.sublimetext.com/3&lt;/a&gt;  选择对应的版本，点击下载安装&lt;/p&gt;
+
+&lt;h3 id=&quot;注册&quot;&gt;注册&lt;/h3&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;----- BEGIN LICENSE -----
+sgbteam
+Single User License
+EA7E-1153259
+8891CBB9 F1513E4F 1A3405C1 A865D53F
+115F202E 7B91AB2D 0D2A40ED 352B269B
+76E84F0B CD69BFC7 59F2DFEF E267328F
+215652A3 E88F9D8F 4C38E3BA 5B2DAAE4
+969624E7 DC9CD4D5 717FB40C 1B9738CF
+20B3C4F1 E917B5B3 87C38D9C ACCE7DD8
+5F7EF854 86B9743C FADC04AA FB0DA5C0
+F913BE58 42FEA319 F954EFDD AE881E0B
+------ END LICENSE ------
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;插件&quot;&gt;插件&lt;/h3&gt;
+
+&lt;h4 id=&quot;1安装-package-control&quot;&gt;1、安装 package control&lt;/h4&gt;
+
+&lt;p&gt;功能：安装插件的工具，有了它，以后安装其他插件更方便&lt;/p&gt;
+
+&lt;p&gt;第一步：按 Ctrl + ~ 键，调出 sublime 的控制台；&lt;/p&gt;
+
+&lt;p&gt;第二步：在调出的控制台输入如下指令（需要科学上网）&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import urllib.request,os;pf='Package Control.sublime-package';ipp=sublime.installed_packages_path();urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler()));open(os.path.join(ipp,pf),'wb').write(urllib.request.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read())
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;回车，稍等片刻，如果在 preferences 里有 package control 就说明安装成功了；&lt;/p&gt;
+
+&lt;p&gt;第三步：重启Sublime Text 3，查看Perferences-&amp;gt;package settings中是否有package control这一项，如果有，则安装成功&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;strong&gt;安装插件&lt;/strong&gt;：Ctrl+Shift+P调出命令面板，在输入框输入Install Package ，然后在新弹出的窗口中查询要安装的插件，点击需要安装的插件，即可；&lt;/p&gt;
+
+&lt;p&gt;并可在Perferences-&amp;gt;package settings 中看到对应的包名。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;删除插件&lt;/strong&gt;：Ctrl+Shift+P调出命令面板，输入remove，调出Remove Package选项并回车，选择要删除的插件即可。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;更新插件&lt;/strong&gt;：输入：upgrade packages，后回车，如果有列表出来则有插件需要更新，然后点击需要升级的插件即可；&lt;/p&gt;
+
+&lt;h4 id=&quot;2常用插件&quot;&gt;2、常用插件&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ChineseLocalization 汉化包&lt;/li&gt;
+  &lt;li&gt;Color Highlight    显示所选颜色值的颜色，并集成了ColorPicker&lt;/li&gt;
+  &lt;li&gt;HTML-CSS-JS Prettify 一款集成了格式化（美化）html、css、js三种文件类型的插件&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>神级注释</title>
+        <link>https://gorpeln.com//article/15500354146</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15500354146</guid>
+        <pubDate>Wed, 13 Feb 2019 00:00:00 +0800</pubDate>
+        <description>&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ * 这个公司没有年终奖的,兄弟别指望了,也别来了,我准备辞职了
+ * 另外这个项目有很多*Bug* 你坚持不了多久的,拜拜!
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ * You may think you know what the following code does.
+ * But you dont. Trust me.
+ * Fiddle with it, and youll spend many a sleepless
+ * night cursing the moment you thought youd be clever
+ * enough to &quot;optimize&quot; the code below.
+ * Now close this file and go play with something else.
+ */
+/***
+ * 你可能会认为你读得懂以下的代码。但是你不会懂的，相信我吧。
+ * 要是你尝试玩弄这段代码的话，你将会在无尽的通宵中不断地咒骂自己为什么会认为自己聪明到可以优化这段代码。
+ * 现在请关闭这个文件去玩点别的吧。
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ * somedev1 -  6/7/02 Adding temporary tracking of Login screen
+ * somedev2 -  5/22/07 Temporary my ass
+ */
+/***
+ * 一些修改1 - 2002/6/7 增加临时的跟踪登录界面
+ * 一些修改2 - 2007/5/22 我临时的犯傻
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ * 程序员1（于2014年06月07日）：在这个坑临时加入一些调料
+ * 程序员2（于2015年05月22日）：临你个屁啊
+ * 程序员3（于2016年07月23日）：楼上都是狗屎，鉴定完毕
+ * 程序员4（于2017年08月02日）：fuck 楼上，三年了，这坑还在！！！
+ * 程序员5（于2018年08月21日）：哈哈哈，这坑居然坑了这么多人，幸好我也不用填了，系统终止运行了，you're died
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ * For the brave souls who get this far: You are the chosen ones,
+ * the valiant knights of programming who toil away, without rest,
+ * fixing our most awful code. To you, true saviors, kings of men,
+ * I say this: never gonna give you up, never gonna let you down,
+ * never gonna run around and desert you. Never gonna make you cry,
+ * never gonna say goodbye. Never gonna tell a lie and hurt you.
+ */
+/***
+ * 致终于来到这里的勇敢的人：
+ * 你是被上帝选中的人，是英勇的、不敌辛苦的、不眠不休的来修改我们这最棘手的代码的编程骑士。
+ * 你，我们的救世主，人中之龙，我要对你说：永远不要放弃，永远不要对自己失望，永远不要逃走，辜负了自己，
+ * 永远不要哭啼，永远不要说再见，永远不要说谎来伤害自己。
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ * Dear maintainer:
+ *
+ * Once you are done trying to 'optimize' this routine,
+ * and have realized what a terrible mistake that was,
+ * please increment the following counter as a warning
+ * to the next guy:
+ *
+ * total_hours_wasted_here = 42
+ */
+/***
+ * 亲爱的维护者：
+ *
+ * 如果你尝试了对这段程序进行'优化'
+ * 下面这个计数器的个数用来对后来人进行警告
+ *
+ * 浪费在这里的总时间 = 42h
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ * When I wrote this, only God and I understood what I was doing
+ * Now, God only knows
+ */
+/***
+* 写这段代码的时候，只有上帝和我知道它是干嘛的
+* 现在，只有上帝知道
+*/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// drunk, fix later
+// 有点晕了，以后再修改
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Magic. Do not touch.
+// 神奇。勿动。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#define TRUE FALSE// Happy debugging suckers
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// I'm sorry.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/////////////////////////////////////// this is a well commented line
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// To understand recursion, see the bottom of this file
+At the bottom of the file:
+// To understand recursion, see the top of this file
+// 想要明白递归须看文件末尾
+到了文末
+// 想要明白递归须看文件顶部
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// This code sucks, you know it and I know it.  
+// Move on and call me an idiot later.
+// 你我都知道这代码很烂
+// 先不要骂我2B了，请先继续往下看
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// I am not sure why this works but it fixes the problem.
+// 虽然我不知道为什么这样管用，但它却是修复了问题
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// If this comment is removed the program will blow up
+// 如果删了此处注释程序就炸了
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// This function has been here since 1987. DON'T FXXKING TOUCH IT
+// 这函数1987年就这在了，别他娘动它
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// no comments for you
+// it was hard to write
+// so it should be hard to read
+// 难写的代码，肯定很难读。因此，我没有注释留给你。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// I am not responsible of this code.
+// They made me write it, against my will.
+// 下面的代码，我不负责。因为是他们逼我写的，违背了我的意愿。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+&lt;hr /&gt;
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;以下为魔性图&quot;&gt;以下为魔性图&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ *                    _ooOoo_
+ *                   o8888888o
+ *                   88&quot; . &quot;88
+ *                   (| -_- |)
+ *                    O\ = /O
+ *                ____/`---'\____
+ *              .   ' \\| |// `.
+ *               / \\||| : |||// \
+ *             / _||||| -:- |||||- \
+ *               | | \\\ - /// | |
+ *             | \_| ''\---/'' | |
+ *              \ .-\__ `-` ___/-. /
+ *           ___`. .' /--.--\ `. . __
+ *        .&quot;&quot; '&amp;lt; `.___\_&amp;lt;|&amp;gt;_/___.' &amp;gt;'&quot;&quot;.
+ *       | | : `- \`.;`\ _ /`;.`/ - ` : | |
+ *         \ \ `-. \_ __\ /__ _/ .-` / /
+ * ======`-.____`-.___\_____/___.-`____.-'======
+ *                    `=---='
+ *
+ * .............................................
+ *          佛祖保佑             永无BUG
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ * _ooOoo_
+ * o8888888o
+ * 88&quot; . &quot;88
+ * (| -_- |)
+ *  O\ = /O
+ * ___/`---'\____
+ * .   ' \\| |// `.
+ * / \\||| : |||// \
+ * / _||||| -:- |||||- \
+ * | | \\\ - /// | |
+ * | \_| ''\---/'' | |
+ * \ .-\__ `-` ___/-. /
+ * ___`. .' /--.--\ `. . __
+ * .&quot;&quot; '&amp;lt; `.___\_&amp;lt;|&amp;gt;_/___.' &amp;gt;'&quot;&quot;.
+ * | | : `- \`.;`\ _ /`;.`/ - ` : | |
+ * \ \ `-. \_ __\ /__ _/ .-` / /
+ * ======`-.____`-.___\_____/___.-`____.-'======
+ * `=---='
+ *          .............................................
+ *           佛曰：bug泛滥，我已瘫痪！
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ *  佛曰:
+ *          写字楼里写字间，写字间里程序员；
+ *          程序人员写程序，又拿程序换酒钱。
+ *          酒醒只在网上坐，酒醉还来网下眠；
+ *          酒醉酒醒日复日，网上网下年复年。
+ *          但愿老死电脑间，不愿鞠躬老板前；
+ *          奔驰宝马贵者趣，公交自行程序员。
+ *          别人笑我忒疯癫，我笑自己命太贱；
+ *          不见满街漂亮妹，哪个归得程序员？
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ *      ┌─┐       ┌─┐
+ *   ┌──┘ ┴───────┘ ┴──┐
+ *   │                 │
+ *   │       ───       │
+ *   │  ─┬┘       └┬─  │
+ *   │                 │
+ *   │       ─┴─       │
+ *   │                 │
+ *   └───┐         ┌───┘
+ *       │         │
+ *       │         │
+ *       │         │
+ *       │         └──────────────┐
+ *       │                        │
+ *       │                        ├─┐
+ *       │                        ┌─┘
+ *       │                        │
+ *       └─┐  ┐  ┌───────┬──┐  ┌──┘
+ *         │ ─┤ ─┤       │ ─┤ ─┤
+ *         └──┴──┘       └──┴──┘
+ *                神兽保佑
+ *               代码无BUG!
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ *                  ___====-_  _-====___
+ *            _--^^^#####//      \\#####^^^--_
+ *         _-^##########// (    ) \\##########^-_
+ *        -############//  |\^^/|  \\############-
+ *      _/############//   (@::@)   \\############\_
+ *     /#############((     \\//     ))#############\
+ *    -###############\\    (oo)    //###############-
+ *   -#################\\  / VV \  //#################-
+ *  -###################\\/      \//###################-
+ * _#/|##########/\######(   /\   )######/\##########|\#_
+ * |/ |#/\#/\#/\/  \#/\##\  |  |  /##/\#/  \/\#/\#/\#| \|
+ * `  |/  V  V  `   V  \#\| |  | |/#/  V   '  V  V  \|  '
+ *    `   `  `      `   / | |  | | \   '      '  '   '
+ *                     (  | |  | |  )
+ *                    __\ | |  | | /__
+ *                   (vvv(VVV)(VVV)vvv)                
+ *                        神兽保佑
+ *                       代码无BUG!
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ *
+ *
+ *                                                    __----~~~~~~~~~~~------___
+ *                                   .  .   ~~//====......          __--~ ~~
+ *                   -.            \_|//     |||\\  ~~~~~~::::... /~
+ *                ___-==_       _-~o~  \/    |||  \\            _/~~-
+ *        __---~~~.==~||\=_    -_--~/_-~|-   |\\   \\        _/~
+ *    _-~~     .=~    |  \\-_    '-~7  /-   /  ||    \      /
+ *  .~       .~       |   \\ -_    /  /-   /   ||      \   /
+ * /  ____  /         |     \\ ~-_/  /|- _/   .||       \ /
+ * |~~    ~~|--~~~~--_ \     ~==-/   | \~--===~~        .\
+ *          '         ~-|      /|    |-~\~~       __--~~
+ *                      |-~~-_/ |    |   ~\_   _-~            /\
+ *                           /  \     \__   \/~                \__
+ *                       _--~ _/ | .-~~____--~-/                  ~~==.
+ *                      ((-&amp;gt;/~   '.|||' -_|    ~~-/ ,              . _||
+ *                                 -_     ~\      ~~---l__i__i__i--~~_/
+ *                                 _-~-__   ~)  \--______________--~~
+ *                               //.-~~~-~_--~- |-------~~~~~~~~
+ *                                      //.-~~~--\
+ *                               神兽保佑
+ *                              代码无BUG!
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ *                 .-~~~~~~~~~-._       _.-~~~~~~~~~-.
+ *             __.'              ~.   .~              `.__
+ *           .'//                  \./                  \\`.
+ *         .'//                     |                     \\`.
+ *       .'// .-~&quot;&quot;&quot;&quot;&quot;&quot;&quot;~~~~-._     |     _,-~~~~&quot;&quot;&quot;&quot;&quot;&quot;&quot;~-. \\`.
+ *     .'//.-&quot;                 `-.  |  .-'                 &quot;-.\\`.
+ *   .'//______.============-..   \ | /   ..-============.______\\`.
+ * .'______________________________\|/______________________________`.
+ *
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
+ *
+ *   █████▒█    ██  ▄████▄   ██ ▄█▀       ██████╗ ██╗   ██╗ ██████╗
+ * ▓██   ▒ ██  ▓██▒▒██▀ ▀█   ██▄█▒        ██╔══██╗██║   ██║██╔════╝
+ * ▒████ ░▓██  ▒██░▒▓█    ▄ ▓███▄░        ██████╔╝██║   ██║██║  ███╗
+ * ░▓█▒  ░▓▓█  ░██░▒▓▓▄ ▄██▒▓██ █▄        ██╔══██╗██║   ██║██║   ██║
+ * ░▒█░   ▒▒█████▓ ▒ ▓███▀ ░▒██▒ █▄       ██████╔╝╚██████╔╝╚██████╔╝
+ *  ▒ ░   ░▒▓▒ ▒ ▒ ░ ░▒ ▒  ░▒ ▒▒ ▓▒       ╚═════╝  ╚═════╝  ╚═════╝
+ *  ░     ░░▒░ ░ ░   ░  ▒   ░ ░▒ ▒░
+ *  ░ ░    ░░░ ░ ░ ░        ░ ░░ ░
+ *           ░     ░ ░      ░  ░
+ */
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>终端上成功提交了代码，GitHub上Contributions没有变绿</title>
+        <link>https://gorpeln.com//article/15495225362</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15495225362</guid>
+        <pubDate>Thu, 07 Feb 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;今天突然发现自己好多次的commits都没有被记录在Contributions中,但是点开项目详情里面可以看到自己的commit确实上传成功了,以前一直没有注意,为什么没有绿呢?&lt;/p&gt;
+
+&lt;p&gt;然后去了解了下Contributions的规则,发现只会记录以下几种:&lt;/p&gt;
+&lt;h3 id=&quot;计算规则&quot;&gt;计算规则&lt;/h3&gt;
+
+&lt;h5 id=&quot;issues-和-pull-requests&quot;&gt;Issues 和 pull requests&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;这个操作是针对一个独立的仓库，不能是fork&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;commits&quot;&gt;Commits&lt;/h5&gt;
+&lt;p&gt;如果提交符合以下&lt;strong&gt;所有&lt;/strong&gt;条件，则会在您的贡献图表上显示：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;用于提交的电子邮件地址与您的GitHub帐户相关联。&lt;/li&gt;
+  &lt;li&gt;提交是在独立的存储库中进行的，而不是fork。&lt;/li&gt;
+  &lt;li&gt;提交的内容如下：
+    &lt;ul&gt;
+      &lt;li&gt;在存储库的默认分支（通常master）&lt;/li&gt;
+      &lt;li&gt;在gh-pages分支中（对于具有Project Pages站点的存储库）&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;此外，必须至少满足下列条件之一（主要针对你Commit的仓库不是你创建的）：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;你是仓库的协作者，或者是这个版本库的拥有组织中的一员。&lt;/li&gt;
+  &lt;li&gt;你已经fork了存储库。&lt;/li&gt;
+  &lt;li&gt;你对这个仓库发起过pull request或者issue。&lt;/li&gt;
+  &lt;li&gt;你对这个仓库标记了Star。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;注意：私有库的贡献仅仅对私有库成员显示&lt;/p&gt;
+
+&lt;h3 id=&quot;contributions未被github计入的常见原因&quot;&gt;Contributions未被Github计入的常见原因&lt;/h3&gt;
+&lt;div style=&quot;background:#E3FDE6;border: 1px #68CB67 solid;padding:10px;&quot;&gt;
+&lt;ul style=&quot;margin-bottom:0;&quot;&gt;
+&lt;li&gt;进行Commits的用户没有被关联到你的Github帐号中。&lt;/li&gt;
+&lt;li&gt;不是在这个版本库的默认分支进行的Commit。&lt;/li&gt;
+&lt;li&gt;这个仓库是一个Fork仓库，而不是独立仓库。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;解决方法&quot;&gt;解决方法&lt;/h3&gt;
+&lt;h4 id=&quot;配置commits的账户和github帐号相同&quot;&gt;配置Commits的账户和Github帐号相同&lt;/h4&gt;
+&lt;p&gt;在终端里输入 &lt;code class=&quot;highlighter-rouge&quot;&gt;vi ~/.gitconfig&lt;/code&gt; ,其中email后的邮箱需要和你github上的一致，如下：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[user]
+        name = Gorpeln
+        email = gorpeln@xxx.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;处理已经上传的项目&quot;&gt;处理已经上传的项目&lt;/h4&gt;
+&lt;p&gt;官网文档：&lt;a href=&quot;https://help.github.com/articles/changing-author-info/&quot;&gt;Changing author info&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;修改前：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_contributions_001.png&quot; alt=&quot;blog_contributions_001&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;修改后：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_contributions_002.png&quot; alt=&quot;blog_contributions_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;第一步、要得到想改变的作者信息的邮箱地址,打开到如图界面,红框内是想改变的作者信息。
+&lt;img src=&quot;https://img.gorpeln.com/blog_contributions_003.png&quot; alt=&quot;blog_contributions_003&quot; /&gt;
+然后在链接结尾处添加&lt;code class=&quot;highlighter-rouge&quot;&gt;.patch&lt;/code&gt;
+&lt;img src=&quot;https://img.gorpeln.com/blog_contributions_004.png&quot; alt=&quot;blog_contributions_004&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;第二步、重新clone这个仓库到新目录&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone --bare https://github.com/user/repo.git
+cd repo.git//进入到该目录
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;第三步、用官方给的脚本修改作者信息&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+git filter-branch &lt;span class=&quot;nt&quot;&gt;--env-filter&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'
+OLD_EMAIL=&quot;第一步中的邮箱地址&quot;
+CORRECT_NAME=&quot;正确的用户名&quot;
+CORRECT_EMAIL=&quot;正确的邮件地址&quot;
+if [ &quot;$GIT_COMMITTER_EMAIL&quot; = &quot;$OLD_EMAIL&quot; ]
+then
+    export GIT_COMMITTER_NAME=&quot;$CORRECT_NAME&quot;
+    export GIT_COMMITTER_EMAIL=&quot;$CORRECT_EMAIL&quot;
+fi
+if [ &quot;$GIT_AUTHOR_EMAIL&quot; = &quot;$OLD_EMAIL&quot; ]
+then
+    export GIT_AUTHOR_NAME=&quot;$CORRECT_NAME&quot;
+    export GIT_AUTHOR_EMAIL=&quot;$CORRECT_EMAIL&quot;
+fi
+'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--tag-name-filter&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--branches&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--tags&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;将上述脚本粘贴到终端回车,修改好信息后将正确的信息push。&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git push --force --tags origin 'refs/heads/*'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;再去github Profile 刷新看看,就可以显示小绿块啦&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;PS：&lt;/strong&gt;可以直接把第一步获取到的邮箱地址直接添加到GitHub个人账户的邮箱中，也可以展示绿格。&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>史上最污技术解读，我竟然秒懂了！</title>
+        <link>https://gorpeln.com//article/15493658365</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15493658365</guid>
+        <pubDate>Tue, 05 Feb 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;很多同学对热备，冷备，云备了解不深，我科普一下 IT 行业各种备份术语。以后别闹笑话了。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你有一位男朋友，于此同时你和另外一位男生暧昧不清，比朋友好，又不是恋人。你随时可以甩了现任男友，另外一位马上就能补上。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;冷备份&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，同时和两位男性在交往，两位都是你男朋友。并且他们还互不干涉，独立运行。这就是&lt;code class=&quot;highlighter-rouge&quot;&gt;双机热备份&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，不安于男朋友给你的安全感。在遥远的男友未知的地方，和一位男生保持着联系，你告诉他你没有男朋友，你现在处于纠结期，一旦你和你男朋友分开了，你马上可以把自己感情转移到异地男人那里去。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;异地容灾备份&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，有一位男朋友，你又付了钱给一家婚姻介绍所，让他帮你留意好的资源，一旦你和你这位男朋友分开，婚姻介绍所马上给你安排资源，你感情不间断运行，这是&lt;code class=&quot;highlighter-rouge&quot;&gt;云备份&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;数据安全大于一切，今天你把自己备份了吗？&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你怀疑男朋友对你的忠诚，在某宝购买了一个测试忠诚度的服务。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;灾难演练&lt;/code&gt;。友情提醒，在没有备份的情况下，切忌进行灾难演练，说不好会让你数据血本无归。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你有一位好到不能在好的闺蜜，好到你们可以共享一个男朋友，这是&lt;code class=&quot;highlighter-rouge&quot;&gt;NAS&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你男朋友活太好，你一个人根本 hold 不住，必须要姐妹帮忙才能稳住他。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;负载均衡，QOS&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，和 A 吃饭和 B 逛街和 C 打炮。合起来是一个完整的男朋友。这。。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;超算集群&lt;/code&gt;。建议主频不高的女性不要这样做。会直接&lt;code class=&quot;highlighter-rouge&quot;&gt;死机&lt;/code&gt;的。。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;备胎突然有女朋友了，我该不该夺回来？&lt;/p&gt;
+
+&lt;p&gt;备份是为了更好地运行，所以再给大家普及一点运维知识：&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你的男友沉迷游戏经常不接电话无故宕机，所以当你们约好下午逛街以后你要时不时的打个电话询问，看看他是不是还能正常提供服务，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;心跳检测&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你想去逛街而你的男友 A 在打游戏不接电话，于是乎你把逛街的请求发给了替补男友B，从而保障服务不间断运行，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;故障切换&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你有很多需要男朋友完成的事情，于是乎你跟 A 逛街旅游吃饭不可描述，而 B 只能陪你逛街，不能拥有全部男朋友的权利，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;主从配置 master-slave&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你的需求太强烈以至于你的男友根本吃不消，于是呼你找了两个男朋友，一三五单号，二四六双号限行，从而减少一个男朋友所面临的压力，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;负载均衡&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性并且有多个男朋友，配合心跳检测与故障切换和负载均衡将会达到极致的体验，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;集群LVS&lt;/code&gt;，注意，当需求单机可以处理的情况下不建议启用集群，会造成大量资源闲置，提高维护成本。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你的需求越来越高导致一个男朋友集群已经处理不了了，于是乎你又新增了另外几个，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;多集群，横行扩容&lt;/code&gt;，简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;multi-cluster grid&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你的男朋友身体瘦弱从而无法满足需求，于是乎你买了很多大补产品帮你男朋友升级，从而提高单机容量，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;纵向扩容&lt;/code&gt;，切记，纵向扩容的成本会越来越高而效果越来越不明显&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你跟男友经常出去游玩，情到深处想做点什么的时候却苦于没有 tt，要去超市购买，于是乎你在你们经常去的地方都放置了 tt，从而大幅度降低等待时间，这叫 &lt;code class=&quot;highlighter-rouge&quot;&gt;CDN&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性,你的男朋友英俊潇洒风流倜傥财大气粗对你唯一,于是乎你遭到了女性 B 的敌视，B 会以朋友名义在周末请求你男朋友修电脑, 修冰箱, 占用男朋友大量时间, 造成男朋友无法为你服务, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;拒绝服务攻击&lt;/code&gt;, 简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;DOS&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性, 你因男朋友被一位女性敌视, 但是你男朋友的处理能力十分强大, 处理速度已经高于她的请求速度, 于是她雇佣了一票女性来轮流麻烦你的男朋友, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;分布式拒绝服务攻击&lt;/code&gt;, 简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;DDOS&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性, 你发现男朋友总是在处理一些无关紧要的其它请求, 于是呼你给男朋友了一个白名单, 要求他只处理白名单内的请求, 而拒绝其它身份不明的人的要求, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;访问控制&lt;/code&gt;, 也叫&lt;code class=&quot;highlighter-rouge&quot;&gt;会话跟踪&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性, 你发现采取上述措施以后男朋友的处理请求并没有减少很多, 于是你经过调查发现, 有人伪造你的微信头像 昵称来向你的男朋友发起请求, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;跨站点请求伪造&lt;/code&gt;， 简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;CSRF&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性,你收到了一份快递,于是你要求男朋友给你取快递,当你拿到快递以后发现有人给你邮寄了一封通篇辱骂的信件, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;跨站点脚本攻击&lt;/code&gt; 简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;XSS&lt;/code&gt;, 请注意, 对方完全可以给你邮寄微型窃听器来窃听你的隐私。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性,为了应对威胁,你要求你的男朋友,邮寄给你的邮件必须检查,这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据校验与过滤&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性,你的男朋友太优秀而造人窥视,于是乎它们研究了一下你的男朋友,稍微修改了一点点生产出一个男朋友 B 与你的男朋友百分制 99 相似,这不叫剽窃,这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;逆向工程&lt;/code&gt;,比如男朋友外挂。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你要求你的男朋友坚持十分钟，然后十五分钟继而二十分钟以测试你男朋友的极限在哪里，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;压力测试&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;压力测试的目的是查看男朋友是否可以处理需求从而决定是否启用男朋友集群或提升男朋友处理能力，不要对线上运行的男朋友做压力测试，可能会造成宕机的后果，会血本无归的&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，为了保证你男朋友的正常运行，于是乎你每天查看他的微信微博等社交资料来寻找可能产生问题的线索，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据分析&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你的男朋友属于社交活跃选手，每天的微博知乎微信生产了大量信息，你发现自己的分析速度远远低于他生的速度，于是乎你找来你的闺蜜一起分析，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;并行计算&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你的男朋友太能折腾处处留情产生了天量的待处理信息，你和你的闺蜜们已经累趴也没赶上他创造的速度，于是你付费在知乎上找了20个小伙伴帮你一起分析，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;云计算&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，在使用云计算后获得了大量整理好的男朋友数据，这些数据如：&lt;/p&gt;
+
+&lt;p&gt;地点 活跃时间段 活跃次数
+如家 xxxx 123次. 
+汉庭 xxxx 45次. 
+….&lt;/p&gt;
+
+&lt;p&gt;这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据统计&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，你在得到男朋友经常出没的地点后，根据酒店，敏感时间段等信息确定男朋友因该是出轨了，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据挖掘&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假设你是一位女性，在分析男友的数据后，得知他下午又要出去开房，于是乎你在他准备出门前给他发了个短信，问他有没有带 tt，没有的话可以在我这里买，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;精准推送&lt;/code&gt;，需要配合数据挖掘。&lt;/p&gt;
+
+&lt;p&gt;假如你是一位女性，你的男朋友总该出去浪而各种出问题，于是乎你租了间屋子并准备好了所有需要的东西并告诉他，以后不用找酒店了，直接来我这屋子吧，什么都准备好了，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;容器&lt;/code&gt;。&lt;/p&gt;
+
+&lt;p&gt;假如你是一位女性，你每天都要和男朋友打通一次接口，采集数据。你的男朋友用来连接你和他的工具，叫做&lt;code class=&quot;highlighter-rouge&quot;&gt;接口“机”&lt;/code&gt;，你采集到的数据叫做&lt;code class=&quot;highlighter-rouge&quot;&gt;“流”数据&lt;/code&gt;。你一天24小时不停地采，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;实时数据采集&lt;/code&gt;。你决定开发新的接口来和男朋友交流，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;虚拟化&lt;/code&gt;。你决定从不同的男友身上采集数据，你就是&lt;code class=&quot;highlighter-rouge&quot;&gt;大数据中心&lt;/code&gt;。有一天你决定生一个宝宝，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;大数据应用&lt;/code&gt;。宝宝生下来不知道是谁的，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;大数据脱敏&lt;/code&gt;。但是从宝宝外观来看，黑色皮肤金色头发，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据融合跨域建模&lt;/code&gt;。你决定把这个宝宝拿来展览收点门票，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;大数据变现&lt;/code&gt;。&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>App瘦身、性能优化总结</title>
+        <link>https://gorpeln.com//article/15474431442</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15474431442</guid>
+        <pubDate>Mon, 14 Jan 2019 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;一app瘦身&quot;&gt;一、App瘦身&lt;/h3&gt;
+&lt;h5 id=&quot;1资源瘦身&quot;&gt;1、资源瘦身&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;使用tinypng压缩PNG图片。视频可以通过 Final cut等软件进行分辨率压缩。音频则降低码率即可。&lt;/li&gt;
+  &lt;li&gt;非必须资源文件可以放到自己服务器上&lt;/li&gt;
+  &lt;li&gt;启动图使用 LaunchScreen.storyboard，启动图在一个项目资源中占比其实蛮大的，但是使用 LaunchScreen.storyboard 只需要设置一张ImageView即可。&lt;/li&gt;
+  &lt;li&gt;IconFont的使用很方便，项目中图标太多或者随时需要转换图标颜色的话，建议使用&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;2放弃使用-realm&quot;&gt;2、放弃使用 Realm&lt;/h5&gt;
+&lt;p&gt;Realm，据说是目前是性能最好的移动端数据库。但是在三方库中可以看到，Realm 的支持占了很大的比重，大约在 8M 左右。但是如果使用 FMDB 话只需要192KB，而 CoreData 几乎可以忽略不计。&lt;/p&gt;
+
+&lt;h5 id=&quot;3删除重复代码&quot;&gt;3、删除重复代码&lt;/h5&gt;
+&lt;p&gt;重复代码的审核、无用的开源库删除&lt;/p&gt;
+
+&lt;h3 id=&quot;二性能优化&quot;&gt;二、性能优化&lt;/h3&gt;
+&lt;h5 id=&quot;1imagewithcontentsoffile--assetsxcassets&quot;&gt;1、imageWithContentsOfFile 、 Assets.xcassets&lt;/h5&gt;
+&lt;ul&gt;
+  &lt;li&gt;对于大的图片且偶尔需要显示的应放到工程目录下，不要放到Assets.xcassets中；并使用imageWithContentsOfFile加载不让系统缓存&lt;/li&gt;
+  &lt;li&gt;对于经常需要展示的小图片放到Assets.xcassets中让系统缓存，使用imageNamed加载&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h5 id=&quot;2尽量使用非逃逸闭包&quot;&gt;2、尽量使用非逃逸闭包&lt;/h5&gt;
+&lt;p&gt;非逃逸闭包是有利于内存优化的，所以尽量使用非逃逸闭包&lt;/p&gt;
+
+&lt;h5 id=&quot;3nssetnsarray&quot;&gt;3、NSSet、NSArray&lt;/h5&gt;
+&lt;p&gt;NSSet（用hash实现）和NSArray功能性质一样，用于存储对象，属于集合。但是和NSArray不一样的是它属于 “无序集合”，在内存中存储方式是不连续的，而NSArray是“有序集合”它内存中存储位置是连续的。
+所以在集合中寻找一个元素的时候使用NSSet，而如果需要循环集合中的所有对象来找到所需要的目标则使用NSArray&lt;/p&gt;
+
+&lt;h3 id=&quot;三页面卡顿&quot;&gt;三、页面卡顿&lt;/h3&gt;
+&lt;h5 id=&quot;屏幕显示图像的原理&quot;&gt;屏幕显示图像的原理&lt;/h5&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_fluent_002.png&quot; alt=&quot;blog_fluent_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;1、CPU计算控件的位置、大小&lt;br /&gt;
+2、计算完成后CPU会将这些数据提交给GPU来进行渲染&lt;br /&gt;
+3、GPU将收到的数据转成屏幕能显示的数据格式，缓存到在FrameBuffer&lt;br /&gt;
+4、然后视频控制器从FrameBuffer读取的数据显示在显示器上&lt;/p&gt;
+
+&lt;h5 id=&quot;卡顿优化-cpu&quot;&gt;卡顿优化-CPU&lt;/h5&gt;
+
+&lt;p&gt;1、尽量用轻量级的对象，比如用不到事件处理的地方，可以考虑使用CAlayer取代UIView&lt;br /&gt;
+2、不要频繁地跳用UIVIew的相关属性，比如frame、bounds、transform等属性，尽量减少不必要的修改&lt;br /&gt;
+3、尽量提前计算好布局，在有需要时一次性调整对应的布局，不要多次修改属性&lt;br /&gt;
+4、Autolayout会比直接设置frame消耗更多的CPU资源&lt;br /&gt;
+5、图片的size最好刚好跟UIImageView的size保持一致&lt;br /&gt;
+6、控制一下线程的最大并发数量&lt;br /&gt;
+7、尽量把耗时的操作放到子线程&lt;br /&gt;
+8、文本处理（尺寸的计算，绘制）&lt;br /&gt;
+9、图片处理（解码、绘制）&lt;/p&gt;
+
+&lt;h5 id=&quot;卡顿优化-gpu&quot;&gt;卡顿优化-GPU&lt;/h5&gt;
+
+&lt;p&gt;1、尽量减少视图数量和层次&lt;br /&gt;
+2、GPU能处理的最大纹理尺寸是4096x4096，一旦超过这个尺寸，就会占用CPU资源进行处理，所以纹理尽量不要超过这个尺寸&lt;br /&gt;
+3、尽量避免短时间内大量图片的显示，尽可能将多张图片合成一张图片显示&lt;br /&gt;
+4、减少透明的视图（alpha&amp;lt;1），不透明的就设置opaque为yes&lt;br /&gt;
+5、尽量避免出现离屏渲染&lt;/p&gt;
+
+&lt;h5 id=&quot;离屏渲染&quot;&gt;离屏渲染&lt;/h5&gt;
+&lt;p&gt;指的是在GPU在当前屏幕缓冲区以外开辟一个缓冲区进行渲染操作
+导致产生离屏渲染的原因：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;shouldRasterize（光栅化）&lt;/li&gt;
+  &lt;li&gt;shadows（阴影）&lt;/li&gt;
+  &lt;li&gt;edge antialiasing（抗锯齿）&lt;/li&gt;
+  &lt;li&gt;group opacity（不透明）&lt;/li&gt;
+  &lt;li&gt;圆角(当和maskToBounds一起使用时才会触发)&lt;/li&gt;
+  &lt;li&gt;渐变&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;可通过 Instruments 的 Core Animation 检测离屏渲染。&lt;/p&gt;
+
+&lt;h3 id=&quot;四tableview-调优&quot;&gt;四、TableView 调优&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;提前计算好cell的高度,缓存在相应的数据源模型中，减少CPU的计算时间&lt;/li&gt;
+  &lt;li&gt;尽可能的降低Storyboard、Xib等使用度&lt;/li&gt;
+  &lt;li&gt;异步绘制&lt;/li&gt;
+  &lt;li&gt;减少层级&lt;/li&gt;
+  &lt;li&gt;Cell中的view尽可能不要使用透明&lt;/li&gt;
+  &lt;li&gt;避免离屏渲染&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>博客成长记录...</title>
+        <link>https://gorpeln.com//article/15462756619</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15462756619</guid>
+        <pubDate>Tue, 01 Jan 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2019-03-20&lt;/span&gt; –&amp;gt;          优化文章链接（哎，以前的收录白费了…）&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2019-03-07&lt;/span&gt; –&amp;gt;          优化博客目录结构&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2019-01-26&lt;/span&gt; –&amp;gt;          添加个人项目专栏&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2019-01-22&lt;/span&gt; –&amp;gt;          由于Coding经常奔溃，弃用Coding，继续使用Github为主访问路径&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-12-03&lt;/span&gt; –&amp;gt;          优化cdn加速 速度真快… &lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-11-11&lt;/span&gt; –&amp;gt;          更换来必力评论为GitTalk评论&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-10-23&lt;/span&gt; –&amp;gt;          添加Coding pages 仓库，主访问路径改为Coding&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-10-18&lt;/span&gt; –&amp;gt;          修改博客色调、导航栏、侧边栏（添加留言、简历、搜索、导航入口），文章列表样式、文章详情样式&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-10-01&lt;/span&gt; –&amp;gt;          更换到七牛云图床、优化百度云CDN&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-09-13&lt;/span&gt; –&amp;gt;          优化百度统计、谷歌统计&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-08-03&lt;/span&gt; –&amp;gt;          添加 &lt;a href=&quot;https://gorpeln.com/site.html&quot;&gt;个人导航&lt;/a&gt; &lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-07-13&lt;/span&gt; –&amp;gt;          添加SSL支持&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-06-29&lt;/span&gt; –&amp;gt;          添加百度云CDN加速&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-05-02&lt;/span&gt; –&amp;gt;          暂时关闭不蒜子统计&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-05-01&lt;/span&gt; –&amp;gt;          删除百度分享功能&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-04-02&lt;/span&gt; –&amp;gt;          添加个人域名 &lt;a href=&quot;gorpeln.com&quot;&gt;gorpeln.com&lt;/a&gt;&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-02-23&lt;/span&gt; –&amp;gt;          jekyll博客全新优化。包括了:首页、分类、标签、归档、关于、搜索、百度分享、百度统计、谷歌统计、不蒜子统计、来必力评论、swiftype搜索 &lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-01-13&lt;/span&gt; –&amp;gt;          我想放弃CSDN了。。 &lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2017-12-29&lt;/span&gt; –&amp;gt;          CSDN越来越过分了。。。。  &lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2016-06-24&lt;/span&gt; –&amp;gt;          重新搭建jekyll个人博客&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-09-14&lt;/span&gt; –&amp;gt;          同时开通&lt;a href=&quot;https://blog.csdn.net/chen_gp_x&quot;&gt;CSDN博客&lt;/a&gt;，逐渐选择CSDN作为博客&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-09-02&lt;/span&gt; –&amp;gt;          学习hexo和jekyll博客搭建,搭建静态hexo博客&lt;br /&gt;
+&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-08-23&lt;/span&gt; –&amp;gt;          产生搭建个人博客想法&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>查看QQ下载的视频路径 MAC</title>
+        <link>https://gorpeln.com//article/15438182232</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15438182232</guid>
+        <pubDate>Mon, 03 Dec 2018 00:00:00 +0800</pubDate>
+        <description>&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~/Library/Containers/com.tencent.qq/Data/Library/Caches/Videos/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>电脑病毒竟然被当宠物养！</title>
+        <link>https://gorpeln.com//article/15421638259</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15421638259</guid>
+        <pubDate>Wed, 14 Nov 2018 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;1可爱的病毒&quot;&gt;1、可爱的病毒&lt;/h3&gt;
+
+&lt;p&gt;我以前中过一个病毒，在我电脑桌面左侧会多了一个可爱的卡通妹子，在那里吃饭睡觉玩耍，她肚子饿了就去吃掉最靠近她的图标，所以我每天都要准备一堆复制出来的快捷方式让她吃。她有时候无聊的时候会抖动你的屏幕，你如果不哄她玩，她就一直抖你的窗口。最气人的是，如果你玩电脑太晚了，她就会自动关机。看小字好像是说不要吵她睡觉……… 这玩意任务管理器上是看不到的，杀毒很多次了都没用，开机启动项目也发现不了。所以一直就让她闹腾下去了。直到有一次我外出很久没开机，回来的时候发现她已经死了………&lt;/p&gt;
+
+&lt;p&gt;网友：病毒就这么……没了？！好想探究一下设计她的黑客的内心世界……&lt;/p&gt;
+
+&lt;h3 id=&quot;2蠢萌的病毒&quot;&gt;2、蠢萌的病毒&lt;/h3&gt;
+&lt;p&gt;一个会自动乱下东西的病毒。。。&lt;br /&gt;
+迟早把你的电脑弄得满满当当。。。&lt;br /&gt;
+直到有一天。。。&lt;br /&gt;
+它下了个360。。。&lt;br /&gt;
+被360查杀了。。&lt;/p&gt;
+
+&lt;h3 id=&quot;3没毛病&quot;&gt;3、没毛病&lt;/h3&gt;
+&lt;p&gt;360自打出世以来就没承认过自己是病毒…&lt;/p&gt;
+
+&lt;h3 id=&quot;4steam&quot;&gt;4、Steam&lt;/h3&gt;
+&lt;p&gt;这是一个伪装成应用的电脑病毒，只要你下载并安装了它，它就会开机自启，而且很难关掉。它的开发者为它设计了联网功能，并且把病毒主体部分储存在服务器上。当你联网并打开它之后，主界面上就会发出一道绿光让你精神恍惚，不由自主地输入你的银行账号和密码，随后盗取你账户上的存款，最令人发指的是，这一切完成之后还会在主界面上显示受害者人次+1，简直无法无天。这个病毒目前装机量很大，开发者是一个代号叫G的胖子&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_coding_ 15421638259.gif&quot; alt=&quot;blog_coding_ 15421638259&quot; /&gt;&lt;/p&gt;
+
+</description>
+      </item>
+    
+  </channel>
+</rss>

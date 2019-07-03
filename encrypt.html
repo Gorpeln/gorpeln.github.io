@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>加密解密 - Gorpeln</title>
+    <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+    <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/font-awesome.css">
+    <script type="text/javascript" src='/assets/js/jquery.js'></script>
+    <script type="text/javascript" src="/assets/js/encryptJS/aes.js"></script>
+    <script type="text/javascript" src="/assets/js/encryptJS/tripledes.js"></script>
+    <script type="text/javascript" src="/assets/js/encryptJS/rabbit.js"></script>
+    <script type="text/javascript" src="/assets/js/encryptJS/rc4.js"></script>
+</head>
+<style type="text/css">
+ul,
+li {
+    list-style: none;
+}
+
+.wrapper {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.toolUsing {
+    margin-top: 30px;
+}
+
+
+
+/*  左右版式  */
+.leftBar {
+    float: left;
+}
+
+.rightBar {
+    float: right;
+}
+
+.leftBar textarea,
+.rightBar textarea {
+    width: 410px;
+    height: 500px;
+}
+
+.operateLR {
+    float: left;
+    width: 136px;
+    text-align: center;
+    margin: 30px 5px 0 5px;
+}
+</style>
+
+<body>
+    <div id="mainContent" class="wrapper">
+        <div class="toolUsing clearfix">
+            <div class="toolsTab  clearfix">
+                <ul class="nav nav-tabs">
+                    <li class='active'><a onclick="javascript:location.href='encrypt.html'">加密/解密</a></li>
+                </ul>
+                <div class='clear'></div>
+            </div>
+            <style>
+                .leftBar .title,.rightBar .title{margin-bottom:10px;}
+        .OptDetail{text-align:left;margin-left:10px;}
+        .OptDetail li{width:120px;margin:5px 0px 10px 0px;}
+        .Button input{margin:5px 0px 10px 0px;}
+        #pwd{width:110px;}
+    </style>
+            <div class="leftBar">
+                <div class="title">明文:</div>
+                <textarea name='message' id='msg_source' value="this is a example" onfocus="if(this.value=='this is a example'){this.value='';};this.select();" onblur="(this.value=='')?this.value='this is a example':this.value;" class="text_source">this is a example</textarea>
+            </div>
+            <div class="operateLR">
+                <div class="OptDetail">
+                    <label>加密算法:</label>
+                    <ul>
+                        <li><label for="aes" class="radio"><input type="radio" name="encrypt_type" value="aes" checked="checked" id="aes" />AES</label></li>
+                        <li><label for="des" class="radio"><input type="radio" name="encrypt_type" value="des" id="des" />DES</label></li>
+                        <li><label for="rc4" class="radio"><input type="radio" name="encrypt_type" value="rc4" id="rc4" />RC4</label></li>
+                        <li><label for="rabbit" class="radio"><input type="radio" name="encrypt_type" value="rabbit" id="rabbit" />Rabbit</label></li>
+                        <li><label for="tripledes" class="radio"><input type="radio" name="encrypt_type" value="tripledes" id="tripledes" />TripleDes</label></li>
+                    </ul>
+                </div>
+                <div class="OptDetail Button">
+                    <label class="input">密码:
+                        <input type="text" id="pwd" />
+                    </label>
+                    <ul>
+                        <li><button class="btn btn-primary" onclick="javascript:encrypt();">加密 <i class="fa fa-fw fa-angle-double-right"></i></button></li>
+                        <li><button class="btn btn-primary" onclick="javascript:decrypt();"><i class="fa fa-fw fa-angle-double-left"></i> 解密 </button></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="rightBar">
+                <div class="title">密文:</div>
+                <textarea name='cipher' id='encrypt_result' onclick="this.focus();this.select();"></textarea>
+            </div>
+            <script type='text/javascript'>
+            function encrypt() {
+                switch ($('input[name="encrypt_type"]:checked').val()) {
+                    case "aes":
+                        $("#encrypt_result").val(CryptoJS.AES.encrypt($("#msg_source").val(), $("#pwd").val()));
+                        break;
+                    case "des":
+                        $("#encrypt_result").val(CryptoJS.DES.encrypt($("#msg_source").val(), $("#pwd").val()));
+                        break;
+                    case "rabbit":
+                        $("#encrypt_result").val(CryptoJS.Rabbit.encrypt($("#msg_source").val(), $("#pwd").val()));
+                        break;
+                    case "rc4":
+                        $("#encrypt_result").val(CryptoJS.RC4.encrypt($("#msg_source").val(), $("#pwd").val()));
+                        break;
+                    case "tripledes":
+                        $("#encrypt_result").val(CryptoJS.TripleDES.encrypt($("#msg_source").val(), $("#pwd").val()));
+                        break;
+                }
+            }
+
+            function decrypt() {
+                switch ($('input[name="encrypt_type"]:checked').val()) {
+                    case "aes":
+                        $("#msg_source").val(CryptoJS.AES.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+                        break;
+                    case "des":
+                        $("#msg_source").val(CryptoJS.DES.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+                        break;
+                    case "rabbit":
+                        $("#msg_source").val(CryptoJS.Rabbit.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+                        break;
+                    case "rc4":
+                        $("#msg_source").val(CryptoJS.RC4.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+                        break;
+                    case "tripledes":
+                        $("#msg_source").val(CryptoJS.TripleDES.decrypt($("#encrypt_result").val(), $("#pwd").val()).toString(CryptoJS.enc.Utf8));
+                        break;
+                }
+            }
+            </script>
+        </div>
+    </div>
+</body>
+
+</html>

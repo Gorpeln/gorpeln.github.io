@@ -1,0 +1,55 @@
+<html lang="en">
+
+<head>
+     <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>play - Gorpeln</title>
+    <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+    <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+
+</head>
+<style type="text/css">
+
+body {
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+
+<body>
+    <div id="address"></div>
+    <video id="myvideo" src="#" controls="controls" autoplay="autoplay" style="width: 375px;"></video>
+</body>
+
+</html>
+<script src="//code.jquery.com/jquery-1.9.1.js"></script>
+<script language="javascript">
+$(document).ready(function() {
+    play();
+});
+var vList = new Array("http://demo.gorpeln.com/play/DY_208.mp4"); // 初始化播放列表
+var vLen = vList.length;
+var curr = 0;
+var video = document.getElementById("myvideo");
+video.addEventListener("ended", function() {
+    play();
+});
+
+function play() {
+    video.src = vList[curr];
+    video.load();
+    video.play();
+    // document.getElementById("address").innerHTML = "正在播放";
+    curr++;
+    if (curr >= vLen) {
+        curr = 0; //重新循环播放
+    }
+
+}
+</script>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<!-- Mirrored from tool.liumingye.cn/admin.php by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 11 Mar 2019 06:21:45 GMT -->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<meta name="robots" content="noindex,follow" />
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gorpeln - 登录</title>
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+    <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
+</head>
+
+<body onkeydown="keyLogin()" oncontextmenu="self.event.returnValue=false" onselectstart="return false" >
+    <style>
+        body,html {
+    user-select: none;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #f1f1f1;
+}
+
+.login-wrap {
+    display: table;
+    margin: 0 auto;
+    height: 100%
+}
+
+.login-wrap {
+    width: 360px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 999;
+    display: table;
+    height: 100%
+}
+
+.login-row {
+    vertical-align: middle;
+    display: table-cell
+}
+
+.login-wrap h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 15px;
+    background: #393d49;
+    font-size: 0;
+    text-align: center
+}
+
+.login-wrap h2 img {
+    position: relative;
+    top: 20px;
+    width: 100px;
+    border-radius: 50px;
+}
+
+.login .form {
+    margin-top: 20px;
+    margin-bottom: -20px;
+    clear: both
+}
+
+.login {
+    margin: 0;
+    padding: 20px 20px 25px;
+    background: #fff;
+    padding-top: 50px;
+}
+
+.login a:hover {
+    text-decoration: none
+}
+
+#login-canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0
+}
+
+.login .btn {
+    display: inline-block;
+    box-sizing: border-box;
+    padding: 0 18px;
+    width: 100%;
+    height: 38px;
+    outline: 0;
+    border: 0;
+    margin-top: 20px;
+    border-radius: 2px;
+    background-color: #37374c;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 14px;
+    line-height: 38px;
+    cursor: pointer;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-appearance: none
+}
+
+.login .btn:hover {
+    color: #fff;
+    opacity: .8;
+    filter: alpha(opacity=80)
+}
+
+.login .tab-this {
+    color: #009688
+}
+
+.login .item {
+    clear: both;
+    margin-bottom: 15px
+}
+
+.login .item label {
+    margin: 0 24px;
+    font-size: 15px
+}
+
+.login .input {
+    height: 38px;
+    border-color: #e6e6e6;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
+    background-color: #fff;
+    line-height: 1.3;
+    display: block;
+    box-sizing: border-box;
+    padding-left: 10px;
+    width: 100%;
+    outline: 0;
+    font: 400 13.33px Arial;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-appearance: none
+}
+
+.login .input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px #fff inset
+}
+
+.login .input:hover {
+    border-color: #d2d2d2
+}
+    </style>
+    <div class="login-wrap">
+        <div class="login-row">
+            <h2><img src="https://gorpeln.com/assets/img/gorpeln.png"></h2>
+            <div class="login">
+                <div class="item"><input autofocus type="text" name="user" placeholder="用户名 " autocomplete="off" class="input" id="username"></div>
+                <div class="item"><input type="password" name="pass" placeholder="密码" autocomplete="off" class="input" id="password"></div>
+                <div class="item"><button class="btn" onclick="login()">立即登录</button></div>
+            </div>
+        </div>
+    </div><canvas id="login-canvas"></canvas>
+    <script src="/assets/js/jquery.min.js"></script>
+    <script src="/assets/js/Regenerating.json"></script>
+    <script>
+    function login() {
+
+        var username = $("#username").val();
+        var password = $("#password").val();
+
+        if (username == loginList[0].username && password == loginList[0].password) {
+            window.location.href = myresume[0].myresumehtml;
+        } else {
+            alert('账户或密码不正确！');
+        }
+    }
+
+
+    // 回车键登陆
+    function keyLogin() {
+        console.log(event.keyCode)
+        // 13为回车键
+        if (event.keyCode == 13) {
+            login();
+        }
+    }
+
+
+
+    var WIDTH = window.innerWidth,
+        HEIGHT = window.innerHeight,
+        POINT = 35;
+    var canvas = document.getElementById("login-canvas");
+    canvas.width = WIDTH, canvas.height = HEIGHT;
+    var context = canvas.getContext("2d");
+    context.strokeStyle = "rgba(0,0,0,0.2)", context.strokeWidth = 1, context.fillStyle = "rgba(0,0,0,0.1)";
+    var circleArr = [];
+
+    function Line(x, y, _x, _y, o) { this.beginX = x, this.beginY = y, this.closeX = _x, this.closeY = _y, this.o = o }
+
+    function Circle(x, y, r, moveX, moveY) { this.x = x, this.y = y, this.r = r, this.moveX = moveX, this.moveY = moveY }
+
+    function num(max, _min) { var min = arguments[1] || 0; return Math.floor(Math.random() * (max - min + 1) + min) }
+
+    function drawCricle(cxt, x, y, r, moveX, moveY) {
+        var circle = new Circle(x, y, r, moveX, moveY);
+        cxt.beginPath();
+        cxt.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI);
+        cxt.closePath();
+        cxt.fill();
+        return circle
+    }
+
+    function drawLine(cxt, x, y, _x, _y, o) {
+        var line = new Line(x, y, _x, _y, o);
+        cxt.beginPath();
+        cxt.strokeStyle = "rgba(0,0,0," + o + ")";
+        cxt.moveTo(line.beginX, line.beginY);
+        cxt.lineTo(line.closeX, line.closeY);
+        cxt.closePath();
+        cxt.stroke()
+    }
+
+    function init() { circleArr = []; for (var i = 0; i < POINT; i++) { circleArr.push(drawCricle(context, num(WIDTH), num(HEIGHT), num(15, 2), num(10, -10) / 40, num(10, -10) / 40)) } draw() }
+
+    function draw() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < POINT; i++) { drawCricle(context, circleArr[i].x, circleArr[i].y, circleArr[i].r) }
+        for (var i = 0; i < POINT; i++) {
+            for (var j = 0; j < POINT; j++) {
+                if (i + j < POINT) {
+                    var A = Math.abs(circleArr[i + j].x - circleArr[i].x),
+                        B = Math.abs(circleArr[i + j].y - circleArr[i].y);
+                    var lineLength = Math.sqrt(A * A + B * B);
+                    var C = 1 / lineLength * 7 - 0.009;
+                    var lineOpacity = C > 0.03 ? 0.03 : C;
+                    if (lineOpacity > 0) { drawLine(context, circleArr[i].x, circleArr[i].y, circleArr[i + j].x, circleArr[i + j].y, lineOpacity) }
+                }
+            }
+        }
+    }
+    window.onload = function() {
+        init();
+        setInterval(function() {
+            for (var i = 0; i < POINT; i++) {
+                var cir = circleArr[i];
+                cir.x += cir.moveX;
+                cir.y += cir.moveY;
+                if (cir.x > WIDTH) { cir.x = 0 } else { if (cir.x < 0) { cir.x = WIDTH } }
+                if (cir.y > HEIGHT) { cir.y = 0 } else { if (cir.y < 0) { cir.y = HEIGHT } }
+            }
+            draw()
+        }, 16)
+    };
+    </script>
+</body>
+
+</html>
