@@ -2951,30 +2951,72 @@ fi
       </item>
     
       <item>
-        <title>电脑病毒竟然被当宠物养！</title>
-        <link>https://gorpeln.com//article/15421638259</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15421638259</guid>
-        <pubDate>Wed, 14 Nov 2018 00:00:00 +0800</pubDate>
-        <description>&lt;h3 id=&quot;1可爱的病毒&quot;&gt;1、可爱的病毒&lt;/h3&gt;
+        <title>云开发 与 WePY</title>
+        <link>https://gorpeln.com//article/15429884147</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15429884147</guid>
+        <pubDate>Fri, 23 Nov 2018 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;一why-wepy&quot;&gt;一、Why WePY&lt;/h3&gt;
 
-&lt;p&gt;我以前中过一个病毒，在我电脑桌面左侧会多了一个可爱的卡通妹子，在那里吃饭睡觉玩耍，她肚子饿了就去吃掉最靠近她的图标，所以我每天都要准备一堆复制出来的快捷方式让她吃。她有时候无聊的时候会抖动你的屏幕，你如果不哄她玩，她就一直抖你的窗口。最气人的是，如果你玩电脑太晚了，她就会自动关机。看小字好像是说不要吵她睡觉……… 这玩意任务管理器上是看不到的，杀毒很多次了都没用，开机启动项目也发现不了。所以一直就让她闹腾下去了。直到有一次我外出很久没开机，回来的时候发现她已经死了………&lt;/p&gt;
+&lt;p&gt;首先，先分享一下为什么要选择 WePY ？&lt;/p&gt;
 
-&lt;p&gt;网友：病毒就这么……没了？！好想探究一下设计她的黑客的内心世界……&lt;/p&gt;
+&lt;p&gt;在项目开始进行选型的时候，我可选的底层框架有 &lt;code class=&quot;highlighter-rouge&quot;&gt;WePy&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;MPVue&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Taro&lt;/code&gt;、`MinUI，这些框架都是工程化做得很好的框架，可以帮助小程序项目长期进行维护。其中，Taro 因为采用的是我所不熟悉的 React ，所以从一开始就被排除。MPVue 我看了以后，它更多是给 Web 开发者提供小程序转化工具，而不是给小程序开发者提供类 Vue 工具，所以，也被我排除。 MinUI 由于其本身仅仅是提供了组件化的方案和 npm 、ES6/ES7 的支持，其他的命令依然要延续使用小程序的函数，并没有提供更多的支持，整个生态尚不丰富，所以就又排除掉了 MinUI。&lt;/p&gt;
 
-&lt;h3 id=&quot;2蠢萌的病毒&quot;&gt;2、蠢萌的病毒&lt;/h3&gt;
-&lt;p&gt;一个会自动乱下东西的病毒。。。&lt;br /&gt;
-迟早把你的电脑弄得满满当当。。。&lt;br /&gt;
-直到有一天。。。&lt;br /&gt;
-它下了个360。。。&lt;br /&gt;
-被360查杀了。。&lt;/p&gt;
+&lt;p&gt;到最后，我选择了 WePY 。在下手之前，我研究了一下 WePY，来看看 WePY 中都有哪些优点。 总的来说，我认为 WePY 的优点如下：&lt;/p&gt;
 
-&lt;h3 id=&quot;3没毛病&quot;&gt;3、没毛病&lt;/h3&gt;
-&lt;p&gt;360自打出世以来就没承认过自己是病毒…&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;提供了类似 Vue 的组件化方案：&lt;/strong&gt;组件化开发可以提升项目的可维护程度，随着你开发周期的变长，组件化会非常大的影响你的开发体验。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;提供了 ES6/ES7 语法的支持：&lt;/strong&gt;JavaScript 为人诟病的回调在 ES6、ES7 中有了更加优雅的实现。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;提供了 Vue 的生态：&lt;/strong&gt;和 MinUI 的孤军奋战不同，WePY 有很多 Vue 社区生态的产品，比如 WePY-Redux、RxWX 等一系列 Vue 下，大家习惯使用的工具，这使得开发的流程更加顺畅，开发体验也更加一致。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;对原生 API 的优化：&lt;/strong&gt;在小程序官方提供的接口中，很多都是提供的回调模式，并不提供 Promise ，我们在使用时往往需要自己再重新包一层，比较麻烦。在 WePY 当中， WePY 官方帮我们封装好了一层，你可以直接使用 WePY 所封装好的方法，减少了封装的工作量。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;Vue 习惯的数据设定：&lt;/strong&gt;在 WePY 中，你可以使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;this.xxx=xxx&lt;/code&gt; 的语法进行赋值操作，相比于原生的 setData 方法，有更加舒适的语法，可维护性也更高。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;strong&gt;提供了 computed 方法：&lt;/strong&gt;在开发小程序的时候，我们难免要对数据进行格式化，在传统的小程序开发中，我们需要对数据进行 map ，再进行修改，但是用了 WePY 以后，我们可以使用 computed 计算属性来进行数据的格式化和调整，大大的提升了代码的可读性。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;h3 id=&quot;4steam&quot;&gt;4、Steam&lt;/h3&gt;
-&lt;p&gt;这是一个伪装成应用的电脑病毒，只要你下载并安装了它，它就会开机自启，而且很难关掉。它的开发者为它设计了联网功能，并且把病毒主体部分储存在服务器上。当你联网并打开它之后，主界面上就会发出一道绿光让你精神恍惚，不由自主地输入你的银行账号和密码，随后盗取你账户上的存款，最令人发指的是，这一切完成之后还会在主界面上显示受害者人次+1，简直无法无天。这个病毒目前装机量很大，开发者是一个代号叫G的胖子&lt;/p&gt;
+&lt;h3 id=&quot;二云开发-in-wepy&quot;&gt;二、云开发 in WePY&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_coding_ 15421638259.gif&quot; alt=&quot;blog_coding_ 15421638259&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;云开发可以用在 WePY 中么？&lt;/p&gt;
+
+&lt;p&gt;答案当然是肯定的。&lt;/p&gt;
+
+&lt;p&gt;看待这个问题，你应该首先搞清楚，云开发所提供的到底是什么？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;云开发提供的是数据存储、文件存储和计算能力&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;和 WePY 的定位提供微信小程序组件化开发的能力并不冲突，所以， WePY 和云开发并不冲突，你可以在 WePY 中使用云开发。&lt;/p&gt;
+
+&lt;h3 id=&quot;三在-wepy-项目中启用云开发&quot;&gt;三、在 WePY 项目中启用云开发&lt;/h3&gt;
+
+&lt;p&gt;由于 WePY 本身并没有提供云开发的模板（不过你现在可以使用 &lt;strong&gt;wepy init cloudkits/wepy-tcb-demo&lt;/strong&gt; 命令来初始化一个包含了云开发示例的 WePY 项目），所以，我们需要自己在项目中添加云开发。&lt;/p&gt;
+
+&lt;p&gt;云开发本身而言，是集成在 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.&lt;/code&gt; 的名字空间内的，所以无需配置可以直接使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.xxx&lt;/code&gt; 来调用云开发的各项命令。此外，比较特殊的是，你需要指定一下云函数目录，来确保微信小程序开发者工具能够识别出云函数目录。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;此处需要注意的是， 因为云开发的命令本身就支持 Promise 和 Callback ，所以你可以直接使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud&lt;/code&gt; 来调用，而不是使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wepy.cloud&lt;/code&gt; 来调用。WePY 官方也没有针对云开发进行再一次的封装。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;你可以在小程序项目的根目录创建一个新的目录 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloudfunctions&lt;/code&gt; ，然后在 &lt;code class=&quot;highlighter-rouge&quot;&gt;project.config.json&lt;/code&gt; 中添加一个新的配置项目 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloudfunctionRoot&lt;/code&gt;，并将其值设置为 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloudfunctions&lt;/code&gt;。这样，微信小程序开发者工具就能够识别出这个目录是云函数的目录，并为其加上特殊的目录名。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;此处需要注意的是，云函数应当放在小程序的源码目录 &lt;code class=&quot;highlighter-rouge&quot;&gt;src&lt;/code&gt; 之外，不然会导致编译报错。我试图寻找 &lt;code class=&quot;highlighter-rouge&quot;&gt;wepy.config.js&lt;/code&gt; 的中关于屏蔽编译检查目录的配置项目，但是没有找到，所以我直接将这个目录放在了项目根目录，云函数和小程序源码的 &lt;code class=&quot;highlighter-rouge&quot;&gt;src&lt;/code&gt; 同级。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这样，你就完成了 WePY 中的小程序·云开发的引用。&lt;/p&gt;
+
+&lt;h3 id=&quot;四云开发在-wepy-中的使用&quot;&gt;四、云开发在 WePY 中的使用&lt;/h3&gt;
+
+&lt;p&gt;参照 &lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html&quot;&gt;官方文档&lt;/a&gt;&lt;/p&gt;
 
 </description>
       </item>

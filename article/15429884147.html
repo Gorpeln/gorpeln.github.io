@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>录制GIF动画 MAC | Gorpeln的个人博客 - Gorpeln</title>
+  <title>云开发 与 WePY | Gorpeln的个人博客 - Gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="软件下载">
+  <meta name="description" content="一、Why WePY">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/14863391315">
+  <link rel="canonical" href="https://gorpeln.com//article/15429884147">
   <link rel="alternate" type="application/rss+xml" title="Gorpeln的个人博客 - Gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -537,14 +537,18 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">录制GIF动画 MAC</h1>
+    <h1 class="post-title">云开发 与 WePY</h1>
     <div class="info">
-	    <p class="post-meta">时间：2017-02-06</p>
+	    <p class="post-meta">时间：2018-11-23</p>
 	    
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#GIF动画"  target="_blank">GIF动画</a>
+			<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
+		
+			<a class="pjaxlink" href="/tags#云开发"  target="_blank">云开发</a>
+		
+			<a class="pjaxlink" href="/tags#WePY"  target="_blank">WePY</a>
 		
 		</span>
 	    
@@ -552,34 +556,73 @@
   </header>
 
 <div style="font-size: 8px;width:calc(100% + 3em);margin: 1em 0;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/14863391315
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15429884147
 </div>
 
 
   <article class="post-content">
-    <p><strong>软件下载</strong></p>
+    <h3 id="一why-wepy">一、Why WePY</h3>
 
-<p><a href="https://download.csdn.net/download/chen_gp_x/9748024">Licecap for Mac 下载地址</a></p>
+<p>首先，先分享一下为什么要选择 WePY ？</p>
 
-<hr />
-<hr />
+<p>在项目开始进行选型的时候，我可选的底层框架有 <code class="highlighter-rouge">WePy</code>、<code class="highlighter-rouge">MPVue</code>、<code class="highlighter-rouge">Taro</code>、`MinUI，这些框架都是工程化做得很好的框架，可以帮助小程序项目长期进行维护。其中，Taro 因为采用的是我所不熟悉的 React ，所以从一开始就被排除。MPVue 我看了以后，它更多是给 Web 开发者提供小程序转化工具，而不是给小程序开发者提供类 Vue 工具，所以，也被我排除。 MinUI 由于其本身仅仅是提供了组件化的方案和 npm 、ES6/ES7 的支持，其他的命令依然要延续使用小程序的函数，并没有提供更多的支持，整个生态尚不丰富，所以就又排除掉了 MinUI。</p>
 
-<p><br />
-1、下载完成后打开软件，界面如下图。整个软件界面为透明层，左下角可以设置图片FPS，右下角又两个按钮，分别为录制按钮和停止按钮。</p>
+<p>到最后，我选择了 WePY 。在下手之前，我研究了一下 WePY，来看看 WePY 中都有哪些优点。 总的来说，我认为 WePY 的优点如下：</p>
 
-<p><img src="https://img.gorpeln.com/blog_20170206001.png" alt="blog_20170206001" /></p>
+<ul>
+  <li>
+    <p><strong>提供了类似 Vue 的组件化方案：</strong>组件化开发可以提升项目的可维护程度，随着你开发周期的变长，组件化会非常大的影响你的开发体验。</p>
+  </li>
+  <li>
+    <p><strong>提供了 ES6/ES7 语法的支持：</strong>JavaScript 为人诟病的回调在 ES6、ES7 中有了更加优雅的实现。</p>
+  </li>
+  <li>
+    <p><strong>提供了 Vue 的生态：</strong>和 MinUI 的孤军奋战不同，WePY 有很多 Vue 社区生态的产品，比如 WePY-Redux、RxWX 等一系列 Vue 下，大家习惯使用的工具，这使得开发的流程更加顺畅，开发体验也更加一致。</p>
+  </li>
+  <li>
+    <p><strong>对原生 API 的优化：</strong>在小程序官方提供的接口中，很多都是提供的回调模式，并不提供 Promise ，我们在使用时往往需要自己再重新包一层，比较麻烦。在 WePY 当中， WePY 官方帮我们封装好了一层，你可以直接使用 WePY 所封装好的方法，减少了封装的工作量。</p>
+  </li>
+  <li>
+    <p><strong>Vue 习惯的数据设定：</strong>在 WePY 中，你可以使用 <code class="highlighter-rouge">this.xxx=xxx</code> 的语法进行赋值操作，相比于原生的 setData 方法，有更加舒适的语法，可维护性也更高。</p>
+  </li>
+  <li>
+    <p><strong>提供了 computed 方法：</strong>在开发小程序的时候，我们难免要对数据进行格式化，在传统的小程序开发中，我们需要对数据进行 map ，再进行修改，但是用了 WePY 以后，我们可以使用 computed 计算属性来进行数据的格式化和调整，大大的提升了代码的可读性。</p>
+  </li>
+</ul>
 
-<p>2、鼠标移动至软件边框处可以改变软件界面大小，这个大小就是你将要录制的界面大小</p>
+<h3 id="二云开发-in-wepy">二、云开发 in WePY</h3>
 
-<p><img src="https://img.gorpeln.com/blog_20170206002.png" alt="blog_20170206002" /></p>
+<p>云开发可以用在 WePY 中么？</p>
 
-<p>3、这里调整到模拟器大小后（让整个模拟器在软件透明框内），点击右下角record录制按钮，选择保存位置后，开始录制。</p>
+<p>答案当然是肯定的。</p>
 
-<p><img src="https://img.gorpeln.com/blog_20170206003.png" alt="blog_20170206003" /></p>
+<p>看待这个问题，你应该首先搞清楚，云开发所提供的到底是什么？</p>
 
-<p>4、点击录制按钮后，软件透明区域中的模拟器变为了可操作区域，在模拟器的设置中进行一些操作后，点击stop停止按钮。在保存位置处生成一张gif图片，如下图。</p>
+<p><strong>云开发提供的是数据存储、文件存储和计算能力</strong></p>
 
-<p>5、完成！gif图片轻松制作！</p>
+<p>和 WePY 的定位提供微信小程序组件化开发的能力并不冲突，所以， WePY 和云开发并不冲突，你可以在 WePY 中使用云开发。</p>
+
+<h3 id="三在-wepy-项目中启用云开发">三、在 WePY 项目中启用云开发</h3>
+
+<p>由于 WePY 本身并没有提供云开发的模板（不过你现在可以使用 <strong>wepy init cloudkits/wepy-tcb-demo</strong> 命令来初始化一个包含了云开发示例的 WePY 项目），所以，我们需要自己在项目中添加云开发。</p>
+
+<p>云开发本身而言，是集成在 <code class="highlighter-rouge">wx.</code> 的名字空间内的，所以无需配置可以直接使用 <code class="highlighter-rouge">wx.cloud.xxx</code> 来调用云开发的各项命令。此外，比较特殊的是，你需要指定一下云函数目录，来确保微信小程序开发者工具能够识别出云函数目录。</p>
+
+<blockquote>
+  <p>此处需要注意的是， 因为云开发的命令本身就支持 Promise 和 Callback ，所以你可以直接使用 <code class="highlighter-rouge">wx.cloud</code> 来调用，而不是使用 <code class="highlighter-rouge">wepy.cloud</code> 来调用。WePY 官方也没有针对云开发进行再一次的封装。</p>
+</blockquote>
+
+<p>你可以在小程序项目的根目录创建一个新的目录 <code class="highlighter-rouge">cloudfunctions</code> ，然后在 <code class="highlighter-rouge">project.config.json</code> 中添加一个新的配置项目 <code class="highlighter-rouge">cloudfunctionRoot</code>，并将其值设置为 <code class="highlighter-rouge">cloudfunctions</code>。这样，微信小程序开发者工具就能够识别出这个目录是云函数的目录，并为其加上特殊的目录名。</p>
+
+<blockquote>
+  <p>此处需要注意的是，云函数应当放在小程序的源码目录 <code class="highlighter-rouge">src</code> 之外，不然会导致编译报错。我试图寻找 <code class="highlighter-rouge">wepy.config.js</code> 的中关于屏蔽编译检查目录的配置项目，但是没有找到，所以我直接将这个目录放在了项目根目录，云函数和小程序源码的 <code class="highlighter-rouge">src</code> 同级。</p>
+</blockquote>
+
+<p>这样，你就完成了 WePY 中的小程序·云开发的引用。</p>
+
+<h3 id="四云开发在-wepy-中的使用">四、云开发在 WePY 中的使用</h3>
+
+<p>参照 <a href="https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html">官方文档</a></p>
 
 
   </article>
@@ -588,12 +631,12 @@
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/14872573275" title="限制UITextField的文字长度" style="color: #6666cc"  target="_blank">限制UITextField的文字长度</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15438182232" title="查看QQ下载的视频路径 MAC" style="color: #6666cc"  target="_blank">查看QQ下载的视频路径 MAC</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/14861973259" title="字符串的删除替换" style="color: #6666cc"  target="_blank">字符串的删除替换</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15421638259" title="电脑病毒竟然被当宠物养！" style="color: #6666cc"  target="_blank">电脑病毒竟然被当宠物养！</a>
 	    </div>
 	  
 	 
