@@ -21,10 +21,10 @@ li.L0, li.L1, li.L2, li.L3, li.L4, li.L5, li.L6, li.L7, li.L8, li.L9 { list-styl
 /* Alternate shading for lines */
 li.L1,li.L3,li.L5,li.L7,li.L9 { }
 ol {
-    margin: 15px;
+    /*margin: 15px;*/
     font-family: Menlo,Monaco,Consolas,Courier New,monospace;
     font-size: 13px;
-    list-style:none;
+    /*list-style:none;*/
 }
 @media print {
     pre.prettyprint { background-color: none }
@@ -41,11 +41,11 @@ ol {
 }
 
 
-.prettyprint.linenums ol li, pre.prettyprint.linenums ol li {
-    /*    padding-left: 12px;
-     color: #bebec5;
-     line-height: 20px;
-     margin-left: 0;*/
+.prettyprint.linenums ol, pre.prettyprint.linenums ol {
+    margin: 15px;;
+    font-family: Menlo,Monaco,Consolas,Courier New,monospace;
+    font-size: 13px;
+    list-style:none;
 }
 .prettyprint.linenums, pre.prettyprint.linenums {
     /*    -webkit-box-shadow: inset 40px 0 0 #3D4C53,inset 41px 0 0 #464741;
@@ -54,9 +54,9 @@ ol {
 }
 
 p > code{
-margin: 0 3px;
+margin: 0 5px;
 background: #ddd;
-border: 1px solid #ccc;
+/*border: 1px solid #ccc;*/
     border-radius: 2px;
 color: rgba(0,0,0,0.6);
     font-family: Menlo, Monaco, "Andale Mono", "lucida console", "Courier New", monospace;
@@ -85,9 +85,9 @@ code{
     color: #00913c; }
 
 .highlighter-rouge{
-background: #F5F5F5;
+background: #E6E6E6;
 color: #333;
-margin: 1em 0;
+margin: 1.2em 0;
 }
 
 
