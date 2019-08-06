@@ -6,6 +6,139 @@
     <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）</description>
     
       <item>
+        <title>扩展篇 ：开发框架及前景</title>
+        <link>https://gorpeln.com//article/15623480718</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15623480718</guid>
+        <pubDate>Sat, 06 Jul 2019 00:00:00 +0800</pubDate>
+        <description>&lt;h2 id=&quot;一小程序开源开发框架介绍&quot;&gt;一、小程序开源开发框架介绍&lt;/h2&gt;
+
+&lt;h3 id=&quot;1wepy&quot;&gt;1、WePY&lt;/h3&gt;
+
+&lt;p&gt;微信小程序问世没多久，大家发现用原生小程序语法开发，开发体验和效率真的不尽如人意。WePY 此时横空出世，彼时 WePY 的目的，是让小程序开发更贴近传统 H5 框架开发，支持引入 npm 包，支持组件化开发和 ES Next 新特性。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;开发模式：更符合现有 MVVM 框架的开发模式，类 Vue，节省上手成本&lt;/li&gt;
+  &lt;li&gt;组件化开发：支持组件嵌套、循环、组建通信等&lt;/li&gt;
+  &lt;li&gt;npm 包管理：处理了 npm 包依赖问题&lt;/li&gt;
+  &lt;li&gt;ES Next：语法更现代，提升开发体验&lt;/li&gt;
+  &lt;li&gt;细节优化：setData 性能优化（脏检测）、事件传参、编译器支持、Mixin&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;正是由于 WePY 解决了原生微信小程序的开发痛点，到目前为止，WePY 也是小程序上层框架中使用方最多的。很多开发者都是基于 WePY 开发微信小程序的，微信官方后续的一些性能优化和特性支持也有 WePY 的影子。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.npmjs.com/package/wepy-cli&quot;&gt;wepy-cli&lt;/a&gt; 的周下载量月度平均都维持在 1000 以上，远远领先于同类 cli 工具，star 数 12k+，也正如官网所说，是最受欢迎的小程序框架。使用 WePY 框架的接入，更是达到了上千家。&lt;/p&gt;
+
+&lt;h3 id=&quot;2mpvue&quot;&gt;2、mpvue&lt;/h3&gt;
+
+&lt;p&gt;随着小程序接入量的猛增，业界也在不断地对小程序开发体验进行尝试。2018 年 3 月，美团点评发布了一个名叫 mpvue 的小程序框架。mpvue 是一套定位于开发小程序的前端开发框架，其核心目标是提高开发效率，增强开发体验。&lt;/p&gt;
+
+&lt;p&gt;mpvue 是基于 Vue 的 Runtime（Vue Runtime 除了我们知道的 Web 平台之外，还有 Weex），相比 WePY，mpvue 的语法更接近 Vue 语法，对于有 Vue 基础的童鞋，可以无缝切换到小程序的开发，省下了学习小程序语法的时间。&lt;/p&gt;
+
+&lt;h3 id=&quot;3taro&quot;&gt;3、Taro&lt;/h3&gt;
+
+&lt;p&gt;Taro 是 2018 年 6 月，由京东凹凸实验室出品的一款号称多端统一的框架。这里的端，指的是 Web、App（React Native、Weex）、小程序。Taro 主打「一次编写，多端运行」，是继 WePY 和 mpvue 之后，在多平台上做到了更彻底的一款框架。&lt;/p&gt;
+
+&lt;h3 id=&quot;4小程序开发框架总结&quot;&gt;4、小程序开发框架总结&lt;/h3&gt;
+
+&lt;p&gt;微信小程序诞生之初，定位是简单的逻辑视图层框架，所以不带有数据流管理。经常看到一些小程序开发者，通过手工引入 Redux，去做数据流管理。上面的三款框架，都是支持数据流管理的。它们总体的特性与不同，可以参见下面的表格。&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;特性&lt;/th&gt;
+      &lt;th&gt;语法规范&lt;/th&gt;
+      &lt;th&gt;模板系统&lt;/th&gt;
+      &lt;th&gt;组件化&lt;/th&gt;
+      &lt;th&gt;样式规范&lt;/th&gt;
+      &lt;th&gt;多端复用&lt;/th&gt;
+      &lt;th&gt;自动构建&lt;/th&gt;
+      &lt;th&gt;上手成本&lt;/th&gt;
+      &lt;th&gt;数据流管理&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;微信小程序&lt;/td&gt;
+      &lt;td&gt;小程序规范&lt;/td&gt;
+      &lt;td&gt;字符串模板&lt;/td&gt;
+      &lt;td&gt;不太 OK 的小程序组件化&lt;/td&gt;
+      &lt;td&gt;WXSS&lt;/td&gt;
+      &lt;td&gt;无&lt;/td&gt;
+      &lt;td&gt;无&lt;/td&gt;
+      &lt;td&gt;全新学习&lt;/td&gt;
+      &lt;td&gt;不支持&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;mpvue&lt;/td&gt;
+      &lt;td&gt;Vue.js 规范&lt;/td&gt;
+      &lt;td&gt;字符串模板&lt;/td&gt;
+      &lt;td&gt;Vue.js 组件化规范&lt;/td&gt;
+      &lt;td&gt;Sass、Less、PostCSS&lt;/td&gt;
+      &lt;td&gt;复用 H5&lt;/td&gt;
+      &lt;td&gt;webpack 构建&lt;/td&gt;
+      &lt;td&gt;熟悉 Vue.js&lt;/td&gt;
+      &lt;td&gt;Vuex&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;WePY&lt;/td&gt;
+      &lt;td&gt;类 Vue.js 规范&lt;/td&gt;
+      &lt;td&gt;字符串模板&lt;/td&gt;
+      &lt;td&gt;自定义组件化规范&lt;/td&gt;
+      &lt;td&gt;Sass、Less、Stylus&lt;/td&gt;
+      &lt;td&gt;复用 H5&lt;/td&gt;
+      &lt;td&gt;内建构建系统&lt;/td&gt;
+      &lt;td&gt;熟悉 Vue.js&lt;/td&gt;
+      &lt;td&gt;Redux&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Taro&lt;/td&gt;
+      &lt;td&gt;React 规范&lt;/td&gt;
+      &lt;td&gt;JSX&lt;/td&gt;
+      &lt;td&gt;React 组件化规范&lt;/td&gt;
+      &lt;td&gt;Sass、Less、PostCSS&lt;/td&gt;
+      &lt;td&gt;复用 H5 &amp;amp; 通过 RN 支持移动端&lt;/td&gt;
+      &lt;td&gt;内建构建系统 + webpack&lt;/td&gt;
+      &lt;td&gt;熟悉 React&lt;/td&gt;
+      &lt;td&gt;Redux&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;最后补充一句：任何解决方案都是在其特定使用场景下诞生的，并没有「放之四海而皆准」的方案。虽然引入新方案有时是为了解决语法、开发成本之类的问题，但可能同时又产生新的坑，因此如果是新手要做复杂的小程序项目，建议使用小程序自带的解决方案；如果是某个解决方案的熟手，可以考虑在大型小程序项目中选择自己顺手的解决方案。&lt;/p&gt;
+
+&lt;h2 id=&quot;二小程序前景分析&quot;&gt;二、小程序前景分析&lt;/h2&gt;
+
+&lt;p&gt;微信小程序其实已经抓住了一个用户痛点：我们安装的 N 多 App，其实一周甚至一个月都不会打开一次，这类 App 适合做成小程序，做到真正的「用完即走」。当然微信本身不可能只是这么「肤浅」，小程序实际是微信生态的重要一环，商家服务在小程序内可以完成闭环体验，小程序为其提供更好的用户体验。另外，现在制作 App 的成本越来越低，而 App 中的内容又更加封闭，不好做索引，微信这类超级 App 会变成导流工具，大家看重的是微信的入口，而最终目的是脱离微信，将用户导流到自己的 App 内。微信小程序也可以打破这个局面，将用户留在微信。&lt;/p&gt;
+
+&lt;p&gt;下面说下微信的技术前景。微信小程序是一套近乎完美的 Hybrid 解决方案，从开发流程到生态建设，小程序开发者都做了设计和布局，但是小程序只是微信的小程序（某些 App 自己的小程序，比如百度智能小程序、支付宝小程序），这些解决方案是围绕一个 App 而设计的，相对于 PWA（渐进式 Web 应用）这类标准的推进，封闭的解决方案必然会受到挑战。笔者认为，随着标准的成熟、浏览器的跟进、硬件和网络的提升，行业标准的解决方案才是未来方向。而且小程序这个封闭的解决方案，运行在更大的封闭系统内，本身就具有争议性，小程序发展肯定会受限于苹果公司 iOS 审核规定，未来小程序和苹果 iOS 审核之间会有不小的冲突，比如苹果公司会严格限制小程序和小游戏的分发，不允许微信内给小程序和小游戏开放更大的入口；微信的虚拟支付也是苹果公司的重点打击对象。&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>实战篇 ：电商小程序云开发实战</title>
+        <link>https://gorpeln.com//article/15618778699</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15618778699</guid>
+        <pubDate>Sun, 30 Jun 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;没错，实战篇就这一篇…并且还没写完……&lt;/p&gt;
+
+&lt;p&gt;为了更生动的展示小程序效果，我正在做这个电商小程序，由于是业余时间开发，并没有人监督，开发速度可能会慢一些。。。/憨笑&lt;/p&gt;
+
+&lt;p&gt;小程序名称：珠宝商城（暂定）&lt;br /&gt;
+前端：首页、分类、购物车、我的、商品详情页、活动详情页、订单详情页、订单列表、地址列表、支付等。&lt;br /&gt;
+后端：将集成到用户端，用于前端所需商品数据的上传下架等&lt;/p&gt;
+
+&lt;p&gt;（你一定很模糊，等我开发结果吧。。。大概在8月底出。。。可能更晚。。。）&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt; &lt;br /&gt; &lt;br /&gt; &lt;br /&gt;   &lt;br /&gt;
+  先看下【分类页】的一个完成效果：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_wxmini_dev_001.gif&quot; alt=&quot;blog_wxmini_dev_001&quot; /&gt;&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
         <title>基础篇 3：小程序架构及其实现机制</title>
         <link>https://gorpeln.com//article/15612663893</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15612663893</guid>
@@ -682,13 +815,12 @@ app.get('/api/test', (req, res, next) =&amp;gt; {
 
 &lt;p&gt;这样访问 &lt;code class=&quot;highlighter-rouge&quot;&gt;http://127.0.0.1:3000/api/test?a=1&amp;amp;b=2&lt;/code&gt; 就会输出结果了。到这里笔者就将 mock server 搭建完毕了。&lt;/p&gt;
 
-&lt;p&gt;关于小程序代码中如何调用，怎么保持代码的一致性，自由切换线上代码和线下开发代码的方式，在&lt;a href=&quot;&quot;&gt;实战篇 1：小程序开发环境搭建&lt;/a&gt;中会有更详细的讲解。&lt;/p&gt;
-
 &lt;h2 id=&quot;六小结&quot;&gt;六、小结&lt;/h2&gt;
 
 &lt;p&gt;本节重点介绍了腾讯新推出的小程序云开发的基础知识，云开发由 NoSQL 数据库、文件存储和云函数三个云产品组成，其中数据库和文件存储都可以单独设置用户权限，这样极大地降低了 UGC（用户产生内容）类小程序的开发门槛。&lt;/p&gt;
 
 &lt;p&gt;云函数是小程序·云开发中一个很重要的产品，本节介绍了云函数的基本用法和注意事项，同时针对小程序云函数的开发测试比较困难的情况，提出了 mock server 的解决方式。&lt;/p&gt;
+
 </description>
       </item>
     
@@ -1205,7 +1337,7 @@ indexDetail(e) {
       </item>
     
       <item>
-        <title>概述：微信小程序概述</title>
+        <title>概述 ：微信小程序概述</title>
         <link>https://gorpeln.com//article/15599710733</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15599710733</guid>
         <pubDate>Sat, 08 Jun 2019 00:00:00 +0800</pubDate>
@@ -2936,88 +3068,6 @@ fi
 &lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-09-14&lt;/span&gt; –&amp;gt;          同时开通&lt;a href=&quot;https://blog.csdn.net/chen_gp_x&quot;&gt;CSDN博客&lt;/a&gt;，逐渐选择CSDN作为博客&lt;br /&gt;
 &lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-09-02&lt;/span&gt; –&amp;gt;          学习hexo和jekyll博客搭建,搭建静态hexo博客&lt;br /&gt;
 &lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-08-23&lt;/span&gt; –&amp;gt;          产生搭建个人博客想法&lt;/p&gt;
-</description>
-      </item>
-    
-      <item>
-        <title>查看QQ下载的视频路径 MAC</title>
-        <link>https://gorpeln.com//article/15438182232</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15438182232</guid>
-        <pubDate>Mon, 03 Dec 2018 00:00:00 +0800</pubDate>
-        <description>&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~/Library/Containers/com.tencent.qq/Data/Library/Caches/Videos/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-</description>
-      </item>
-    
-      <item>
-        <title>云开发 与 WePY</title>
-        <link>https://gorpeln.com//article/15429884147</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15429884147</guid>
-        <pubDate>Fri, 23 Nov 2018 00:00:00 +0800</pubDate>
-        <description>&lt;h3 id=&quot;一why-wepy&quot;&gt;一、Why WePY&lt;/h3&gt;
-
-&lt;p&gt;首先，先分享一下为什么要选择 WePY ？&lt;/p&gt;
-
-&lt;p&gt;在项目开始进行选型的时候，我可选的底层框架有 &lt;code class=&quot;highlighter-rouge&quot;&gt;WePy&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;MPVue&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;Taro&lt;/code&gt;、`MinUI，这些框架都是工程化做得很好的框架，可以帮助小程序项目长期进行维护。其中，Taro 因为采用的是我所不熟悉的 React ，所以从一开始就被排除。MPVue 我看了以后，它更多是给 Web 开发者提供小程序转化工具，而不是给小程序开发者提供类 Vue 工具，所以，也被我排除。 MinUI 由于其本身仅仅是提供了组件化的方案和 npm 、ES6/ES7 的支持，其他的命令依然要延续使用小程序的函数，并没有提供更多的支持，整个生态尚不丰富，所以就又排除掉了 MinUI。&lt;/p&gt;
-
-&lt;p&gt;到最后，我选择了 WePY 。在下手之前，我研究了一下 WePY，来看看 WePY 中都有哪些优点。 总的来说，我认为 WePY 的优点如下：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;提供了类似 Vue 的组件化方案：&lt;/strong&gt;组件化开发可以提升项目的可维护程度，随着你开发周期的变长，组件化会非常大的影响你的开发体验。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;提供了 ES6/ES7 语法的支持：&lt;/strong&gt;JavaScript 为人诟病的回调在 ES6、ES7 中有了更加优雅的实现。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;提供了 Vue 的生态：&lt;/strong&gt;和 MinUI 的孤军奋战不同，WePY 有很多 Vue 社区生态的产品，比如 WePY-Redux、RxWX 等一系列 Vue 下，大家习惯使用的工具，这使得开发的流程更加顺畅，开发体验也更加一致。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;对原生 API 的优化：&lt;/strong&gt;在小程序官方提供的接口中，很多都是提供的回调模式，并不提供 Promise ，我们在使用时往往需要自己再重新包一层，比较麻烦。在 WePY 当中， WePY 官方帮我们封装好了一层，你可以直接使用 WePY 所封装好的方法，减少了封装的工作量。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;Vue 习惯的数据设定：&lt;/strong&gt;在 WePY 中，你可以使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;this.xxx=xxx&lt;/code&gt; 的语法进行赋值操作，相比于原生的 setData 方法，有更加舒适的语法，可维护性也更高。&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;&lt;strong&gt;提供了 computed 方法：&lt;/strong&gt;在开发小程序的时候，我们难免要对数据进行格式化，在传统的小程序开发中，我们需要对数据进行 map ，再进行修改，但是用了 WePY 以后，我们可以使用 computed 计算属性来进行数据的格式化和调整，大大的提升了代码的可读性。&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;二云开发-in-wepy&quot;&gt;二、云开发 in WePY&lt;/h3&gt;
-
-&lt;p&gt;云开发可以用在 WePY 中么？&lt;/p&gt;
-
-&lt;p&gt;答案当然是肯定的。&lt;/p&gt;
-
-&lt;p&gt;看待这个问题，你应该首先搞清楚，云开发所提供的到底是什么？&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;云开发提供的是数据存储、文件存储和计算能力&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;和 WePY 的定位提供微信小程序组件化开发的能力并不冲突，所以， WePY 和云开发并不冲突，你可以在 WePY 中使用云开发。&lt;/p&gt;
-
-&lt;h3 id=&quot;三在-wepy-项目中启用云开发&quot;&gt;三、在 WePY 项目中启用云开发&lt;/h3&gt;
-
-&lt;p&gt;由于 WePY 本身并没有提供云开发的模板（不过你现在可以使用 &lt;strong&gt;wepy init cloudkits/wepy-tcb-demo&lt;/strong&gt; 命令来初始化一个包含了云开发示例的 WePY 项目），所以，我们需要自己在项目中添加云开发。&lt;/p&gt;
-
-&lt;p&gt;云开发本身而言，是集成在 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.&lt;/code&gt; 的名字空间内的，所以无需配置可以直接使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.xxx&lt;/code&gt; 来调用云开发的各项命令。此外，比较特殊的是，你需要指定一下云函数目录，来确保微信小程序开发者工具能够识别出云函数目录。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;此处需要注意的是， 因为云开发的命令本身就支持 Promise 和 Callback ，所以你可以直接使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud&lt;/code&gt; 来调用，而不是使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wepy.cloud&lt;/code&gt; 来调用。WePY 官方也没有针对云开发进行再一次的封装。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;你可以在小程序项目的根目录创建一个新的目录 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloudfunctions&lt;/code&gt; ，然后在 &lt;code class=&quot;highlighter-rouge&quot;&gt;project.config.json&lt;/code&gt; 中添加一个新的配置项目 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloudfunctionRoot&lt;/code&gt;，并将其值设置为 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloudfunctions&lt;/code&gt;。这样，微信小程序开发者工具就能够识别出这个目录是云函数的目录，并为其加上特殊的目录名。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;此处需要注意的是，云函数应当放在小程序的源码目录 &lt;code class=&quot;highlighter-rouge&quot;&gt;src&lt;/code&gt; 之外，不然会导致编译报错。我试图寻找 &lt;code class=&quot;highlighter-rouge&quot;&gt;wepy.config.js&lt;/code&gt; 的中关于屏蔽编译检查目录的配置项目，但是没有找到，所以我直接将这个目录放在了项目根目录，云函数和小程序源码的 &lt;code class=&quot;highlighter-rouge&quot;&gt;src&lt;/code&gt; 同级。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;这样，你就完成了 WePY 中的小程序·云开发的引用。&lt;/p&gt;
-
-&lt;h3 id=&quot;四云开发在-wepy-中的使用&quot;&gt;四、云开发在 WePY 中的使用&lt;/h3&gt;
-
-&lt;p&gt;参照 &lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html&quot;&gt;官方文档&lt;/a&gt;&lt;/p&gt;
-
 </description>
       </item>
     

@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>查看QQ下载的视频路径 MAC | Gorpeln的个人博客 - Gorpeln</title>
+  <title>扩展篇 ：开发框架及前景 | Gorpeln的个人博客 - Gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="~/Library/Containers/com.tencent.qq/Data/Library/Caches/Videos/">
+  <meta name="description" content="一、小程序开源开发框架介绍">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/15438182232">
+  <link rel="canonical" href="https://gorpeln.com//article/15623480718">
   <link rel="alternate" type="application/rss+xml" title="Gorpeln的个人博客 - Gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -532,16 +532,14 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">查看QQ下载的视频路径 MAC</h1>
+    <h1 class="post-title">扩展篇 ：开发框架及前景</h1>
     <div class="info">
-	    <p class="post-meta">时间：2018-12-03</p>
+	    <p class="post-meta">时间：2019-07-06</p>
 	    
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#QQ"  target="_blank">QQ</a>
-		
-			<a class="pjaxlink" href="/tags#视频路径"  target="_blank">视频路径</a>
+			<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
 		
 		</span>
 	    
@@ -549,13 +547,112 @@
   </header>
 
 <div style="font-size: 8px;width:calc(100% + 3em);margin: 1em 0;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15438182232
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15623480718
 </div>
 
 
   <article class="post-content">
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>~/Library/Containers/com.tencent.qq/Data/Library/Caches/Videos/
-</code></pre></div></div>
+    <h2 id="一小程序开源开发框架介绍">一、小程序开源开发框架介绍</h2>
+
+<h3 id="1wepy">1、WePY</h3>
+
+<p>微信小程序问世没多久，大家发现用原生小程序语法开发，开发体验和效率真的不尽如人意。WePY 此时横空出世，彼时 WePY 的目的，是让小程序开发更贴近传统 H5 框架开发，支持引入 npm 包，支持组件化开发和 ES Next 新特性。</p>
+
+<ol>
+  <li>开发模式：更符合现有 MVVM 框架的开发模式，类 Vue，节省上手成本</li>
+  <li>组件化开发：支持组件嵌套、循环、组建通信等</li>
+  <li>npm 包管理：处理了 npm 包依赖问题</li>
+  <li>ES Next：语法更现代，提升开发体验</li>
+  <li>细节优化：setData 性能优化（脏检测）、事件传参、编译器支持、Mixin</li>
+</ol>
+
+<p>正是由于 WePY 解决了原生微信小程序的开发痛点，到目前为止，WePY 也是小程序上层框架中使用方最多的。很多开发者都是基于 WePY 开发微信小程序的，微信官方后续的一些性能优化和特性支持也有 WePY 的影子。</p>
+
+<p><a href="https://www.npmjs.com/package/wepy-cli">wepy-cli</a> 的周下载量月度平均都维持在 1000 以上，远远领先于同类 cli 工具，star 数 12k+，也正如官网所说，是最受欢迎的小程序框架。使用 WePY 框架的接入，更是达到了上千家。</p>
+
+<h3 id="2mpvue">2、mpvue</h3>
+
+<p>随着小程序接入量的猛增，业界也在不断地对小程序开发体验进行尝试。2018 年 3 月，美团点评发布了一个名叫 mpvue 的小程序框架。mpvue 是一套定位于开发小程序的前端开发框架，其核心目标是提高开发效率，增强开发体验。</p>
+
+<p>mpvue 是基于 Vue 的 Runtime（Vue Runtime 除了我们知道的 Web 平台之外，还有 Weex），相比 WePY，mpvue 的语法更接近 Vue 语法，对于有 Vue 基础的童鞋，可以无缝切换到小程序的开发，省下了学习小程序语法的时间。</p>
+
+<h3 id="3taro">3、Taro</h3>
+
+<p>Taro 是 2018 年 6 月，由京东凹凸实验室出品的一款号称多端统一的框架。这里的端，指的是 Web、App（React Native、Weex）、小程序。Taro 主打「一次编写，多端运行」，是继 WePY 和 mpvue 之后，在多平台上做到了更彻底的一款框架。</p>
+
+<h3 id="4小程序开发框架总结">4、小程序开发框架总结</h3>
+
+<p>微信小程序诞生之初，定位是简单的逻辑视图层框架，所以不带有数据流管理。经常看到一些小程序开发者，通过手工引入 Redux，去做数据流管理。上面的三款框架，都是支持数据流管理的。它们总体的特性与不同，可以参见下面的表格。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>特性</th>
+      <th>语法规范</th>
+      <th>模板系统</th>
+      <th>组件化</th>
+      <th>样式规范</th>
+      <th>多端复用</th>
+      <th>自动构建</th>
+      <th>上手成本</th>
+      <th>数据流管理</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>微信小程序</td>
+      <td>小程序规范</td>
+      <td>字符串模板</td>
+      <td>不太 OK 的小程序组件化</td>
+      <td>WXSS</td>
+      <td>无</td>
+      <td>无</td>
+      <td>全新学习</td>
+      <td>不支持</td>
+    </tr>
+    <tr>
+      <td>mpvue</td>
+      <td>Vue.js 规范</td>
+      <td>字符串模板</td>
+      <td>Vue.js 组件化规范</td>
+      <td>Sass、Less、PostCSS</td>
+      <td>复用 H5</td>
+      <td>webpack 构建</td>
+      <td>熟悉 Vue.js</td>
+      <td>Vuex</td>
+    </tr>
+    <tr>
+      <td>WePY</td>
+      <td>类 Vue.js 规范</td>
+      <td>字符串模板</td>
+      <td>自定义组件化规范</td>
+      <td>Sass、Less、Stylus</td>
+      <td>复用 H5</td>
+      <td>内建构建系统</td>
+      <td>熟悉 Vue.js</td>
+      <td>Redux</td>
+    </tr>
+    <tr>
+      <td>Taro</td>
+      <td>React 规范</td>
+      <td>JSX</td>
+      <td>React 组件化规范</td>
+      <td>Sass、Less、PostCSS</td>
+      <td>复用 H5 &amp; 通过 RN 支持移动端</td>
+      <td>内建构建系统 + webpack</td>
+      <td>熟悉 React</td>
+      <td>Redux</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>最后补充一句：任何解决方案都是在其特定使用场景下诞生的，并没有「放之四海而皆准」的方案。虽然引入新方案有时是为了解决语法、开发成本之类的问题，但可能同时又产生新的坑，因此如果是新手要做复杂的小程序项目，建议使用小程序自带的解决方案；如果是某个解决方案的熟手，可以考虑在大型小程序项目中选择自己顺手的解决方案。</p>
+
+<h2 id="二小程序前景分析">二、小程序前景分析</h2>
+
+<p>微信小程序其实已经抓住了一个用户痛点：我们安装的 N 多 App，其实一周甚至一个月都不会打开一次，这类 App 适合做成小程序，做到真正的「用完即走」。当然微信本身不可能只是这么「肤浅」，小程序实际是微信生态的重要一环，商家服务在小程序内可以完成闭环体验，小程序为其提供更好的用户体验。另外，现在制作 App 的成本越来越低，而 App 中的内容又更加封闭，不好做索引，微信这类超级 App 会变成导流工具，大家看重的是微信的入口，而最终目的是脱离微信，将用户导流到自己的 App 内。微信小程序也可以打破这个局面，将用户留在微信。</p>
+
+<p>下面说下微信的技术前景。微信小程序是一套近乎完美的 Hybrid 解决方案，从开发流程到生态建设，小程序开发者都做了设计和布局，但是小程序只是微信的小程序（某些 App 自己的小程序，比如百度智能小程序、支付宝小程序），这些解决方案是围绕一个 App 而设计的，相对于 PWA（渐进式 Web 应用）这类标准的推进，封闭的解决方案必然会受到挑战。笔者认为，随着标准的成熟、浏览器的跟进、硬件和网络的提升，行业标准的解决方案才是未来方向。而且小程序这个封闭的解决方案，运行在更大的封闭系统内，本身就具有争议性，小程序发展肯定会受限于苹果公司 iOS 审核规定，未来小程序和苹果 iOS 审核之间会有不小的冲突，比如苹果公司会严格限制小程序和小游戏的分发，不允许微信内给小程序和小游戏开放更大的入口；微信的虚拟支付也是苹果公司的重点打击对象。</p>
 
 
   </article>
@@ -563,13 +660,9 @@
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15462756619" title="博客成长记录..." style="color: #6666cc"  target="_blank">博客成长记录...</a>
-	    </div>
-	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15429884147" title="云开发 与 WePY" style="color: #6666cc"  target="_blank">云开发 与 WePY</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15618778699" title="实战篇 ：电商小程序云开发实战" style="color: #6666cc"  target="_blank">实战篇 ：电商小程序云开发实战</a>
 	    </div>
 	  
 	 
