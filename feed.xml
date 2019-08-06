@@ -3045,29 +3045,55 @@ fi
         <link>https://gorpeln.com//article/15462756619</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15462756619</guid>
         <pubDate>Tue, 01 Jan 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2019-03-20&lt;/span&gt; –&amp;gt;          优化文章链接（哎，以前的收录白费了…）&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2019-03-07&lt;/span&gt; –&amp;gt;          优化博客目录结构&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2019-01-26&lt;/span&gt; –&amp;gt;          添加个人项目专栏&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2019-01-22&lt;/span&gt; –&amp;gt;          由于Coding经常奔溃，弃用Coding，继续使用Github为主访问路径&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-12-03&lt;/span&gt; –&amp;gt;          优化cdn加速 速度真快… &lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-11-11&lt;/span&gt; –&amp;gt;          更换来必力评论为GitTalk评论&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-10-23&lt;/span&gt; –&amp;gt;          添加Coding pages 仓库，主访问路径改为Coding&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-10-18&lt;/span&gt; –&amp;gt;          修改博客色调、导航栏、侧边栏（添加留言、简历、搜索、导航入口），文章列表样式、文章详情样式&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-10-01&lt;/span&gt; –&amp;gt;          更换到七牛云图床、优化百度云CDN&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-09-13&lt;/span&gt; –&amp;gt;          优化百度统计、谷歌统计&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-08-03&lt;/span&gt; –&amp;gt;          添加 &lt;a href=&quot;https://gorpeln.com/site.html&quot;&gt;个人导航&lt;/a&gt; &lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-07-13&lt;/span&gt; –&amp;gt;          添加SSL支持&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-06-29&lt;/span&gt; –&amp;gt;          添加百度云CDN加速&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-05-02&lt;/span&gt; –&amp;gt;          暂时关闭不蒜子统计&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-05-01&lt;/span&gt; –&amp;gt;          删除百度分享功能&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-04-02&lt;/span&gt; –&amp;gt;          添加个人域名 &lt;a href=&quot;gorpeln.com&quot;&gt;gorpeln.com&lt;/a&gt;&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-02-23&lt;/span&gt; –&amp;gt;          jekyll博客全新优化。包括了:首页、分类、标签、归档、关于、搜索、百度分享、百度统计、谷歌统计、不蒜子统计、来必力评论、swiftype搜索 &lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2018-01-13&lt;/span&gt; –&amp;gt;          我想放弃CSDN了。。 &lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2017-12-29&lt;/span&gt; –&amp;gt;          CSDN越来越过分了。。。。  &lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2016-06-24&lt;/span&gt; –&amp;gt;          重新搭建jekyll个人博客&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-09-14&lt;/span&gt; –&amp;gt;          同时开通&lt;a href=&quot;https://blog.csdn.net/chen_gp_x&quot;&gt;CSDN博客&lt;/a&gt;，逐渐选择CSDN作为博客&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-09-02&lt;/span&gt; –&amp;gt;          学习hexo和jekyll博客搭建,搭建静态hexo博客&lt;br /&gt;
-&lt;span style=&quot;width:105px;display:inline-block;&quot;&gt;2015-08-23&lt;/span&gt; –&amp;gt;          产生搭建个人博客想法&lt;/p&gt;
+        <description>&lt;p&gt;&lt;br /&gt;
+博客目标：&lt;strong&gt;简洁&lt;/strong&gt;、&lt;strong&gt;高效&lt;/strong&gt;。
+&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2019-03-20&lt;/span&gt;优化文章链接（哎，以前的收录白费了...）&lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2019-03-07&lt;/span&gt;优化博客目录结构 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2019-01-26&lt;/span&gt;添加个人项目专栏 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2019-01-22&lt;/span&gt;由于Coding经常奔溃，弃用Coding，继续使用Github为主访问路径 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-12-03&lt;/span&gt;优化cdn加速 速度真快... &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-11-11&lt;/span&gt;更换来必力评论为GitTalk评论 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-10-23&lt;/span&gt;添加Coding pages 仓库，主访问路径改为Coding &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-10-18&lt;/span&gt;博客再次大升级3.0&lt;/div&gt;
+&lt;div class=&quot;des&quot;&gt;主要包括：博客色调、导航栏、侧边栏（添加留言、简历、搜索、导航入口），文章列表样式、文章详情样式&lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-10-12&lt;/span&gt;彻底放弃CSDN，专注个人博客 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-10-01&lt;/span&gt;更换图床到七牛云、优化百度云CDN &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-09-13&lt;/span&gt;优化百度统计、谷歌统计 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-08-03&lt;/span&gt;添加 &lt;a href=&quot;https://gorpeln.com/site.html&quot;&gt;个人导航&lt;/a&gt; &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-07-13&lt;/span&gt;添加SSL支持 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-06-29&lt;/span&gt;添加百度云CDN加速 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-05-02&lt;/span&gt;关闭不蒜子统计 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-05-01&lt;/span&gt;删除分享功能 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-04-02&lt;/span&gt;添加个人域名 &lt;a href=&quot;https://gorpeln.com&quot;&gt;gorpeln.com&lt;/a&gt; &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2018-02-23&lt;/span&gt;个人博客全新升级2.0 &lt;/div&gt;
+&lt;div class=&quot;des&quot;&gt;  包括了:首页、分类、标签、归档、关于、搜索、百度分享、百度统计、谷歌统计、不蒜子统计、来必力评论、swiftype搜索 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2017-12-29&lt;/span&gt;CSDN越来越过分了。。。。 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2016-03-12&lt;/span&gt;以CSDN博客为主，同步内容到个人博客 &lt;/div&gt;
+&lt;div class=&quot;desItem&quot;&gt;&lt;span class=&quot;time&quot;&gt;2015-08-23&lt;/span&gt;想有个自己的博客...注册&lt;a href=&quot;https://blog.csdn.net/chen_gp_x&quot;&gt;CSDN博客&lt;/a&gt;、同时搭建个人博客&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;style&gt;
+.desItem{
+    padding: 5px 0;
+    color:#000;
+}
+.time{
+    width:105px;
+    display:inline-block;
+    color:#999;
+    margin-right: 20px;
+}
+.des{
+    margin-left:125px;
+    padding: 5px 0;
+    color:#000;
+}
+&lt;style&gt; 
+&lt;/style&gt;
 </description>
       </item>
     
