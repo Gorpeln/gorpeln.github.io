@@ -120,20 +120,40 @@
         <link>https://gorpeln.com//article/15618778699</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15618778699</guid>
         <pubDate>Sun, 30 Jun 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;没错，实战篇就这一篇…并且还没写完……&lt;/p&gt;
+        <description>&lt;p&gt;小程序名称：gorpeln（已上线）
+提示：因个人开发账户限制，部分功能无法通过审核，所以隐藏了，全部功能体验请留言。&lt;/p&gt;
 
-&lt;p&gt;为了更生动的展示小程序效果，我正在做这个电商小程序，由于是业余时间开发，并没有人监督，开发速度可能会慢一些。。。/憨笑&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_wxmini_qrcode.jpg&quot; alt=&quot;blog_wxmini_qrcode&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;小程序名称：珠宝商城（暂定）&lt;br /&gt;
-前端：首页、分类、购物车、我的、商品详情页、活动详情页、订单详情页、订单列表、地址列表、支付等。&lt;br /&gt;
-后端：将集成到用户端，用于前端所需商品数据的上传下架等&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;小程序端主要包括：（开发中…）&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;首页&lt;/li&gt;
+  &lt;li&gt;分类&lt;/li&gt;
+  &lt;li&gt;购物车（收藏）&lt;/li&gt;
+  &lt;li&gt;我的&lt;/li&gt;
+  &lt;li&gt;商品详情页&lt;/li&gt;
+  &lt;li&gt;活动详情页&lt;/li&gt;
+  &lt;li&gt;订单详情页&lt;/li&gt;
+  &lt;li&gt;订单列表&lt;/li&gt;
+  &lt;li&gt;地址列表&lt;/li&gt;
+  &lt;li&gt;添加地址&lt;/li&gt;
+  &lt;li&gt;修改地址&lt;/li&gt;
+  &lt;li&gt;购买&lt;/li&gt;
+  &lt;li&gt;支付&lt;/li&gt;
+  &lt;li&gt;优惠券专区&lt;/li&gt;
+  &lt;li&gt;邀请有礼&lt;/li&gt;
+  &lt;li&gt;海报&lt;/li&gt;
+  &lt;li&gt;排序&lt;/li&gt;
+  &lt;li&gt;客服&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;（你一定很模糊，等我开发结果吧。。。大概在8月底出。。。可能更晚。。。）&lt;/p&gt;
+&lt;hr /&gt;
 
-&lt;p&gt;&lt;br /&gt; &lt;br /&gt; &lt;br /&gt; &lt;br /&gt;   &lt;br /&gt;
-  先看下【分类页】的一个完成效果：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_wxmini_dev_001.gif&quot; alt=&quot;blog_wxmini_dev_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;后端：（开发中…）&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;轮播图上传、下线&lt;/li&gt;
+&lt;/ul&gt;
 
 </description>
       </item>
