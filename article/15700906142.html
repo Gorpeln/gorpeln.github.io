@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>KVO用法总结 | Gorpeln的个人博客 - Gorpeln</title>
+  <title>锚点跳转距离顶部指定距离 | Gorpeln的个人博客 - Gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="一.概述：KVO全称Key-Value Observing，是苹果提供的一套事件通知机制。  作用：允许对象监听另一个对象特定属性的改变，并在改变时接收到事件。注意：由于KVO的实现机制，所以对属性才会发生作用，一般继承自NSObject的对象都默认支持KVO。使用KVO的步骤：  （1）注册Observer； ...">
+  <meta name="description" content="html">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/15326844120">
+  <link rel="canonical" href="https://gorpeln.com//article/15700906142">
   <link rel="alternate" type="application/rss+xml" title="Gorpeln的个人博客 - Gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -543,18 +543,20 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">KVO用法总结</h1>
+    <h1 class="post-title">锚点跳转距离顶部指定距离</h1>
     <div class="info">
-	    <p class="post-meta">时间：2018-07-27</p>
+	    <p class="post-meta">时间：2019-10-03</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
-        	iOS
+		<a class="item-date" style="color:#6666cc;" href="/categories#web前端" target="_blank">
+        	web前端
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#KVO"  target="_blank">KVO</a>
+			<a class="pjaxlink" href="/tags#锚点"  target="_blank">锚点</a>
+		
+			<a class="pjaxlink" href="/tags#html"  target="_blank">html</a>
 		
 		</span>
 	    
@@ -562,244 +564,30 @@
   </header>
 
 <div style="font-size: 8px;width:calc(100% + 3em);margin: 1em 0;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15326844120
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15700906142
 </div>
 
 
   <article class="post-content">
-    <h3 id="一概述">一.概述：</h3>
-<p>KVO全称Key-Value Observing，是苹果提供的一套事件通知机制。</p>
+    <p>html</p>
 
-<blockquote>
-  <p>作用：允许对象监听另一个对象特定属性的改变，并在改变时接收到事件。</p>
-</blockquote>
-
-<p>注意：由于KVO的实现机制，所以对属性才会发生作用，一般继承自NSObject的对象都默认支持KVO。
-使用KVO的步骤：</p>
-<blockquote>
-  <p>（1）注册Observer；   <br />
-（2）接收通知。  <br />
-（3）当观察者不需要监听时，可以调用removeObserver:forKeyPath:方法将KVO移除。建议在dealloc方法里移除</p>
-</blockquote>
-
-<p>KVO和NSNotification都是iOS中观察者模式的一种实现。</p>
-
-<p>区别在于，相对于被观察者和观察者之间的关系，KVO是一对一的，而不一对多的。KVO对被监听对象无侵入性，不需要修改其内部代码即可实现监听。</p>
-
-<h3 id="二kvo注册与接收通知">二.KVO注册与接收通知:</h3>
-<h4 id="1注册observer">1.注册Observer:</h4>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>使用方法： addObserver:forKeyPath:options:context:
- 
- 
-参数含义：
-       1. observer：观察者，监听属性变化的对象。该对象必须实现 observeValueForKeyPath:ofObject:change:context: 方法。
-       2. keyPath：要观察的属性名称。要和属性声明的名称一致。
-       3. options：对KVO机制进行配置，修改KVO通知的时机以及通知的内容
-       4. context: 传入任意类型的对象，在"接收消息回调"的代码中可以接收到这个对象，是KVO中的一种传值方式。
- 
- 
- 
-options参数：
- 
-enum {
-NSKeyValueObservingOptionNew = 0x01,
-NSKeyValueObservingOptionOld = 0x02,
-NSKeyValueObservingOptionInitial = 0x04,
-NSKeyValueObservingOptionPrior = 0x08
-};
-typedef NSUInteger NSKeyValueObservingOptions;
- 
-默认只接受新值
- 
-NSKeyValueObservingOptionNew：接收方法中使用change参数传入变化后的新值，键为：NSKeyValueChangeNewKey；
-NSKeyValueObservingOptionOld：接收方法中使用change参数传入变化前的旧值，键为：NSKeyValueChangeOldKey；
-NSKeyValueObservingOptionInitial：注册之后立刻调用接收方法，如果配置了NSKeyValueObservingOptionNew，change参数内容会包含新值，键为：NSKeyValueChangeNewKey；
-NSKeyValueObservingOptionPrior：如果加入这个参数，接收方法会在变化前后分别调用一次，共两次，变化前的通知change参数包含notificationIsPrior = 1。
- 
- 
- 
- 
- 
- 
-注册Observer之后一定要在合适的机会解除注册，否则会引发资源泄露，取消注册的方法：
-removeObserver:forKeyPath:context
- 
-一般在dealloc方法里删除
- 
-
-
-</code></pre></div></div>
-<h4 id="2接收通知">2.接收通知:</h4>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>注册后，当属性的值发生变化时，框架默认会自动通知注册的观察者。
-  
-当KVO事件到来时会调用这个方法，如果没有实现会导致Crash。
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
- 
-object：这个是所监听的对象，也就是所监听的属性所属的对象。
-change：是传入的变化量，通过在注册时用options参数进行的配置，会包含不同的内容。
-其他参数含义同注册时方法的参数含义。
-在实现这个方法中需要注意的是， 一定要对注册监听的所有属性都进行处理——使用context参数进行判断——否则Xcode会警告。
- 
- 
- 
-change参数：
-除了根据options参数控制的change参数内容，默认change参数会包含一个NSKeyValueChangeKindKey键值对，传递被监听属性的变化类型：
- 
-enum {
-NSKeyValueChangeSetting = 1,
-NSKeyValueChangeInsertion = 2,
-NSKeyValueChangeRemoval = 3,
-NSKeyValueChangeReplacement = 4
-};
-typedef NSUInteger NSKeyValueChange;
- 
- 
-NSKeyValueChangeSetting：属性的值被重新设置；
-NSKeyValueChangeInsertion、NSKeyValueChangeRemoval、NSKeyValueChangeReplacement：表示更改的是集合属性，分别代表插入、删除、替换操作。
-如果被观察对象是集合对象 在NSKeyValueChangeKindKey包含NSKeyValueChangeInsertion、NSKeyValueChangeRemoval、NSKeyValueChangeReplacement的信息，表示集合对象的操作方式，change参数还会包含一个NSKeyValueChangeIndexesKey键值对，表示变化的index。
-
-
-</code></pre></div></div>
-<h4 id="3例子">3.例子：</h4>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import &lt;Foundation/Foundation.h&gt;
- 
-@interface Book : NSObject
- 
-@property (nonatomic,strong)NSString *name;
-@property (nonatomic,strong)NSString *price;
- 
-@end
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;a href="#maodian"&gt;点这里跳&lt;/a&gt;
+&lt;div id="maodian"&gt;跳到这里&lt;/div&gt; 
 </code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import "ViewController.h"
-#import "Book.h"
- 
-@interface ViewController ()
- 
-@property (nonatomic,strong)Book *abook;
- 
-@end
- 
-@implementation ViewController
- 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    [self addObserver];
-    [self addBtn];
- 
-}
- 
- 
-/**
- 添加监听
- */
--(void)addObserver{
-    
-    //添加监听
-    self.abook = [[Book alloc]init];
-    self.abook.price = @"0";//先设一个初始值
-    [_abook addObserver:self forKeyPath:@"price" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
-    
-}
- 
- 
-/**
- 添加一个按钮
- */
--(void)addBtn{
-    
-    UIButton *abtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    abtn.frame = CGRectMake(80, 90.0, 80, 30);
-    [abtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [abtn setTitle:@"Change" forState:UIControlStateNormal];
-    [abtn addTarget:self action:@selector(btnClick) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:abtn];
-    
-}
- 
- 
-/**
- 按钮点击事件
- */
--(void)btnClick{
-    
-    NSLog(@"点击了Btn!");
-    NSInteger randomPrice = arc4random() % 100;
-    NSString *newPrice = [NSString stringWithFormat:@"%ld",(long)randomPrice];
-    
-    //触发监听
-    //第一种方法
-//    NSDictionary *newBookPropertiesDictionary=[NSDictionary dictionaryWithObjectsAndKeys:
-//                                               @"book name",@"name",
-//                                               newPrice,@"price",nil];
-//    [self.abook setValuesForKeysWithDictionary:newBookPropertiesDictionary];
-    
-    //第二种方法
-    [self.abook setValue:newPrice forKey:@"price"];
- 
-  不仅可以通过点语法和set语法进行调用，KVO兼容很多种调用方式。
- 
- 
-}
- 
-//实现监听
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if ([keyPath isEqual:@"price"]) {
-        NSLog(@"old price: %@",[change objectForKey:@"old"]);
-        NSLog(@"new price: %@",[change objectForKey:@"new"]);
+<p>js+jquery</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>window.onhashchange=function(){
+    var target = $(location.hash);
+    if(target.length==1){
+        var top = target.offset().top-120;// 距离顶部120像素
+        if(top &gt; 0){
+            $('html,body').animate({scrollTop: top}, 1000);//带jq动画的跳转
+           //$('html,body').css({scrollTop: top}) //不带jq动画的跳转
+        }
     }
-}
- 
--(void)dealloc
-{
-    //移除监听
-    [_abook removeObserver:self forKeyPath:@"price"];
-}
- 
- 
-@end
+};
 </code></pre></div></div>
-<p>打印结果：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>KVOTest[40935:3327447] 点击了Btn!
-KVOTest[40935:3327447] old price: 0
-KVOTest[40935:3327447] new price: 87
-KVOTest[40935:3327447] 点击了Btn!
-KVOTest[40935:3327447] old price: 87
-KVOTest[40935:3327447] new price: 49
-</code></pre></div></div>
-<h4 id="触发监听方法">触发监听方法：</h4>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.直接调用set方法，或者通过属性的点语法间接调用
-2.使用KVC的setValue:forKey:方法
-3.使用KVC的setValue:forKeyPath:方法
-4.通过mutableArrayValueForKey:方法获取到代理对象，并使用代理对象进行操作
-</code></pre></div></div>
-<h3 id="三kvo实现原理">三、KVO实现原理：</h3>
-<p><img src="https://img.gorpeln.com/blog_kvo_001.png" alt="blog_kvo_001" /></p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>KVO是通过isa-swizzling技术实现的(这句话是整个KVO实现的重点)。
-
-在运行时根据原类创建一个中间类，这个中间类是原类的子类，并动态修改当前对象的isa指向中间类。
-
-并且将class方法重写，返回原类的Class。
-
-所以苹果建议在开发中不应该依赖isa指针，而是通过class实例方法来获取对象类型。
-
-</code></pre></div></div>
-
-<p>流程：</p>
-
-<p>1、当某个类的对象第一次被观察时，系统就会在运行期动态地创建该类的一个派生类，在这个派生类中重写基类中任何被观察属性的 setter 方法。</p>
-
-<p>2、派生类在被重写的 setter 方法中实现真正的通知机制，就如前面手动实现键值观察那样。这么做是基于设置属性会调用 setter 方法，而通过重写就获得了 KVO 需要的通知机制。当然前提是要通过遵循 KVO 的属性设置方式来变更属性值，如果仅是直接修改属性对应的成员变量，是无法实现 KVO 的。</p>
-
-<p>3、同时派生类还重写了 class 方法以“欺骗”外部调用者它就是起初的那个类。然后系统将这个对象的 isa 指针指向这个新诞生的派生类，因此这个对象就成为该派生类的对象了，因而在该对象上对 setter 的调用就会调用重写的 setter，从而激活键值通知机制。此外，派生类还重写了 dealloc 方法来释放资源。</p>
 
 
   </article>
@@ -808,12 +596,12 @@ KVOTest[40935:3327447] new price: 49
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15334663054" title="Github上的代码添加Cocoapods支持" style="color: #6666cc"  target="_blank">Github上的代码添加Cocoapods支持</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15713825459" title="App Store 审核指南" style="color: #6666cc"  target="_blank">App Store 审核指南</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15324985037" title="tomcat启动和关闭 MAC" style="color: #6666cc"  target="_blank">tomcat启动和关闭 MAC</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15623480718" title="扩展篇 ：开发框架及前景" style="color: #6666cc"  target="_blank">扩展篇 ：开发框架及前景</a>
 	    </div>
 	  
 	 
