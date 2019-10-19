@@ -634,6 +634,8 @@ password: 123456
             if (prompt('请输入密码') !== '123456'){
                 alert('密码错误');
                 window.close();
+                window.history.go(-1);
+				history.back(-1);
             }
         }
     })();  
