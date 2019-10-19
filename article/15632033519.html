@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PhpStorm2017 激活和汉化 MAC | Gorpeln的个人博客 - Gorpeln</title>
+  <title>文章置顶功能的实现 - Jekyll x Liquid | Gorpeln的个人博客 - Gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="激活试用期的用户可在 PhpStorm菜单栏–&gt;Help–&gt;Register打开">
+  <meta name="description" content="其实很简单, 从post的header里面进行参数设置">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/15090326823">
+  <link rel="canonical" href="https://gorpeln.com//article/15632033519">
   <link rel="alternate" type="application/rss+xml" title="Gorpeln的个人博客 - Gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -551,18 +551,22 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">PhpStorm2017 激活和汉化 MAC</h1>
+    <h1 class="post-title">文章置顶功能的实现 - Jekyll x Liquid</h1>
     <div class="info">
-	    <p class="post-meta">时间：2017-10-26</p>
+	    <p class="post-meta">时间：2019-07-15</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#Software MAC" target="_blank">
-        	Software MAC
+		<a class="item-date" style="color:#6666cc;" href="/categories#个人博客" target="_blank">
+        	个人博客
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#PhpStorm2017"  target="_blank">PhpStorm2017</a>
+			<a class="pjaxlink" href="/tags#个人博客"  target="_blank">个人博客</a>
+		
+			<a class="pjaxlink" href="/tags#Jekyll"  target="_blank">Jekyll</a>
+		
+			<a class="pjaxlink" href="/tags#文章置顶"  target="_blank">文章置顶</a>
 		
 		</span>
 	    
@@ -570,46 +574,54 @@
   </header>
 
 <div style="font-size: 8px;width:calc(100% + 3em);margin-bottom: 2em;color: #828282;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15090326823
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15632033519
 </div>
 
 
   <article class="post-content">
-    <h3 id="激活">激活</h3>
-<p><strong>试用期的用户可在 PhpStorm菜单栏–&gt;Help–&gt;Register打开</strong></p>
+    <p>其实很简单, 从post的header里面进行参数设置</p>
 
-<p><img src="https://img.gorpeln.com/blog_20171026001.png" alt="blog_20171026001" /></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>layout: post
+title: Jekyll x Liquid: 文章置顶功能的实现
+category: 个人博客
+tags: [个人博客,Jekyll,文章置顶,gorpeln]
+description: 
+stickie: true
+</code></pre></div></div>
 
-<p><strong>选择License server，输入以下任意一个地址：</strong></p>
+<p>然后liquid进行判断<code class="highlighter-rouge">(*号换成%)</code></p>
 
-<pre><code class="language-HTML">http://xidea.online  
-http://idea.imsxm.com/   
-http://114.215.133.70:41017﻿/   
-http://mcpmcc.com:1017   
-http://idea.pjoc.pub   
-http://jetbrains.tencent.click  
-</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{* for post in site.posts *}
+    {* if post.stickie != true *}
+        {* continue *}
+    {* endif *}
+    &lt;div&gt;置顶文章细节&lt;/div&gt;
+{* endfor *}
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{* for post in site.posts *}
+    {* if post.stickie == true *}
+        {* continue *}
+    {* endif *}
+    &lt;div&gt;普通文章细节&lt;/div&gt;
+{* endfor *}
+</code></pre></div></div>
+<p>当然这个可以进行多种扩展, 比如只输出特定类别的文章等等，这里就是个只输出带有gorpeln这个tag的post</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{* for post in site.posts *}
 
-<p><strong>点击Activate就可以尽情的使用了！</strong></p>
+    {* assign isGorpeln = 0 *}
 
-<h3 id="汉化">汉化</h3>
+    {* for tag in post.tags *}
+        {* if tag == gorpeln *}
+           {* assign isGorpeln = 1 *}
+        {* endif *}
+    {* endfor *}
 
-<p><strong>[ <a href="http://download.csdn.net/download/chen_gp_x/10040535">PhpStorm汉化包 下载地址</a> ]</strong></p>
+    {* if isGorpeln == 0 *}
+      {* continue *}
+    {* endif *}
 
-<blockquote>
-  <p>shift+command+G
-输入：
-/Applications/PhpStorm.app/Contents/lib</p>
-</blockquote>
-
-<p>或</p>
-
-<blockquote>
-  <p>点击应用程序–&gt;右击PhpStorm选择显示包内容–&gt;Contents–&gt;lib</p>
-</blockquote>
-
-<p><strong>然后把汉化包放入文件夹，重启PhpStorm，完成。</strong></p>
-
+{* endfor *}
+</code></pre></div></div>
 
   </article>
 </div>
@@ -617,12 +629,12 @@ http://jetbrains.tencent.click
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15115957926" title="整站下载工具httrack使用 MAC" style="color: #6666cc"  target="_blank">整站下载工具httrack使用 MAC</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15692409843" title="Jekyll 简单加密 (pwd=123456)" style="color: #6666cc"  target="_blank">Jekyll 简单加密 (pwd=123456)</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15076490854" title="MAC 使用技巧" style="color: #6666cc"  target="_blank">MAC 使用技巧</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15623480718" title="扩展篇 ：开发框架及前景" style="color: #6666cc"  target="_blank">扩展篇 ：开发框架及前景</a>
 	    </div>
 	  
 	 

@@ -97,7 +97,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">78</span>
+                                    <span class="site-state-item-count">80</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -109,7 +109,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">74</span>
+                                    <span class="site-state-item-count">76</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -138,7 +138,7 @@
                             
                             <li>
                                 <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;" target="_blank">个人博客</a>
-                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">4篇</a>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">6篇</a>
                             </li>
                             
                             <li>
@@ -473,6 +473,14 @@
                             </li>
                             
                             <li>
+                                <a href="/tags#文章置顶" name="文章置顶">文章置顶</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#加密" name="加密">加密</a>
+                            </li>
+                            
+                            <li>
                                 <a href="/tags#锚点" name="锚点">锚点</a>
                             </li>
                             
@@ -523,8 +531,8 @@
                         <p>友情链接</p>
                         <hr>
                         <ul style="list-style-type:circle">
-                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">Gorpeln</a></li>
-                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">CSDN</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">风未止</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">gorpeln</a></li>
                         </ul>
                     </div>
                     <!-- 				<div class="siteNav">
@@ -543,29 +551,125 @@
                     <div class="page-content" id="pjax"><html>
 <head>
 	<style type="text/css">
-
-a:visited {color:#ff0000}
-
-</style>
+		.topTip{
+			background: #EE3B3B;
+		    color: #fff;
+		    padding: 0 8px;
+		    font-size: 16px;
+		    font-weight: 400;
+		    border-radius: 4px;
+		    margin-right: 0.5em;
+		}
+	</style>
 </head>
 <div>
 
-   
+	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
 
-		<div class="postbox">
+	
+    	
+    	<div class="postbox">
+			<div class="allpost">
+				<div class="title">
+					<a class="pjaxlink" href="/article/14882587810"  target="_blank">数组操作：倒序、乱序</a>
+				</div>
+				<hr>
+				<div class="info">
+					时间：2017-02-28&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
+                   		iOS
+					</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				      	标签：
+					<span class="index-post-tag">
+						
+							<a class="" href="/tags.html#NSArray" target="_blank">NSArray</a>
+						
+							<a class="" href="/tags.html#倒序" target="_blank">倒序</a>
+						
+							<a class="" href="/tags.html#乱序" target="_blank">乱序</a>
+						
+							<a class="" href="/tags.html#代码段" target="_blank">代码段</a>
+						
+					</span>
+					
+				</div>
+				<div class="contentAbstract">倒序操作
 
+
+    NSMutableArray *originalArray = [NSMutableArray arrayWithObjects:@"1",@"2",@"3",@"4",@"5",nil];
+    NSArray* reversedArray = [[originalArray reverseObjectEnumerator] allObjects];
+    
+  ...</div>	
+			</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14882587810"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
+		</div>
+	
+    	
+    	<div class="postbox">
+			<div class="allpost">
+				<div class="title">
+					<a class="pjaxlink" href="/article/14875801742"  target="_blank">Label中某几个字符颜色大小不同</a>
+				</div>
+				<hr>
+				<div class="info">
+					时间：2017-02-20&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
+                   		iOS
+					</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				      	标签：
+					<span class="index-post-tag">
+						
+							<a class="" href="/tags.html#UIlabel" target="_blank">UIlabel</a>
+						
+							<a class="" href="/tags.html#代码段" target="_blank">代码段</a>
+						
+					</span>
+					
+				</div>
+				<div class="contentAbstract">
+UILabel *label=[[UILabel alloc]initWithFrame:CGRectMake(100, 10, 200, 100)];  
+int i=arc4random()%100;  
+NSString *str1=@"本期参与:";  
+NSString *str2=[NSString stringWithFormat:@"%d",i];  
+NSString *...</div>	
+			</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14875801742"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
+		</div>
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/14873067700"  target="_blank">开发编码规范建议</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2017-02-17&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2017-02-17&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#架构和算法" target="_blank">
-                   			架构和算法
+                   		架构和算法
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -575,34 +679,29 @@ a:visited {color:#ff0000}
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">　　在开发过程中，我们不仅要去看别人的代码，也要让别人看我们的代码。那么，有一个良好的编码习惯将会非常重要。下面将会罗列使用Objective-C来开发iOS的编码建议。
 
 【1】任意函数长度不得超过50行。（其实很容易就超过50行，这就要考虑代码抽取了。）
 
 【2】任意行代码不能超过80字符。（其实也很容易超过80字符，可以考虑多行显示，比如有多个参数时，可以每个参数放一行。）可以在Xco...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/14873067700"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14873067700"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/14872573275"  target="_blank">限制UITextField的文字长度</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2017-02-16&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2017-02-16&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                   			iOS
+                   		iOS
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -614,7 +713,6 @@ a:visited {color:#ff0000}
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">监听textField文本变化的事件
 
 
@@ -627,27 +725,23 @@ a:visited {color:#ff0000}
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRang...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/14872573275"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14872573275"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/14863391315"  target="_blank">录制GIF动画 MAC</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2017-02-06&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2017-02-06&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#Software MAC" target="_blank">
-                   			Software MAC
+                   		Software MAC
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -657,7 +751,6 @@ a:visited {color:#ff0000}
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">软件下载
 
 Licecap for Mac 下载地址
@@ -676,27 +769,23 @@ Licecap for Mac 下载地址
 
 3、这里调整到模拟器大小后（让整个模拟器在软件透明框内），点击右下角record录制按钮，选择保存位置后，开...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/14863391315"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14863391315"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/14861973259"  target="_blank">字符串的删除替换</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2017-02-04&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2017-02-04&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                   			iOS
+                   		iOS
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -708,7 +797,6 @@ Licecap for Mac 下载地址
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">字符串的常用处理，删除、替换。记录一下，方便查找
 
 
@@ -719,27 +807,23 @@ Licecap for Mac 下载地址
     //删除字符串两端的尖括号  
     NSMutableString *mString = [NSMutableS...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/14861973259"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14861973259"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/14776665877"  target="_blank">push,pop到任意控制器(一)</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2016-10-28&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2016-10-28&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                   			iOS
+                   		iOS
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -753,7 +837,6 @@ Licecap for Mac 下载地址
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">主题思想：如A、B、C、D 四个视图控制器
 想要在 A push B 后， B 在push 到 D ，然后从 D pop 到 C ,再从 C pop 的A
 
@@ -767,27 +850,23 @@ Licecap for Mac 下载地址
 
 这时 self.naviga...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/14776665877"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14776665877"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/14743559444"  target="_blank">设置任意某个角为圆角</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2016-09-20&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2016-09-20&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                   			iOS
+                   		iOS
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -799,7 +878,6 @@ Licecap for Mac 下载地址
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">设置控件圆角，只设置上面两个角的圆角，下面两个角依然是直角，如图效果：
 
 
@@ -810,94 +888,11 @@ Licecap for Mac 下载地址
 UIImageView *picImageView = [[UIImageView alloc] initWithFrame:CGRectMake(100, 100, 100, 100)];    
 picImageView.backgroundColor = [UIC...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/14743559444"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
-		</div>
-
-   
-
-		<div class="postbox">
-
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="/article/14696000759"  target="_blank">冒泡排序</a>
-				</div>
-				<hr>
-				<div class="info">
-						时间：2016-07-27&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                   			iOS
-					</a>
-
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#冒泡排序" target="_blank">冒泡排序</a>
-						
-					</span>
-					
-				</div>
-
-				<div class="contentAbstract">一、算法描述
-
-  冒泡排序：依次比较相邻的数据，将小数据放在前，大数据放在后；即第一趟先比较第1个和第2个数，大数在后，小数在前，再比较第2个数与第3个数，大数在后，小数在前，以此类推则将最大的数”滚动”到最后一个位置；第二趟则将次大的数滚动到倒数第二个位置……第n-1(n为无序数据的个数)趟即能完成排序。
-
-
-
-
-
-  以下面5个无序的数据为例：
-40 8 15 18 12 （文中仅细化...</div>	
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14743559444"  class="readmore"  target="_blank">阅读全文 》</a>
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/14696000759"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="/article/14669248561"  target="_blank">为什么不应该加班？</a>
-				</div>
-				<hr>
-				<div class="info">
-						时间：2016-06-26&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#程序人生" target="_blank">
-                   			程序人生
-					</a>
-
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#程序人生" target="_blank">程序人生</a>
-						
-					</span>
-					
-				</div>
-
-				<div class="contentAbstract">加班有好处也有坏处，下面我列举了一些，有些是众所周知的，有些是我的个人意见。
-
-一、坏处
-
-(1)加班会产生新的bug
-　　人不可能长时间的集中精神，如果你的大脑没有休息好的话，注意力就会下降的很快。其实你在早上的时候休息的不错，注意力很集中的时候，你也可能会产生bug，那么在晚上10点继续工作的话，会产生什么样的灾难性的事情，真是不敢想象。一天8小时的脑力工作对你的大脑来说已经够多了。
-
-...</div>	
-			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/14669248561"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
-		</div>
-
-   
+	
 
 	
 		<div class="pagination center">
@@ -964,7 +959,6 @@ picImageView.backgroundColor = [UIC...</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
         ©2015-2019 Gorpeln 版权所有&nbsp; | &nbsp;京ICP备18035462号
     </div>
-
 </footer>
 <script type="text/javascript" src="/assets/js/jquery.js"></script>
 <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
@@ -972,7 +966,6 @@ picImageView.backgroundColor = [UIC...</div>
 <script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
 <script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
 <script type="text/javascript" src="/assets/js/main.js"></script>
-
 <!-- search -->
 <div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
       opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
@@ -1030,7 +1023,6 @@ var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.
 document.write('<script src="' + src + '" id="sozz"><\/script>');
 })();
 </script>
-
 
 
 

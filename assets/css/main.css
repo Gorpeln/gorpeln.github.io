@@ -1688,7 +1688,7 @@ div.gavatar a:hover {
 }
 
 .postbox .allpost .title {
-    display: inline-block;
+    display: flex;
     font-size: 1.5em;
     text-align: left;
     width: 100%;

@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>PhpStorm2017 激活和汉化 MAC | Gorpeln的个人博客 - Gorpeln</title>
+  <title>Jekyll 简单加密 (pwd=123456) | Gorpeln的个人博客 - Gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="激活试用期的用户可在 PhpStorm菜单栏–&gt;Help–&gt;Register打开">
+  <meta name="description" content="加密文章                                                                                                                                                         ...">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/15090326823">
+  <link rel="canonical" href="https://gorpeln.com//article/15692409843">
   <link rel="alternate" type="application/rss+xml" title="Gorpeln的个人博客 - Gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -551,18 +551,22 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">PhpStorm2017 激活和汉化 MAC</h1>
+    <h1 class="post-title">Jekyll 简单加密 (pwd=123456)</h1>
     <div class="info">
-	    <p class="post-meta">时间：2017-10-26</p>
+	    <p class="post-meta">时间：2019-09-23</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#Software MAC" target="_blank">
-        	Software MAC
+		<a class="item-date" style="color:#6666cc;" href="/categories#个人博客" target="_blank">
+        	个人博客
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#PhpStorm2017"  target="_blank">PhpStorm2017</a>
+			<a class="pjaxlink" href="/tags#个人博客"  target="_blank">个人博客</a>
+		
+			<a class="pjaxlink" href="/tags#Jekyll"  target="_blank">Jekyll</a>
+		
+			<a class="pjaxlink" href="/tags#加密"  target="_blank">加密</a>
 		
 		</span>
 	    
@@ -570,45 +574,70 @@
   </header>
 
 <div style="font-size: 8px;width:calc(100% + 3em);margin-bottom: 2em;color: #828282;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15090326823
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15692409843
 </div>
 
 
   <article class="post-content">
-    <h3 id="激活">激活</h3>
-<p><strong>试用期的用户可在 PhpStorm菜单栏–&gt;Help–&gt;Register打开</strong></p>
+    <p>加密文章</p>
+<html>
+<body>
+    <div>
+        <ul>
+            <li>
+            </li>
+            <li>
+            </li>
+            <li>
+            </li>
+        </ul>
+        <ul>
+            <li>
+            </li>
+            <li>
+            </li>
+            <li>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
 
-<p><img src="https://img.gorpeln.com/blog_20171026001.png" alt="blog_20171026001" /></p>
+<p>这个加密安全性太低，不过可以封掉一部分读者。只需要查看一下NetWork，就可以看到对应页面的全部URL，之后有时间我再看看文本内容加密。</p>
 
-<p><strong>选择License server，输入以下任意一个地址：</strong></p>
+<p>其实很简单, 从post的header里面进行参数设置</p>
 
-<pre><code class="language-HTML">http://xidea.online  
-http://idea.imsxm.com/   
-http://114.215.133.70:41017﻿/   
-http://mcpmcc.com:1017   
-http://idea.pjoc.pub   
-http://jetbrains.tencent.click  
-</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>layout: post
+title: Jekyll 简单加密 (pwd=123456)
+category: 个人博客
+tags: [个人博客,Jekyll,加密]
+password: 123456
+</code></pre></div></div>
 
-<p><strong>点击Activate就可以尽情的使用了！</strong></p>
+<p>然后，添加script</p>
 
-<h3 id="汉化">汉化</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;script&gt;
+    (function(){
+        if('123456'){
+            if (prompt('请输入密码') !== '123456'){
+                alert('密码错误');
+                window.close();
+            }
+        }
+    })();  
+&lt;/script&gt;
+</code></pre></div></div>
 
-<p><strong>[ <a href="http://download.csdn.net/download/chen_gp_x/10040535">PhpStorm汉化包 下载地址</a> ]</strong></p>
-
-<blockquote>
-  <p>shift+command+G
-输入：
-/Applications/PhpStorm.app/Contents/lib</p>
-</blockquote>
-
-<p>或</p>
-
-<blockquote>
-  <p>点击应用程序–&gt;右击PhpStorm选择显示包内容–&gt;Contents–&gt;lib</p>
-</blockquote>
-
-<p><strong>然后把汉化包放入文件夹，重启PhpStorm，完成。</strong></p>
+<script>
+    (function(){
+        if('123456'){
+            if (prompt('请输入密码') !== '123456'){
+                alert('密码错误');
+                window.close();
+            }
+        }
+    })();  
+</script>
 
 
   </article>
@@ -617,12 +646,12 @@ http://jetbrains.tencent.click
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15115957926" title="整站下载工具httrack使用 MAC" style="color: #6666cc"  target="_blank">整站下载工具httrack使用 MAC</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15700906142" title="锚点跳转距离顶部指定距离" style="color: #6666cc"  target="_blank">锚点跳转距离顶部指定距离</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15076490854" title="MAC 使用技巧" style="color: #6666cc"  target="_blank">MAC 使用技巧</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15632033519" title="文章置顶功能的实现 - Jekyll x Liquid" style="color: #6666cc"  target="_blank">文章置顶功能的实现 - Jekyll x Liquid</a>
 	    </div>
 	  
 	 

@@ -97,7 +97,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">78</span>
+                                    <span class="site-state-item-count">80</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -109,7 +109,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">74</span>
+                                    <span class="site-state-item-count">76</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -138,7 +138,7 @@
                             
                             <li>
                                 <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;" target="_blank">个人博客</a>
-                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">4篇</a>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">6篇</a>
                             </li>
                             
                             <li>
@@ -473,6 +473,14 @@
                             </li>
                             
                             <li>
+                                <a href="/tags#文章置顶" name="文章置顶">文章置顶</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#加密" name="加密">加密</a>
+                            </li>
+                            
+                            <li>
                                 <a href="/tags#锚点" name="锚点">锚点</a>
                             </li>
                             
@@ -523,8 +531,8 @@
                         <p>友情链接</p>
                         <hr>
                         <ul style="list-style-type:circle">
-                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">Gorpeln</a></li>
-                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">CSDN</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">风未止</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">gorpeln</a></li>
                         </ul>
                     </div>
                     <!-- 				<div class="siteNav">
@@ -549,7 +557,56 @@
 	写博客的目的是坚持做一件属于自己的事情，提高自己的表述能力，提供持续学习的动力，积累更多的知识，记录成长，找到一些志同道合的朋友，讨论反思，追寻到一些意想不到的东西，使之成为个人的互联网身份标识。
 	</p>
 
-	<a href="/article/15462756619" style="color: 6666cc;">博客成长记录...</a>
+	<a href="/article/15462756619" style="color: #6666cc;font-size: 16px;">博客成长记录...</a>
+
+    <div id="htmer_time" style="color: #828282;width: 100%;text-align: left;font-size: 13px;"></div>
+    <span>
+        <script language=JavaScript>
+        function secondToDate(second) {
+            if (!second) {
+                return 0;
+            }
+
+            var time = new Array(0, 0, 0, 0, 0);
+
+            if (second >= 365 * 24 * 3600) {
+                time[0] = parseInt(second / (365 * 24 * 3600));
+                second %= 365 * 24 * 3600;
+            }
+
+            if (second >= 24 * 3600) {
+                time[1] = parseInt(second / (24 * 3600));
+                second %= 24 * 3600;
+            }
+
+            if (second >= 3600) {
+                time[2] = parseInt(second / 3600);
+                second %= 3600;
+            }
+
+            if (second >= 60) {
+                time[3] = parseInt(second / 60);
+                second %= 60;
+            }
+
+            if (second > 0) {
+                time[4] = second;
+            }
+            return time;
+        }
+        </script>
+        <!-- 动态显示网站运行时间 -->
+        <script type="text/javascript" language="javascript">
+        function setTime() {
+            var create_time = Math.round(new Date(Date.UTC(2015, 08, 23, 12, 0, 0)).getTime() / 1000);
+            var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+            currentTime = secondToDate((timestamp - create_time));
+            currentTimeHtml = '本站已安全运行：' + currentTime[0] + '年' + currentTime[1] + '天' + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4] + '秒';
+            document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+        }
+        setInterval(setTime, 1000);
+        </script>
+    </span>
 
 	<br/>
 	<br/>
@@ -735,7 +792,6 @@
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
         ©2015-2019 Gorpeln 版权所有&nbsp; | &nbsp;京ICP备18035462号
     </div>
-
 </footer>
 <script type="text/javascript" src="/assets/js/jquery.js"></script>
 <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
@@ -743,7 +799,6 @@
 <script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
 <script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
 <script type="text/javascript" src="/assets/js/main.js"></script>
-
 <!-- search -->
 <div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
       opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
@@ -801,7 +856,6 @@ var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.
 document.write('<script src="' + src + '" id="sozz"><\/script>');
 })();
 </script>
-
 
 
 

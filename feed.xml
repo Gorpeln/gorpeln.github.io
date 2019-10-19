@@ -713,6 +713,125 @@
       </item>
     
       <item>
+        <title>Jekyll 简单加密 (pwd=123456)</title>
+        <link>https://gorpeln.com//article/15692409843</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15692409843</guid>
+        <pubDate>Mon, 23 Sep 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;加密文章&lt;/p&gt;
+&lt;html&gt;
+&lt;body&gt;
+    &lt;div&gt;
+        &lt;ul&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;ul&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;p&gt;这个加密安全性太低，不过可以封掉一部分读者。只需要查看一下NetWork，就可以看到对应页面的全部URL，之后有时间我再看看文本内容加密。&lt;/p&gt;
+
+&lt;p&gt;其实很简单, 从post的header里面进行参数设置&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;layout: post
+title: Jekyll 简单加密 (pwd=123456)
+category: 个人博客
+tags: [个人博客,Jekyll,加密]
+password: 123456
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后，添加script&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script&amp;gt;
+    (function(){
+        if('123456'){
+            if (prompt('请输入密码') !== '123456'){
+                alert('密码错误');
+                window.close();
+            }
+        }
+    })();  
+&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;script&gt;
+    (function(){
+        if('123456'){
+            if (prompt('请输入密码') !== '123456'){
+                alert('密码错误');
+                window.close();
+            }
+        }
+    })();  
+&lt;/script&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>文章置顶功能的实现 - Jekyll x Liquid</title>
+        <link>https://gorpeln.com//article/15632033519</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15632033519</guid>
+        <pubDate>Mon, 15 Jul 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;其实很简单, 从post的header里面进行参数设置&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;layout: post
+title: Jekyll x Liquid: 文章置顶功能的实现
+category: 个人博客
+tags: [个人博客,Jekyll,文章置顶,gorpeln]
+description: 
+stickie: true
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;然后liquid进行判断&lt;code class=&quot;highlighter-rouge&quot;&gt;(*号换成%)&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* for post in site.posts *}
+    {* if post.stickie != true *}
+        {* continue *}
+    {* endif *}
+    &amp;lt;div&amp;gt;置顶文章细节&amp;lt;/div&amp;gt;
+{* endfor *}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* for post in site.posts *}
+    {* if post.stickie == true *}
+        {* continue *}
+    {* endif *}
+    &amp;lt;div&amp;gt;普通文章细节&amp;lt;/div&amp;gt;
+{* endfor *}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;当然这个可以进行多种扩展, 比如只输出特定类别的文章等等，这里就是个只输出带有gorpeln这个tag的post&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* for post in site.posts *}
+
+    {* assign isGorpeln = 0 *}
+
+    {* for tag in post.tags *}
+        {* if tag == gorpeln *}
+           {* assign isGorpeln = 1 *}
+        {* endif *}
+    {* endfor *}
+
+    {* if isGorpeln == 0 *}
+      {* continue *}
+    {* endif *}
+
+{* endfor *}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+      </item>
+    
+      <item>
         <title>扩展篇 ：开发框架及前景</title>
         <link>https://gorpeln.com//article/15623480718</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15623480718</guid>
@@ -3478,199 +3597,6 @@ At the bottom of the file:
  */
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-</description>
-      </item>
-    
-      <item>
-        <title>终端上成功提交了代码，GitHub上Contributions没有变绿</title>
-        <link>https://gorpeln.com//article/15495225362</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15495225362</guid>
-        <pubDate>Thu, 07 Feb 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;今天突然发现自己好多次的commits都没有被记录在Contributions中,但是点开项目详情里面可以看到自己的commit确实上传成功了,以前一直没有注意,为什么没有绿呢?&lt;/p&gt;
-
-&lt;p&gt;然后去了解了下Contributions的规则,发现只会记录以下几种:&lt;/p&gt;
-&lt;h3 id=&quot;计算规则&quot;&gt;计算规则&lt;/h3&gt;
-
-&lt;h5 id=&quot;issues-和-pull-requests&quot;&gt;Issues 和 pull requests&lt;/h5&gt;
-&lt;ul&gt;
-  &lt;li&gt;这个操作是针对一个独立的仓库，不能是fork&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h5 id=&quot;commits&quot;&gt;Commits&lt;/h5&gt;
-&lt;p&gt;如果提交符合以下&lt;strong&gt;所有&lt;/strong&gt;条件，则会在您的贡献图表上显示：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;用于提交的电子邮件地址与您的GitHub帐户相关联。&lt;/li&gt;
-  &lt;li&gt;提交是在独立的存储库中进行的，而不是fork。&lt;/li&gt;
-  &lt;li&gt;提交的内容如下：
-    &lt;ul&gt;
-      &lt;li&gt;在存储库的默认分支（通常master）&lt;/li&gt;
-      &lt;li&gt;在gh-pages分支中（对于具有Project Pages站点的存储库）&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;此外，必须至少满足下列条件之一（主要针对你Commit的仓库不是你创建的）：&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;你是仓库的协作者，或者是这个版本库的拥有组织中的一员。&lt;/li&gt;
-  &lt;li&gt;你已经fork了存储库。&lt;/li&gt;
-  &lt;li&gt;你对这个仓库发起过pull request或者issue。&lt;/li&gt;
-  &lt;li&gt;你对这个仓库标记了Star。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;注意：私有库的贡献仅仅对私有库成员显示&lt;/p&gt;
-
-&lt;h3 id=&quot;contributions未被github计入的常见原因&quot;&gt;Contributions未被Github计入的常见原因&lt;/h3&gt;
-&lt;div style=&quot;background:#E3FDE6;border: 1px #68CB67 solid;padding:10px;&quot;&gt;
-&lt;ul style=&quot;margin-bottom:0;&quot;&gt;
-&lt;li&gt;进行Commits的用户没有被关联到你的Github帐号中。&lt;/li&gt;
-&lt;li&gt;不是在这个版本库的默认分支进行的Commit。&lt;/li&gt;
-&lt;li&gt;这个仓库是一个Fork仓库，而不是独立仓库。&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;h3 id=&quot;解决方法&quot;&gt;解决方法&lt;/h3&gt;
-&lt;h4 id=&quot;配置commits的账户和github帐号相同&quot;&gt;配置Commits的账户和Github帐号相同&lt;/h4&gt;
-&lt;p&gt;在终端里输入 &lt;code class=&quot;highlighter-rouge&quot;&gt;vi ~/.gitconfig&lt;/code&gt; ,其中email后的邮箱需要和你github上的一致，如下：&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[user]
-        name = Gorpeln
-        email = gorpeln@xxx.com
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h4 id=&quot;处理已经上传的项目&quot;&gt;处理已经上传的项目&lt;/h4&gt;
-&lt;p&gt;官网文档：&lt;a href=&quot;https://help.github.com/articles/changing-author-info/&quot;&gt;Changing author info&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;修改前：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_contributions_001.png&quot; alt=&quot;blog_contributions_001&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;修改后：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_contributions_002.png&quot; alt=&quot;blog_contributions_002&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;第一步、要得到想改变的作者信息的邮箱地址,打开到如图界面,红框内是想改变的作者信息。
-&lt;img src=&quot;https://img.gorpeln.com/blog_contributions_003.png&quot; alt=&quot;blog_contributions_003&quot; /&gt;
-然后在链接结尾处添加&lt;code class=&quot;highlighter-rouge&quot;&gt;.patch&lt;/code&gt;
-&lt;img src=&quot;https://img.gorpeln.com/blog_contributions_004.png&quot; alt=&quot;blog_contributions_004&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;第二步、重新clone这个仓库到新目录&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git clone --bare https://github.com/user/repo.git
-cd repo.git//进入到该目录
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;第三步、用官方给的脚本修改作者信息&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
-git filter-branch &lt;span class=&quot;nt&quot;&gt;--env-filter&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'
-OLD_EMAIL=&quot;第一步中的邮箱地址&quot;
-CORRECT_NAME=&quot;正确的用户名&quot;
-CORRECT_EMAIL=&quot;正确的邮件地址&quot;
-if [ &quot;$GIT_COMMITTER_EMAIL&quot; = &quot;$OLD_EMAIL&quot; ]
-then
-    export GIT_COMMITTER_NAME=&quot;$CORRECT_NAME&quot;
-    export GIT_COMMITTER_EMAIL=&quot;$CORRECT_EMAIL&quot;
-fi
-if [ &quot;$GIT_AUTHOR_EMAIL&quot; = &quot;$OLD_EMAIL&quot; ]
-then
-    export GIT_AUTHOR_NAME=&quot;$CORRECT_NAME&quot;
-    export GIT_AUTHOR_EMAIL=&quot;$CORRECT_EMAIL&quot;
-fi
-'&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--tag-name-filter&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--branches&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--tags&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;将上述脚本粘贴到终端回车,修改好信息后将正确的信息push。&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git push --force --tags origin 'refs/heads/*'
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;再去github Profile 刷新看看,就可以显示小绿块啦&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;PS：&lt;/strong&gt;可以直接把第一步获取到的邮箱地址直接添加到GitHub个人账户的邮箱中，也可以展示绿格。&lt;/p&gt;
-
-</description>
-      </item>
-    
-      <item>
-        <title>史上最污技术解读，我竟然秒懂了！</title>
-        <link>https://gorpeln.com//article/15493658365</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15493658365</guid>
-        <pubDate>Tue, 05 Feb 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;很多同学对热备，冷备，云备了解不深，我科普一下 IT 行业各种备份术语。以后别闹笑话了。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你有一位男朋友，于此同时你和另外一位男生暧昧不清，比朋友好，又不是恋人。你随时可以甩了现任男友，另外一位马上就能补上。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;冷备份&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，同时和两位男性在交往，两位都是你男朋友。并且他们还互不干涉，独立运行。这就是&lt;code class=&quot;highlighter-rouge&quot;&gt;双机热备份&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，不安于男朋友给你的安全感。在遥远的男友未知的地方，和一位男生保持着联系，你告诉他你没有男朋友，你现在处于纠结期，一旦你和你男朋友分开了，你马上可以把自己感情转移到异地男人那里去。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;异地容灾备份&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，有一位男朋友，你又付了钱给一家婚姻介绍所，让他帮你留意好的资源，一旦你和你这位男朋友分开，婚姻介绍所马上给你安排资源，你感情不间断运行，这是&lt;code class=&quot;highlighter-rouge&quot;&gt;云备份&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;数据安全大于一切，今天你把自己备份了吗？&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你怀疑男朋友对你的忠诚，在某宝购买了一个测试忠诚度的服务。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;灾难演练&lt;/code&gt;。友情提醒，在没有备份的情况下，切忌进行灾难演练，说不好会让你数据血本无归。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你有一位好到不能在好的闺蜜，好到你们可以共享一个男朋友，这是&lt;code class=&quot;highlighter-rouge&quot;&gt;NAS&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你男朋友活太好，你一个人根本 hold 不住，必须要姐妹帮忙才能稳住他。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;负载均衡，QOS&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，和 A 吃饭和 B 逛街和 C 打炮。合起来是一个完整的男朋友。这。。这是&lt;code class=&quot;highlighter-rouge&quot;&gt;超算集群&lt;/code&gt;。建议主频不高的女性不要这样做。会直接&lt;code class=&quot;highlighter-rouge&quot;&gt;死机&lt;/code&gt;的。。&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;备胎突然有女朋友了，我该不该夺回来？&lt;/p&gt;
-
-&lt;p&gt;备份是为了更好地运行，所以再给大家普及一点运维知识：&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你的男友沉迷游戏经常不接电话无故宕机，所以当你们约好下午逛街以后你要时不时的打个电话询问，看看他是不是还能正常提供服务，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;心跳检测&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你想去逛街而你的男友 A 在打游戏不接电话，于是乎你把逛街的请求发给了替补男友B，从而保障服务不间断运行，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;故障切换&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你有很多需要男朋友完成的事情，于是乎你跟 A 逛街旅游吃饭不可描述，而 B 只能陪你逛街，不能拥有全部男朋友的权利，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;主从配置 master-slave&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你的需求太强烈以至于你的男友根本吃不消，于是呼你找了两个男朋友，一三五单号，二四六双号限行，从而减少一个男朋友所面临的压力，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;负载均衡&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性并且有多个男朋友，配合心跳检测与故障切换和负载均衡将会达到极致的体验，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;集群LVS&lt;/code&gt;，注意，当需求单机可以处理的情况下不建议启用集群，会造成大量资源闲置，提高维护成本。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你的需求越来越高导致一个男朋友集群已经处理不了了，于是乎你又新增了另外几个，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;多集群，横行扩容&lt;/code&gt;，简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;multi-cluster grid&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你的男朋友身体瘦弱从而无法满足需求，于是乎你买了很多大补产品帮你男朋友升级，从而提高单机容量，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;纵向扩容&lt;/code&gt;，切记，纵向扩容的成本会越来越高而效果越来越不明显&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你跟男友经常出去游玩，情到深处想做点什么的时候却苦于没有 tt，要去超市购买，于是乎你在你们经常去的地方都放置了 tt，从而大幅度降低等待时间，这叫 &lt;code class=&quot;highlighter-rouge&quot;&gt;CDN&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性,你的男朋友英俊潇洒风流倜傥财大气粗对你唯一,于是乎你遭到了女性 B 的敌视，B 会以朋友名义在周末请求你男朋友修电脑, 修冰箱, 占用男朋友大量时间, 造成男朋友无法为你服务, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;拒绝服务攻击&lt;/code&gt;, 简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;DOS&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性, 你因男朋友被一位女性敌视, 但是你男朋友的处理能力十分强大, 处理速度已经高于她的请求速度, 于是她雇佣了一票女性来轮流麻烦你的男朋友, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;分布式拒绝服务攻击&lt;/code&gt;, 简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;DDOS&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性, 你发现男朋友总是在处理一些无关紧要的其它请求, 于是呼你给男朋友了一个白名单, 要求他只处理白名单内的请求, 而拒绝其它身份不明的人的要求, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;访问控制&lt;/code&gt;, 也叫&lt;code class=&quot;highlighter-rouge&quot;&gt;会话跟踪&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性, 你发现采取上述措施以后男朋友的处理请求并没有减少很多, 于是你经过调查发现, 有人伪造你的微信头像 昵称来向你的男朋友发起请求, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;跨站点请求伪造&lt;/code&gt;， 简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;CSRF&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性,你收到了一份快递,于是你要求男朋友给你取快递,当你拿到快递以后发现有人给你邮寄了一封通篇辱骂的信件, 这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;跨站点脚本攻击&lt;/code&gt; 简称 &lt;code class=&quot;highlighter-rouge&quot;&gt;XSS&lt;/code&gt;, 请注意, 对方完全可以给你邮寄微型窃听器来窃听你的隐私。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性,为了应对威胁,你要求你的男朋友,邮寄给你的邮件必须检查,这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据校验与过滤&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性,你的男朋友太优秀而造人窥视,于是乎它们研究了一下你的男朋友,稍微修改了一点点生产出一个男朋友 B 与你的男朋友百分制 99 相似,这不叫剽窃,这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;逆向工程&lt;/code&gt;,比如男朋友外挂。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你要求你的男朋友坚持十分钟，然后十五分钟继而二十分钟以测试你男朋友的极限在哪里，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;压力测试&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;压力测试的目的是查看男朋友是否可以处理需求从而决定是否启用男朋友集群或提升男朋友处理能力，不要对线上运行的男朋友做压力测试，可能会造成宕机的后果，会血本无归的&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，为了保证你男朋友的正常运行，于是乎你每天查看他的微信微博等社交资料来寻找可能产生问题的线索，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据分析&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你的男朋友属于社交活跃选手，每天的微博知乎微信生产了大量信息，你发现自己的分析速度远远低于他生的速度，于是乎你找来你的闺蜜一起分析，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;并行计算&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你的男朋友太能折腾处处留情产生了天量的待处理信息，你和你的闺蜜们已经累趴也没赶上他创造的速度，于是你付费在知乎上找了20个小伙伴帮你一起分析，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;云计算&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，在使用云计算后获得了大量整理好的男朋友数据，这些数据如：&lt;/p&gt;
-
-&lt;p&gt;地点 活跃时间段 活跃次数
-如家 xxxx 123次. 
-汉庭 xxxx 45次. 
-….&lt;/p&gt;
-
-&lt;p&gt;这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据统计&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，你在得到男朋友经常出没的地点后，根据酒店，敏感时间段等信息确定男朋友因该是出轨了，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据挖掘&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假设你是一位女性，在分析男友的数据后，得知他下午又要出去开房，于是乎你在他准备出门前给他发了个短信，问他有没有带 tt，没有的话可以在我这里买，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;精准推送&lt;/code&gt;，需要配合数据挖掘。&lt;/p&gt;
-
-&lt;p&gt;假如你是一位女性，你的男朋友总该出去浪而各种出问题，于是乎你租了间屋子并准备好了所有需要的东西并告诉他，以后不用找酒店了，直接来我这屋子吧，什么都准备好了，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;容器&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;假如你是一位女性，你每天都要和男朋友打通一次接口，采集数据。你的男朋友用来连接你和他的工具，叫做&lt;code class=&quot;highlighter-rouge&quot;&gt;接口“机”&lt;/code&gt;，你采集到的数据叫做&lt;code class=&quot;highlighter-rouge&quot;&gt;“流”数据&lt;/code&gt;。你一天24小时不停地采，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;实时数据采集&lt;/code&gt;。你决定开发新的接口来和男朋友交流，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;虚拟化&lt;/code&gt;。你决定从不同的男友身上采集数据，你就是&lt;code class=&quot;highlighter-rouge&quot;&gt;大数据中心&lt;/code&gt;。有一天你决定生一个宝宝，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;大数据应用&lt;/code&gt;。宝宝生下来不知道是谁的，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;大数据脱敏&lt;/code&gt;。但是从宝宝外观来看，黑色皮肤金色头发，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;数据融合跨域建模&lt;/code&gt;。你决定把这个宝宝拿来展览收点门票，这叫&lt;code class=&quot;highlighter-rouge&quot;&gt;大数据变现&lt;/code&gt;。&lt;/p&gt;
 </description>
       </item>
     

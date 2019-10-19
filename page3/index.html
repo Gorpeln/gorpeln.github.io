@@ -97,7 +97,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">78</span>
+                                    <span class="site-state-item-count">80</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -109,7 +109,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">74</span>
+                                    <span class="site-state-item-count">76</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -138,7 +138,7 @@
                             
                             <li>
                                 <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;" target="_blank">个人博客</a>
-                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">4篇</a>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">6篇</a>
                             </li>
                             
                             <li>
@@ -473,6 +473,14 @@
                             </li>
                             
                             <li>
+                                <a href="/tags#文章置顶" name="文章置顶">文章置顶</a>
+                            </li>
+                            
+                            <li>
+                                <a href="/tags#加密" name="加密">加密</a>
+                            </li>
+                            
+                            <li>
                                 <a href="/tags#锚点" name="锚点">锚点</a>
                             </li>
                             
@@ -523,8 +531,8 @@
                         <p>友情链接</p>
                         <hr>
                         <ul style="list-style-type:circle">
-                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">Gorpeln</a></li>
-                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">CSDN</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/chen_gp_x" style="color: #6666cc">风未止</a></li>
+                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">gorpeln</a></li>
                         </ul>
                     </div>
                     <!-- 				<div class="siteNav">
@@ -543,29 +551,114 @@
                     <div class="page-content" id="pjax"><html>
 <head>
 	<style type="text/css">
-
-a:visited {color:#ff0000}
-
-</style>
+		.topTip{
+			background: #EE3B3B;
+		    color: #fff;
+		    padding: 0 8px;
+		    font-size: 16px;
+		    font-weight: 400;
+		    border-radius: 4px;
+		    margin-right: 0.5em;
+		}
+	</style>
 </head>
 <div>
 
-   
+	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
+    	
+        	
 
-		<div class="postbox">
+	
+    	
+    	<div class="postbox">
+			<div class="allpost">
+				<div class="title">
+					<a class="pjaxlink" href="/article/15526269575"  target="_blank">iOS App 签名的原理</a>
+				</div>
+				<hr>
+				<div class="info">
+					时间：2019-03-15&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
+                   		iOS
+					</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				      	标签：
+					<span class="index-post-tag">
+						
+							<a class="" href="/tags.html#签名机制" target="_blank">签名机制</a>
+						
+					</span>
+					
+				</div>
+				<div class="contentAbstract">iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，p12，AppID，概念一堆，也很容易出错，本文尝试从原理出发，一步步推出为什么会有这么多概念，希望能有助于理解 iOS App 签名的原理和流程。
 
+目的
+先来看看苹果的签名机制是为了做什么。在 iOS 出来之前，在主流操作系统(Mac/...</div>	
+			</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/15526269575"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
+		</div>
+	
+    	
+    	<div class="postbox">
+			<div class="allpost">
+				<div class="title">
+					<a class="pjaxlink" href="/article/15524857215"  target="_blank">移动 APP 网络优化概述</a>
+				</div>
+				<hr>
+				<div class="info">
+					时间：2019-03-13&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
+                   		iOS
+					</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				      	标签：
+					<span class="index-post-tag">
+						
+							<a class="" href="/tags.html#网络优化" target="_blank">网络优化</a>
+						
+					</span>
+					
+				</div>
+				<div class="contentAbstract">一般开发一个 APP，会直接调用系统提供的网络请求接口去服务端请求数据，再针对返回的数据进行一些处理，或者使用AFNetworking/OKHttp这样的网络库，管理好请求线程和队列，再自动做一些数据解析，就结束了。
+
+但对于一些大型 APP，还会想针对网络的一些问题进行进一步优化，包括：
+
+　　1、速度：网络请求的速度怎样能进一步提升？
+　　2、弱网：移动端网络环境随时变化，经常出现网络连...</div>	
+			</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/15524857215"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
+		</div>
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/15501213244"  target="_blank">Sublime Text 3安装使用 MAC</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2019-02-14&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2019-02-14&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#Software MAC" target="_blank">
-                   			Software MAC
+                   		Software MAC
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -575,32 +668,27 @@ a:visited {color:#ff0000}
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">Sublime Text：一款具有代码高亮、语法提示、自动完成且反应快速的编辑器软件，不仅具有华丽的界面，还支持插件扩展机制，用她来写代码，绝对是一种享受。相比于难于上手的Vim，浮肿沉重的Eclipse，VS，即便体积轻巧迅速启动的Editplus、Notepad++，在SublimeText面前大略显失色，无疑这款性感无比的编辑器是Coding和Writing最佳的选择，没有之一。
 
 安...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/15501213244"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/15501213244"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/15500354146"  target="_blank">神级注释</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2019-02-13&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2019-02-13&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#程序人生" target="_blank">
-                   			程序人生
+                   		程序人生
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -610,7 +698,6 @@ a:visited {color:#ff0000}
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">/***
  * 这个公司没有年终奖的,兄弟别指望了,也别来了,我准备辞职了
  * 另外这个项目有很多*Bug* 你坚持不了多久的,拜拜!
@@ -622,27 +709,23 @@ a:visited {color:#ff0000}
  * But you dont. Trust me.
  * Fiddle with it, and youll spend...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/15500354146"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/15500354146"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/15495225362"  target="_blank">终端上成功提交了代码，GitHub上Contributions没有变绿</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2019-02-07&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2019-02-07&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#Git" target="_blank">
-                   			Git
+                   		Git
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -654,7 +737,6 @@ a:visited {color:#ff0000}
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">今天突然发现自己好多次的commits都没有被记录在Contributions中,但是点开项目详情里面可以看到自己的commit确实上传成功了,以前一直没有注意,为什么没有绿呢?
 
 然后去了解了下Contributions的规则,发现只会记录以下几种:
@@ -668,27 +750,23 @@ Issues 和 pull requests
 Commits
 如果提交符...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/15495225362"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/15495225362"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/15493658365"  target="_blank">史上最污技术解读，我竟然秒懂了！</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2019-02-05&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2019-02-05&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#程序人生" target="_blank">
-                   			程序人生
+                   		程序人生
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -698,7 +776,6 @@ Commits
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">很多同学对热备，冷备，云备了解不深，我科普一下 IT 行业各种备份术语。以后别闹笑话了。
 
 假设你是一位女性，你有一位男朋友，于此同时你和另外一位男生暧昧不清，比朋友好，又不是恋人。你随时可以甩了现任男友，另外一位马上就能补上。这是冷备份。
@@ -707,27 +784,23 @@ Commits
 
 假设你是一位女性，不安于男朋友给你的安全...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/15493658365"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/15493658365"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/15474431442"  target="_blank">App瘦身、性能优化总结</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2019-01-14&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2019-01-14&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                   			iOS
+                   		iOS
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -739,7 +812,6 @@ Commits
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">一、App瘦身
 1、资源瘦身
 
@@ -748,27 +820,23 @@ Commits
   启动图使用 LaunchScreen.storyboard，启动图在一个项目资源中占比其实蛮大的，但是使用 LaunchScreen.storyboard 只需要设置一张ImageView即可。
   Ic...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/15474431442"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/15474431442"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
+	
+    	
+    	<div class="postbox">
 			<div class="allpost">
 				<div class="title">
 					<a class="pjaxlink" href="/article/15462756619"  target="_blank">博客成长记录...</a>
 				</div>
 				<hr>
 				<div class="info">
-						时间：2019-01-01&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
+					时间：2019-01-01&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 					<a class="item-date" style="color:#6666cc;" href="/categories.html#个人博客" target="_blank">
-                   			个人博客
+                   		个人博客
 					</a>
-
 					&nbsp;&nbsp;&nbsp;&nbsp;
 				      	标签：
 					<span class="index-post-tag">
@@ -780,7 +848,6 @@ Commits
 					</span>
 					
 				</div>
-
 				<div class="contentAbstract">
 博客目标：简洁、高效。
 
@@ -793,91 +860,11 @@ Commits
 2018-11-11更换来必力评论为GitTalk评论
 2018-10-18...</div>	
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/15462756619"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
-		</div>
-
-   
-
-		<div class="postbox">
-
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="/article/15438182232"  target="_blank">查看QQ下载的视频路径 MAC</a>
-				</div>
-				<hr>
-				<div class="info">
-						时间：2018-12-03&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#Software MAC" target="_blank">
-                   			Software MAC
-					</a>
-
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#QQ" target="_blank">QQ</a>
-						
-							<a class="" href="/tags.html#视频路径" target="_blank">视频路径</a>
-						
-					</span>
-					
-				</div>
-
-				<div class="contentAbstract">~/Library/Containers/com.tencent.qq/Data/Library/Caches/Videos/
-
-
-</div>	
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/15462756619"  class="readmore"  target="_blank">阅读全文 》</a>
 			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/15438182232"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
 		</div>
-
-   
-
-		<div class="postbox">
-
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="/article/15429884147"  target="_blank">云开发 与 WePY</a>
-				</div>
-				<hr>
-				<div class="info">
-						时间：2018-11-23&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#微信小程序" target="_blank">
-                   			微信小程序
-					</a>
-
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#微信小程序" target="_blank">微信小程序</a>
-						
-							<a class="" href="/tags.html#云开发" target="_blank">云开发</a>
-						
-							<a class="" href="/tags.html#WePY" target="_blank">WePY</a>
-						
-					</span>
-					
-				</div>
-
-				<div class="contentAbstract">一、Why WePY
-
-首先，先分享一下为什么要选择 WePY ？
-
-在项目开始进行选型的时候，我可选的底层框架有 WePy、MPVue、Taro、`MinUI，这些框架都是工程化做得很好的框架，可以帮助小程序项目长期进行维护。其中，Taro 因为采用的是我所不熟悉的 React ，所以从一开始就被排除。MPVue 我看了以后，它更多是给 Web 开发者提供小程序转化工具，而不是给小程序开发...</div>	
-			</div>
-				<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-					<a href="/article/15429884147"  class="readmore"  target="_blank">阅读全文 》</a>
-				</div>
-		</div>
-
-   
+	
 
 	
 		<div class="pagination center">
@@ -944,7 +931,6 @@ Commits
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
         ©2015-2019 Gorpeln 版权所有&nbsp; | &nbsp;京ICP备18035462号
     </div>
-
 </footer>
 <script type="text/javascript" src="/assets/js/jquery.js"></script>
 <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
@@ -952,7 +938,6 @@ Commits
 <script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
 <script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
 <script type="text/javascript" src="/assets/js/main.js"></script>
-
 <!-- search -->
 <div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
       opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
@@ -1010,7 +995,6 @@ var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.
 document.write('<script src="' + src + '" id="sozz"><\/script>');
 })();
 </script>
-
 
 
 
