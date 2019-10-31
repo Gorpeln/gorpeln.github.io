@@ -948,12 +948,28 @@ stickie: true
         <link>https://gorpeln.com//article/15618778699</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15618778699</guid>
         <pubDate>Sun, 30 Jun 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;小程序名称：gorpeln（已上线）
+        <description>&lt;p&gt;小程序名称：gorpeln（已上线）&lt;br /&gt;
 提示：因个人开发账户限制，部分功能无法通过审核，所以隐藏了，全部功能体验请留言。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_wxmini_qrcode.jpg&quot; alt=&quot;blog_wxmini_qrcode&quot; /&gt;&lt;/p&gt;
 
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
 &lt;hr /&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;p&gt;演示视频：&lt;a href=&quot;http://demo.gorpeln.com/blog_wxmini_video.mp4&quot;&gt;视频链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;iframe width=&quot;360&quot; height=&quot;780&quot; src=&quot;http://demo.gorpeln.com/blog_wxmini_video.mp4&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
+
+&lt;hr /&gt;
+
 &lt;p&gt;小程序端主要包括：（开发中…）&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;首页&lt;/li&gt;
@@ -975,6 +991,9 @@ stickie: true
   &lt;li&gt;排序&lt;/li&gt;
   &lt;li&gt;客服&lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;p&gt;&lt;br /&gt;
+&lt;br /&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 
