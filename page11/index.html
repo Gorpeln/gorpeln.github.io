@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>iOS11开发遇到的坑 | gorpeln的个人博客 - gorpeln</title>
+  <title>gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="1、Xcode 9 使用 command + 单击 直接跳转到定义">
+  <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/15064370822">
+  <link rel="canonical" href="https://gorpeln.com//page11/">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -552,136 +552,119 @@
 	 			</div> -->
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
-                    <div class="page-content" id="pjax"><div class="post">
+                    <div class="page-content" id="pjax"><html>
+<head>
+	<style type="text/css">
+		.topTip{
+			background: #EE3B3B;
+		    color: #fff;
+		    padding: 0 8px;
+		    font-size: 16px;
+		    font-weight: 400;
+		    border-radius: 4px;
+		    margin-right: 0.5em;
+		}
+	</style>
+</head>
+<div>
 
-  <header class="post-header">
-    <h1 class="post-title">iOS11开发遇到的坑</h1>
-    <div class="info">
-	    <p class="post-meta">时间：2017-09-26</p>
-	    
-	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
-        	iOS
-		</a>
-		&nbsp;&nbsp;&nbsp;&nbsp;标签：
-		<span class="index-post-tag">
-		
-			<a class="pjaxlink" href="/tags#iOS11"  target="_blank">iOS11</a>
-		
-		</span>
-	    
-    </div>
-  </header>
-
-<div style="font-size: 8px;width:calc(100% + 3em);margin-bottom: 2em;color: #828282;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15064370822
-</div>
-
-
-  <article class="post-content">
-    <p><strong>1、Xcode 9 使用 command + 单击 直接跳转到定义</strong></p>
-
-<p>Xcode 9 之前按住command +鼠标左键 即可跳转定义。如今不一样了，如图：</p>
-
-<p><img src="https://img.gorpeln.com/blog_20170926001.png" alt="blog_20170926001" /></p>
-
-<p>首先整块区域高亮，弹出菜单，Jump to Definition在菜单第一项，点击才会跳转，我想大部分人都不喜欢这种操作，多了一步，回到之前的快速跳转定义的姿势方法:</p>
-
-<p><code class="highlighter-rouge">鼠标用户</code>: 对准你的对象，Command+鼠标右键 <br />
-<code class="highlighter-rouge">触摸板用户</code>: 对准你的对象, Command+双指点击<br />
-如果你有强迫症,非要找回之前一模一样的感觉,可以这样操作:</p>
-
-<p><img src="https://img.gorpeln.com/blog_20170926002.png" alt="blog_20170926002" /></p>
-
-<p><strong>2、导航栏向上跑了部分距离：宏定义一个高度</strong></p>
-
-<pre><code class="language-Objective-C">
-#define NAVIGATION_HEIGHT (CGRectGetHeight([[UIApplication sharedApplication] statusBarFrame]) + CGRectGetHeight(self.navigationController.navigationBar.frame))  
-//在你设置的self.navigationBar.frame = CGRectMake(0, 0,ScreenWidth, NAVIGATION_HEIGHT);下面添加  
-#ifdef __IPHONE_11_0  
-if (@available(iOS 11.0, *)) {  
-self.navigationBar.frame = CGRectMake(0, STATUSBAR_HEIGHT,ScreenWidth, NAVIGATION_HEIGHT);  
-}  
-#endif   
-
-</code></pre>
-
-<p><strong>3、VC中的tableView向下移动部分距离，以及cell直接的间隔会无故拉大</strong></p>
-
-<pre><code class="language-Objective-C">
-//在你的tableView下面添加这句话  适配tableview间隙异常    
-if (@available(iOS 11.0, *)) {    
-self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;    
-} else {    
-// Fallback on earlier versions    
-} 
-
-
-/*大概就是说我们不再需要自己去计算cell的高度了，只要设置好这两个属性，约束好布局，系统会自动计算好cell的高度。IOS11以后，Self-Sizing默认开启，包括Headers  
-, footers。如果项目中没使用estimatedRowHeight属性，在IOS11下会有奇奇怪怪的现象，因为IOS11之前，estimatedRowHeight默认为0，Self-Sizing自动打开后  
-，contentSize和contentOffset都可能发生改变。可以通过以下方式禁用：*/    
-    
-self.tableView.estimatedRowHeight = 0;     
-self.tableView.estimatedSectionHeaderHeight = 0;     
-self.tableView.estimatedSectionFooterHeight = 0;  
 	
-</code></pre>
+    	
+        	
 
-<p><strong>4、Xcode 9 新建项目后，报错</strong></p>
+	
+    	
+    	<div class="postbox">
+			<div class="allpost">
+				<div class="title">
+					<a class="pjaxlink" href="/article/14402966023"  target="_blank">Hello World</a>
+				</div>
+				<hr>
+				<div class="info">
+					时间：2015-08-23&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+					<a class="item-date" style="color:#6666cc;" href="/categories.html#个人博客" target="_blank">
+                   		个人博客
+					</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+				      	标签：
+					<span class="index-post-tag">
+						
+							<a class="" href="/tags.html#个人博客" target="_blank">个人博客</a>
+						
+							<a class="" href="/tags.html#书写笔记" target="_blank">书写笔记</a>
+						
+					</span>
+					
+				</div>
+				<div class="contentAbstract">Markdown
 
-<p><img src="https://img.gorpeln.com/blog_20170926003.png" alt="blog_20170926003" /></p>
+Markdown 是一种方便记忆、书写的纯文本标记语言，用户可以使用这些标记符号以最小的输入代价生成极富表现力的文档。
 
-<p>新建项目默认是需要使用安全区域的，可以取消掉…</p>
+1. 标题
+使用#显示标题
+# 这是一个一级标题
+## 这是一个二级标题
+### 这是一个三级标题
 
-<p><img src="https://img.gorpeln.com/blog_20170926005.png" alt="blog_20170926005" />
-<img src="https://img.gorpeln.com/blog_20170926004.png" alt="blog_20170926004" /></p>
-
-<p><strong>5、持续更新中…</strong></p>
 
 
-  </article>
+  你也可以选择在行首加#号表示不同级别的标题 (H1-H6)，例如：# H1, ## H2, ### H3，#### H4。
+
+
+2. 斜体、粗...</div>	
+			</div>
+			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+				<a href="/article/14402966023"  class="readmore"  target="_blank">阅读全文 》</a>
+			</div>
+		</div>
+	
+
+	
+		<div class="pagination center">
+		
+			  <a class="pjaxlink" href="/index.html"><span class="x1">首</span></a>
+			  
+			    <a class="pjaxlink"  href="/page10"><span class="x1"><i class="fa fa-angle-left" style="font-size:20px;"></i></span></a>
+			  
+			  
+			  
+    			 
+      		  
+        		       	
+			  	  
+      		   
+			  
+			  
+				    
+				      <a class="pjaxlink" href="/page7"><span class="x1">7</span></a>
+				    
+			  
+				    
+				      <a class="pjaxlink" href="/page8"><span class="x1">8</span></a>
+				    
+			  
+				    
+				      <a class="pjaxlink" href="/page9"><span class="x1">9</span></a>
+				    
+			  
+				    
+				      <a class="pjaxlink" href="/page10"><span class="x1">10</span></a>
+				    
+			  
+				    
+				      <span class="x1" style="background:#37374b;color:#fff;">11</span>
+				    
+			  
+
+			  
+			  <a class="pjaxlink" href="/page11/"><span class="x1">末</span></a>			  
+		</div>
+	 
+
 </div>
 
-  <div class="prevandnext">
-    	  
-	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15076490854" title="MAC 使用技巧" style="color: #6666cc"  target="_blank">MAC 使用技巧</a>
-	    </div>
-	  
-  	  
-	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15034734259" title="如果代码按行付费，会有什么好玩的事情发生？" style="color: #6666cc"  target="_blank">如果代码按行付费，会有什么好玩的事情发生？</a>
-	    </div>
-	  
-	 
-  </div>
-  
-  <div class="livere">
-    <!-- Link Gitalk 的支持文件  -->
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
-<script type="text/javascript" src="/assets/js/md5.min.js"></script>
-<div id="gitalk-container"></div>     
-<script type="text/javascript">
-    var gitalk = new Gitalk({
+</html>
 
-    // gitalk的主要参数
-        clientID: '5c495e6cc6996908ba54',
-        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
-        repo: 'Gitalk',
-        owner: 'gorpeln',
-        admin: ['gorpeln'],
-        id: md5(location.pathname),
-
-    });
-    gitalk.render('gitalk-container');
-</script> 
-<!-- Gitalk end -->
-
-
-
-  </div>
-   
 
 </div>
                 </div>

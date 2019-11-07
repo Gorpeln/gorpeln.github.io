@@ -6,6 +6,30 @@
     <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）</description>
     
       <item>
+        <title>我的Mac软件 备忘</title>
+        <link>https://gorpeln.com//article/15713829999</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15713829999</guid>
+        <pubDate>Fri, 18 Oct 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;&lt;a href=&quot;https://www.cockos.com/licecap/&quot;&gt;Licecap 开源&lt;/a&gt; - 是一款屏幕录制工具输出GIF，录制过程中可以随意改变录屏范围，录制的文件也非常小。支持 Mac 和 Windows 平台。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://pinyin.sogou.com/mac/&quot;&gt;搜狗输入法&lt;/a&gt; - 搜狗输入法。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://daisydiskapp.com&quot;&gt;DaisyDisk&lt;/a&gt; - 磁盘分析工具。了解磁盘使用状况，并进行准确的分析。DaisyDisk 的视觉系属性大大超过了功能性。 #&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://cyberduck.io/&quot;&gt;Cyberduck&lt;/a&gt; - 免费FTP，SFTP，S3和WebDAV客户端 &amp;amp; OpenStack Swift Client。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://zh.mweb.im&quot;&gt;MWeb&lt;/a&gt; - 专业的 Markdown 写作、记笔记、静态博客生成软件&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://www.sublimetext.com/3&quot;&gt;Sublime Text&lt;/a&gt; - 一个比较简洁大方带插件管理系统的流行编辑器。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.charlesproxy.com/&quot;&gt;Charles&lt;/a&gt; - 一个代理工具，允许你查看所有的HTTP和HTTPS流量。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.getpostman.com&quot;&gt;Postman&lt;/a&gt; - Postman 帮助我们快速测试API。&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
         <title>App Store 审核指南</title>
         <link>https://gorpeln.com//article/15713825459</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15713825459</guid>
@@ -3296,327 +3320,6 @@ F913BE58 42FEA319 F954EFDD AE881E0B
   &lt;li&gt;HTML-CSS-JS Prettify 一款集成了格式化（美化）html、css、js三种文件类型的插件&lt;/li&gt;
   &lt;li&gt;…&lt;/li&gt;
 &lt;/ul&gt;
-
-</description>
-      </item>
-    
-      <item>
-        <title>神级注释</title>
-        <link>https://gorpeln.com//article/15500354146</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15500354146</guid>
-        <pubDate>Wed, 13 Feb 2019 00:00:00 +0800</pubDate>
-        <description>&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- * 这个公司没有年终奖的,兄弟别指望了,也别来了,我准备辞职了
- * 另外这个项目有很多*Bug* 你坚持不了多久的,拜拜!
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- * You may think you know what the following code does.
- * But you dont. Trust me.
- * Fiddle with it, and youll spend many a sleepless
- * night cursing the moment you thought youd be clever
- * enough to &quot;optimize&quot; the code below.
- * Now close this file and go play with something else.
- */
-/***
- * 你可能会认为你读得懂以下的代码。但是你不会懂的，相信我吧。
- * 要是你尝试玩弄这段代码的话，你将会在无尽的通宵中不断地咒骂自己为什么会认为自己聪明到可以优化这段代码。
- * 现在请关闭这个文件去玩点别的吧。
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- * somedev1 -  6/7/02 Adding temporary tracking of Login screen
- * somedev2 -  5/22/07 Temporary my ass
- */
-/***
- * 一些修改1 - 2002/6/7 增加临时的跟踪登录界面
- * 一些修改2 - 2007/5/22 我临时的犯傻
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- * 程序员1（于2014年06月07日）：在这个坑临时加入一些调料
- * 程序员2（于2015年05月22日）：临你个屁啊
- * 程序员3（于2016年07月23日）：楼上都是狗屎，鉴定完毕
- * 程序员4（于2017年08月02日）：fuck 楼上，三年了，这坑还在！！！
- * 程序员5（于2018年08月21日）：哈哈哈，这坑居然坑了这么多人，幸好我也不用填了，系统终止运行了，you're died
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- * For the brave souls who get this far: You are the chosen ones,
- * the valiant knights of programming who toil away, without rest,
- * fixing our most awful code. To you, true saviors, kings of men,
- * I say this: never gonna give you up, never gonna let you down,
- * never gonna run around and desert you. Never gonna make you cry,
- * never gonna say goodbye. Never gonna tell a lie and hurt you.
- */
-/***
- * 致终于来到这里的勇敢的人：
- * 你是被上帝选中的人，是英勇的、不敌辛苦的、不眠不休的来修改我们这最棘手的代码的编程骑士。
- * 你，我们的救世主，人中之龙，我要对你说：永远不要放弃，永远不要对自己失望，永远不要逃走，辜负了自己，
- * 永远不要哭啼，永远不要说再见，永远不要说谎来伤害自己。
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- * Dear maintainer:
- *
- * Once you are done trying to 'optimize' this routine,
- * and have realized what a terrible mistake that was,
- * please increment the following counter as a warning
- * to the next guy:
- *
- * total_hours_wasted_here = 42
- */
-/***
- * 亲爱的维护者：
- *
- * 如果你尝试了对这段程序进行'优化'
- * 下面这个计数器的个数用来对后来人进行警告
- *
- * 浪费在这里的总时间 = 42h
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- * When I wrote this, only God and I understood what I was doing
- * Now, God only knows
- */
-/***
-* 写这段代码的时候，只有上帝和我知道它是干嘛的
-* 现在，只有上帝知道
-*/
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// drunk, fix later
-// 有点晕了，以后再修改
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// Magic. Do not touch.
-// 神奇。勿动。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#define TRUE FALSE// Happy debugging suckers
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// I'm sorry.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/////////////////////////////////////// this is a well commented line
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// To understand recursion, see the bottom of this file
-At the bottom of the file:
-// To understand recursion, see the top of this file
-// 想要明白递归须看文件末尾
-到了文末
-// 想要明白递归须看文件顶部
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// This code sucks, you know it and I know it.  
-// Move on and call me an idiot later.
-// 你我都知道这代码很烂
-// 先不要骂我2B了，请先继续往下看
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// I am not sure why this works but it fixes the problem.
-// 虽然我不知道为什么这样管用，但它却是修复了问题
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// If this comment is removed the program will blow up
-// 如果删了此处注释程序就炸了
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// This function has been here since 1987. DON'T FXXKING TOUCH IT
-// 这函数1987年就这在了，别他娘动它
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// no comments for you
-// it was hard to write
-// so it should be hard to read
-// 难写的代码，肯定很难读。因此，我没有注释留给你。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// I am not responsible of this code.
-// They made me write it, against my will.
-// 下面的代码，我不负责。因为是他们逼我写的，违背了我的意愿。
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;br /&gt;
-&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;hr /&gt;
-&lt;hr /&gt;
-
-&lt;h3 id=&quot;以下为魔性图&quot;&gt;以下为魔性图&lt;/h3&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- *                    _ooOoo_
- *                   o8888888o
- *                   88&quot; . &quot;88
- *                   (| -_- |)
- *                    O\ = /O
- *                ____/`---'\____
- *              .   ' \\| |// `.
- *               / \\||| : |||// \
- *             / _||||| -:- |||||- \
- *               | | \\\ - /// | |
- *             | \_| ''\---/'' | |
- *              \ .-\__ `-` ___/-. /
- *           ___`. .' /--.--\ `. . __
- *        .&quot;&quot; '&amp;lt; `.___\_&amp;lt;|&amp;gt;_/___.' &amp;gt;'&quot;&quot;.
- *       | | : `- \`.;`\ _ /`;.`/ - ` : | |
- *         \ \ `-. \_ __\ /__ _/ .-` / /
- * ======`-.____`-.___\_____/___.-`____.-'======
- *                    `=---='
- *
- * .............................................
- *          佛祖保佑             永无BUG
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- * _ooOoo_
- * o8888888o
- * 88&quot; . &quot;88
- * (| -_- |)
- *  O\ = /O
- * ___/`---'\____
- * .   ' \\| |// `.
- * / \\||| : |||// \
- * / _||||| -:- |||||- \
- * | | \\\ - /// | |
- * | \_| ''\---/'' | |
- * \ .-\__ `-` ___/-. /
- * ___`. .' /--.--\ `. . __
- * .&quot;&quot; '&amp;lt; `.___\_&amp;lt;|&amp;gt;_/___.' &amp;gt;'&quot;&quot;.
- * | | : `- \`.;`\ _ /`;.`/ - ` : | |
- * \ \ `-. \_ __\ /__ _/ .-` / /
- * ======`-.____`-.___\_____/___.-`____.-'======
- * `=---='
- *          .............................................
- *           佛曰：bug泛滥，我已瘫痪！
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- *  佛曰:
- *          写字楼里写字间，写字间里程序员；
- *          程序人员写程序，又拿程序换酒钱。
- *          酒醒只在网上坐，酒醉还来网下眠；
- *          酒醉酒醒日复日，网上网下年复年。
- *          但愿老死电脑间，不愿鞠躬老板前；
- *          奔驰宝马贵者趣，公交自行程序员。
- *          别人笑我忒疯癫，我笑自己命太贱；
- *          不见满街漂亮妹，哪个归得程序员？
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- *      ┌─┐       ┌─┐
- *   ┌──┘ ┴───────┘ ┴──┐
- *   │                 │
- *   │       ───       │
- *   │  ─┬┘       └┬─  │
- *   │                 │
- *   │       ─┴─       │
- *   │                 │
- *   └───┐         ┌───┘
- *       │         │
- *       │         │
- *       │         │
- *       │         └──────────────┐
- *       │                        │
- *       │                        ├─┐
- *       │                        ┌─┘
- *       │                        │
- *       └─┐  ┐  ┌───────┬──┐  ┌──┘
- *         │ ─┤ ─┤       │ ─┤ ─┤
- *         └──┴──┘       └──┴──┘
- *                神兽保佑
- *               代码无BUG!
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- *                  ___====-_  _-====___
- *            _--^^^#####//      \\#####^^^--_
- *         _-^##########// (    ) \\##########^-_
- *        -############//  |\^^/|  \\############-
- *      _/############//   (@::@)   \\############\_
- *     /#############((     \\//     ))#############\
- *    -###############\\    (oo)    //###############-
- *   -#################\\  / VV \  //#################-
- *  -###################\\/      \//###################-
- * _#/|##########/\######(   /\   )######/\##########|\#_
- * |/ |#/\#/\#/\/  \#/\##\  |  |  /##/\#/  \/\#/\#/\#| \|
- * `  |/  V  V  `   V  \#\| |  | |/#/  V   '  V  V  \|  '
- *    `   `  `      `   / | |  | | \   '      '  '   '
- *                     (  | |  | |  )
- *                    __\ | |  | | /__
- *                   (vvv(VVV)(VVV)vvv)                
- *                        神兽保佑
- *                       代码无BUG!
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- *
- *
- *                                                    __----~~~~~~~~~~~------___
- *                                   .  .   ~~//====......          __--~ ~~
- *                   -.            \_|//     |||\\  ~~~~~~::::... /~
- *                ___-==_       _-~o~  \/    |||  \\            _/~~-
- *        __---~~~.==~||\=_    -_--~/_-~|-   |\\   \\        _/~
- *    _-~~     .=~    |  \\-_    '-~7  /-   /  ||    \      /
- *  .~       .~       |   \\ -_    /  /-   /   ||      \   /
- * /  ____  /         |     \\ ~-_/  /|- _/   .||       \ /
- * |~~    ~~|--~~~~--_ \     ~==-/   | \~--===~~        .\
- *          '         ~-|      /|    |-~\~~       __--~~
- *                      |-~~-_/ |    |   ~\_   _-~            /\
- *                           /  \     \__   \/~                \__
- *                       _--~ _/ | .-~~____--~-/                  ~~==.
- *                      ((-&amp;gt;/~   '.|||' -_|    ~~-/ ,              . _||
- *                                 -_     ~\      ~~---l__i__i__i--~~_/
- *                                 _-~-__   ~)  \--______________--~~
- *                               //.-~~~-~_--~- |-------~~~~~~~~
- *                                      //.-~~~--\
- *                               神兽保佑
- *                              代码无BUG!
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- *                 .-~~~~~~~~~-._       _.-~~~~~~~~~-.
- *             __.'              ~.   .~              `.__
- *           .'//                  \./                  \\`.
- *         .'//                     |                     \\`.
- *       .'// .-~&quot;&quot;&quot;&quot;&quot;&quot;&quot;~~~~-._     |     _,-~~~~&quot;&quot;&quot;&quot;&quot;&quot;&quot;~-. \\`.
- *     .'//.-&quot;                 `-.  |  .-'                 &quot;-.\\`.
- *   .'//______.============-..   \ | /   ..-============.______\\`.
- * .'______________________________\|/______________________________`.
- *
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/***
- *
- *   █████▒█    ██  ▄████▄   ██ ▄█▀       ██████╗ ██╗   ██╗ ██████╗
- * ▓██   ▒ ██  ▓██▒▒██▀ ▀█   ██▄█▒        ██╔══██╗██║   ██║██╔════╝
- * ▒████ ░▓██  ▒██░▒▓█    ▄ ▓███▄░        ██████╔╝██║   ██║██║  ███╗
- * ░▓█▒  ░▓▓█  ░██░▒▓▓▄ ▄██▒▓██ █▄        ██╔══██╗██║   ██║██║   ██║
- * ░▒█░   ▒▒█████▓ ▒ ▓███▀ ░▒██▒ █▄       ██████╔╝╚██████╔╝╚██████╔╝
- *  ▒ ░   ░▒▓▒ ▒ ▒ ░ ░▒ ▒  ░▒ ▒▒ ▓▒       ╚═════╝  ╚═════╝  ╚═════╝
- *  ░     ░░▒░ ░ ░   ░  ▒   ░ ░▒ ▒░
- *  ░ ░    ░░░ ░ ░ ░        ░ ░░ ░
- *           ░     ░ ░      ░  ░
- */
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 </description>
       </item>

@@ -145,6 +145,10 @@
         <priority>0.2</priority>
     </url>
     <url>
+        <loc>https://gorpeln.com//article/15166860457</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
         <loc>https://gorpeln.com//article/15178011950</loc>
         <priority>0.2</priority>
     </url>
@@ -189,7 +193,15 @@
         <priority>0.2</priority>
     </url>
     <url>
+        <loc>https://gorpeln.com//article/15368306590</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
         <loc>https://gorpeln.com//article/15385436862</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15389885669</loc>
         <priority>0.2</priority>
     </url>
     <url>
@@ -210,6 +222,10 @@
     </url>
     <url>
         <loc>https://gorpeln.com//article/15421638259</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15429884147</loc>
         <priority>0.2</priority>
     </url>
     <url>
@@ -270,6 +286,46 @@
     </url>
     <url>
         <loc>https://gorpeln.com//article/15589479418</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15599710733</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15605697133</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15611722666</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15612663893</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15618778699</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15623480718</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15632033519</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15692409843</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15700906142</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com//article/15713825459</loc>
         <priority>0.2</priority>
     </url>
     <url>
@@ -417,6 +473,10 @@
         <priority>0.2</priority>
     </url>
     <url>
+        <loc>https://gorpeln.com/article/15166860457</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
         <loc>https://gorpeln.com/article/15178011950</loc>
         <priority>0.2</priority>
     </url>
@@ -461,7 +521,15 @@
         <priority>0.2</priority>
     </url>
     <url>
+        <loc>https://gorpeln.com/article/15368306590</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
         <loc>https://gorpeln.com/article/15385436862</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15389885669</loc>
         <priority>0.2</priority>
     </url>
     <url>
@@ -482,6 +550,10 @@
     </url>
     <url>
         <loc>https://gorpeln.com/article/15421638259</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15429884147</loc>
         <priority>0.2</priority>
     </url>
     <url>
@@ -514,35 +586,75 @@
     </url>
     <url>
         <loc>https://gorpeln.com/article/15524857215</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/article/15526269575</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/article/15547100706</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/article/15549830140</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/article/15573877312</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/article/15575387722</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/article/15583474979</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/article/15589479418</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15599710733</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15605697133</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15611722666</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15612663893</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15618778699</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15623480718</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15632033519</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15692409843</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15700906142</loc>
+        <priority>0.2</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15713825459</loc>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/assets/img/social/qqGroupQRCode.png</loc>
@@ -581,6 +693,10 @@
         <priority>0.2</priority>
     </url>
     <url>
+        <loc>https://gorpeln.com/page10/</loc>
+        <priority>0.3</priority>
+    </url>
+    <url>
         <loc>https://gorpeln.com/page2/</loc>
         <priority>0.2</priority>
     </url>
@@ -610,7 +726,7 @@
     </url>
     <url>
         <loc>https://gorpeln.com/page9/</loc>
-        <priority>0.3</priority>
+        <priority>0.2</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/site</loc>
