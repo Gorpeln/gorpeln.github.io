@@ -10,7 +10,31 @@
         <link>https://gorpeln.com//article/15713829999</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15713829999</guid>
         <pubDate>Fri, 18 Oct 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;&lt;a href=&quot;https://www.cockos.com/licecap/&quot;&gt;Licecap 开源&lt;/a&gt; - 是一款屏幕录制工具输出GIF，录制过程中可以随意改变录屏范围，录制的文件也非常小。支持 Mac 和 Windows 平台。&lt;/p&gt;
+        <description>&lt;p&gt;加密文章&lt;/p&gt;
+&lt;html&gt;
+&lt;body&gt;
+    &lt;div&gt;
+        &lt;ul&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;ul&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.cockos.com/licecap/&quot;&gt;Licecap 开源&lt;/a&gt; - 是一款屏幕录制工具输出GIF，录制过程中可以随意改变录屏范围，录制的文件也非常小。支持 Mac 和 Windows 平台。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://pinyin.sogou.com/mac/&quot;&gt;搜狗输入法&lt;/a&gt; - 搜狗输入法。&lt;/p&gt;
 
@@ -25,6 +49,19 @@
 &lt;p&gt;&lt;a href=&quot;https://www.charlesproxy.com/&quot;&gt;Charles&lt;/a&gt; - 一个代理工具，允许你查看所有的HTTP和HTTPS流量。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://www.getpostman.com&quot;&gt;Postman&lt;/a&gt; - Postman 帮助我们快速测试API。&lt;/p&gt;
+
+&lt;script&gt;
+    (function(){
+        if('gorpeln.'){
+            if (prompt('请输入密码') !== 'gorpeln.'){
+                alert('密码错误');
+                window.close();
+                window.history.go(-1);
+                history.back(-1);
+            }
+        }
+    })();  
+&lt;/script&gt;
 
 </description>
       </item>

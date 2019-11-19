@@ -29,101 +29,30 @@ body {
   font-family: Helvetica Neue, Microsoft Yahei
 }
 
-.container,
-.main,
 body {
   background: #ffffff;
 }
 
-.iconfont {
-  color: #6b7386;
-  padding-right: 4px
-}
 
-.container .left-bar {
-  position: fixed;
-  padding: 0 30px;
-  background: #37374c;
-  color: #fff;
-  box-sizing: border-box;
-  flex-direction: column;
-  height: 100vh;
-  width: 248px;
-  transition: all .5s;
-  text-align: center;
-  border-width: 1px sol;
-}
 
-.container .main {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  -webkit-box-orient: vertical;
-  margin-left: 248px;
-  background: #eee;
-}
-
-.container .main .iconfont {
-  font-size: 18px;
-  color: #000
-}
-
-.set-scroll {
-  background-color: #494f5e;
-  border-radius: 0;
-  width: 4px
-}
-
-.left-bar .nav {
-  height: calc(100% - 240px);
-  overflow: auto;
-  font-size: 18px;
-}
-
-.left-bar .nav-item details {
-  font-size: 16px;
-  padding-top: 10px;
-}
-
-.left-bar .nav-item li {
-  height: 24px;
-  line-height: 24px;
-  font-size: 14px;
-  padding-top: 5px;
-}
-
-.left-bar .nav-item li:hover a,
-.left-bar .nav-item li:hover i,
-.left-bar .nav-item li>.active,
-.left-bar .nav-item li>.active i {
-  padding-left: 20px;
-  color: #33ccff;
-}
-
-.left-bar .nav-item li a {
-  text-decoration: none;
-  display: inline-block;
-  width: 100%;
-  color: #dedede
-}
-
-.main #mainContent {
+ #mainContent {
   max-width: 1200px
 }
 
-.main .box {
+ .box {
   overflow: hidden;
-  margin: 2% 2% 0 2%;
+  margin: 0 2% 2% 2%;
   background: #fff;
-  padding-bottom: 20px
+  padding-bottom: 2%;
+  border-radius: 8px;
 }
 
-.main .box .sub-category>div {
+ .box .sub-category>div {
   padding: 2% 0 0 2%;
   font-size: 18px
 }
 
-.main .box .item {
+ .box .item {
   width: -webkit-calc(20.5% - 2px);
   width: -moz-calc(20.5% - 2px);
   width: calc( 25% - 2px);
@@ -140,18 +69,18 @@ body {
   background: #fff;
 }
 
-.main .box .item:hover {
+ .box .item:hover {
   transform: translateY(-5px)
 }
 
-.main .box .item .no-logo {
+ .box .item .no-logo {
   color: #3273dc;
   font-weight: 700;
   font-size: 14px;
   padding: 0 .1rem;
 }
 
-.main .box .item .logo {
+ .box .item .logo {
   height: 40px;
   position: relative;
   font-size: 14px;
@@ -163,18 +92,18 @@ body {
   padding: 0 .1rem;
 }
 
-.main .box .item .logo img {
+ .box .item .logo img {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   vertical-align: middle
 }
 
-.main .box .item .logo text {
+ .box .item .logo text {
   padding-left: 10px;
 }
 
-.main .box .item .desc {
+ .box .item .desc {
   color: gray;
   font-size: 12px;
   padding-top: 10px;
@@ -193,7 +122,7 @@ body {
     width: calc( 45% - 2px);
     min-width: 100px
   }
-  .container .main {
+  .container  {
     margin-left: 0
   }
   .container .left-bar {
@@ -232,9 +161,9 @@ body {
 
 @media screen and (min-width:1040px) and (max-width:1920px) {
   .container .box .item {
-    width: -webkit-calc(20.5% - 2px);
-    width: -moz-calc(20.5% - 2px);
-    width: calc( 20.5% - 2px);
+    width: -webkit-calc(22.5% - 2px);
+    width: -moz-calc(22.5% - 2px);
+    width: calc( 22.5% - 2px);
   }
 }
 

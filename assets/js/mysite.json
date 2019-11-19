@@ -1,0 +1,136 @@
+var technologySite = [
+{
+    "siteToUrl": "https://gorpeln.com/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_me.png",
+    "siteTitle": "个人博客 - gorpeln",
+    "siteDes": "趁年轻，做自己想做的！"
+},
+{
+    "siteToUrl": "https://gorpeln.blog.csdn.net",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_csdn.ico",
+    "siteTitle": "CSDN - gorpeln",
+    "siteDes": "中国最大的IT社区和服务平台"
+},
+{
+    "siteToUrl": "https://blog.csdn.net/gorpeln",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_csdn.ico",
+    "siteTitle": "CSDN - 同步",
+    "siteDes": "中国最大的IT社区和服务平台"
+},
+{
+    "siteToUrl": "https://www.jianshu.com/u/d9e93557a550",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_jianshu.jpg",
+    "siteTitle": "简书",
+    "siteDes": "优质的创作社区"
+},
+{
+    "siteToUrl": "https://juejin.im/user/5ba0d410e51d450e9a2e14d1/posts",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_gold-favicon.png",
+    "siteTitle": "掘金",
+    "siteDes": "只有高手分享的中文技术社区"
+},
+{
+    "siteToUrl": "https://stackoverflow.com/users/10538717/gorpeln",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_stackoverflow.ico",
+    "siteTitle": "Stack Overflow",
+    "siteDes": "国外编程相关的IT技术问答网站"
+},
+{
+    "siteToUrl": "https://segmentfault.com/u/gorpeln/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_segmentfault.ico",
+    "siteTitle": "Segment Fault",
+    "siteDes": "一个专注于解决编程问题，提高开发技能的社区"
+},
+{
+    "siteToUrl": "https://www.zhihu.com/people/gorpeln/activities",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_zhihu.ico",
+    "siteTitle": "知乎",
+    "siteDes": "与世界分享你的知识、经验和见解"
+},
+{
+    "siteToUrl": "https://www.cnblogs.com/gorpeln/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_cnblogs.jpg",
+    "siteTitle": "博客园",
+    "siteDes": "博客模式的技术分享社区"
+},
+{
+    "siteToUrl": "https://my.oschina.net/gorpeln",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_oschina.ico",
+    "siteTitle": "开源中国",
+    "siteDes": "目前中国最大的开源技术社区"
+}]
+
+
+var codingGitSite = [
+{
+    "siteToUrl": "https://github.com/gorpeln",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_github.ico",
+    "siteTitle": "GitHub",
+    "siteDes": "面向开源及私有软件项目的git托管平台"
+},
+{
+    "siteToUrl": "https://coding.net/u/gorpeln",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_coding.png",
+    "siteTitle": "Coding",
+    "siteDes": "中国最大的git平台"
+},
+{
+    "siteToUrl": "https://gitee.com/gorpeln",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_mayun.png",
+    "siteTitle": "码云",
+    "siteDes": "开源中国Git 代码托管平台"
+},
+{
+    "siteToUrl": "https://gitlab.com/gorpeln",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_gitlab.png",
+    "siteTitle": "GitLab",
+    "siteDes": "基于网络的Git仓库管理工具"
+}]
+
+var siteOperationSite = [
+{
+    "siteToUrl": "https://account.aliyun.com/login/login.htm",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_aliyun.png",
+    "siteTitle": "阿里云",
+    "siteDes": "数据分享第一平台，云计算第一平台，云产品解决方案，享多线独享带宽，开发者合作平台，站长云集平台"
+},
+{
+    "siteToUrl": "https://login.bce.baidu.com/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_baiduyun.png",
+    "siteTitle": "百度云",
+    "siteDes": "世界很复杂，百度更懂你"
+},
+{
+    "siteToUrl": "https://portal.qiniu.com/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_qiniu.png",
+    "siteTitle": "七牛云",
+    "siteDes": "国内领先的企业级公有云服务商，致力于打造以数据为核心的场景化PaaS服务。"
+},
+{
+    "siteToUrl": "https://www.upyun.com/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_upyun.jpg",
+    "siteTitle": "又拍云",
+    "siteDes": "开放高度可扩展的API，为互联网企业提供基础存储系统"
+},
+{
+    "siteToUrl": "https://www.cloudflare.com/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_cloudflare.png",
+    "siteTitle": "CloudFlare",
+    "siteDes": "一个国外著名的免费CDN网站加速服务平台"
+},
+{
+    "siteToUrl": "https://www.cndns.com/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_cndns.png",
+    "siteTitle": "美橙互联",
+    "siteDes": "域名主机，网站建设，云服务器，企业邮箱一站式完美解决"
+},
+{
+    "siteToUrl": "https://freessl.cn/",
+    "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_freessl.ico",
+    "siteTitle": "FreeSSL",
+    "siteDes": "一个提供免费HTTPS证书申请的网站"
+}
+];
+
+
+
