@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>push,pop到任意控制器(一) | gorpeln的个人博客 - gorpeln</title>
+  <title>扫码登录实现原理 | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="主题思想：如A、B、C、D 四个视图控制器想要在 A push B 后， B 在push 到 D ，然后从 D pop 到 C ,再从 C pop 的A">
+  <meta name="description" content="1、需求介绍">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/14776665877">
+  <link rel="canonical" href="https://gorpeln.com//article/15215990385">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -560,22 +560,20 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">push,pop到任意控制器(一)</h1>
+    <h1 class="post-title">扫码登录实现原理</h1>
     <div class="info">
-	    <p class="post-meta">时间：2016-10-28</p>
+	    <p class="post-meta">时间：2018-03-21</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
-        	iOS
+		<a class="item-date" style="color:#6666cc;" href="/categories#架构和算法" target="_blank">
+        	架构和算法
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#push"  target="_blank">push</a>
+			<a class="pjaxlink" href="/tags#扫码"  target="_blank">扫码</a>
 		
-			<a class="pjaxlink" href="/tags#pop"  target="_blank">pop</a>
-		
-			<a class="pjaxlink" href="/tags#代码段"  target="_blank">代码段</a>
+			<a class="pjaxlink" href="/tags#登录"  target="_blank">登录</a>
 		
 		</span>
 	    
@@ -583,86 +581,41 @@
   </header>
 
 <div style="font-size: 8px;width:calc(100% + 3em);margin-bottom: 2em;color: #828282;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/14776665877
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15215990385
 </div>
 
 
   <article class="post-content">
-    <p>主题思想：如A、B、C、D 四个视图控制器
-想要在 A push B 后， B 在push 到 D ，然后从 D pop 到 C ,再从 C pop 的A</p>
+    <h4 id="1需求介绍">1、需求介绍</h4>
 
-<hr />
-<p>解决方法如下：</p>
+<p>　　首先，介绍下什么是扫码登录。现在，大部分同学手机上都装有qq和淘宝，天猫等这一类的软件。而开发这些app的企业，都有他们相对应的网站。为了让用户在使用他们的网站时，登录更加方便和安全。这些企业提供了， 使用手机，扫一扫，就可以登录的服务。网页登录时的效果如下：</p>
 
-<p>假如此时在 A 控制器下，想要到 push 到 B， 可以这样写</p>
+<p><img src="https://img.gorpeln.com/blog_login_001.png" alt="blog_login_001" /></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController: B :YES];  
-</code></pre></div></div>
+<p>　　有很多小伙伴可能会感到很神奇，网页上只是显示了个二维码，它怎么就知道是哪个手机扫到了二维码，并且进行登录的呢？而且，登录完成以后，还能直接把用户信息显示给用户，真的是很神奇啊。</p>
 
-<p>这时 self.navigationController.viewControllers 中按顺序含有 [A，B]</p>
+<h4 id="2原理解释">2、原理解释</h4>
 
-<p>此时已经到 B 控制器下了， 接下来是 push 到 D, 可以这样写</p>
+<h6 id="网页端服务器">网页端+服务器</h6>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController: D :YES];  
-</code></pre></div></div>
+<p>　　接下来就是对于这个服务的详细实现。首先，大概说一下原理：用户打开网站的登录页面的时候，向浏览器的服务器发送获取登录二维码的请求。服务器收到请求后，随机生成一个uuid，将这个id作为key值存入redis服务器，同时设置一个过期时间，在过期后，用户登录二维码需要进行刷新重新获取。同时，将这个key值和本公司的验证字符串合在一起，通过二维码生成接口，生成一个二维码的图片（二维码生成，网上有很多现成的接口和源码，这里不再介绍。）然后，将二维码图片和uuid一起返回给用户浏览器。</p>
 
-<p>这时 self.navigationController.viewControllers 中按顺序含有 [A，B，D]</p>
+<p>　　浏览器拿到二维码和uuid后，会每隔一秒向浏览器发送一次，登录是否成功的请求。请求中携带有uuid作为当前页面的标识符。这里有的同学就会奇怪了，服务器只存了个uuid在redis中作为key值，怎么会有用户的id信息呢？</p>
 
-<p>如何想从 D pop 到 C, 看数组[A，B，D] 中压根就没有C 该如何pop 到C呢？</p>
+<p>　　这里确实会有用户的id信息，这个id信息是由手机服务器存入redis中的。</p>
 
-<p>这时就需要对这个数组进行修改，将C 加入进去</p>
+<h6 id="手机端服务器">手机端+服务器</h6>
+<p>　　浏览器拿到二维码后，将二维码展示到网页上，并给用户一个提示：请掏出您的手机，打开扫一扫进行登录。用户拿出手机扫描二维码，就可以得到一个验证信息和一个uuid（扫描二维码获取字符串的功能在网上同样有很多demo，这里就不详细介绍了）。由于手机端已经进行过了登录，在访问手机端的服务器的时候，参数中都回携带一个用户的token，手机端服务器可以从中解析到用户的userId（这里从token中取值而不是手机端直接传userid是为了安全，直接传userid可能会被截获和修改，token是加密的，被修改的风险会小很多）。手机端将解析到的数据和用户token一起作为参数，向服务器发送验证登录请求（这里的服务器是手机服务器，手机端的服务器跟网页端服务器不是同一台服务器）。服务器收到请求后，首先对比参数中的验证信息，确定是否为用户登录请求接口。如果是，返回一个确认信息给手机端。</p>
 
-<p>于是 你会如下写：</p>
+<p>　　手机端收到返回后，将登录确认框显示给用户（防止用户误操作，同时使登录更加人性化）。用户确认是进行的登录操作后，手机再次发送请求。服务器拿到uuId和userId后，将用户的userid作为value值存入redis中以uuid作为key的键值对中。<br />
+　　</p>
+<h4 id="3登录成功">3、登录成功</h4>
+<p>　　然后，浏览器再次发送请求的时候，浏览器端的服务器就可以得到一个用户Id，并调用登录的方法，声成一个浏览器端的token，再浏览器再次发送请求的时候，将用户信息返回给浏览器，登录成功。这里存储用户id而不是直接存储用户信息是因为，手机端的用户信息，不一定是和浏览器端的用户信息完全一致。<br />
+　　</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController.viewControllers addObject:C];  
-</code></pre></div></div>
+<h4 id="4登录原理图">4、登录原理图</h4>
 
-<p>发现报错，这是因为self.navigationController.viewControllers 是不可变数组，没办法了，我们只好转换一下了：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSMutableArray*tempMarr =[NSMutableArray arrayWithArray:self.navigationController.viewControllers];  
-[tempMarr insertObject:C atIndex:tempMarr.count- 2];  
-</code></pre></div></div>
-
-<p>这时候 tempMarr 是这样的 [A，B，C，D], 可是 要想 从 C pop 到 A ,数组中就不能有 B
-就需要 将tempMarr 变成 [A，C，D] ：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tempMarr removeObjectAtIndex:2];  
-</code></pre></div></div>
-
-<p>但是你会发现，这时的self.navigationController.viewControllers 依然是 [A，B，D]， 不用急，不用怕。navigationController 有这样一个方法, 可以搞定，如下：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController setViewControllers:tempMarr animated:YES];  
-</code></pre></div></div>
-
-<p>你可能会说，这不是直接把 B 替换 成 C 吗</p>
-
-<p>看上去是这样，可是跳转的时机，时机，时机重要的事情说三遍，还有视图的切换，切换，切换</p>
-
-<p>此时还在 B 控制器中，这些处理过程都是在 B 中处理的 ， 也必须是 B 执行了 push 到 D 方法后，也就是说</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController:D animated:YES];  
-</code></pre></div></div>
-
-<p>之后 进行的 数组处理；</p>
-
-<p>附加代码：
-在B 控制器中处理：</p>
-
-<pre><code class="language-Objective-C">
--(void)pushTest {  
-    [self.navigationController pushViewController:D animated:YES];  
-    NSMutableArray*tempMarr =[NSMutableArray arrayWithArray:self.navigationController.viewControllers];  
-    [tempMarr insertObject:C atIndex:tempMarr.count- 2];  
-    [tempMarr removeObject:self]; //此时 的self 就是指 B ,因为在 B 中呢  
-    [self.navigationController setViewControllers:tempMarr animated:YES];  
-}  
-
-</code></pre>
-
-<p><strong>适用场景：</strong></p>
-
-<p>适合在如商品的详情页面上有商品的推荐，点击商品推荐仍是商品详情页面，如果不断push地话会很影响性能，该方法可以简单快捷的避免该问题。</p>
-
+<p><img src="https://img.gorpeln.com/blog_login_002.jpg" alt="blog_login_002" /></p>
 
   </article>
 </div>
@@ -670,12 +623,12 @@
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/14861973259" title="字符串的删除替换" style="color: #6666cc"  target="_blank">字符串的删除替换</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15226027614" title="架构师说" style="color: #6666cc"  target="_blank">架构师说</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/14743559444" title="设置任意某个角为圆角" style="color: #6666cc"  target="_blank">设置任意某个角为圆角</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15204862561" title="短信验证码防刷机制" style="color: #6666cc"  target="_blank">短信验证码防刷机制</a>
 	    </div>
 	  
 	 

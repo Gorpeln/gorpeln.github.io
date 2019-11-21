@@ -844,6 +844,97 @@ password: 123456
       </item>
     
       <item>
+        <title>七牛云上传图片 - 客户端</title>
+        <link>https://gorpeln.com//article/15662012632</link>
+        <guid isPermaLink="true">https://gorpeln.com//article/15662012632</guid>
+        <pubDate>Mon, 19 Aug 2019 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;　　最近做了七牛云存储的有关内容，涉及到与后台交互获取验证的token，这个token是用作验证使用的，官方建议使用后台生成后，客户端再获取使用。但客户端也能独自生成具体生成方法如下：
+　　
+　　
+　　&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#import &amp;lt;QiniuSDK.h&amp;gt;
+#import &quot;QN_GTM_Base64.h&quot;
+#import &amp;lt;CommonCrypto/CommonHMAC.h&amp;gt;
+
+#define kQiniuScope @&quot;&quot;
+#define kQiniuAccessKey @&quot;&quot;
+#define kQiniuSecretKey @&quot;&quot;
+#define kQiniuLiveTime 1  //有效时间
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-(void)createToken {
+    if (!kQiniuScope.length || !kQiniuAccessKey.length || !kQiniuSecretKey.length) {
+        return;
+    }
+    // 将上传策略中的scrop和deadline序列化成json格式
+    NSMutableDictionary *authInfo = [NSMutableDictionary dictionary];
+    [authInfo setObject:kQiniuScope forKey:@&quot;scope&quot;];
+    [authInfo
+     setObject:[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970] + kQiniuLiveTime * 24 * 3600]
+     forKey:@&quot;deadline&quot;];
+    
+    NSData *jsonData =
+    [NSJSONSerialization dataWithJSONObject:authInfo options:NSJSONWritingPrettyPrinted error:nil];
+    
+    // 对json序列化后的上传策略进行URL安全的base64编码
+    NSString *encodedString = [self urlSafeBase64Encode:jsonData];
+    
+    // 用secretKey对编码后的上传策略进行HMAC-SHA1加密，并且做安全的base64编码，得到encoded_signed
+    NSString *encodedSignedString = [self HMACSHA1:kQiniuSecretKey text:encodedString];
+    
+    // 将accessKey、encodedSignedString和encodedString拼接，中间用：分开，就是上传的token
+    NSString *token =
+    [NSString stringWithFormat:@&quot;%@:%@:%@&quot;, kQiniuAccessKey, encodedSignedString, encodedString];
+    
+    self.qiniuToken = token;
+}
+  
+// 将进行URL安全的base64编码
+- (NSString *)urlSafeBase64Encode:(NSData *)text {
+    NSString *base64 =
+    [[NSString alloc] initWithData:[QN_GTM_Base64 encodeData:text] encoding:NSUTF8StringEncoding];
+    base64 = [base64 stringByReplacingOccurrencesOfString:@&quot;+&quot; withString:@&quot;-&quot;];
+    base64 = [base64 stringByReplacingOccurrencesOfString:@&quot;/&quot; withString:@&quot;_&quot;];
+    return base64;
+}
+  
+// 对上传策略中进行HMAC-SHA1加密
+- (NSString *)HMACSHA1:(NSString *)key text:(NSString *)text {
+    const char *cKey = [key cStringUsingEncoding:NSUTF8StringEncoding];
+    const char *cData = [text cStringUsingEncoding:NSUTF8StringEncoding];
+    
+    char cHMAC[CC_SHA1_DIGEST_LENGTH];
+    
+    CCHmac(kCCHmacAlgSHA1, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+    
+    NSData *HMAC = [[NSData alloc] initWithBytes:cHMAC length:CC_SHA1_DIGEST_LENGTH];
+    NSString *hash = [self urlSafeBase64Encode:HMAC];
+    return hash;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h5 id=&quot;上面涉及到三个参数&quot;&gt;上面涉及到三个参数&lt;/h5&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_qiniuupload_001.png&quot; alt=&quot;blog_qiniuupload_001&quot; /&gt;
+&lt;img src=&quot;https://img.gorpeln.com/blog_qiniuupload_002.png&quot; alt=&quot;blog_qiniuupload_002&quot; /&gt;&lt;/p&gt;
+
+&lt;h5 id=&quot;这样拿到了token直接上传图片就可以了&quot;&gt;这样拿到了token，直接上传图片就可以了&lt;/h5&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)uploadImageToQNFilePath:(NSString *)filePath {
+    QNUploadManager *upManager = [[QNUploadManager alloc] init];
+    QNUploadOption *uploadOption = [[QNUploadOption alloc] initWithMime:nil progressHandler:^(NSString *key, float percent) {}
+                                                                 params:nil
+                                                               checkCrc:NO
+                                                     cancellationSignal:nil];
+    [upManager putFile:filePath key:nil token:self.qiniuToken complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+        [self.uploadImageArray addObject:resp[@&quot;key&quot;]];
+        NSLog(@&quot;do something&quot;);
+    } option:uploadOption];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+      </item>
+    
+      <item>
         <title>文章置顶功能的实现 - Jekyll x Liquid</title>
         <link>https://gorpeln.com//article/15632033519</link>
         <guid isPermaLink="true">https://gorpeln.com//article/15632033519</guid>
@@ -3292,72 +3383,6 @@ find &lt;span class=&quot;nv&quot;&gt;$path&lt;/span&gt;|grep &lt;span class=&qu
 
 &lt;h3 id=&quot;最后&quot;&gt;最后&lt;/h3&gt;
 &lt;p&gt;网络优化这个话题非常庞大，本文只是在学习过程中从优化思路上列举了目前业界常见的优化点，还有很多细节很多更深入的优化没涉及到，网络层实践开发经验不足，若有错误欢迎指出。&lt;/p&gt;
-</description>
-      </item>
-    
-      <item>
-        <title>Sublime Text 3安装使用 MAC</title>
-        <link>https://gorpeln.com//article/15501213244</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15501213244</guid>
-        <pubDate>Thu, 14 Feb 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;Sublime Text：一款具有代码高亮、语法提示、自动完成且反应快速的编辑器软件，不仅具有华丽的界面，还支持插件扩展机制，用她来写代码，绝对是一种享受。相比于难于上手的Vim，浮肿沉重的Eclipse，VS，即便体积轻巧迅速启动的Editplus、Notepad++，在SublimeText面前大略显失色，无疑这款性感无比的编辑器是Coding和Writing最佳的选择，没有之一。&lt;/p&gt;
-
-&lt;h3 id=&quot;安装&quot;&gt;安装&lt;/h3&gt;
-&lt;p&gt;官网：&lt;a href=&quot;http://www.sublimetext.com/3&quot;&gt;http://www.sublimetext.com/3&lt;/a&gt;  选择对应的版本，点击下载安装&lt;/p&gt;
-
-&lt;h3 id=&quot;注册&quot;&gt;注册&lt;/h3&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;----- BEGIN LICENSE -----
-sgbteam
-Single User License
-EA7E-1153259
-8891CBB9 F1513E4F 1A3405C1 A865D53F
-115F202E 7B91AB2D 0D2A40ED 352B269B
-76E84F0B CD69BFC7 59F2DFEF E267328F
-215652A3 E88F9D8F 4C38E3BA 5B2DAAE4
-969624E7 DC9CD4D5 717FB40C 1B9738CF
-20B3C4F1 E917B5B3 87C38D9C ACCE7DD8
-5F7EF854 86B9743C FADC04AA FB0DA5C0
-F913BE58 42FEA319 F954EFDD AE881E0B
------- END LICENSE ------
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;插件&quot;&gt;插件&lt;/h3&gt;
-
-&lt;h4 id=&quot;1安装-package-control&quot;&gt;1、安装 package control&lt;/h4&gt;
-
-&lt;p&gt;功能：安装插件的工具，有了它，以后安装其他插件更方便&lt;/p&gt;
-
-&lt;p&gt;第一步：按 Ctrl + ~ 键，调出 sublime 的控制台；&lt;/p&gt;
-
-&lt;p&gt;第二步：在调出的控制台输入如下指令（需要科学上网）&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import urllib.request,os;pf='Package Control.sublime-package';ipp=sublime.installed_packages_path();urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler()));open(os.path.join(ipp,pf),'wb').write(urllib.request.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;回车，稍等片刻，如果在 preferences 里有 package control 就说明安装成功了；&lt;/p&gt;
-
-&lt;p&gt;第三步：重启Sublime Text 3，查看Perferences-&amp;gt;package settings中是否有package control这一项，如果有，则安装成功&lt;/p&gt;
-
-&lt;hr /&gt;
-&lt;hr /&gt;
-
-&lt;p&gt;&lt;strong&gt;安装插件&lt;/strong&gt;：Ctrl+Shift+P调出命令面板，在输入框输入Install Package ，然后在新弹出的窗口中查询要安装的插件，点击需要安装的插件，即可；&lt;/p&gt;
-
-&lt;p&gt;并可在Perferences-&amp;gt;package settings 中看到对应的包名。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;删除插件&lt;/strong&gt;：Ctrl+Shift+P调出命令面板，输入remove，调出Remove Package选项并回车，选择要删除的插件即可。&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;更新插件&lt;/strong&gt;：输入：upgrade packages，后回车，如果有列表出来则有插件需要更新，然后点击需要升级的插件即可；&lt;/p&gt;
-
-&lt;h4 id=&quot;2常用插件&quot;&gt;2、常用插件&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;ChineseLocalization 汉化包&lt;/li&gt;
-  &lt;li&gt;Color Highlight    显示所选颜色值的颜色，并集成了ColorPicker&lt;/li&gt;
-  &lt;li&gt;HTML-CSS-JS Prettify 一款集成了格式化（美化）html、css、js三种文件类型的插件&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-&lt;/ul&gt;
-
 </description>
       </item>
     

@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>push,pop到任意控制器(一) | gorpeln的个人博客 - gorpeln</title>
+  <title>七牛云上传图片 - 客户端 | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="主题思想：如A、B、C、D 四个视图控制器想要在 A push B 后， B 在push 到 D ，然后从 D pop 到 C ,再从 C pop 的A">
+  <meta name="description" content="　　最近做了七牛云存储的有关内容，涉及到与后台交互获取验证的token，这个token是用作验证使用的，官方建议使用后台生成后，客户端再获取使用。但客户端也能独自生成具体生成方法如下：　　　　　　```#import #import "QN_GTM_Base64.h"#import &lt;CommonCrypt...">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/14776665877">
+  <link rel="canonical" href="https://gorpeln.com//article/15662012632">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -560,9 +560,9 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">push,pop到任意控制器(一)</h1>
+    <h1 class="post-title">七牛云上传图片 - 客户端</h1>
     <div class="info">
-	    <p class="post-meta">时间：2016-10-28</p>
+	    <p class="post-meta">时间：2019-08-19</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
@@ -571,11 +571,9 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#push"  target="_blank">push</a>
+			<a class="pjaxlink" href="/tags#七牛云"  target="_blank">七牛云</a>
 		
-			<a class="pjaxlink" href="/tags#pop"  target="_blank">pop</a>
-		
-			<a class="pjaxlink" href="/tags#代码段"  target="_blank">代码段</a>
+			<a class="pjaxlink" href="/tags#上传"  target="_blank">上传</a>
 		
 		</span>
 	    
@@ -583,85 +581,93 @@
   </header>
 
 <div style="font-size: 8px;width:calc(100% + 3em);margin-bottom: 2em;color: #828282;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/14776665877
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15662012632
 </div>
 
 
   <article class="post-content">
-    <p>主题思想：如A、B、C、D 四个视图控制器
-想要在 A push B 后， B 在push 到 D ，然后从 D pop 到 C ,再从 C pop 的A</p>
+    <p>　　最近做了七牛云存储的有关内容，涉及到与后台交互获取验证的token，这个token是用作验证使用的，官方建议使用后台生成后，客户端再获取使用。但客户端也能独自生成具体生成方法如下：
+　　
+　　
+　　</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import &lt;QiniuSDK.h&gt;
+#import "QN_GTM_Base64.h"
+#import &lt;CommonCrypto/CommonHMAC.h&gt;
 
-<hr />
-<p>解决方法如下：</p>
-
-<p>假如此时在 A 控制器下，想要到 push 到 B， 可以这样写</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController: B :YES];  
+#define kQiniuScope @""
+#define kQiniuAccessKey @""
+#define kQiniuSecretKey @""
+#define kQiniuLiveTime 1  //有效时间
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-(void)createToken {
+    if (!kQiniuScope.length || !kQiniuAccessKey.length || !kQiniuSecretKey.length) {
+        return;
+    }
+    // 将上传策略中的scrop和deadline序列化成json格式
+    NSMutableDictionary *authInfo = [NSMutableDictionary dictionary];
+    [authInfo setObject:kQiniuScope forKey:@"scope"];
+    [authInfo
+     setObject:[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970] + kQiniuLiveTime * 24 * 3600]
+     forKey:@"deadline"];
+    
+    NSData *jsonData =
+    [NSJSONSerialization dataWithJSONObject:authInfo options:NSJSONWritingPrettyPrinted error:nil];
+    
+    // 对json序列化后的上传策略进行URL安全的base64编码
+    NSString *encodedString = [self urlSafeBase64Encode:jsonData];
+    
+    // 用secretKey对编码后的上传策略进行HMAC-SHA1加密，并且做安全的base64编码，得到encoded_signed
+    NSString *encodedSignedString = [self HMACSHA1:kQiniuSecretKey text:encodedString];
+    
+    // 将accessKey、encodedSignedString和encodedString拼接，中间用：分开，就是上传的token
+    NSString *token =
+    [NSString stringWithFormat:@"%@:%@:%@", kQiniuAccessKey, encodedSignedString, encodedString];
+    
+    self.qiniuToken = token;
+}
+  
+// 将进行URL安全的base64编码
+- (NSString *)urlSafeBase64Encode:(NSData *)text {
+    NSString *base64 =
+    [[NSString alloc] initWithData:[QN_GTM_Base64 encodeData:text] encoding:NSUTF8StringEncoding];
+    base64 = [base64 stringByReplacingOccurrencesOfString:@"+" withString:@"-"];
+    base64 = [base64 stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+    return base64;
+}
+  
+// 对上传策略中进行HMAC-SHA1加密
+- (NSString *)HMACSHA1:(NSString *)key text:(NSString *)text {
+    const char *cKey = [key cStringUsingEncoding:NSUTF8StringEncoding];
+    const char *cData = [text cStringUsingEncoding:NSUTF8StringEncoding];
+    
+    char cHMAC[CC_SHA1_DIGEST_LENGTH];
+    
+    CCHmac(kCCHmacAlgSHA1, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
+    
+    NSData *HMAC = [[NSData alloc] initWithBytes:cHMAC length:CC_SHA1_DIGEST_LENGTH];
+    NSString *hash = [self urlSafeBase64Encode:HMAC];
+    return hash;
+}
 </code></pre></div></div>
 
-<p>这时 self.navigationController.viewControllers 中按顺序含有 [A，B]</p>
+<h5 id="上面涉及到三个参数">上面涉及到三个参数</h5>
+<p><img src="https://img.gorpeln.com/blog_qiniuupload_001.png" alt="blog_qiniuupload_001" />
+<img src="https://img.gorpeln.com/blog_qiniuupload_002.png" alt="blog_qiniuupload_002" /></p>
 
-<p>此时已经到 B 控制器下了， 接下来是 push 到 D, 可以这样写</p>
+<h5 id="这样拿到了token直接上传图片就可以了">这样拿到了token，直接上传图片就可以了</h5>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController: D :YES];  
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)uploadImageToQNFilePath:(NSString *)filePath {
+    QNUploadManager *upManager = [[QNUploadManager alloc] init];
+    QNUploadOption *uploadOption = [[QNUploadOption alloc] initWithMime:nil progressHandler:^(NSString *key, float percent) {}
+                                                                 params:nil
+                                                               checkCrc:NO
+                                                     cancellationSignal:nil];
+    [upManager putFile:filePath key:nil token:self.qiniuToken complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
+        [self.uploadImageArray addObject:resp[@"key"]];
+        NSLog(@"do something");
+    } option:uploadOption];
+}
 </code></pre></div></div>
-
-<p>这时 self.navigationController.viewControllers 中按顺序含有 [A，B，D]</p>
-
-<p>如何想从 D pop 到 C, 看数组[A，B，D] 中压根就没有C 该如何pop 到C呢？</p>
-
-<p>这时就需要对这个数组进行修改，将C 加入进去</p>
-
-<p>于是 你会如下写：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController.viewControllers addObject:C];  
-</code></pre></div></div>
-
-<p>发现报错，这是因为self.navigationController.viewControllers 是不可变数组，没办法了，我们只好转换一下了：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSMutableArray*tempMarr =[NSMutableArray arrayWithArray:self.navigationController.viewControllers];  
-[tempMarr insertObject:C atIndex:tempMarr.count- 2];  
-</code></pre></div></div>
-
-<p>这时候 tempMarr 是这样的 [A，B，C，D], 可是 要想 从 C pop 到 A ,数组中就不能有 B
-就需要 将tempMarr 变成 [A，C，D] ：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tempMarr removeObjectAtIndex:2];  
-</code></pre></div></div>
-
-<p>但是你会发现，这时的self.navigationController.viewControllers 依然是 [A，B，D]， 不用急，不用怕。navigationController 有这样一个方法, 可以搞定，如下：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController setViewControllers:tempMarr animated:YES];  
-</code></pre></div></div>
-
-<p>你可能会说，这不是直接把 B 替换 成 C 吗</p>
-
-<p>看上去是这样，可是跳转的时机，时机，时机重要的事情说三遍，还有视图的切换，切换，切换</p>
-
-<p>此时还在 B 控制器中，这些处理过程都是在 B 中处理的 ， 也必须是 B 执行了 push 到 D 方法后，也就是说</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController:D animated:YES];  
-</code></pre></div></div>
-
-<p>之后 进行的 数组处理；</p>
-
-<p>附加代码：
-在B 控制器中处理：</p>
-
-<pre><code class="language-Objective-C">
--(void)pushTest {  
-    [self.navigationController pushViewController:D animated:YES];  
-    NSMutableArray*tempMarr =[NSMutableArray arrayWithArray:self.navigationController.viewControllers];  
-    [tempMarr insertObject:C atIndex:tempMarr.count- 2];  
-    [tempMarr removeObject:self]; //此时 的self 就是指 B ,因为在 B 中呢  
-    [self.navigationController setViewControllers:tempMarr animated:YES];  
-}  
-
-</code></pre>
-
-<p><strong>适用场景：</strong></p>
-
-<p>适合在如商品的详情页面上有商品的推荐，点击商品推荐仍是商品详情页面，如果不断push地话会很影响性能，该方法可以简单快捷的避免该问题。</p>
 
 
   </article>
@@ -670,12 +676,12 @@
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/14861973259" title="字符串的删除替换" style="color: #6666cc"  target="_blank">字符串的删除替换</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15692409843" title="Jekyll 简单加密 (pwd=123456)" style="color: #6666cc"  target="_blank">Jekyll 简单加密 (pwd=123456)</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/14743559444" title="设置任意某个角为圆角" style="color: #6666cc"  target="_blank">设置任意某个角为圆角</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15632033519" title="文章置顶功能的实现 - Jekyll x Liquid" style="color: #6666cc"  target="_blank">文章置顶功能的实现 - Jekyll x Liquid</a>
 	    </div>
 	  
 	 
