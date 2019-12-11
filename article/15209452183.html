@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>史上最污技术解读，我竟然秒懂了！ | gorpeln的个人博客 - gorpeln</title>
+  <title>UITextView 的使用 | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="很多同学对热备，冷备，云备了解不深，我科普一下 IT 行业各种备份术语。以后别闹笑话了。">
+  <meta name="description" content="    详细的demo : https://github.com/gorpeln/GPTextView">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/css/font-awesome.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="https://gorpeln.com//article/15493658365">
+  <link rel="canonical" href="https://gorpeln.com//article/15209452183">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="https://gorpeln.com//feed.xml" />
 </head>
 
@@ -566,18 +566,18 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">史上最污技术解读，我竟然秒懂了！</h1>
+    <h1 class="post-title">UITextView 的使用</h1>
     <div class="info">
-	    <p class="post-meta">时间：2019-02-05</p>
+	    <p class="post-meta">时间：2018-03-13</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#程序人生" target="_blank">
-        	程序人生
+		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
+        	iOS
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#程序人生"  target="_blank">程序人生</a>
+			<a class="pjaxlink" href="/tags#UITextView"  target="_blank">UITextView</a>
 		
 		</span>
 	    
@@ -585,93 +585,79 @@
   </header>
 
 <div style="font-size: 8px;width:calc(100% + 3em);margin-bottom: 2em;color: #828282;">
-版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15493658365
+版权声明：本文为博主原创文章，未经博主允许不得转载。转载请注明出处。https://gorpeln.com/article/15209452183
 </div>
 
 
   <article class="post-content">
-    <p>很多同学对热备，冷备，云备了解不深，我科普一下 IT 行业各种备份术语。以后别闹笑话了。</p>
+    <div style="background:#E3FDE6;border: 1px #68CB67 solid;padding:12px;border-radius: 8px;">
+    <a href="https://github.com/gorpeln/GPTextView">详细的demo : https://github.com/gorpeln/GPTextView</a>
+</div>
 
-<p>假设你是一位女性，你有一位男朋友，于此同时你和另外一位男生暧昧不清，比朋友好，又不是恋人。你随时可以甩了现任男友，另外一位马上就能补上。这是<code class="highlighter-rouge">冷备份</code>。</p>
+<h3 id="一输入汉字时字数统计">一、输入汉字时字数统计</h3>
+<p>开发中这样的需求也不少见，需要实时统计textView中输入的字数。
+常规的做法就是设置textView的delegate，实现delegate中的</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)textViewDidChange:(UITextView *)textView
 
-<p>假设你是一位女性，同时和两位男性在交往，两位都是你男朋友。并且他们还互不干涉，独立运行。这就是<code class="highlighter-rouge">双机热备份</code>。</p>
+</code></pre></div></div>
+<p>然后统计输入文字的个数。</p>
 
-<p>假设你是一位女性，不安于男朋友给你的安全感。在遥远的男友未知的地方，和一位男生保持着联系，你告诉他你没有男朋友，你现在处于纠结期，一旦你和你男朋友分开了，你马上可以把自己感情转移到异地男人那里去。这是<code class="highlighter-rouge">异地容灾备份</code>。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSInteger maxFontNum = 200;//最大输入限制
+    NSString *toBeString = textView.text;
+    // 获取键盘输入模式
+    NSString *lang = [[UIApplication sharedApplication] textInputMode].primaryLanguage;
+    if ([lang isEqualToString:@"zh-Hans"]) { // zh-Hans代表简体中文输入，包括简体拼音，健体五笔，简体手写
+        UITextRange *selectedRange = [textView markedTextRange];
+        //获取高亮部分
+        UITextPosition *position = [textView positionFromPosition:selectedRange.start offset:0];
+        // 没有高亮选择的字，则对已输入的文字进行字数统计和限制
+        if (!position) {
+            if (toBeString.length &gt; maxFontNum) {
+                textView.text = [toBeString substringToIndex:maxFontNum];//超出限制则截取最大限制的文本
+                self.remarksCountLabel.text = [NSString stringWithFormat:@"%ld/200",(long)maxFontNum];
+            } else {
+                self.remarksCountLabel.text = [NSString stringWithFormat:@"%lu/200",(unsigned long)toBeString.length];
+            }
+        }
+    } else {// 中文输入法以外的直接统计
+        if (toBeString.length &gt; maxFontNum) {
+            textView.text = [toBeString substringToIndex:maxFontNum];
+            self.remarksCountLabel.text = [NSString stringWithFormat:@"%ld/200",(long)maxFontNum];
+        } else {
+            self.remarksCountLabel.text = [NSString stringWithFormat:@"%lu/200",(unsigned long)toBeString.length];
+        }
+    }
+</code></pre></div></div>
+<p>根据键盘类型进行判断，如果输入的是中文，则判断是否为高亮文字即连续输入的拼音，如果不是高亮的则直接进行字数统计，否则不作处理，这样就解决了字数统计的问题。</p>
 
-<p>假设你是一位女性，有一位男朋友，你又付了钱给一家婚姻介绍所，让他帮你留意好的资源，一旦你和你这位男朋友分开，婚姻介绍所马上给你安排资源，你感情不间断运行，这是<code class="highlighter-rouge">云备份</code>。</p>
+<h3 id="二uitextview-动态高度">二、UITextView 动态高度</h3>
+<p>UITextView的动态高度，取决于输入字符的变化，因此我们可以还在</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> - (void)textViewDidChange:(UITextView *)textView；
+</code></pre></div></div>
+<p>方法里处理该业务逻辑。</p>
 
-<p><code class="highlighter-rouge">数据安全大于一切，今天你把自己备份了吗？</code></p>
+<p>首先，我们需要将UITextView的scrollEnabled 设置为 NO，这样是为了解决文字换行的时候，文字整体上移然后回落这种不友好的体验。</p>
 
-<p>假设你是一位女性，你怀疑男朋友对你的忠诚，在某宝购买了一个测试忠诚度的服务。这是<code class="highlighter-rouge">灾难演练</code>。友情提醒，在没有备份的情况下，切忌进行灾难演练，说不好会让你数据血本无归。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>CGSize textViewSize = [textView sizeThatFits:CGSizeMake(textView.frame.size.width, MAXFLOAT)];
+CGRect frame = textView.frame;
+frame.size.height = textViewSize.height;
+textView.frame = frame;
+</code></pre></div></div>
+<p>你也可以使用autoLayout，不在赘述。</p>
 
-<p>假设你是一位女性，你有一位好到不能在好的闺蜜，好到你们可以共享一个男朋友，这是<code class="highlighter-rouge">NAS</code>。</p>
+<h3 id="三uitextview-内边距设置">三、UITextView 内边距设置</h3>
 
-<p>假设你是一位女性，你男朋友活太好，你一个人根本 hold 不住，必须要姐妹帮忙才能稳住他。这是<code class="highlighter-rouge">负载均衡，QOS</code>。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    //内容缩进为零（去除左右边距）
+    textView.textContainer.lineFragmentPadding = 0.0
+</code></pre></div></div>
 
-<p>假设你是一位女性，和 A 吃饭和 B 逛街和 C 打炮。合起来是一个完整的男朋友。这。。这是<code class="highlighter-rouge">超算集群</code>。建议主频不高的女性不要这样做。会直接<code class="highlighter-rouge">死机</code>的。。</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    //去除上下边距
+    textView.textContainerInset = UIEdgeInsetsZero
+</code></pre></div></div>
 
-<hr />
+<p><strong>== 图片预览 ==</strong>     <br />
+<img src="https://img.gorpeln.com/blog_marks_001.png" alt="blog_marks_001" /></p>
 
-<p>备胎突然有女朋友了，我该不该夺回来？</p>
-
-<p>备份是为了更好地运行，所以再给大家普及一点运维知识：</p>
-
-<p>假设你是一位女性，你的男友沉迷游戏经常不接电话无故宕机，所以当你们约好下午逛街以后你要时不时的打个电话询问，看看他是不是还能正常提供服务，这叫<code class="highlighter-rouge">心跳检测</code>。</p>
-
-<p>假设你是一位女性，你想去逛街而你的男友 A 在打游戏不接电话，于是乎你把逛街的请求发给了替补男友B，从而保障服务不间断运行，这叫<code class="highlighter-rouge">故障切换</code>。</p>
-
-<p>假设你是一位女性，你有很多需要男朋友完成的事情，于是乎你跟 A 逛街旅游吃饭不可描述，而 B 只能陪你逛街，不能拥有全部男朋友的权利，这叫<code class="highlighter-rouge">主从配置 master-slave</code>。</p>
-
-<p>假设你是一位女性，你的需求太强烈以至于你的男友根本吃不消，于是呼你找了两个男朋友，一三五单号，二四六双号限行，从而减少一个男朋友所面临的压力，这叫<code class="highlighter-rouge">负载均衡</code>。</p>
-
-<p>假设你是一位女性并且有多个男朋友，配合心跳检测与故障切换和负载均衡将会达到极致的体验，这叫<code class="highlighter-rouge">集群LVS</code>，注意，当需求单机可以处理的情况下不建议启用集群，会造成大量资源闲置，提高维护成本。</p>
-
-<p>假设你是一位女性，你的需求越来越高导致一个男朋友集群已经处理不了了，于是乎你又新增了另外几个，这叫<code class="highlighter-rouge">多集群，横行扩容</code>，简称 <code class="highlighter-rouge">multi-cluster grid</code>。</p>
-
-<p>假设你是一位女性，你的男朋友身体瘦弱从而无法满足需求，于是乎你买了很多大补产品帮你男朋友升级，从而提高单机容量，这叫<code class="highlighter-rouge">纵向扩容</code>，切记，纵向扩容的成本会越来越高而效果越来越不明显</p>
-
-<p>假设你是一位女性，你跟男友经常出去游玩，情到深处想做点什么的时候却苦于没有 tt，要去超市购买，于是乎你在你们经常去的地方都放置了 tt，从而大幅度降低等待时间，这叫 <code class="highlighter-rouge">CDN</code>。</p>
-
-<p>假设你是一位女性,你的男朋友英俊潇洒风流倜傥财大气粗对你唯一,于是乎你遭到了女性 B 的敌视，B 会以朋友名义在周末请求你男朋友修电脑, 修冰箱, 占用男朋友大量时间, 造成男朋友无法为你服务, 这叫<code class="highlighter-rouge">拒绝服务攻击</code>, 简称 <code class="highlighter-rouge">DOS</code>。</p>
-
-<p>假设你是一位女性, 你因男朋友被一位女性敌视, 但是你男朋友的处理能力十分强大, 处理速度已经高于她的请求速度, 于是她雇佣了一票女性来轮流麻烦你的男朋友, 这叫<code class="highlighter-rouge">分布式拒绝服务攻击</code>, 简称 <code class="highlighter-rouge">DDOS</code>。</p>
-
-<p>假设你是一位女性, 你发现男朋友总是在处理一些无关紧要的其它请求, 于是呼你给男朋友了一个白名单, 要求他只处理白名单内的请求, 而拒绝其它身份不明的人的要求, 这叫<code class="highlighter-rouge">访问控制</code>, 也叫<code class="highlighter-rouge">会话跟踪</code>。</p>
-
-<p>假设你是一位女性, 你发现采取上述措施以后男朋友的处理请求并没有减少很多, 于是你经过调查发现, 有人伪造你的微信头像 昵称来向你的男朋友发起请求, 这叫<code class="highlighter-rouge">跨站点请求伪造</code>， 简称 <code class="highlighter-rouge">CSRF</code>。</p>
-
-<p>假设你是一位女性,你收到了一份快递,于是你要求男朋友给你取快递,当你拿到快递以后发现有人给你邮寄了一封通篇辱骂的信件, 这叫<code class="highlighter-rouge">跨站点脚本攻击</code> 简称 <code class="highlighter-rouge">XSS</code>, 请注意, 对方完全可以给你邮寄微型窃听器来窃听你的隐私。</p>
-
-<p>假设你是一位女性,为了应对威胁,你要求你的男朋友,邮寄给你的邮件必须检查,这叫<code class="highlighter-rouge">数据校验与过滤</code>。</p>
-
-<p>假设你是一位女性,你的男朋友太优秀而造人窥视,于是乎它们研究了一下你的男朋友,稍微修改了一点点生产出一个男朋友 B 与你的男朋友百分制 99 相似,这不叫剽窃,这叫<code class="highlighter-rouge">逆向工程</code>,比如男朋友外挂。</p>
-
-<p>假设你是一位女性，你要求你的男朋友坚持十分钟，然后十五分钟继而二十分钟以测试你男朋友的极限在哪里，这叫<code class="highlighter-rouge">压力测试</code>。</p>
-
-<p>压力测试的目的是查看男朋友是否可以处理需求从而决定是否启用男朋友集群或提升男朋友处理能力，不要对线上运行的男朋友做压力测试，可能会造成宕机的后果，会血本无归的</p>
-
-<p>假设你是一位女性，为了保证你男朋友的正常运行，于是乎你每天查看他的微信微博等社交资料来寻找可能产生问题的线索，这叫<code class="highlighter-rouge">数据分析</code>。</p>
-
-<p>假设你是一位女性，你的男朋友属于社交活跃选手，每天的微博知乎微信生产了大量信息，你发现自己的分析速度远远低于他生的速度，于是乎你找来你的闺蜜一起分析，这叫<code class="highlighter-rouge">并行计算</code>。</p>
-
-<p>假设你是一位女性，你的男朋友太能折腾处处留情产生了天量的待处理信息，你和你的闺蜜们已经累趴也没赶上他创造的速度，于是你付费在知乎上找了20个小伙伴帮你一起分析，这叫<code class="highlighter-rouge">云计算</code>。</p>
-
-<p>假设你是一位女性，在使用云计算后获得了大量整理好的男朋友数据，这些数据如：</p>
-
-<p>地点 活跃时间段 活跃次数
-如家 xxxx 123次. 
-汉庭 xxxx 45次. 
-….</p>
-
-<p>这叫<code class="highlighter-rouge">数据统计</code>。</p>
-
-<p>假设你是一位女性，你在得到男朋友经常出没的地点后，根据酒店，敏感时间段等信息确定男朋友因该是出轨了，这叫<code class="highlighter-rouge">数据挖掘</code>。</p>
-
-<p>假设你是一位女性，在分析男友的数据后，得知他下午又要出去开房，于是乎你在他准备出门前给他发了个短信，问他有没有带 tt，没有的话可以在我这里买，这叫<code class="highlighter-rouge">精准推送</code>，需要配合数据挖掘。</p>
-
-<p>假如你是一位女性，你的男朋友总该出去浪而各种出问题，于是乎你租了间屋子并准备好了所有需要的东西并告诉他，以后不用找酒店了，直接来我这屋子吧，什么都准备好了，这叫<code class="highlighter-rouge">容器</code>。</p>
-
-<p>假如你是一位女性，你每天都要和男朋友打通一次接口，采集数据。你的男朋友用来连接你和他的工具，叫做<code class="highlighter-rouge">接口“机”</code>，你采集到的数据叫做<code class="highlighter-rouge">“流”数据</code>。你一天24小时不停地采，这叫<code class="highlighter-rouge">实时数据采集</code>。你决定开发新的接口来和男朋友交流，这叫<code class="highlighter-rouge">虚拟化</code>。你决定从不同的男友身上采集数据，你就是<code class="highlighter-rouge">大数据中心</code>。有一天你决定生一个宝宝，这叫<code class="highlighter-rouge">大数据应用</code>。宝宝生下来不知道是谁的，这叫<code class="highlighter-rouge">大数据脱敏</code>。但是从宝宝外观来看，黑色皮肤金色头发，这叫<code class="highlighter-rouge">数据融合跨域建模</code>。你决定把这个宝宝拿来展览收点门票，这叫<code class="highlighter-rouge">大数据变现</code>。</p>
 
   </article>
 </div>
@@ -679,12 +665,12 @@
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15495225362" title="终端上成功提交了代码，GitHub上Contributions没有变绿" style="color: #6666cc"  target="_blank">终端上成功提交了代码，GitHub上Contributions没有变绿</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com//article/15215990385" title="扫码登录实现原理" style="color: #6666cc"  target="_blank">扫码登录实现原理</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15474431442" title="App瘦身、性能优化总结" style="color: #6666cc"  target="_blank">App瘦身、性能优化总结</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com//article/15204862561" title="短信验证码防刷机制" style="color: #6666cc"  target="_blank">短信验证码防刷机制</a>
 	    </div>
 	  
 	 

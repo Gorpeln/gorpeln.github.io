@@ -6,13 +6,13 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gorpeln - 登录</title>
+    <title>gorpeln - 登录</title>
     <link rel="shortcut icon" href="/assets/img/favicon.ico" />
     <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
     <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
 </head>
 
-<body onkeydown="keyLogin()" oncontextmenu="self.event.returnValue=false" onselectstart="return false" >
+<body onkeydown="keyLogin()" oncontextmenu="self.event.returnValue=false" onselectstart="return false">
     <style>
         body,html {
     user-select: none;
@@ -169,20 +169,21 @@
         </div>
     </div><canvas id="login-canvas"></canvas>
     <script src="/assets/js/jquery.min.js"></script>
-    <script src="/assets/js/Regenerating.json"></script>
+    <script src="/assets/js/Bmob-2.2.1.min.js"></script>
+    <script>
+    </script>
     <script>
     function login() {
-
         var username = $("#username").val();
         var password = $("#password").val();
-
-        if (username == loginList[0].username && password == loginList[0].password) {
-            window.location.href = myresume[0].myresumehtml;
-        } else {
-            alert('账户或密码不正确！');
-        }
+        Bmob.initialize("e22ff940c77c77c2", "gorpel");
+        Bmob.User.login(username, password).then(res => {
+            window.location.href = res.tourl;
+        }).catch(err => {
+            console.log(err);
+            alert('账号密码错误');
+        });
     }
-
 
     // 回车键登陆
     function keyLogin() {
