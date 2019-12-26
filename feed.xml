@@ -2,13 +2,13 @@
 <rss version="2.0">
   <channel>
     <title>gorpeln的个人博客 - gorpeln</title>
-    <link>https://gorpeln.com/</link>
+    <link>https://gorpeln.com</link>
     <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）</description>
     
       <item>
         <title>我的Mac软件 备忘</title>
-        <link>https://gorpeln.com//article/15713829999</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15713829999</guid>
+        <link>https://gorpeln.com/article/15713829999</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15713829999</guid>
         <pubDate>Fri, 18 Oct 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;加密文章&lt;/p&gt;
 &lt;html&gt;
@@ -68,8 +68,8 @@
     
       <item>
         <title>App Store 审核指南</title>
-        <link>https://gorpeln.com//article/15713825459</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15713825459</guid>
+        <link>https://gorpeln.com/article/15713825459</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15713825459</guid>
         <pubDate>Fri, 18 Oct 2019 00:00:00 +0800</pubDate>
         <description>&lt;html xmlns=&quot;https://www.w3.org/1999/xhtml&quot; xml:lang=&quot;zh-CN&quot; lang=&quot;zh-CN&quot;&gt;
 
@@ -747,8 +747,8 @@
     
       <item>
         <title>锚点跳转距离顶部指定距离</title>
-        <link>https://gorpeln.com//article/15700906142</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15700906142</guid>
+        <link>https://gorpeln.com/article/15700906142</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15700906142</guid>
         <pubDate>Thu, 03 Oct 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;html&lt;/p&gt;
 
@@ -775,8 +775,8 @@
     
       <item>
         <title>Jekyll 简单加密 (pwd=123456)</title>
-        <link>https://gorpeln.com//article/15692409843</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15692409843</guid>
+        <link>https://gorpeln.com/article/15692409843</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15692409843</guid>
         <pubDate>Mon, 23 Sep 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;加密文章&lt;/p&gt;
 &lt;html&gt;
@@ -845,8 +845,8 @@ password: 123456
     
       <item>
         <title>七牛云上传图片 - 客户端</title>
-        <link>https://gorpeln.com//article/15662012632</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15662012632</guid>
+        <link>https://gorpeln.com/article/15662012632</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15662012632</guid>
         <pubDate>Mon, 19 Aug 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;　　最近做了七牛云存储的有关内容，涉及到与后台交互获取验证的token，这个token是用作验证使用的，官方建议使用后台生成后，客户端再获取使用。但客户端也能独自生成具体生成方法如下：
 　　
@@ -936,8 +936,8 @@ password: 123456
     
       <item>
         <title>文章置顶功能的实现 - Jekyll x Liquid</title>
-        <link>https://gorpeln.com//article/15632033519</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15632033519</guid>
+        <link>https://gorpeln.com/article/15632033519</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15632033519</guid>
         <pubDate>Mon, 15 Jul 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;其实很简单, 从post的header里面进行参数设置&lt;/p&gt;
 
@@ -987,8 +987,8 @@ stickie: true
     
       <item>
         <title>扩展篇 ：开发框架及前景</title>
-        <link>https://gorpeln.com//article/15623480718</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15623480718</guid>
+        <link>https://gorpeln.com/article/15623480718</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15623480718</guid>
         <pubDate>Sat, 06 Jul 2019 00:00:00 +0800</pubDate>
         <description>&lt;h2 id=&quot;一小程序开源开发框架介绍&quot;&gt;一、小程序开源开发框架介绍&lt;/h2&gt;
 
@@ -1097,8 +1097,8 @@ stickie: true
     
       <item>
         <title>实战篇 ：电商小程序云开发实战</title>
-        <link>https://gorpeln.com//article/15618778699</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15618778699</guid>
+        <link>https://gorpeln.com/article/15618778699</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15618778699</guid>
         <pubDate>Sun, 30 Jun 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;小程序名称：gorpeln（已上线）&lt;br /&gt;
 提示：因个人开发账户限制，部分功能无法通过审核，所以隐藏了，全部功能体验请留言。&lt;/p&gt;
@@ -1159,8 +1159,8 @@ stickie: true
     
       <item>
         <title>基础篇 3：小程序架构及其实现机制</title>
-        <link>https://gorpeln.com//article/15612663893</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15612663893</guid>
+        <link>https://gorpeln.com/article/15612663893</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15612663893</guid>
         <pubDate>Sun, 23 Jun 2019 00:00:00 +0800</pubDate>
         <description>&lt;h2 id=&quot;一小程序-vs-html5&quot;&gt;一、小程序 VS HTML5&lt;/h2&gt;
 
@@ -1284,8 +1284,8 @@ stickie: true
     
       <item>
         <title>基础篇 2：小程序·云开发基础知识</title>
-        <link>https://gorpeln.com//article/15611722666</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15611722666</guid>
+        <link>https://gorpeln.com/article/15611722666</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15611722666</guid>
         <pubDate>Sat, 22 Jun 2019 00:00:00 +0800</pubDate>
         <description>&lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html&quot;&gt;小程序·云开发&lt;/a&gt;&lt;/strong&gt; 是微信团队联合腾讯云团队推出的一套小程序开发解决方案。小程序·云开发为开发者提供完整的云端流程，弱化后端和运维概念，开发者无需购买和管理底层计算资源，包括服务器、数据库、静态存储，只需使用平台提供的简易 API 进行核心业务等开发，实现快速上线和迭代，把握业务发展的黄金时期。&lt;/p&gt;
@@ -1845,8 +1845,8 @@ app.get('/api/test', (req, res, next) =&amp;gt; {
     
       <item>
         <title>基础篇 1：小程序开发基础知识</title>
-        <link>https://gorpeln.com//article/15605697133</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15605697133</guid>
+        <link>https://gorpeln.com/article/15605697133</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15605697133</guid>
         <pubDate>Sat, 15 Jun 2019 00:00:00 +0800</pubDate>
         <description>&lt;h2 id=&quot;一准备工作&quot;&gt;一、准备工作&lt;/h2&gt;
 
@@ -2357,8 +2357,8 @@ indexDetail(e) {
     
       <item>
         <title>概述 ：微信小程序概述</title>
-        <link>https://gorpeln.com//article/15599710733</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15599710733</guid>
+        <link>https://gorpeln.com/article/15599710733</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15599710733</guid>
         <pubDate>Sat, 08 Jun 2019 00:00:00 +0800</pubDate>
         <description>&lt;h2 id=&quot;一什么是微信小程序&quot;&gt;一、什么是微信小程序&lt;/h2&gt;
 
@@ -2531,8 +2531,8 @@ indexDetail(e) {
     
       <item>
         <title>编程到底难在哪里？</title>
-        <link>https://gorpeln.com//article/15589479418</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15589479418</guid>
+        <link>https://gorpeln.com/article/15589479418</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15589479418</guid>
         <pubDate>Mon, 27 May 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;这篇回答并不是讲述在生活中程序员如何买苹果，而是以买苹果为例说明程序员如何解决问题。程序员需要对问题进行透彻的分析，理清其涉及的所有细节，预测可能发生的所有意外与非意外的情况，列出解决方案的所有步骤，以及对解决方案进行尽量全面的测试。而这些正是编程难的地方。任何一点遗漏都会成为bug，轻则导致挨骂，重则导致经济损失甚至危害安全&lt;/p&gt;
 
@@ -2574,8 +2574,8 @@ indexDetail(e) {
     
       <item>
         <title>好玩的H5小游戏·圈小猫~</title>
-        <link>https://gorpeln.com//article/15583474979</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15583474979</guid>
+        <link>https://gorpeln.com/article/15583474979</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15583474979</guid>
         <pubDate>Mon, 20 May 2019 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;玩法&quot;&gt;玩法&lt;/h3&gt;
 &lt;ul&gt;
@@ -2612,8 +2612,8 @@ indexDetail(e) {
     
       <item>
         <title>微信红包算法</title>
-        <link>https://gorpeln.com//article/15575387722</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15575387722</guid>
+        <link>https://gorpeln.com/article/15575387722</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15575387722</guid>
         <pubDate>Sat, 11 May 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;微信是采用什么样的算法做到的？简单百度了下，目前尚未有官方的说明。&lt;/p&gt;
 
@@ -2754,8 +2754,8 @@ public class wechat_money {
     
       <item>
         <title>抽奖 - 算法</title>
-        <link>https://gorpeln.com//article/15573877312</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15573877312</guid>
+        <link>https://gorpeln.com/article/15573877312</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15573877312</guid>
         <pubDate>Thu, 09 May 2019 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;目标&quot;&gt;目标&lt;/h3&gt;
 &lt;ul&gt;
@@ -2863,8 +2863,8 @@ public AwardVO lottery(LotteryVO lottery) {
     
       <item>
         <title>WOW.js – 有趣的页面滚动效果</title>
-        <link>https://gorpeln.com//article/15549830140</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15549830140</guid>
+        <link>https://gorpeln.com/article/15549830140</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15549830140</guid>
         <pubDate>Thu, 11 Apr 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;WOW.js支持多种动画效果，让你的页面滚动效果更加有趣。&lt;/p&gt;
 
@@ -3051,8 +3051,8 @@ wow.init();
     
       <item>
         <title>批量修改文件后缀名</title>
-        <link>https://gorpeln.com//article/15547100706</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15547100706</guid>
+        <link>https://gorpeln.com/article/15547100706</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15547100706</guid>
         <pubDate>Mon, 08 Apr 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;新建一个FormatConver.sh文件，写入下面代码，打开终端，把脚本文件拖进来，然后空格在后面写上参数，即可。&lt;/p&gt;
 &lt;blockquote&gt;
@@ -3102,8 +3102,8 @@ find &lt;span class=&quot;nv&quot;&gt;$path&lt;/span&gt;|grep &lt;span class=&qu
     
       <item>
         <title>iOS App 签名的原理</title>
-        <link>https://gorpeln.com//article/15526269575</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15526269575</guid>
+        <link>https://gorpeln.com/article/15526269575</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15526269575</guid>
         <pubDate>Fri, 15 Mar 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;iOS 签名机制挺复杂，各种证书，Provisioning Profile，entitlements，CertificateSigningRequest，p12，AppID，概念一堆，也很容易出错，本文尝试从原理出发，一步步推出为什么会有这么多概念，希望能有助于理解 iOS App 签名的原理和流程。&lt;/p&gt;
 
@@ -3260,8 +3260,8 @@ find &lt;span class=&quot;nv&quot;&gt;$path&lt;/span&gt;|grep &lt;span class=&qu
     
       <item>
         <title>移动 APP 网络优化概述</title>
-        <link>https://gorpeln.com//article/15524857215</link>
-        <guid isPermaLink="true">https://gorpeln.com//article/15524857215</guid>
+        <link>https://gorpeln.com/article/15524857215</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15524857215</guid>
         <pubDate>Wed, 13 Mar 2019 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;一般开发一个 APP，会直接调用系统提供的网络请求接口去服务端请求数据，再针对返回的数据进行一些处理，或者使用AFNetworking/OKHttp这样的网络库，管理好请求线程和队列，再自动做一些数据解析，就结束了。&lt;/p&gt;
 
