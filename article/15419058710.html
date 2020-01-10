@@ -32,33 +32,34 @@
         margin: 0;
     }
 
-    .navbar {
+    .menuNav {
         margin-top: 100px;
+        position: absolute;
     }
 
-    .navbar * {
+    .menuNav * {
         text-decoration: none;
         font-size: 9pt;
     }
 
-    .navbar * a:hover {
+    .menuNav * a:hover {
         /*background-color: rgb(0, 0, 0, 0.75);*/
     }
 
-    .navbar {
+    .menuNav {
         list-style: none;
         display: none;
         margin-left: -1px;
     }
 
-    .navbar li {
+    .menuNav li {
         float: left;
         border-top: 1px solid #aaa;
         background-color: rgb(0, 0, 0, 0.75);
 
     }
 
-    .navbar li a {
+    .menuNav li a {
     color: #fff;
     padding: 15px 0;
     display: block;
@@ -66,11 +67,11 @@
     text-align: center;
     }
 
-    .navbar li a:focus {
+    .menuNav li a:focus {
         -moz-outline-style: none;
     }
 
-    .navbar li .sub-nav {
+    .menuNav li .sub-nav {
      position: absolute;
     top: -80%;
     left: 2em;
@@ -79,7 +80,7 @@
     display: none;
     }
 
-    .navbar li .sub-nav li {
+    .menuNav li .sub-nav li {
         text-align: center;
         clear: left;
         width: 140px;
@@ -88,7 +89,7 @@
         position: relative;
     }
 
-    .navbar li .sub-nav li a {
+    .menuNav li .sub-nav li a {
         height: 34px;
         line-height: 34px;
         width: 138px;
@@ -97,23 +98,21 @@
     }
 
     @media (max-width: 678px) {
-        .navbar {
+        .menuNav {
             display: block;
         }
     }
     </style>
     <script type="text/javascript">
     $(function() {
-        $(".navbar>li").hover(function() {
+        $(".menuNav>li").hover(function() {
             $(this).children('ul').stop(true, true).show(300);
         }, function() {
             $(this).children('ul').stop(true, true).hide(300);
         })
     })
     </script>
-    <div class="container">
-        <div class="row">
-            <ul class="navbar">
+            <ul class="menuNav">
                 <li><a href="#">菜<br/>单</a>
                     <ul class="sub-nav">
                         <li><a href="/">首页</a></li>
@@ -125,8 +124,6 @@
                     </ul>
                 </li>
             </ul>
-        </div>
-    </div>
 </header>
 
 <body>
