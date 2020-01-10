@@ -29,6 +29,7 @@ section, summary {
 audio, canvas, progress, video {
   display: inline-block;
   vertical-align: baseline;
+  max-width: 100%;
 }
 
 audio:not([controls]) {
@@ -91,6 +92,7 @@ sub {
 
 img {
   border: 0;
+  max-width: 100%;
 }
 
 svg:not(:root) {
@@ -1502,7 +1504,7 @@ blockquote {
 }
 
 blockquote p:last-child, blockquote ul:last-child, blockquote ol:last-child {
-  margin-bottom: 0;
+
 }
 
 blockquote footer, blockquote small, blockquote .small {
