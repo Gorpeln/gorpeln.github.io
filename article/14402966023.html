@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/assets/css/bootstrap.css">
   <link rel="stylesheet" href="/assets/css/main.css" >
   <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
-  <link rel="stylesheet" href="/assets/css/font-awesome.css">
+  <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
   <link rel="canonical" href="/article/14402966023">
@@ -24,57 +24,114 @@
 
 
 
-
-<body>
     <header class="site-header">
-	<div class="container">
-		<div class="row">
-			<nav class="navbar navbar-default" role="navigation" id="navbar"> 
-			
-				    <div class="navbar-header col-xs-12 col-sm-12 col-md-3 col-lg-3 center" >
-				   	     <button type="button" class="navbar-toggle" data-toggle="collapse"  data-target="#example-navbar-collapse">
-					        <span class="icon-bar"></span>
-					        <span class="icon-bar"></span>
-					        <span class="icon-bar"></span>
-					     </button>
-					     <div class="sitehome">
-						 	<a href="/" title="首页"><a><a class="site-title" href="/">gorpeln's Home
-						 	</a>
-						</div>
-				   	</div>
-				  
-				  	<div class="col-md-6 col-lg-6 hidden-xs hidden-sm center">				  			
-						<nav class="site-nav">
-							<ul class="nav nav-pills">
-								<li class="select"><a class="page-link pjaxlink" href="/">博客</a></li>
-								<li class="select"><a class="page-link pjaxlink" href="/categories">分类</a></li>
-								<li class="select"><a class="page-link pjaxlink" href="/archives">归档</a></li>
-								<li class="select"><a class="page-link pjaxlink" href="/about">关于</a></li>
-							</ul>
-						</nav>
-				  	</div>
-				  
-				   	<div class="col-md-3 col-lg-3 hidden-xs hidden-sm">
-				   		<div class="search" id="cb-search-btn">
-						  	<input type="text" class="search-query st-default-search-input" placeholder="Search">
-				   		</div>
-				   </div>
-				   
-				   <div class="collapse navbar-collapse" id="example-navbar-collapse">
-						<ul class="nav navbar-nav phone-nav center">
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/"><i class="fa fa-home"></i>&nbsp;首页</a></li>
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/categories"><i class="fa fa-tasks"></i>&nbsp;分类</a></li>
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/tags"><i class="fa fa-tags"></i>&nbsp;标签</a></li>
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/archives"><i class="fa fa-archive"></i>&nbsp;归档</a></li>
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/about"><i class="fa fa-user"></i>&nbsp;关于</a></li>
-						</ul>
-				   </div>
-				   
-			</nav>
-		</div>
-	</div>
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style type="text/css">
+    html * {
+        padding: 0;
+        margin: 0;
+    }
+
+    .navbar {
+        margin-top: 100px;
+    }
+
+    .navbar * {
+        text-decoration: none;
+        font-size: 9pt;
+    }
+
+    .navbar * a:hover {
+        background-color: rgb(0, 0, 0, 0.75);
+        border-radius: 0 20px 20px 0;
+    }
+
+    .navbar {
+        list-style: none;
+        display: none;
+margin-left: -1px;
+    }
+
+    .navbar li {
+        float: left;
+        border-top: 1px solid #4a4a4a;
+        background-color: rgb(0, 0, 0, 0.75);
+
+    }
+
+    .navbar li a {
+        color: #fff;
+        height: 40px;
+        line-height: 40px;
+        font-weight: bold;
+        padding: 0 20px;
+        display: inline-block;
+    }
+
+    .navbar li a:focus {
+        -moz-outline-style: none;
+    }
+
+    .navbar li .sub-nav {
+        position: absolute;
+        top: 39px;
+        left: -1px;
+        list-style: none;
+        background-color: rgb(0, 0, 0, 0.6);
+        display: none;
+    }
+
+    .navbar li .sub-nav li {
+        text-align: center;
+        clear: left;
+        width: 140px;
+        height: 35px;
+        line-height: 35px;
+        position: relative;
+    }
+
+    .navbar li .sub-nav li a {
+        height: 34px;
+        line-height: 34px;
+        width: 138px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    @media (max-width: 678px) {
+        .navbar {
+            display: block;
+        }
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        $(".navbar>li").hover(function() {
+            $(this).children('ul').stop(true, true).show(300);
+        }, function() {
+            $(this).children('ul').stop(true, true).hide(300);
+        })
+    })
+    </script>
+    <div class="container">
+        <div class="row">
+            <ul class="navbar">
+                <li style="border-radius: 0 20px 20px 0"><a href="#">菜单</a>
+                    <ul class="sub-nav">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/categories">分类</a></li>
+                        <li><a href="/tags">标签</a></li>
+                        <li><a href="/archives">归档</a></li>
+                        <li><a href="/about">关于</a></li>
+                        <li><a href="/mysite">导航</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
 </header>
 
+<body>
     <div class="content">
         <div class="container">
             <div class="row">
@@ -114,26 +171,28 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="rss-subscribe"><a href="https://gorpeln.com/feed.xml"><i class="fa fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        <div class="rss-subscribe"><a target="_blank" href="/feed.xml"><i class="fas fa-rss" style="padding-right:5px;"></i>RSS</a>
                         </div>
                     </div>
+
                     <div class="siteNav">
-                        <div class="navTitle">站点导航</div>
+                        <div class="navTitle">博客导航</div>
                         <ul>
-                            <li><a href="/"><i class="fa fa-fw fa-home"></i>首页</a></li>
-                            <li><a href="/categories" target="_blank"><i class="fa fa-fw fa-th"></i>分类</a></li>
-                            <li><a href="/tags" target="_blank"><i class="fa fa-fw fa-tags"></i>标签</a></li>
-                            <li><a href="/archives" target="_blank"><i class="fa fa-fw fa-archive"></i>归档</a></li>
-                            <li><a href="/about" target="_blank"><i class="fa fa-fw fa-user"></i>关于</a></li>
-                            <li><a href="/links" target="_blank"><i class="fa fa-fw fa-commenting"></i>友链</a></li>
-                            <li><a href="/login" target="_blank"><i class="fa fa-fw fa-handshake-o"></i>简历</a></li>
-                            <li><a href="/mysite" target="_blank"><i class="fa fa-fw fa-internet-explorer"></i>导航</a></li>
-                            <li><a href="/works" target="_blank"><i class="fa fa-fw  fa-git"></i>项目</a></li>
-                            <li><a id="cb-search-btn-two"><i class="fa fa-fw fa-search"></i>搜索</a></li>
+                            <li><a href="/"><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li><a href="/categories" target="_blank"><i class="fas fa-th fa-fw"></i>分类</a></li>
+                            <li><a href="/tags" target="_blank"><i class="fas fa-tag fa-fw"></i>标签</a></li>
+                            <li><a href="/archives" target="_blank"><i class="fas fa-archive fa-fw""></i>归档</a></li>
+                            <li><a href="/about" target="_blank"><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li><a href="/links" target="_blank"><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li><a href="/login" target="_blank"><i class="fas fa-envelope-open-text fa-fw"></i>简历</a></li>
+                            <li><a href="/mysite" target="_blank"><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li><a href="/works" target="_blank"><i class="fab fa-git-square fa-fw"></i>项目</a></li>
+                            <li><a id="cb-search-btn-two"><i class="fas fa-search fa-fw"></i>搜索</a></li>
                         </ul>
                     </div>
+
                     <div class="categoryNav">
-                        <div class="categoryNavTitle">分类</div>
+                        <div class="categoryNavTitle">文章分类</div>
                         <ul>
                             
                             <li>
@@ -188,384 +247,57 @@
                             
                         </ul>
                     </div>
-     <!--                <div class="categoryNav">
-                        <div class="categoryNavTitle">标签</div>
-                        <div id="tagscloud">
-							
-                            <li>
-                                <a href="/tags#个人博客" name="个人博客">个人博客</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#书写笔记" name="书写笔记">书写笔记</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Linux" name="Linux">Linux</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#web规范" name="web规范">web规范</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#MySQL" name="MySQL">MySQL</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Bug调试" name="Bug调试">Bug调试</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#程序人生" name="程序人生">程序人生</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#冒泡排序" name="冒泡排序">冒泡排序</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#贝塞尔曲线" name="贝塞尔曲线">贝塞尔曲线</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#代码段" name="代码段">代码段</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#push" name="push">push</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#pop" name="pop">pop</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#NSString" name="NSString">NSString</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#GIF动画" name="GIF动画">GIF动画</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#UITextField" name="UITextField">UITextField</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#开发规范" name="开发规范">开发规范</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#UIlabel" name="UIlabel">UIlabel</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#NSArray" name="NSArray">NSArray</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#倒序" name="倒序">倒序</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#乱序" name="乱序">乱序</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#present" name="present">present</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#dismiss" name="dismiss">dismiss</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#值传递" name="值传递">值传递</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#HTTP协议" name="HTTP协议">HTTP协议</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#APP审核" name="APP审核">APP审核</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#HTML" name="HTML">HTML</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#增删改查" name="增删改查">增删改查</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#iOS11" name="iOS11">iOS11</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#MAC使用" name="MAC使用">MAC使用</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#PhpStorm2017" name="PhpStorm2017">PhpStorm2017</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#httrack" name="httrack">httrack</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#页面流畅" name="页面流畅">页面流畅</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#GCD" name="GCD">GCD</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Jekyll" name="Jekyll">Jekyll</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Chrome" name="Chrome">Chrome</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#插件" name="插件">插件</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#验证码" name="验证码">验证码</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#UITextView" name="UITextView">UITextView</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#扫码" name="扫码">扫码</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#登录" name="登录">登录</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#TCP" name="TCP">TCP</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#在吗" name="在吗">在吗</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#tomcat" name="tomcat">tomcat</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#KVO" name="KVO">KVO</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Github" name="Github">Github</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Cocoapods" name="Cocoapods">Cocoapods</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#zip" name="zip">zip</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#终端" name="终端">终端</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#微信小程序" name="微信小程序">微信小程序</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Automator" name="Automator">Automator</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Git" name="Git">Git</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#GitHub" name="GitHub">GitHub</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#历史版本" name="历史版本">历史版本</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Coding" name="Coding">Coding</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#GitTalk" name="GitTalk">GitTalk</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#云开发" name="云开发">云开发</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#WePY" name="WePY">WePY</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#QQ" name="QQ">QQ</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#视频路径" name="视频路径">视频路径</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#博客成长" name="博客成长">博客成长</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#App瘦身" name="App瘦身">App瘦身</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#性能优化" name="性能优化">性能优化</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Sublime Text3" name="Sublime Text3">Sublime Text3</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#网络优化" name="网络优化">网络优化</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#签名机制" name="签名机制">签名机制</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#后缀名" name="后缀名">后缀名</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#WOW" name="WOW">WOW</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#动画" name="动画">动画</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#抽奖" name="抽奖">抽奖</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#算法" name="算法">算法</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#项目" name="项目">项目</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#圈小猫" name="圈小猫">圈小猫</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#游戏" name="游戏">游戏</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#文章置顶" name="文章置顶">文章置顶</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#七牛云" name="七牛云">七牛云</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#上传" name="上传">上传</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#加密" name="加密">加密</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#锚点" name="锚点">锚点</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#html" name="html">html</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#苹果审核" name="苹果审核">苹果审核</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#AppStore" name="AppStore">AppStore</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Software MAC" name="Software MAC">Software MAC</a>
-                            </li>
-                            
-                        </div>
-                    </div> -->
-                    <div class="contactNav">
-                        <div class="contactNavTitle">活跃站点</div>
-                        <div class="contact-container">
 
-                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
-                                <img src="/assets/img/social/csdnLogo.png">
-                                <div class="contact-name">CSDN</div>
+                    <div class="contactNav">
+                        <div class="contactNavTitle">个人档案</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.jpg" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <span class="contact-name">33964471</span>
+                            </a>
+                            <a class="contact-item" href="/" target="_blank">
+                                <img src="/assets/img/social/gmailLogo.png">
+                                <span class="contact-name">gorpeln*163.com(*=>@)</span>
                             </a>
                             <a class="contact-item" href="https://github.com/gorpeln" target="_blank">
                                 <img src="/assets/img/social/githubLogo.png">
-                                <div class="contact-name">GitHub</div>
+                                <span class="contact-name">github.com/gorpeln</span>
                             </a>
-                            <a class="contact-item" href="https://gorpeln.com/mysite.html" target="_blank">
+                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">gorpeln.blog.csdn.net</span>
+                            </a>
+                             <a class="contact-item" href="https://blog.csdn.net/gorpeln" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">blog.csdn.net/gorpeln</span>
+                            </a>
+                            <a class="contact-item" href="/mysite.html" target="_blank">
                                 <img src="/assets/img/social/meLogo.png">
-                                <div class="contact-name">导航</div>
+                                <span class="contact-name">mysite</span>
                             </a>
-                            <a class="contact-item" href="/assets/img/social/qqQRCode.png" target="_blank">
-                                <img src="/assets/img/social/qqLogo.png">
-                                <div class="contact-name">QQ</div>
-                            </a>
-                            <a class="contact-item" href="/" target="_blank">
-                                <img src="/assets/img/social/qqGroupLogo.png">
-                                <div class="contact-name">QQ群</div>
-                            </a>
-
-                            <a class="contact-item" href="/" target="_blank">
-                                <img src="/assets/img/social/wechatLogo.png">
-                                <div class="contact-name">微信</div>
-                            </a>
-
-
                         </div>
                     </div>
-                    <div class="friendlink">
-                        <p>友情链接</p>
-                        <hr>
-                        <ul style="list-style-type:circle">
-                            <li><a target="_blank" href="https://gorpeln.blog.csdn.net" style="color: #6666cc">风未止</a></li>
-                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">gorpeln</a></li>
-                            <li><a target="_blank" href="https://blogwe.com/" style="color: #6666cc">博客大全</a></li>
-                            <li><a target="_blank" href="https://www.foreverblog.cn/" style="color: #6666cc">十年之约</a></li>
-                        </ul>
+
+                    <div class="friendlinkNav">
+                        <div class="friendlinkNavTitle">友情链接</div>
+                        <div class="friend-container">
+                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                <img src="https://blogwe.com/favicon.ico">
+                                <span class="friend-name">博客大全</span>
+                            </a>
+                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                <img src="https://www.foreverblog.cn/favicon.ico">
+                                <span class="friend-name">十年之约</span>
+                            </a>
+                            <a class="friend-item" href="/links" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="friend-name">更多...</span>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
+
                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
                     <div class="page-content" id="pjax"><div class="post">
 
@@ -947,9 +679,11 @@ GFM中可以显示的展示diff效果。使用绿色表示新增，红色表示�
 
 </div>
                 </div>
+
             </div>
         </div>
     </div>
+
     <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
         <div id="backtotop">
             <a href="#">
@@ -957,9 +691,11 @@ GFM中可以显示的展示diff效果。使用绿色表示新增，红色表示�
             </a>
         </div>
     </div>
+
     <footer class="site-footer">
+	<div id="htmer_time" style="color: #666;width: 100%;text-align: center;font-size: 13px;">安全运行</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
-        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #fff" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
     </div>
 </footer>
 <script type="text/javascript" src="/assets/js/jquery.js"></script>
@@ -980,6 +716,51 @@ GFM中可以显示的展示diff效果。使用绿色表示新增，红色表示�
 <script src="/search/js/bootstrap3-typeahead.min.js"></script>
 <script src="/search/js/cb-search.js"></script>
 <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 动态显示网站运行时间 -->
+<script type="text/javascript" language="javascript">
+function setTime() {
+    var create_time = Math.round(new Date(Date.UTC(2015, 08, 23, 12, 0, 0)).getTime() / 1000);
+    var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+    currentTime = secondToDate((timestamp - create_time));
+    currentTimeHtml = '本站已安全运行：' + currentTime[0] + '年' + currentTime[1] + '天' + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4] + '秒';
+    document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+}
+setInterval(setTime, 1000);
+</script>
+<script language=JavaScript>
+        function secondToDate(second) {
+            if (!second) {
+                return 0;
+            }
+
+            var time = new Array(0, 0, 0, 0, 0);
+
+            if (second >= 365 * 24 * 3600) {
+                time[0] = parseInt(second / (365 * 24 * 3600));
+                second %= 365 * 24 * 3600;
+            }
+
+            if (second >= 24 * 3600) {
+                time[1] = parseInt(second / (24 * 3600));
+                second %= 24 * 3600;
+            }
+
+            if (second >= 3600) {
+                time[2] = parseInt(second / 3600);
+                second %= 3600;
+            }
+
+            if (second >= 60) {
+                time[3] = parseInt(second / 60);
+                second %= 60;
+            }
+
+            if (second > 0) {
+                time[4] = second;
+            }
+            return time;
+        }
+</script>
 <!-- 百度统计 -->
 <script>
 var _hmt = _hmt || [];
@@ -1030,17 +811,5 @@ document.write('<script src="' + src + '" id="sozz"><\/script>');
 
 
 </body>
-<script type="application/javascript">
-$(document).ready(function() {
-    $("li").click(function() {
-        $("li").attr("class", "");
-        $(this).attr("class", "active");
-    });
-});
-$("li").click(function() {
-    $("a", this)[0].click();
-
-});
-</script>
 
 </html>

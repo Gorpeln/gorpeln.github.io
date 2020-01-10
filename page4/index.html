@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/assets/css/bootstrap.css">
   <link rel="stylesheet" href="/assets/css/main.css" >
   <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
-  <link rel="stylesheet" href="/assets/css/font-awesome.css">
+  <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
   <link rel="canonical" href="/page4/">
@@ -24,57 +24,114 @@
 
 
 
-
-<body>
     <header class="site-header">
-	<div class="container">
-		<div class="row">
-			<nav class="navbar navbar-default" role="navigation" id="navbar"> 
-			
-				    <div class="navbar-header col-xs-12 col-sm-12 col-md-3 col-lg-3 center" >
-				   	     <button type="button" class="navbar-toggle" data-toggle="collapse"  data-target="#example-navbar-collapse">
-					        <span class="icon-bar"></span>
-					        <span class="icon-bar"></span>
-					        <span class="icon-bar"></span>
-					     </button>
-					     <div class="sitehome">
-						 	<a href="/" title="首页"><a><a class="site-title" href="/">gorpeln's Home
-						 	</a>
-						</div>
-				   	</div>
-				  
-				  	<div class="col-md-6 col-lg-6 hidden-xs hidden-sm center">				  			
-						<nav class="site-nav">
-							<ul class="nav nav-pills">
-								<li class="select"><a class="page-link pjaxlink" href="/">博客</a></li>
-								<li class="select"><a class="page-link pjaxlink" href="/categories">分类</a></li>
-								<li class="select"><a class="page-link pjaxlink" href="/archives">归档</a></li>
-								<li class="select"><a class="page-link pjaxlink" href="/about">关于</a></li>
-							</ul>
-						</nav>
-				  	</div>
-				  
-				   	<div class="col-md-3 col-lg-3 hidden-xs hidden-sm">
-				   		<div class="search" id="cb-search-btn">
-						  	<input type="text" class="search-query st-default-search-input" placeholder="Search">
-				   		</div>
-				   </div>
-				   
-				   <div class="collapse navbar-collapse" id="example-navbar-collapse">
-						<ul class="nav navbar-nav phone-nav center">
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/"><i class="fa fa-home"></i>&nbsp;首页</a></li>
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/categories"><i class="fa fa-tasks"></i>&nbsp;分类</a></li>
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/tags"><i class="fa fa-tags"></i>&nbsp;标签</a></li>
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/archives"><i class="fa fa-archive"></i>&nbsp;归档</a></li>
-							<li class="phoneselect"><a class="page-link pjaxlink" href="/about"><i class="fa fa-user"></i>&nbsp;关于</a></li>
-						</ul>
-				   </div>
-				   
-			</nav>
-		</div>
-	</div>
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style type="text/css">
+    html * {
+        padding: 0;
+        margin: 0;
+    }
+
+    .navbar {
+        margin-top: 100px;
+    }
+
+    .navbar * {
+        text-decoration: none;
+        font-size: 9pt;
+    }
+
+    .navbar * a:hover {
+        background-color: rgb(0, 0, 0, 0.75);
+        border-radius: 0 20px 20px 0;
+    }
+
+    .navbar {
+        list-style: none;
+        display: none;
+margin-left: -1px;
+    }
+
+    .navbar li {
+        float: left;
+        border-top: 1px solid #4a4a4a;
+        background-color: rgb(0, 0, 0, 0.75);
+
+    }
+
+    .navbar li a {
+        color: #fff;
+        height: 40px;
+        line-height: 40px;
+        font-weight: bold;
+        padding: 0 20px;
+        display: inline-block;
+    }
+
+    .navbar li a:focus {
+        -moz-outline-style: none;
+    }
+
+    .navbar li .sub-nav {
+        position: absolute;
+        top: 39px;
+        left: -1px;
+        list-style: none;
+        background-color: rgb(0, 0, 0, 0.6);
+        display: none;
+    }
+
+    .navbar li .sub-nav li {
+        text-align: center;
+        clear: left;
+        width: 140px;
+        height: 35px;
+        line-height: 35px;
+        position: relative;
+    }
+
+    .navbar li .sub-nav li a {
+        height: 34px;
+        line-height: 34px;
+        width: 138px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    @media (max-width: 678px) {
+        .navbar {
+            display: block;
+        }
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        $(".navbar>li").hover(function() {
+            $(this).children('ul').stop(true, true).show(300);
+        }, function() {
+            $(this).children('ul').stop(true, true).hide(300);
+        })
+    })
+    </script>
+    <div class="container">
+        <div class="row">
+            <ul class="navbar">
+                <li style="border-radius: 0 20px 20px 0"><a href="#">菜单</a>
+                    <ul class="sub-nav">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/categories">分类</a></li>
+                        <li><a href="/tags">标签</a></li>
+                        <li><a href="/archives">归档</a></li>
+                        <li><a href="/about">关于</a></li>
+                        <li><a href="/mysite">导航</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
 </header>
 
+<body>
     <div class="content">
         <div class="container">
             <div class="row">
@@ -114,26 +171,28 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="rss-subscribe"><a href="https://gorpeln.com/feed.xml"><i class="fa fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        <div class="rss-subscribe"><a target="_blank" href="/feed.xml"><i class="fas fa-rss" style="padding-right:5px;"></i>RSS</a>
                         </div>
                     </div>
+
                     <div class="siteNav">
-                        <div class="navTitle">站点导航</div>
+                        <div class="navTitle">博客导航</div>
                         <ul>
-                            <li><a href="/"><i class="fa fa-fw fa-home"></i>首页</a></li>
-                            <li><a href="/categories" target="_blank"><i class="fa fa-fw fa-th"></i>分类</a></li>
-                            <li><a href="/tags" target="_blank"><i class="fa fa-fw fa-tags"></i>标签</a></li>
-                            <li><a href="/archives" target="_blank"><i class="fa fa-fw fa-archive"></i>归档</a></li>
-                            <li><a href="/about" target="_blank"><i class="fa fa-fw fa-user"></i>关于</a></li>
-                            <li><a href="/links" target="_blank"><i class="fa fa-fw fa-commenting"></i>友链</a></li>
-                            <li><a href="/login" target="_blank"><i class="fa fa-fw fa-handshake-o"></i>简历</a></li>
-                            <li><a href="/mysite" target="_blank"><i class="fa fa-fw fa-internet-explorer"></i>导航</a></li>
-                            <li><a href="/works" target="_blank"><i class="fa fa-fw  fa-git"></i>项目</a></li>
-                            <li><a id="cb-search-btn-two"><i class="fa fa-fw fa-search"></i>搜索</a></li>
+                            <li><a href="/"><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li><a href="/categories" target="_blank"><i class="fas fa-th fa-fw"></i>分类</a></li>
+                            <li><a href="/tags" target="_blank"><i class="fas fa-tag fa-fw"></i>标签</a></li>
+                            <li><a href="/archives" target="_blank"><i class="fas fa-archive fa-fw""></i>归档</a></li>
+                            <li><a href="/about" target="_blank"><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li><a href="/links" target="_blank"><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li><a href="/login" target="_blank"><i class="fas fa-envelope-open-text fa-fw"></i>简历</a></li>
+                            <li><a href="/mysite" target="_blank"><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li><a href="/works" target="_blank"><i class="fab fa-git-square fa-fw"></i>项目</a></li>
+                            <li><a id="cb-search-btn-two"><i class="fas fa-search fa-fw"></i>搜索</a></li>
                         </ul>
                     </div>
+
                     <div class="categoryNav">
-                        <div class="categoryNavTitle">分类</div>
+                        <div class="categoryNavTitle">文章分类</div>
                         <ul>
                             
                             <li>
@@ -188,671 +247,123 @@
                             
                         </ul>
                     </div>
-     <!--                <div class="categoryNav">
-                        <div class="categoryNavTitle">标签</div>
-                        <div id="tagscloud">
-							
-                            <li>
-                                <a href="/tags#个人博客" name="个人博客">个人博客</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#书写笔记" name="书写笔记">书写笔记</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Linux" name="Linux">Linux</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#web规范" name="web规范">web规范</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#MySQL" name="MySQL">MySQL</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Bug调试" name="Bug调试">Bug调试</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#程序人生" name="程序人生">程序人生</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#冒泡排序" name="冒泡排序">冒泡排序</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#贝塞尔曲线" name="贝塞尔曲线">贝塞尔曲线</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#代码段" name="代码段">代码段</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#push" name="push">push</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#pop" name="pop">pop</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#NSString" name="NSString">NSString</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#GIF动画" name="GIF动画">GIF动画</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#UITextField" name="UITextField">UITextField</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#开发规范" name="开发规范">开发规范</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#UIlabel" name="UIlabel">UIlabel</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#NSArray" name="NSArray">NSArray</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#倒序" name="倒序">倒序</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#乱序" name="乱序">乱序</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#present" name="present">present</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#dismiss" name="dismiss">dismiss</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#值传递" name="值传递">值传递</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#HTTP协议" name="HTTP协议">HTTP协议</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#APP审核" name="APP审核">APP审核</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#HTML" name="HTML">HTML</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#增删改查" name="增删改查">增删改查</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#iOS11" name="iOS11">iOS11</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#MAC使用" name="MAC使用">MAC使用</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#PhpStorm2017" name="PhpStorm2017">PhpStorm2017</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#httrack" name="httrack">httrack</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#页面流畅" name="页面流畅">页面流畅</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#GCD" name="GCD">GCD</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Jekyll" name="Jekyll">Jekyll</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Chrome" name="Chrome">Chrome</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#插件" name="插件">插件</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#验证码" name="验证码">验证码</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#UITextView" name="UITextView">UITextView</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#扫码" name="扫码">扫码</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#登录" name="登录">登录</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#TCP" name="TCP">TCP</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#在吗" name="在吗">在吗</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#tomcat" name="tomcat">tomcat</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#KVO" name="KVO">KVO</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Github" name="Github">Github</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Cocoapods" name="Cocoapods">Cocoapods</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#zip" name="zip">zip</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#终端" name="终端">终端</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#微信小程序" name="微信小程序">微信小程序</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Automator" name="Automator">Automator</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Git" name="Git">Git</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#GitHub" name="GitHub">GitHub</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#历史版本" name="历史版本">历史版本</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Coding" name="Coding">Coding</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#GitTalk" name="GitTalk">GitTalk</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#云开发" name="云开发">云开发</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#WePY" name="WePY">WePY</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#QQ" name="QQ">QQ</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#视频路径" name="视频路径">视频路径</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#博客成长" name="博客成长">博客成长</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#App瘦身" name="App瘦身">App瘦身</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#性能优化" name="性能优化">性能优化</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Sublime Text3" name="Sublime Text3">Sublime Text3</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#网络优化" name="网络优化">网络优化</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#签名机制" name="签名机制">签名机制</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#后缀名" name="后缀名">后缀名</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#WOW" name="WOW">WOW</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#动画" name="动画">动画</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#抽奖" name="抽奖">抽奖</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#算法" name="算法">算法</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#项目" name="项目">项目</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#圈小猫" name="圈小猫">圈小猫</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#游戏" name="游戏">游戏</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#文章置顶" name="文章置顶">文章置顶</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#七牛云" name="七牛云">七牛云</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#上传" name="上传">上传</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#加密" name="加密">加密</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#锚点" name="锚点">锚点</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#html" name="html">html</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#苹果审核" name="苹果审核">苹果审核</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#AppStore" name="AppStore">AppStore</a>
-                            </li>
-                            
-                            <li>
-                                <a href="/tags#Software MAC" name="Software MAC">Software MAC</a>
-                            </li>
-                            
-                        </div>
-                    </div> -->
-                    <div class="contactNav">
-                        <div class="contactNavTitle">活跃站点</div>
-                        <div class="contact-container">
 
-                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
-                                <img src="/assets/img/social/csdnLogo.png">
-                                <div class="contact-name">CSDN</div>
+                    <div class="contactNav">
+                        <div class="contactNavTitle">个人档案</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.jpg" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <span class="contact-name">33964471</span>
+                            </a>
+                            <a class="contact-item" href="/" target="_blank">
+                                <img src="/assets/img/social/gmailLogo.png">
+                                <span class="contact-name">gorpeln*163.com(*=>@)</span>
                             </a>
                             <a class="contact-item" href="https://github.com/gorpeln" target="_blank">
                                 <img src="/assets/img/social/githubLogo.png">
-                                <div class="contact-name">GitHub</div>
+                                <span class="contact-name">github.com/gorpeln</span>
                             </a>
-                            <a class="contact-item" href="https://gorpeln.com/mysite.html" target="_blank">
+                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">gorpeln.blog.csdn.net</span>
+                            </a>
+                             <a class="contact-item" href="https://blog.csdn.net/gorpeln" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">blog.csdn.net/gorpeln</span>
+                            </a>
+                            <a class="contact-item" href="/mysite.html" target="_blank">
                                 <img src="/assets/img/social/meLogo.png">
-                                <div class="contact-name">导航</div>
+                                <span class="contact-name">mysite</span>
                             </a>
-                            <a class="contact-item" href="/assets/img/social/qqQRCode.png" target="_blank">
-                                <img src="/assets/img/social/qqLogo.png">
-                                <div class="contact-name">QQ</div>
-                            </a>
-                            <a class="contact-item" href="/" target="_blank">
-                                <img src="/assets/img/social/qqGroupLogo.png">
-                                <div class="contact-name">QQ群</div>
-                            </a>
-
-                            <a class="contact-item" href="/" target="_blank">
-                                <img src="/assets/img/social/wechatLogo.png">
-                                <div class="contact-name">微信</div>
-                            </a>
-
-
                         </div>
                     </div>
-                    <div class="friendlink">
-                        <p>友情链接</p>
-                        <hr>
-                        <ul style="list-style-type:circle">
-                            <li><a target="_blank" href="https://gorpeln.blog.csdn.net" style="color: #6666cc">风未止</a></li>
-                            <li><a target="_blank" href="https://blog.csdn.net/gorpeln" style="color: #6666cc">gorpeln</a></li>
-                            <li><a target="_blank" href="https://blogwe.com/" style="color: #6666cc">博客大全</a></li>
-                            <li><a target="_blank" href="https://www.foreverblog.cn/" style="color: #6666cc">十年之约</a></li>
-                        </ul>
+
+                    <div class="friendlinkNav">
+                        <div class="friendlinkNavTitle">友情链接</div>
+                        <div class="friend-container">
+                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                <img src="https://blogwe.com/favicon.ico">
+                                <span class="friend-name">博客大全</span>
+                            </a>
+                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                <img src="https://www.foreverblog.cn/favicon.ico">
+                                <span class="friend-name">十年之约</span>
+                            </a>
+                            <a class="friend-item" href="/links" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="friend-name">更多...</span>
+                            </a>
+                        </div>
+
                     </div>
                 </div>
+
                 <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
                     <div class="page-content" id="pjax"><html>
+
 <head>
-	<style type="text/css">
-		.topTip{
-			background: #EE3B3B;
-		    color: #fff;
-		    padding: 0 8px;
-		    font-size: 16px;
-		    font-weight: 400;
-		    border-radius: 4px;
-		    margin-right: 0.5em;
-		}
-	</style>
+    <style type="text/css">
+    .topTip {
+        background: #EE3B3B;
+        color: #fff;
+        padding: 0 8px;
+        font-size: 16px;
+        font-weight: 400;
+        border-radius: 4px;
+        margin-right: 0.5em;
+        text-align: center;
+    }
+    </style>
 </head>
 <div>
-
-	
-    	
-        	
-    	
-        	
-    	
-        	
-    	
-        	
-    	
-        	
-    	
-        	
-    	
-        	
-    	
-        	
-
-	
-    	
-
-    	<div class="postbox">
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="https://gorpeln.com/article/15474431442"  target="_blank">App瘦身、性能优化总结</a>
-				</div>
-				<hr>
-				<div class="info">
-					时间：2019-01-14&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                   		iOS
-					</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#App瘦身" target="_blank">App瘦身</a>
-						
-							<a class="" href="/tags.html#性能优化" target="_blank">性能优化</a>
-						
-					</span>
-					
-				</div>
-				<div class="contentAbstract">一、App瘦身
-1、资源瘦身
-
-  使用tinypng压缩PNG图片。视频可以通过 Final cut等软件进行分辨率压缩。音频则降低码率即可。
-  非必须资源文件可以放到自己服务器上
-  启动图使用 LaunchScreen.storyboard，启动图在一个项目资源中占比其实蛮大的，但是使用 LaunchScreen.storyboard 只需要设置一张ImageView即可。
-  Ic...</div>	
-			</div>
-			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-				<a href="https://gorpeln.com/article/15474431442"  class="readmore"  target="_blank">阅读全文 》</a>
-			</div>
-		</div>
-	
-    	
-
-    	<div class="postbox">
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="https://gorpeln.com/article/15462756619"  target="_blank">博客成长记录...</a>
-				</div>
-				<hr>
-				<div class="info">
-					时间：2019-01-01&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#个人博客" target="_blank">
-                   		个人博客
-					</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#个人博客" target="_blank">个人博客</a>
-						
-							<a class="" href="/tags.html#博客成长" target="_blank">博客成长</a>
-						
-					</span>
-					
-				</div>
-				<div class="contentAbstract">
-博客目标：简洁、高效。
-
-
-2019-07-22修改全局字体及颜色
-2019-05-03优化 个人导航
-2019-03-20优化文章链接（哎，以前的收录白费了...） 
-2019-03-07优化博客目录结构
-2019-01-26添加个人项目专栏
-2019-01-22由于Coding经常奔溃，弃用Coding，使用Github为主访问路径
-2018-12-03优化cdn加速 速度真快...
-...</div>	
-			</div>
-			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-				<a href="https://gorpeln.com/article/15462756619"  class="readmore"  target="_blank">阅读全文 》</a>
-			</div>
-		</div>
-	
-    	
-
-    	<div class="postbox">
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="https://gorpeln.com/article/15438182232"  target="_blank">查看QQ下载的视频路径 MAC</a>
-				</div>
-				<hr>
-				<div class="info">
-					时间：2018-12-03&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#Software MAC" target="_blank">
-                   		Software MAC
-					</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#QQ" target="_blank">QQ</a>
-						
-							<a class="" href="/tags.html#视频路径" target="_blank">视频路径</a>
-						
-					</span>
-					
-				</div>
-				<div class="contentAbstract">~/Library/Containers/com.tencent.qq/Data/Library/Caches/Videos/
-
-
-</div>	
-			</div>
-			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-				<a href="https://gorpeln.com/article/15438182232"  class="readmore"  target="_blank">阅读全文 》</a>
-			</div>
-		</div>
-	
-    	
-
-    	<div class="postbox">
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="https://gorpeln.com/article/15429884147"  target="_blank">云开发 与 WePY</a>
-				</div>
-				<hr>
-				<div class="info">
-					时间：2018-11-23&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#微信小程序" target="_blank">
-                   		微信小程序
-					</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#微信小程序" target="_blank">微信小程序</a>
-						
-							<a class="" href="/tags.html#云开发" target="_blank">云开发</a>
-						
-							<a class="" href="/tags.html#WePY" target="_blank">WePY</a>
-						
-					</span>
-					
-				</div>
-				<div class="contentAbstract">一、Why WePY
-
-首先，先分享一下为什么要选择 WePY ？
-
-在项目开始进行选型的时候，我可选的底层框架有 WePy、MPVue、Taro、`MinUI，这些框架都是工程化做得很好的框架，可以帮助小程序项目长期进行维护。其中，Taro 因为采用的是我所不熟悉的 React ，所以从一开始就被排除。MPVue 我看了以后，它更多是给 Web 开发者提供小程序转化工具，而不是给小程序开发...</div>	
-			</div>
-			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-				<a href="https://gorpeln.com/article/15429884147"  class="readmore"  target="_blank">阅读全文 》</a>
-			</div>
-		</div>
-	
-    	
-
-    	<div class="postbox">
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="https://gorpeln.com/article/15421638259"  target="_blank">电脑病毒竟然被当宠物养！</a>
-				</div>
-				<hr>
-				<div class="info">
-					时间：2018-11-14&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#程序人生" target="_blank">
-                   		程序人生
-					</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#程序人生" target="_blank">程序人生</a>
-						
-					</span>
-					
-				</div>
-				<div class="contentAbstract">1、可爱的病毒
-
-我以前中过一个病毒，在我电脑桌面左侧会多了一个可爱的卡通妹子，在那里吃饭睡觉玩耍，她肚子饿了就去吃掉最靠近她的图标，所以我每天都要准备一堆复制出来的快捷方式让她吃。她有时候无聊的时候会抖动你的屏幕，你如果不哄她玩，她就一直抖你的窗口。最气人的是，如果你玩电脑太晚了，她就会自动关机。看小字好像是说不要吵她睡觉……… 这玩意任务管理器上是看不到的，杀毒很多次了都没用，开机启动项...</div>	
-			</div>
-			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-				<a href="https://gorpeln.com/article/15421638259"  class="readmore"  target="_blank">阅读全文 》</a>
-			</div>
-		</div>
-	
-    	
-
-    	<div class="postbox">
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="https://gorpeln.com/article/15419058710"  target="_blank">Jekyll博客添加GitTalk评论</a>
-				</div>
-				<hr>
-				<div class="info">
-					时间：2018-11-11&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#个人博客" target="_blank">
-                   		个人博客
-					</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#Jekyll" target="_blank">Jekyll</a>
-						
-							<a class="" href="/tags.html#GitTalk" target="_blank">GitTalk</a>
-						
-							<a class="" href="/tags.html#个人博客" target="_blank">个人博客</a>
-						
-					</span>
-					
-				</div>
-				<div class="contentAbstract">之前一直用的是来必力的评论系统，还不错，但是个人不太喜欢来必力的界面，感觉加载速度有点慢（个人感觉）。所以换成GitTalk的评论系统，话不多说，我们来上硬货。
-
-注册申请
-在GitHub上注册新应用，链接：https://github.com/settings/applications/new
-
-
-
-参数说明：
-
-  Application name： 应用名称，随意 
-Homepage ...</div>	
-			</div>
-			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-				<a href="https://gorpeln.com/article/15419058710"  class="readmore"  target="_blank">阅读全文 》</a>
-			</div>
-		</div>
-	
-    	
-
-    	<div class="postbox">
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="https://gorpeln.com/article/15405204060"  target="_blank">Git管理多个远程仓库（GitHub和Coding）</a>
-				</div>
-				<hr>
-				<div class="info">
-					时间：2018-10-26&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#Git" target="_blank">
-                   		Git
-					</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#GitHub" target="_blank">GitHub</a>
-						
-							<a class="" href="/tags.html#Git" target="_blank">Git</a>
-						
-							<a class="" href="/tags.html#Coding" target="_blank">Coding</a>
-						
-					</span>
-					
-				</div>
-				<div class="contentAbstract">1、一条命令同时更新多个远程仓库
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15405204060" target="_blank">Git管理多个远程仓库（GitHub和Coding）</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-10-26&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#Git" target="_blank">
+                    Git
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#GitHub" target="_blank">GitHub</a>
+                    
+                    <a class="" href="/tags.html#Git" target="_blank">Git</a>
+                    
+                    <a class="" href="/tags.html#Coding" target="_blank">Coding</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">1、一条命令同时更新多个远程仓库
 直接在 .git/config 中添加远端地址
 [core]
 	repositoryformatversion = 0
@@ -862,105 +373,404 @@ Homepage ...</div>
 	ignorecase = true
 	precomposeunicode = true
 [remote "origin"]
-	...</div>	
-			</div>
-			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-				<a href="https://gorpeln.com/article/15405204060"  class="readmore"  target="_blank">阅读全文 》</a>
-			</div>
-		</div>
-	
-    	
-
-    	<div class="postbox">
-			<div class="allpost">
-				<div class="title">
-					<a class="pjaxlink" href="https://gorpeln.com/article/15394160033"  target="_blank">GitHub 提交次数过多 .git 文件过大的问题</a>
-				</div>
-				<hr>
-				<div class="info">
-					时间：2018-10-13&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-					<a class="item-date" style="color:#6666cc;" href="/categories.html#Git" target="_blank">
-                   		Git
-					</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-				      	标签：
-					<span class="index-post-tag">
-						
-							<a class="" href="/tags.html#GitHub" target="_blank">GitHub</a>
-						
-							<a class="" href="/tags.html#Git" target="_blank">Git</a>
-						
-					</span>
-					
-				</div>
-				<div class="contentAbstract">NOTE: 就 Git 设计而言，对一个 commit 进行持久化修改，所有基于其上的 commits 必须接受变更。如果你遇到了 commit id 不变的情况，恭喜你成功在 git 上实现了哈希碰撞。
+	...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15405204060" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15394160033" target="_blank">GitHub 提交次数过多 .git 文件过大的问题</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-10-13&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#Git" target="_blank">
+                    Git
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#GitHub" target="_blank">GitHub</a>
+                    
+                    <a class="" href="/tags.html#Git" target="_blank">Git</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">NOTE: 就 Git 设计而言，对一个 commit 进行持久化修改，所有基于其上的 commits 必须接受变更。如果你遇到了 commit id 不变的情况，恭喜你成功在 git 上实现了哈希碰撞。
 
 一、如果只是想减少 clone 下来的 .git 体积，考虑 shallow clone
 # 对每一个分支/标签，只拉取其最新的 3 层提交
 git clone --depth 3
 
-优...</div>	
-			</div>
-			<div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-				<a href="https://gorpeln.com/article/15394160033"  class="readmore"  target="_blank">阅读全文 》</a>
-			</div>
-		</div>
-	
+优...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15394160033" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15393512853" target="_blank">GitHub回退历史版本</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-10-12&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#Git" target="_blank">
+                    Git
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#Git" target="_blank">Git</a>
+                    
+                    <a class="" href="/tags.html#GitHub" target="_blank">GitHub</a>
+                    
+                    <a class="" href="/tags.html#历史版本" target="_blank">历史版本</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">前提是本地已经有了git的origin master库或者克隆需要回退的代码到本地。
 
-	
-		<div class="pagination center">
-		
-			  <a class="pjaxlink" href="/index.html"><span class="x1">首</span></a>
-			  
-			    <a class="pjaxlink"  href="https:/gorpeln.com/page3"><span class="x1"><i class="fa fa-angle-left" style="font-size:20px;"></i></span></a>
-			  
-			  
-			  
-    			 
-      		  
-        		       	
-			  	  
-      		   
-			  
-			  
-				    
-				      <a class="pjaxlink" href="/page7"><span class="x1">7</span></a>
-				    
-			  
-				    
-				      <a class="pjaxlink" href="/page8"><span class="x1">8</span></a>
-				    
-			  
-				    
-				      <a class="pjaxlink" href="/page9"><span class="x1">9</span></a>
-				    
-			  
-				    
-				      <a class="pjaxlink" href="/page10"><span class="x1">10</span></a>
-				    
-			  
-				    
-				      <a class="pjaxlink" href="/page11"><span class="x1">11</span></a>
-				    
-			  
+1.  查询历史对应不同版本的ID ，用于回退使用
 
-			  
-			   	 <a class="pjaxlink" href="https:/gorpeln.com/page5"><span class="x1"><i class="fa fa-angle-right" style="font-size:20px;"></i></span></a>
-			  
-			  <a class="pjaxlink" href="/page11/"><span class="x1">末</span></a>			  
-		</div>
-	 
+git log --pretty=oneline
 
+
+
+使用git log命令查看所有的历史版本，获取你git的某个历史版本的id
+
+假设查到历史版本的id是 ： 662095637a8e9320e83761341e594b143524049e
+
+2....</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15393512853" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15389885669" target="_blank">微信小程序：回退到首页</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-10-08&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#微信小程序" target="_blank">
+                    微信小程序
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#微信小程序" target="_blank">微信小程序</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">
+  打开小程序后，到三级页面后，点击左上角的返回按钮，怎么返回到首页？
+
+
+正常 A -&gt; B -&gt; C 都是通过 wx.navigateTo 跳转的，所以 wx.navigateBack 只能返回上一界面，如果要返回到A 界面就会出现 C -&gt; B -&gt; A 的效果。
+
+如果想实现 A -&gt; B -&gt; C 当 C 点击返回时， 实现直接 C -&gt;...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15389885669" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15385436862" target="_blank">Automator的使用 MAC</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-10-03&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#Software MAC" target="_blank">
+                    Software MAC
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#Automator" target="_blank">Automator</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">使用Mac的童鞋都会发现里面有个类似机器人的工具Automator，使用Automator创造出的工作流可能会花费一些时间需要你去创建和调试，但是却能在接下来的工作学习中节省你不少时间，十分物超所值。
+
+Automator 能做什么？
+1.重新指定一组照片的尺寸大小
+如果你有大量图片需要调整大小，比如调整为原来大小的一半，如果没有Automator，你可能会用Mac的Preview软件来一张...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15385436862" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15368306590" target="_blank">云调用 - 生成小程序码</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-09-13&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#微信小程序" target="_blank">
+                    微信小程序
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#微信小程序" target="_blank">微信小程序</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">
+
+官方文档：https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html
+
+一、创建云函数并配置相应的权限
+
+
+//配置相关的调用权限
+{
+  "permissions": {
+    "openapi": [
+      "wxacode.ge...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15368306590" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15361983047" target="_blank">让你瞬间理解HTTP状态码</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-09-06&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#程序人生" target="_blank">
+                    程序人生
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#程序人生" target="_blank">程序人生</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">
+
+注释：  
+  
+301—永久移动。被请求的资源已被永久移动位置；  
+302—请求的资源现在临时从不同的 URI 响应请求；  
+305—使用代理。被请求的资源必须通过指定的代理才能被访问；  
+307—临时跳转。被请求的资源在临时从不同的URL响应请求；  
+400—错误请求；  
+402—需要付款。该状态码是为了将来可能的需求而预留的，用于一些数字货币或者是微支付；  
+403—禁...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15361983047" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15359479766" target="_blank">终端制作带密码的压缩包 MAC</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-09-03&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#Software MAC" target="_blank">
+                    Software MAC
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#zip" target="_blank">zip</a>
+                    
+                    <a class="" href="/tags.html#终端" target="_blank">终端</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">刚在网上闲逛看到的，记录一下，以备不时之需 ^_^！
+1. 只压缩单个文件
+zip -e yourZipFileName.zip yourSourceFile
+
+
+  例：zip -e /Users/chen/Desktop/test.zip /Users/chen/Desktop/test.txt
+
+
+2. 压缩文件夹
+zip -e -r yourZipFileName.zip yourS...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15359479766" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15334663054" target="_blank">Github上的代码添加Cocoapods支持</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-08-05&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#Git" target="_blank">
+                    Git
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#Github" target="_blank">Github</a>
+                    
+                    <a class="" href="/tags.html#Cocoapods" target="_blank">Cocoapods</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">一、前言
+快速让自己Github上的库成功支持Cocoapods安装支持。
+
+二、开始
+
+这里我将从最初的开始进行介绍，包括Github上创建项目已经上传项目，到最后的支持Cocoapods。
+步骤如下：
+
+
+  代码上传Github
+  创建podspec文件，并验证是否通过
+  在Github上创建release版本
+  注册CocoaPods账号
+  上传代码到CocoaPods
+  ...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15334663054" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="postbox">
+        <div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="https://gorpeln.com/article/15326844120" target="_blank">KVO用法总结</a>
+            </div>
+            <hr>
+            <div class="info">
+                时间：2018-07-27&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                <a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
+                    iOS
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                标签：
+                <span class="index-post-tag">
+                    
+                    <a class="" href="/tags.html#KVO" target="_blank">KVO</a>
+                    
+                </span>
+                
+            </div>
+            <div class="contentAbstract">一.概述：
+KVO全称Key-Value Observing，是苹果提供的一套事件通知机制。
+
+
+  作用：允许对象监听另一个对象特定属性的改变，并在改变时接收到事件。
+
+
+注意：由于KVO的实现机制，所以对属性才会发生作用，一般继承自NSObject的对象都默认支持KVO。
+使用KVO的步骤：
+
+  （1）注册Observer；   
+（2）接收通知。  
+（3）当观察者不需要监听时，可以...</div>
+        </div>
+        <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+            <a href="https://gorpeln.com/article/15326844120" class="readmore" target="_blank">阅读全文 》</a>
+        </div>
+    </div>
+    
+    
+    <div class="pagination center">
+        <a class="pjaxlink" href="/index.html"><span class="x1">首</span></a>
+        
+        <a class="pjaxlink" href="https:/gorpeln.com/page3"><span class="x1"><i class="fa fa-angle-left" style="font-size:20px;"></i></span></a>
+        
+        
+        
+             
+                
+                
+                <a class="pjaxlink" href="/page5"><span class="x1">5</span></a>
+                
+                
+                
+                <a class="pjaxlink" href="/page6"><span class="x1">6</span></a>
+                
+                
+                
+                <a class="pjaxlink" href="/page7"><span class="x1">7</span></a>
+                
+                
+                
+                <a class="pjaxlink" href="/page8"><span class="x1">8</span></a>
+                
+                
+                
+                <a class="pjaxlink" href="/page9"><span class="x1">9</span></a>
+                
+                
+                
+                <a class="pjaxlink" href="https:/gorpeln.com/page5"><span class="x1"><i class="fa fa-angle-right" style="font-size:20px;"></i></span></a>
+                
+                <a class="pjaxlink" href="/page9/"><span class="x1">末</span></a>
+    </div>
+    
 </div>
 
-</html>
-
-
-</div>
+</html></div>
                 </div>
+
             </div>
         </div>
     </div>
+
     <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
         <div id="backtotop">
             <a href="#">
@@ -968,9 +778,11 @@ git clone --depth 3
             </a>
         </div>
     </div>
+
     <footer class="site-footer">
+	<div id="htmer_time" style="color: #666;width: 100%;text-align: center;font-size: 13px;">安全运行</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
-        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #fff" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
     </div>
 </footer>
 <script type="text/javascript" src="/assets/js/jquery.js"></script>
@@ -991,6 +803,51 @@ git clone --depth 3
 <script src="/search/js/bootstrap3-typeahead.min.js"></script>
 <script src="/search/js/cb-search.js"></script>
 <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 动态显示网站运行时间 -->
+<script type="text/javascript" language="javascript">
+function setTime() {
+    var create_time = Math.round(new Date(Date.UTC(2015, 08, 23, 12, 0, 0)).getTime() / 1000);
+    var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+    currentTime = secondToDate((timestamp - create_time));
+    currentTimeHtml = '本站已安全运行：' + currentTime[0] + '年' + currentTime[1] + '天' + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4] + '秒';
+    document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+}
+setInterval(setTime, 1000);
+</script>
+<script language=JavaScript>
+        function secondToDate(second) {
+            if (!second) {
+                return 0;
+            }
+
+            var time = new Array(0, 0, 0, 0, 0);
+
+            if (second >= 365 * 24 * 3600) {
+                time[0] = parseInt(second / (365 * 24 * 3600));
+                second %= 365 * 24 * 3600;
+            }
+
+            if (second >= 24 * 3600) {
+                time[1] = parseInt(second / (24 * 3600));
+                second %= 24 * 3600;
+            }
+
+            if (second >= 3600) {
+                time[2] = parseInt(second / 3600);
+                second %= 3600;
+            }
+
+            if (second >= 60) {
+                time[3] = parseInt(second / 60);
+                second %= 60;
+            }
+
+            if (second > 0) {
+                time[4] = second;
+            }
+            return time;
+        }
+</script>
 <!-- 百度统计 -->
 <script>
 var _hmt = _hmt || [];
@@ -1041,17 +898,5 @@ document.write('<script src="' + src + '" id="sozz"><\/script>');
 
 
 </body>
-<script type="application/javascript">
-$(document).ready(function() {
-    $("li").click(function() {
-        $("li").attr("class", "");
-        $(this).attr("class", "active");
-    });
-});
-$("li").click(function() {
-    $("a", this)[0].click();
-
-});
-</script>
 
 </html>

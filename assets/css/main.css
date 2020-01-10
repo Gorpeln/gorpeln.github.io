@@ -73,8 +73,10 @@ body {
     line-height: 1.6em;
     font-weight: 400;
     color: #333;
-    background-color: #eaeaea;
+    background-color: #f6f6f6;
     -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+
 }
 
 /**
@@ -484,23 +486,55 @@ li.article a:hover,li.article a:focus{
     padding-left: 0;
 }
 
-.friendlink {
+.friendlinkNav {
     margin-top: 1em;
     background: #fff;
-    padding: 1em 2em;
     -moz-border-radius: 7px;
     -webkit-border-radius: 7px;
+    overflow: hidden;
+    width: 100%;
+    padding-bottom: 7.5%;
+
 }
 
-.friendlink ul {
-    margin-top: 8px;
+.friendlinkNavTitle{
+    padding: 0.75em 2em;
+    color: #37374c;
+    font-weight: bold;
+    text-align: center;
+    font-size: 16px;
+    background: #fff;
+    border-radius: 7px 7px 0 0;
+}
+
+.friendlinkNav .friend-container {
+    margin: 0 1.5em;
+    border-top: 1px dashed rgba(55, 55, 76, 0.5);
+    overflow: hidden;
+    text-align: center;
+
+}
+
+.friend-item {
+    position: relative;
+    width: 100%;
+    text-align: left;
+    margin-top: 7.5%;
+    display: flex;
+}
+
+.friend-item .friend-name {
+    color: #000000;
+    font-size: 14px;
     margin-left: 1em;
-    padding-left: 0;
+    line-height: 30px;
 }
 
-.friendlink a {
-    margin-top: 8px;
-    display: inline-block;
+.friend-item img {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-top: 5px;
 }
 
 
@@ -517,7 +551,7 @@ li.article a:hover,li.article a:focus{
 .siteNav .navTitle {
     padding: 0.75em 2em;
     color: #37374c;
-    font-weight: normal;
+    font-weight: bold;
     text-align: center;
     font-size: 16px;
     background: #fff;
@@ -567,7 +601,7 @@ li.article a:hover,li.article a:focus{
 .contactNav .contactNavTitle {
     padding: 0.75em 2em;
     color: #37374c;
-    font-weight: normal;
+    font-weight: bold;
     text-align: center;
     font-size: 16px;
     background: #fff;
@@ -583,23 +617,26 @@ li.article a:hover,li.article a:focus{
 }
 
 .contact-item {
-    display: inline-block;
     position: relative;
-    width: 30%;
-    text-align: center;
+    width: 100%;
+    text-align: left;
     margin-top: 7.5%;
+    display: flex;
 }
 
 .contact-item .contact-name {
-    padding: 5% 0;
-    color: #999999;
+    color: #000000;
     font-size: 14px;
+    margin-left: 0.5em;
+    line-height: 30px;
 }
 
 .contact-item img {
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    margin-top: 5px;
+}
 
 }
 
@@ -1007,7 +1044,7 @@ blockquote> :last-child {
     position: relative;
     background: #fff;
     margin: 0 auto;
-    padding: 1em 1em 0 1em;
+    padding: 1em 1em 0.5em 1em;
     opacity: 1;
     /*border: 1px solid black;*/
     min-height: 26em;
@@ -1215,7 +1252,7 @@ div.gavatar a:hover {
 .categoryNav .categoryNavTitle {
     padding: 0.75em 2em;
     color: #37374c;
-    font-weight: normal;
+    font-weight: bold;
     text-align: center;
     font-size: 16px;
     background: #fff;
@@ -1307,9 +1344,7 @@ div.gavatar a:hover {
  * Site footer
  */
 .site-footer {
-    border-top: 2px solid #e8e8e8;
-    /*background-image: url(/assets/img/bg5.png);*/
-    background: #37374b;
+    background: #f6f6f6;
     padding: 20px 0;
     position: absolute;
     width: 100%;
@@ -1424,7 +1459,7 @@ div.gavatar a:hover {
 
 .content {
     margin: 0 auto;
-    padding-top: 6.5em;
+    padding-top: 2.4em;
     min-height: 600px;
     background: #f6f6f6;
 
@@ -1597,8 +1632,10 @@ div.gavatar a:hover {
     padding: 5px 25px 10px 25px;
     margin-bottom: 15px;
     background: #fff;
-    border-top: 2.5px solid #37374b;
-    position: relative;
+/*    border-top: 2.5px solid #37374b;
+    position: relative;*/
+    box-shadow: 1px 1px 1px #C5C5C5;
+    border-radius: 8px;
 }
 
 .postbox .post-format-icon {
@@ -1706,7 +1743,24 @@ div.gavatar a:hover {
     .postbox .allpost .title {
         font-size: 1.4em;
     }
+
+    .postbox{
+    border:0;
+    border-top: 2.5px solid #37374b;
+    box-shadow: none;
+    border-radius: 0;
 }
+
+.content{
+        padding-top: 1em;
+
+}
+
+
+
+}
+
+
 
 .postbox .allpost .title a {
     color: #37374b;
@@ -1856,8 +1910,7 @@ div.contentAbstract img {
 }
 
 .sitedesc {
-    color: #fff;
-    /*	background: #fff000;*/
+    color: #333;
 }
 
 .sitedesc a:link {
