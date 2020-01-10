@@ -42,30 +42,28 @@
     }
 
     .navbar * a:hover {
-        background-color: rgb(0, 0, 0, 0.75);
-        border-radius: 0 20px 20px 0;
+        /*background-color: rgb(0, 0, 0, 0.75);*/
     }
 
     .navbar {
         list-style: none;
         display: none;
-margin-left: -1px;
+        margin-left: -1px;
     }
 
     .navbar li {
         float: left;
-        border-top: 1px solid #4a4a4a;
+        border-top: 1px solid #aaa;
         background-color: rgb(0, 0, 0, 0.75);
 
     }
 
     .navbar li a {
-        color: #fff;
-        height: 40px;
-        line-height: 40px;
-        font-weight: bold;
-        padding: 0 20px;
-        display: inline-block;
+    color: #fff;
+    padding: 15px 0;
+    display: block;
+    width: 2em;
+    text-align: center;
     }
 
     .navbar li a:focus {
@@ -73,12 +71,12 @@ margin-left: -1px;
     }
 
     .navbar li .sub-nav {
-        position: absolute;
-        top: 39px;
-        left: -1px;
-        list-style: none;
-        background-color: rgb(0, 0, 0, 0.6);
-        display: none;
+     position: absolute;
+    top: -80%;
+    left: 2em;
+    list-style: none;
+    /*background-color: rgb(0, 0, 0, 0.6);*/
+    display: none;
     }
 
     .navbar li .sub-nav li {
@@ -116,7 +114,7 @@ margin-left: -1px;
     <div class="container">
         <div class="row">
             <ul class="navbar">
-                <li style="border-radius: 0 20px 20px 0"><a href="#">菜单</a>
+                <li><a href="#">菜<br/>单</a>
                     <ul class="sub-nav">
                         <li><a href="/">首页</a></li>
                         <li><a href="/categories">分类</a></li>
