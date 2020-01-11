@@ -92,33 +92,37 @@ body {
 }
 
  .box .item .logo img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  vertical-align: middle
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin: 4px;
 }
 
  .box .item .logo text {
-  padding-left: 10px;
+    padding-left: 10px;
+    font-size: 14px;
 }
 
  .box .item .desc {
-  color: gray;
-  font-size: 12px;
-  padding-top: 10px;
-  height: 35px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical
+    color: #afafaf;
+    font-size: 4px;
+    padding-top: 8px;
+    height: 35px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    font-weight: 200;
+    margin-left: 8px;
 }
 
 @media screen and (max-width:481px) {
   .container .box .item {
-    width: -webkit-calc(45% - 2px);
-    width: -moz-calc(45% - 2px);
-    width: calc( 45% - 2px);
+    width: -webkit-calc(48% - 4px);
+    width: -moz-calc(48% - 4px);
+    width: calc(48% - 4px);
     min-width: 100px
   }
   .container  {
@@ -141,9 +145,9 @@ body {
 
 @media screen and (min-width:482px) and (max-width:789px) {
   .container .box .item {
-    width: -webkit-calc(45% - 2px);
-    width: -moz-calc(45% - 2px);
-    width: calc( 45% - 2px);
+    width: -webkit-calc(31% - 2px);
+    width: -moz-calc(31% - 2px);
+    width: calc(31% - 2px);
   }
   .container .left-bar {
     left: 0
@@ -152,9 +156,9 @@ body {
 
 @media screen and (min-width:790px) and (max-width:1039px) {
   .container .box .item {
-    width: -webkit-calc(28.5% - 2px);
-    width: -moz-calc(28.5% - 2px);
-    width: calc( 28.5% - 2px);
+    width: -webkit-calc(31% - 2px);
+    width: -moz-calc(31% - 2px);
+    width: calc(31% - 2px);
   }
 }
 

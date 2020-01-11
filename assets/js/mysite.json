@@ -2,19 +2,19 @@ var technologySite = [
 {
     "siteToUrl": "https://gorpeln.com/",
     "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_me.png",
-    "siteTitle": "个人博客 - gorpeln",
+    "siteTitle": "gorpeln的个人博客 - gorpeln",
     "siteDes": "趁年轻，做自己想做的！"
 },
 {
     "siteToUrl": "https://gorpeln.blog.csdn.net",
     "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_csdn.ico",
-    "siteTitle": "CSDN - gorpeln",
+    "siteTitle": "gorpeln",
     "siteDes": "中国最大的IT社区和服务平台"
 },
 {
     "siteToUrl": "https://blog.csdn.net/gorpeln",
     "siteImg": "https://img.gorpeln.com/gorpeln/blog/seoimg/gorpeln_myblog_csdn.ico",
-    "siteTitle": "CSDN - 同步",
+    "siteTitle": "gorpeln",
     "siteDes": "中国最大的IT社区和服务平台"
 },
 {
