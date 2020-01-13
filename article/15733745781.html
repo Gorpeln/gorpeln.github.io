@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>present,dismiss到任意控制器(二) | gorpeln的个人博客 - gorpeln</title>
+  <title>骚段子合集（一） | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="  iOS开发中，在没有用到navigationController情况下，页面跳转多用present，但它并没有一个类似popToRootViewControllerAnimated的方法可以直接回到根控制器，下面给出三个方法：">
+  <meta name="description" content="1、你收到的最雷的表白语是什么？做我女朋友行不行，行就行，不行我再想想办法。">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/14896376367">
+  <link rel="canonical" href="/article/15733745781">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 </head>
 
@@ -296,22 +296,18 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">present,dismiss到任意控制器(二)</h1>
+    <h1 class="post-title">骚段子合集（一）</h1>
     <div class="info">
-	    <p class="post-meta">时间：2017-03-16</p>
+	    <p class="post-meta">时间：2019-11-10</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
-        	iOS
+		<a class="item-date" style="color:#6666cc;" href="/categories#程序人生" target="_blank">
+        	程序人生
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#present"  target="_blank">present</a>
-		
-			<a class="pjaxlink" href="/tags#dismiss"  target="_blank">dismiss</a>
-		
-			<a class="pjaxlink" href="/tags#代码段"  target="_blank">代码段</a>
+			<a class="pjaxlink" href="/tags#程序人生"  target="_blank">程序人生</a>
 		
 		</span>
 	    
@@ -319,78 +315,173 @@
   </header>
 
 <div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/14896376367
+转载请注明出处：https://gorpeln.com/article/15733745781
 </div>
 
 
   <article class="post-content">
-    <blockquote>
-  <p>iOS开发中，在没有用到navigationController情况下，页面跳转多用present，但它并没有一个类似popToRootViewControllerAnimated的方法可以直接回到根控制器，下面给出三个方法：</p>
-</blockquote>
+    <p><br />
+<strong>1、你收到的最雷的表白语是什么？</strong><br />
+做我女朋友行不行，行就行，不行我再想想办法。
+<br />
+<br /></p>
 
-<hr />
-<p><br /></p>
+<p><strong>2、「滚床单」有哪些优雅的叫法？</strong>   <br />
+管鲍之交。
+<br />
+<br /></p>
 
-<p><strong>方法一：循环获取到最底层控制器，然后dismiss掉，直接返回到跟控制器</strong></p>
+<p><strong>3、为什么中国人这么喜欢拍古装片？</strong> <br />
+科幻片面临的最大问题是，在未来时空还要不要党的领导？
+<br />
+<br /></p>
 
-<pre><code class="language-Objective-C">
-- (void)logoutBtnOnClick    
-{    
-    UIViewController *vc = self.presentingViewController;    
-        
-    if (!vc.presentingViewController)   return;    
-        
-    while (vc.presentingViewController)  {    
-        vc = vc.presentingViewController;    
-    }    
-        
-    [vc dismissViewControllerAnimated:YES completion:nil];    
-}  
+<p><strong>4、暧昧是什么？</strong><br />
+暧昧=爱日未日。
+<br />
+<br /></p>
 
-</code></pre>
+<p><strong>5、女朋友和女性朋友有什么区别？</strong><br />
+中国人取名字有一个习惯：实际上缺什么，一定要在名字里补上，五行圆满才行。
+<br />
+<br /></p>
 
-<p><strong>方法二：在<code class="highlighter-rouge">方法一</code>中稍作修改，通过判断直接dismiss到目标控制器</strong></p>
+<p><strong>6、一个美女在吃糖葫芦，怎么问才能让她相信我不是来搭讪而是想知道糖葫芦在哪买的？</strong><br />
+“美女，你好，你真漂亮，老远就看见你了，就想过来跟你打个招呼……那个，我想打听一下，你吃的糖葫芦是在哪儿买的？”
+<br />
+<br /></p>
 
-<pre><code class="language-Objective-C">
-- (void)logoutBtnOnClick    
-{    
-    TargetVC *target = [[TargeVC alloc] init];    
-        
-    UIViewController *vc = self.presentingViewController;    
-        
-    if (!vc.presentingViewController) return;    
-        
-    while (![vc isKindOfClass:[target class]])  {    
-        vc = vc.presentingViewController;    
-    }    
-        
-    [vc dismissViewControllerAnimated:YES completion:nil];    
-}  
+<p><strong>7、在武侠世界中，开一家客栈需要注意什么？</strong><br />
+墙上贴大字：要打出去打。
+<br />
+<br /></p>
 
-</code></pre>
+<p><strong>8、如果给客户放 PPT 的时候突然蹦出来不雅图片，怎么办？</strong><br />
+沉默半响，然后问：“大伙儿还困吗？——不困咱继续…” 
+<br />
+<br /></p>
 
-<p><strong>方法三：逐级获取，然后dismiss掉，可以回到想要的控制器（如：A→B→C→D逐级present后由D想回到B）</strong></p>
+<p><strong>9、「拿得一手好牌还装孙子地打」这类行为是什么心态？</strong><br />
+因为孙子就是这么打的。 “孙子曰:兵者,诡道也，故能而示之不能。” 《孙子兵法》 
+<br />
+<br /></p>
 
-<pre><code class="language-Objective-C">// 一个presentingViewController返回一级
-if ([self respondsToSelector:@selector(presentingViewController)]) {    
-    [self.presentingViewController.presentingViewController dismissViewControllerAnimated:YES completion:nil];    
-}  
+<p><strong>10、和不太熟悉的女生吃饭时（有追求她的意愿），女方提出AA制，该不该接受？</strong> <br />
+这次我请，下次换你请。
+<br />
+<br /></p>
 
-</code></pre>
+<p><strong>11、怎样含蓄地表达「我已经被收买了」？</strong> <br />
+我说句公道话… 
+<br />
+<br /></p>
 
+<p><strong>12、女友跟前男友分手炮后怀孕了，我应该怎么办？</strong> <br />
+谁污染，谁治理。谁开发，谁保护。
+<br />
+<br /></p>
+
+<p><strong>13、为什么有人说「女人永远是对的」？</strong> <br />
+这句话反映了很多男性蛮不讲理地认为很多女性蛮不讲理。
+<br />
+<br /></p>
+
+<p><strong>14、你是从哪个细节发现女朋友出轨的？</strong><br />
+那天回家她一抖被子说给我表演一个大变活人。
+<br />
+<br /></p>
+
+<p><strong>15、什么叫暖男？</strong> <br />
+云备胎。
+<br />
+<br /></p>
+
+<p><strong>16、同龄人中不少人结婚生子了，对你有什么影响吗？</strong>  <br />
+对我没啥影响，对我妈影响比较大。
+<br />
+<br /></p>
+
+<p><strong>17、男性更看重女人的身材、脸蛋还是思想？</strong>  <br />
+脸蛋和身材决定了我是否想去了解她的思想；
+思想决定了我是否会一票否决掉她的脸蛋和身材。
+<br />
+<br /></p>
+
+<p><strong>18、什么东西女人觉得很好看，男人却并不认同？</strong>   <br />
+其他男人。
+<br />
+<br /></p>
+
+<p><strong>19、怎么看待女朋友的蓝颜？</strong> <br />
+蓝颜蓝颜，加点黄色就绿了。
+<br />
+<br /></p>
+
+<p><strong>20、如何优雅地表达愤怒？</strong>  <br />
+用中指推眼镜。
+<br />
+<br /></p>
+
+<p><strong>21、如何吐槽一部电影很烂？</strong>  <br />
+影厅座位有17排，每排32个座位，天花板上共有48盏灯，荧幕的左下角有个黑点总是出现，频率大概是1分20秒一次。
+<br />
+<br /></p>
+
+<p><strong>22、为什么找男朋友那么难？</strong>  <br />
+没有一见钟情的资本，又缺少日久生情的条件。
+<br />
+<br /></p>
+
+<p><strong>23、如何回应「人的眼睛有 5.76 亿像素，却终究看不懂人心」？</strong>  <br />
+你有100亿个脑细胞，却尽想些没营养的问题。
+<br />
+<br /></p>
+
+<p><strong>24、初恋是不是用来练手的？</strong> <br />
+放屁。单身才是用来练手的。
+<br />
+<br /></p>
+
+<p><strong>25、女朋友有什么用处？</strong> <br />
+让你四处躁动的心、鸡鸡和不知道怎么花的钱有个温暖着落。
+<br />
+<br /></p>
+
+<p><strong>26、男生如何回答女生「你为什么对我这么好」比较靠谱？</strong> <br />
+我敬你是条汉子。
+<br />
+<br /></p>
+
+<p><strong>27、史上最奇葩的广告语是哪句？</strong> <br />
+垃圾分类，从我做起。
+<br />
+<br /></p>
+
+<p><strong>28、妹子还书的时候夹了一张面巾纸，是什么意思？</strong> <br />
+说明你对人家有意思。
+<br />
+<br /></p>
+
+<p><strong>29、如何提高女朋友的智商？</strong> <br />
+她不喜欢你的时候，智商自然就高起来了。
+<br />
+<br /></p>
+
+<p><strong>30、为什么别人有人追而你没有？</strong> <br />
+那你扪心自问，如果把她们的男朋友给你，你要么？
+<br />
+<br /></p>
+
+<p><strong>– 完 –</strong></p>
 
   </article>
 </div>
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/14903507538" title="iOS值传递" style="color: #6666cc"  target="_blank">iOS值传递</a>
-	    </div>
-	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/14882587810" title="数组操作：倒序、乱序" style="color: #6666cc"  target="_blank">数组操作：倒序、乱序</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15713829999" title="我的Mac软件 备忘" style="color: #6666cc"  target="_blank">我的Mac软件 备忘</a>
 	    </div>
 	  
 	 
