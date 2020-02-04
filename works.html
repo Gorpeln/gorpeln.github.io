@@ -148,7 +148,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">85</span>
+                                    <span class="site-state-item-count">86</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -191,7 +191,7 @@
                             
                             <li>
                                 <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;" target="_blank">个人博客</a>
-                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">6篇</a>
+                                <a href="/categories#个人博客" name="个人博客" style="color: #6666cc;float:right;color:#999999" target="_blank">7篇</a>
                             </li>
                             
                             <li>
@@ -299,64 +299,97 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>项目 - gorpeln</title>
+    <title>个人项目 - gorpeln</title>
     <link rel="shortcut icon" href="/assets/img/favicon.ico" />
     <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
     <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-
 </head>
 <style>
-.demoBg {
+.box {
     background: #fff;
-    padding: 1em 3em;
-    border-radius: 4px;
+    padding: 1em;
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 20px;
+
 }
 
-.demoCategoryTitle {
-    color: #37374b;
+.box img {
+    width: 5em;
+    height: 5em;
+    border-radius: 0.8em !important;
+    float: left;
+}
+
+.box .title {
+    font-size: 1em;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-left: 6em;
+    height: 2em;
+    line-height: 2em;
+    margin-top: 0.5em;
+
 }
 
-.demoTitle li {}
+.box .des {
+    margin-left: 7.5em;
+    height: 2em;
+    line-height: 2em;
+    color: #888888;
+    font-size: 0.8em;
 
-.demoTitle a {
-    color: #6666cc;
-    margin-left: 2em;
-    padding-bottom: 5px;
-    display: block
+}
+
+.htmlTitle{
+    text-indent: 2em;
+    line-height: 2em;
+}
+
+.htmlTitle a{
+}
+
+.demoCategoryTitle{
+    margin-bottom: 0.2em;
 }
 </style>
 
-<div class="demoBg">
-    <div class="demoCategoryTitle">iOS 项目：</div>
-    <div class="demoTitle">
-        <script>
-        var demoDic = [
-           	{
-                "demoTitle": "未完待续...",
-                "demoDes": "",
-                "demoUrl": "/",
-                "demoImage": "",
-            },
-        ];
+<body>
+
+    <script>
+    var demoDic = [{
+        "demoTitle": "gorpeln的个人博客 - gorpeln - 【博客】",
+        "demoDes": "趁年轻，做自己想做的！",
+        "demoUrl": "/",
+        "demoImage": "/assets/img/gorpeln.png",
+    }, 
+{
+        "demoTitle": "时光本  - 【iOS】",
+        "demoDes": "记录美好生活，记录你！ - 【iOS】 【AppStore】",
+        "demoUrl": "https://apps.apple.com/cn/app/id1495623965",
+        "demoImage": "/assets/img/shiguangben.png",
+    }, 
+    {
+        "demoTitle": "gorpeln - 【微信小程序】",
+        "demoDes": "在线商城 - 【微信小程序】",
+        "demoUrl": "/article/15618778699",
+        "demoImage": "https://img.gorpeln.com/blog_wxmini_qrcode.jpg",
+    }, 
+    ];
 
 
-        for (var i = 0; i < demoDic.length; i++) {
-            document.write("<a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a>");
-        }
-        </script>
-    </div>
-</div>
+    for (var i = 0; i < demoDic.length; i++) {
+        document.write("<div class='box'><a target='_blank' href=" + demoDic[i]['demoUrl'] + "> <img src=" + demoDic[i]['demoImage'] + "><div class='title'>" + demoDic[i]['demoTitle'] + "</div><div class='des'>" + demoDic[i]['demoDes'] + "</div></a></div>");
+    }
+    </script>
+
+</body>
 
 
-<div class="demoBg">
-    <div class="demoCategoryTitle">HTML 项目：</div>
+<div class="box">
+    <div class="demoCategoryTitle">HTML 练习：</div>
     <div class="demoTitle">
         <script>
         var demoDic = [
@@ -388,7 +421,7 @@
                 "demoImage": "",
 
             },
-        	{
+            {
                 "demoTitle": "在图片上滑动显示说明",
                 "demoDes": "",
                 "demoUrl": "/projects/hoverDisplay/index",
@@ -401,35 +434,29 @@
                 "demoUrl": "/projects/hoverOutstand/index",
                 "demoImage": "",
             },
-     		{
+            {
                 "demoTitle": "按钮Hover动画特效",
                 "demoDes": "",
                 "demoUrl": "/projects/hoverAnimation/index",
                 "demoImage": "",
             },
-           	{
-                "demoTitle": "未完待续...",
-                "demoDes": "",
-                "demoUrl": "/",
-                "demoImage": "",
-            },
         ];
 
 
         for (var i = 0; i < demoDic.length; i++) {
-            document.write("<a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a>");
+            document.write("<div class='htmlTitle'><a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a></div>");
         }
         </script>
     </div>
 </div>
 
 
-<div class="demoBg">
+<div class="box">
     <div class="demoCategoryTitle">优秀 项目 收藏：</div>
     <div class="demoTitle">
         <script>
         var demoDic = [
-           	{
+            {
                 "demoTitle": "未完待续...",
                 "demoDes": "",
                 "demoUrl": "/",
@@ -439,11 +466,12 @@
 
 
         for (var i = 0; i < demoDic.length; i++) {
-            document.write("<a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a>");
+            document.write("<div class='htmlTitle'><a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a></div>");
         }
         </script>
     </div>
 </div>
+
 
 </html></div>
                 </div>
