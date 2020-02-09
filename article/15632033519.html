@@ -7,7 +7,7 @@
   <title>文章置顶功能的实现 - Jekyll x Liquid | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="其实很简单, 从post的header里面进行参数设置">
+  <meta name="description" content="基础版其实很简单, 从post的header里面进行参数设置">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -72,7 +72,7 @@
 
     .menuNav li .sub-nav {
      position: absolute;
-    top: -80%;
+    top: -110%;
     left: calc(2em - 30px);
     list-style: none;
     /*background-color: rgb(0, 0, 0, 0.6);*/
@@ -119,6 +119,7 @@
                         <li><a href="/tags">标签</a></li>
                         <li><a href="/archives">归档</a></li>
                         <li><a href="/about">关于</a></li>
+                        <li><a href="/works">项目</a></li>
                         <li><a href="/mysite">导航</a></li>
                     </ul>
                 </li>
@@ -148,7 +149,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">86</span>
+                                    <span class="site-state-item-count">88</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -160,7 +161,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">82</span>
+                                    <span class="site-state-item-count">84</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -206,7 +207,7 @@
                             
                             <li>
                                 <a href="/categories#其他" name="其他" style="color: #6666cc;" target="_blank">其他</a>
-                                <a href="/categories#其他" name="其他" style="color: #6666cc;float:right;color:#999999" target="_blank">2篇</a>
+                                <a href="/categories#其他" name="其他" style="color: #6666cc;float:right;color:#999999" target="_blank">3篇</a>
                             </li>
                             
                             <li>
@@ -216,7 +217,7 @@
                             
                             <li>
                                 <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;" target="_blank">程序人生</a>
-                                <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;float:right;color:#999999" target="_blank">17篇</a>
+                                <a href="/categories#程序人生" name="程序人生" style="color: #6666cc;float:right;color:#999999" target="_blank">18篇</a>
                             </li>
                             
                             <li>
@@ -275,18 +276,22 @@
                     <div class="friendlinkNav">
                         <div class="friendlinkNavTitle">友情链接</div>
                         <div class="friend-container">
-                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
-                                <img src="https://blogwe.com/favicon.ico">
-                                <span class="friend-name">博客大全</span>
-                            </a>
-                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
-                                <img src="https://www.foreverblog.cn/favicon.ico">
-                                <span class="friend-name">十年之约</span>
-                            </a>
-                            <a class="friend-item" href="/links" target="_blank">
-                                <img src="/assets/img/list_more.png">
-                                <span class="friend-name">更多...</span>
-                            </a>
+                            
+                                <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                    <img src="/assets/img/blogwe.ico">
+                                    <span class="friend-name">博客大全</span>
+                                </a>
+                            
+                                <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                    <img src="/assets/img/foreverblog.ico">
+                                    <span class="friend-name">十年之约</span>
+                                </a>
+                            
+                                <a class="friend-item" href="/links" target="_blank">
+                                    <img src="/assets/img/list_more.png">
+                                    <span class="friend-name">更多...</span>
+                                </a>
+                            
                         </div>
 
                     </div>
@@ -324,27 +329,28 @@
 
 
   <article class="post-content">
-    <p>其实很简单, 从post的header里面进行参数设置</p>
+    <h3 id="基础版">基础版</h3>
+<p>其实很简单, 从post的header里面进行参数设置</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>layout: post
 title: Jekyll x Liquid: 文章置顶功能的实现
 category: 个人博客
 tags: [个人博客,Jekyll,文章置顶,gorpeln]
 description: 
-stickie: true
+top: true
 </code></pre></div></div>
 
 <p>然后liquid进行判断<code class="highlighter-rouge">(*号换成%)</code></p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{* for post in site.posts *}
-    {* if post.stickie != true *}
+    {* if post.top != true *}
         {* continue *}
     {* endif *}
     &lt;div&gt;置顶文章细节&lt;/div&gt;
 {* endfor *}
 </code></pre></div></div>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{* for post in site.posts *}
-    {* if post.stickie == true *}
+    {* if post.top == true *}
         {* continue *}
     {* endif *}
     &lt;div&gt;普通文章细节&lt;/div&gt;
@@ -366,6 +372,33 @@ stickie: true
     {* endif *}
 
 {* endfor *}
+</code></pre></div></div>
+<h3 id="升级版">升级版</h3>
+
+<p><code class="highlighter-rouge">(*号换成%)</code></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{* comment *} 置顶文章列表开始 {* endcomment *}
+{* for post in site.posts *}
+{* if post.top *}
+{* if paginator.page == 1 *}
+{* comment *} 文章列表代码开始 {* endcomment *}
+&lt;!-- 在这里写文章列表代码 --&gt;
+{* comment *} 文章列表代码结束 {* endcomment *}
+{* endif *}
+{* endif *}
+{* endfor *}
+{* comment *} 置顶文章列表结束 {* endcomment *}
+  
+  
+{* comment *} 普通文章列表开始 {* endcomment *}
+{* for post in paginator.posts *}
+{* if post.top *}
+{* else *}
+{* comment *} 文章列表代码开始 {* endcomment *}
+&lt;!-- 在这里写文章列表代码 --&gt;
+{* comment *} 文章列表代码结束 {* endcomment *}
+{* endif *}
+{* endfor *}
+{* comment *} 普通文章列表结束 {* endcomment *}
 </code></pre></div></div>
 
   </article>

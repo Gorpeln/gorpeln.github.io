@@ -6,6 +6,58 @@
     <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）</description>
     
       <item>
+        <title>临时邮箱 和 短信接码平台</title>
+        <link>https://gorpeln.com/article/15786589400</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15786589400</guid>
+        <pubDate>Fri, 10 Jan 2020 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;临时邮箱&quot;&gt;临时邮箱&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://temp-mail.org/zh/
+https://bccto.me/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;国内免费临时手机号&quot;&gt;国内免费临时手机号&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://sms.cm/
+https://www.pdflibr.com/
+https://www.becmd.com/
+http://www.smszk.com/
+http://www.z-sms.com/
+https://www.visitorsms.com/
+https://www.yinsiduanxin.com/
+https://www.materialtools.com/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;国外免费临时手机号&quot;&gt;国外免费临时手机号&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;https://ch.freephonenum.com/
+https://smsreceivefree.com/
+https://www.receive-sms-online.info/
+https://receiveasms.com/
+https://sms-online.co/receive-free-sms/
+http://receivefreesms.com/
+https://www.receivesmsonline.net/
+http://receive-sms-online.com/
+https://www.pinger.com/text-free/
+http://sms.sellaite.com/
+http://receivefreesms.net/
+https://sms-receive.net/
+http://www.receive-sms-now.com/
+http://receivesmsverification.com/
+https://www.receivesms.co/
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>24张一丝不挂的人性照片，值得你看一看</title>
+        <link>https://gorpeln.com/article/15778684175</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15778684175</guid>
+        <pubDate>Wed, 01 Jan 2020 00:00:00 +0800</pubDate>
+        <description>
+</description>
+      </item>
+    
+      <item>
         <title>个人项目 - gorpeln</title>
         <link>https://gorpeln.com/article/15776115840</link>
         <guid isPermaLink="true">https://gorpeln.com/article/15776115840</guid>
@@ -1109,27 +1161,28 @@ password: 123456
         <link>https://gorpeln.com/article/15632033519</link>
         <guid isPermaLink="true">https://gorpeln.com/article/15632033519</guid>
         <pubDate>Mon, 15 Jul 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;其实很简单, 从post的header里面进行参数设置&lt;/p&gt;
+        <description>&lt;h3 id=&quot;基础版&quot;&gt;基础版&lt;/h3&gt;
+&lt;p&gt;其实很简单, 从post的header里面进行参数设置&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;layout: post
 title: Jekyll x Liquid: 文章置顶功能的实现
 category: 个人博客
 tags: [个人博客,Jekyll,文章置顶,gorpeln]
 description: 
-stickie: true
+top: true
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;然后liquid进行判断&lt;code class=&quot;highlighter-rouge&quot;&gt;(*号换成%)&lt;/code&gt;&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* for post in site.posts *}
-    {* if post.stickie != true *}
+    {* if post.top != true *}
         {* continue *}
     {* endif *}
     &amp;lt;div&amp;gt;置顶文章细节&amp;lt;/div&amp;gt;
 {* endfor *}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* for post in site.posts *}
-    {* if post.stickie == true *}
+    {* if post.top == true *}
         {* continue *}
     {* endif *}
     &amp;lt;div&amp;gt;普通文章细节&amp;lt;/div&amp;gt;
@@ -1151,6 +1204,33 @@ stickie: true
     {* endif *}
 
 {* endfor *}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;升级版&quot;&gt;升级版&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;(*号换成%)&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* comment *} 置顶文章列表开始 {* endcomment *}
+{* for post in site.posts *}
+{* if post.top *}
+{* if paginator.page == 1 *}
+{* comment *} 文章列表代码开始 {* endcomment *}
+&amp;lt;!-- 在这里写文章列表代码 --&amp;gt;
+{* comment *} 文章列表代码结束 {* endcomment *}
+{* endif *}
+{* endif *}
+{* endfor *}
+{* comment *} 置顶文章列表结束 {* endcomment *}
+  
+  
+{* comment *} 普通文章列表开始 {* endcomment *}
+{* for post in paginator.posts *}
+{* if post.top *}
+{* else *}
+{* comment *} 文章列表代码开始 {* endcomment *}
+&amp;lt;!-- 在这里写文章列表代码 --&amp;gt;
+{* comment *} 文章列表代码结束 {* endcomment *}
+{* endif *}
+{* endfor *}
+{* comment *} 普通文章列表结束 {* endcomment *}
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 </description>
       </item>
@@ -3022,245 +3102,6 @@ public AwardVO lottery(LotteryVO lottery) {
 
 &lt;p&gt;如果每次抽奖必中，省略第二步即可。另外可通过调整第一步中的算法实现不同的需求。&lt;/p&gt;
 
-</description>
-      </item>
-    
-      <item>
-        <title>WOW.js – 有趣的页面滚动效果</title>
-        <link>https://gorpeln.com/article/15549830140</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15549830140</guid>
-        <pubDate>Thu, 11 Apr 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;WOW.js支持多种动画效果，让你的页面滚动效果更加有趣。&lt;/p&gt;
-
-&lt;p&gt;WOW.js 依赖 &lt;code class=&quot;highlighter-rouge&quot;&gt;animate.css&lt;/code&gt;，所以它支持 animate.css 多达 60 多种的动画效果，能满足你的各种需求。&lt;/p&gt;
-
-&lt;p&gt;WOW.js 使用了 querySelectorAll 方法，IE 低版本会报错，支持IE10+。为了达到更好的兼容，最好加一个浏览器及版本判断。&lt;/p&gt;
-
-&lt;h3 id=&quot;使用方法&quot;&gt;使用方法&lt;/h3&gt;
-&lt;h4 id=&quot;1引入文件&quot;&gt;1、引入文件&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;link rel=&quot;stylesheet&quot; href=&quot;css/animate.min.css&quot;&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h4 id=&quot;2html&quot;&gt;2、HTML&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div class=&quot;wow slideInLeft&quot;&amp;gt;&amp;lt;/div&amp;gt;
-&amp;lt;div class=&quot;wow slideInRight&quot;&amp;gt;&amp;lt;/div&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;可以加入 data-wow-duration（动画持续时间）和 data-wow-delay（动画延迟时间）属性，如：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;div class=&quot;wow slideInLeft&quot; data-wow-duration=&quot;2s&quot; data-wow-delay=&quot;5s&quot;&amp;gt;&amp;lt;/div&amp;gt;
-&amp;lt;div class=&quot;wow slideInRight&quot; data-wow-offset=&quot;10&quot;  data-wow-iteration=&quot;10&quot;&amp;gt;&amp;lt;/div&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;data-wow-duration&lt;/code&gt;：更改动画持续时间&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;data-wow-delay&lt;/code&gt;：动画开始前的延迟&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;data-wow-offset&lt;/code&gt;：开始动画的距离（与浏览器底部相关）&lt;br /&gt;
-&lt;code class=&quot;highlighter-rouge&quot;&gt;data-wow-iteration&lt;/code&gt;：动画的次数重复（无限次：infinite）&lt;/p&gt;
-
-&lt;h4 id=&quot;3javascript&quot;&gt;3、JavaScript&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;new WOW().init();
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;如果需要自定义配置，可如下使用：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var wow = new WOW({
-    boxClass: 'wow',
-    animateClass: 'animated',
-    offset: 0,
-    mobile: true,
-    live: true
-});
-wow.init();
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h4 id=&quot;选项配置&quot;&gt;选项配置&lt;/h4&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;属性/方法&lt;/th&gt;
-      &lt;th&gt;说明&lt;/th&gt;
-      &lt;th&gt;默认值&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;boxClass&lt;/td&gt;
-      &lt;td&gt;需要执行动画的元素的class，字符串&lt;/td&gt;
-      &lt;td&gt;‘wow’&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;animateClass&lt;/td&gt;
-      &lt;td&gt;animation.css 动画的class，字符串&lt;/td&gt;
-      &lt;td&gt;‘animated’&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;offset&lt;/td&gt;
-      &lt;td&gt;距离可视区域多少开始执行动画,整数&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;mobile&lt;/td&gt;
-      &lt;td&gt;是否在移动设备上执行动画，布尔值&lt;/td&gt;
-      &lt;td&gt;true&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;live&lt;/td&gt;
-      &lt;td&gt;异步加载的内容是否有效，布尔值&lt;/td&gt;
-      &lt;td&gt;true&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h3 id=&quot;动画效果&quot;&gt;【动画效果】&lt;/h3&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;参数&lt;/th&gt;
-      &lt;th&gt;说明&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;rollIn&lt;/td&gt;
-      &lt;td&gt;从左到右、顺时针滚动、透明度从100%变化至设定值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;bounceIn&lt;/td&gt;
-      &lt;td&gt;从原位置出现，由小变大超出设定值，再变小小于设定值，再回归设定值、透明度从100%变化至设定值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;bounceInUp&lt;/td&gt;
-      &lt;td&gt;从下往上、窜上来以后会向上超出一部分然后弹回去、透明度为设定值不变&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;bounceInDown&lt;/td&gt;
-      &lt;td&gt;从上往下、掉下来以后会向下超出一部分然后弹跳一下、透明度为设定值不变&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;bounceInLeft&lt;/td&gt;
-      &lt;td&gt;从左往右、移过来以后会向右超出一部分然后往左弹一下、透明度为设定值不变&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;bounceInRight&lt;/td&gt;
-      &lt;td&gt;从右往左、移过来以后会向左超出一部分然后往右弹一下、透明度为设定值不变&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;slideInUp&lt;/td&gt;
-      &lt;td&gt;从下往上、上来后固定到设定位置、透明度为设定值不变（up是从下往上）（如果元素在最下面，会撑开盒子高度）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;slideInDown&lt;/td&gt;
-      &lt;td&gt;从上往下、上来后固定到设定位置、透明度为设定值不变&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;slideInLeft&lt;/td&gt;
-      &lt;td&gt;从左往右、上来后固定到设定位置、透明度为设定值不变（left却是从左往右）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;slideInRight&lt;/td&gt;
-      &lt;td&gt;从右往左、上来后固定到设定位置、透明度为设定值不变&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;lightSpeedIn&lt;/td&gt;
-      &lt;td&gt;从右往左、头部先向右倾斜，又向左倾斜，最后变为原来的形状、透明度从100%变化至设定值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;pulse&lt;/td&gt;
-      &lt;td&gt;原位置放大一点点在缩小至原本大小、透明度为设定值不变（配合动画执行次数属性效果更佳）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;flipInX&lt;/td&gt;
-      &lt;td&gt;原位置后仰前栽、透明度从100%变化至设定值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;flipInY&lt;/td&gt;
-      &lt;td&gt;原位置左右旋动、透明度从100%变化至设定值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;bounce&lt;/td&gt;
-      &lt;td&gt;上下抖动、透明度为设定值不变（配合动画执行次数和动画持续时间属性可以实现剧烈抖动亦或是慢慢抖）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;shake&lt;/td&gt;
-      &lt;td&gt;左右抖动、透明度为设定值不变（配合动画执行次数和动画持续时间属性可以实现剧烈抖动亦或是慢慢抖）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;swing&lt;/td&gt;
-      &lt;td&gt;从右往左、头部先向右倾斜，又向左倾斜，最后变为原来的形状、透明度为设定值不变&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;bounceInU&lt;/td&gt;
-      &lt;td&gt;原位置不变、直接从不显示到显示（无过过渡效果）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;wobble&lt;/td&gt;
-      &lt;td&gt;原位置不变、类似于一个人站在那左右晃头、透明度为设定值不变&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-</description>
-      </item>
-    
-      <item>
-        <title>批量修改文件后缀名</title>
-        <link>https://gorpeln.com/article/15547100706</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15547100706</guid>
-        <pubDate>Mon, 08 Apr 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;新建一个FormatConver.sh文件，写入下面代码，打开终端，把脚本文件拖进来，然后空格在后面写上参数，即可。&lt;/p&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;参数说明：&lt;/p&gt;
-
-  &lt;p&gt;用法:FormatConvert.sh arg0 arg1 arg2&lt;br /&gt;
-arg0:指定路径。arg1:需要查找并且替换的文件名后缀不要有点。arg2:替换成的后缀&lt;/p&gt;
-
-  &lt;p&gt;用法示例：将桌面gorpeln文件夹中的txt文件后缀统一修改为bat&lt;br /&gt;
-终端输入：/Users/gorpeln/Desktop/FormatConver.sh /Users/gorpeln/Desktop/gorpeln txt bat&lt;/p&gt;
-
-  &lt;p&gt;注意：添加权限：chmod 777 FormatConver.sh&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#Programm:&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#此程序用于批量修改文件后缀名&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#用法:FormatConver.sh arg0,arg1,arg2&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#	arg0:指定路径。&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#	arg1:需要查找并且替换的文件名后缀不要有点。&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#	arg2:替换成的后缀		&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#PATH&lt;/span&gt;
-
-&lt;span class=&quot;nv&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;old&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;.&lt;span class=&quot;nv&quot;&gt;$2&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;.&lt;span class=&quot;nv&quot;&gt;$3&lt;/span&gt;
-find &lt;span class=&quot;nv&quot;&gt;$path&lt;/span&gt;|grep &lt;span class=&quot;nv&quot;&gt;$old&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;/tmp/MidTempResult.txt&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#cat MidTempResult.txt&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#从文件中取出每一行的数据&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /tmp/MidTempResult.txt|while &lt;span class=&quot;nb&quot;&gt;read &lt;/span&gt;line
-&lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#变量的删除，取得文件名并添加新后缀&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;convertTemp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;%.*&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$new&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$line&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$convertTemp&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mv&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$line&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$convertTemp&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$str&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;done
-&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;convert finished&quot;&lt;/span&gt;
-
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;a href=&quot;https://drive.gorpeln.com/?/FormatConver.sh&quot;&gt;文件下载&lt;/a&gt;&lt;/p&gt;
 </description>
       </item>
     
