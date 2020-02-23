@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>实战篇 ：电商小程序云开发实战 | gorpeln的个人博客 - gorpeln</title>
+  <title>返回并刷新上一个页面 | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="小程序名称：gorpeln（已上线）  在线商城 （因平台限制，改为在线预约）">
+  <meta name="description" content="由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   
@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/15618778699">
+  <link rel="canonical" href="/article/15664680297">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 </head>
 
@@ -301,9 +301,9 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">实战篇 ：电商小程序云开发实战</h1>
+    <h1 class="post-title">返回并刷新上一个页面</h1>
     <div class="info">
-	    <p class="post-meta">时间：2019-06-30</p>
+	    <p class="post-meta">时间：2019-08-22</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 		<a class="item-date" style="color:#6666cc;" href="/categories#微信小程序" target="_blank">
@@ -320,59 +320,31 @@
   </header>
 
 <div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/15618778699
+转载请注明出处：https://gorpeln.com/article/15664680297
 </div>
 
 
   <article class="post-content">
-    <p>小程序名称：gorpeln（已上线）</p>
+    <p>由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表</p>
+
+<h4 id="如何获取当前页面栈">如何获取当前页面栈</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();  
+var beforePage = pages[pages.length - 2];  
+var currentPage = pages[pages.length - 1];  
+</code></pre></div></div>
+
+<p>然后你就可以通过对象直接操作当前页面，比如调用函数。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();
+var beforePage = pages[pages.length - 2];
+beforePage.loadData();
+wx.navigateBack();
+</code></pre></div></div>
+
 <ul>
-  <li>在线商城 （因平台限制，改为在线预约）</li>
+  <li>建议在列表页的onLoad函数中，将数据请求单独放在一个函数中进行调用，比如这里的loadData，这样在create页面就能只刷新数据，而onLoad中可能存在的，比如获取用户id等操作，则不会重复再次执行</li>
 </ul>
-
-<p><img src="https://img.gorpeln.com/blog_wxmini_qrcode.jpg" alt="blog_wxmini_qrcode" /></p>
-
-<p><br />
-<br /></p>
-
-<p>演示视频：<a href="http://demo.gorpeln.com/blog_wxmini_video.mp4">视频链接</a></p>
-
-<p><br /></p>
-
-<hr />
-
-<p>小程序端主要包括：（开发中…）</p>
-<ul>
-  <li>首页</li>
-  <li>分类</li>
-  <li>购物车（收藏）</li>
-  <li>我的</li>
-  <li>商品详情页</li>
-  <li>活动详情页</li>
-  <li>订单详情页</li>
-  <li>订单列表</li>
-  <li>地址列表</li>
-  <li>添加地址</li>
-  <li>修改地址</li>
-  <li>购买</li>
-  <li>支付</li>
-  <li>优惠券专区</li>
-  <li>邀请有礼</li>
-  <li>海报</li>
-  <li>排序</li>
-  <li>客服</li>
-</ul>
-
-<p><br />
-<br /></p>
-
-<hr />
-
-<p>后端：（开发中…）</p>
-<ul>
-  <li>轮播图上传、下线</li>
-</ul>
-
 
   </article>
 </div>
@@ -380,12 +352,12 @@
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15623480718" title="扩展篇 ：开发框架及前景" style="color: #6666cc"  target="_blank">扩展篇 ：开发框架及前景</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15692409843" title="Jekyll 简单加密 (pwd=123456)" style="color: #6666cc"  target="_blank">Jekyll 简单加密 (pwd=123456)</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15612663893" title="基础篇 3：小程序架构及其实现机制" style="color: #6666cc"  target="_blank">基础篇 3：小程序架构及其实现机制</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15662012632" title="七牛云上传图片 - 客户端" style="color: #6666cc"  target="_blank">七牛云上传图片 - 客户端</a>
 	    </div>
 	  
 	 
