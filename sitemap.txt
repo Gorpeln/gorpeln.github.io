@@ -90,10 +90,10 @@ https://gorpeln.com/article/14427478333
 https://gorpeln.com/article/14411221175
 https://gorpeln.com/article/14404771043
 https://gorpeln.com/article/14402966023
+https://gorpeln.com/Sitemap.txt
+https://gorpeln.com/Sitemap.xml
 https://gorpeln.com/search/cb-search.json
 https://gorpeln.com/
-https://gorpeln.com/sitemap.txt
-https://gorpeln.com/sitemap.xml
 https://gorpeln.com/feed.xml
 https://gorpeln.com/resume
 https://gorpeln.com/tags
