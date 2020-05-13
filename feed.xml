@@ -2504,35 +2504,9 @@ https://www.receivesms.co/
         <link>https://gorpeln.com/article/15713829999</link>
         <guid isPermaLink="true">https://gorpeln.com/article/15713829999</guid>
         <pubDate>Fri, 18 Oct 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;加密文章&lt;/p&gt;
-&lt;html&gt;
-&lt;body&gt;
-    &lt;div&gt;
-        &lt;ul&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;ul&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-        &lt;/ul&gt;
-    &lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+        <description>&lt;p&gt;&lt;a href=&quot;https://www.cockos.com/licecap/&quot;&gt;Licecap&lt;/a&gt; - 一款屏幕录制工具输出GIF，录制过程中可以随意改变录屏范围，录制的文件也非常小。支持 Mac 和 Windows 平台。&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.cockos.com/licecap/&quot;&gt;Licecap 开源&lt;/a&gt; - 是一款屏幕录制工具输出GIF，录制过程中可以随意改变录屏范围，录制的文件也非常小。支持 Mac 和 Windows 平台。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://pinyin.sogou.com/mac/&quot;&gt;搜狗输入法&lt;/a&gt; - 搜狗输入法。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://daisydiskapp.com&quot;&gt;DaisyDisk&lt;/a&gt; - 磁盘分析工具。了解磁盘使用状况，并进行准确的分析。DaisyDisk 的视觉系属性大大超过了功能性。 #&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://daisydiskapp.com&quot;&gt;DaisyDisk&lt;/a&gt; - 磁盘分析工具。了解磁盘使用状况，并进行准确的分析。DaisyDisk 的视觉系属性大大超过了功能性。&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://cyberduck.io/&quot;&gt;Cyberduck&lt;/a&gt; - 免费FTP，SFTP，S3和WebDAV客户端 &amp;amp; OpenStack Swift Client。&lt;/p&gt;
 
@@ -2544,18 +2518,29 @@ https://www.receivesms.co/
 
 &lt;p&gt;&lt;a href=&quot;https://www.getpostman.com&quot;&gt;Postman&lt;/a&gt; - Postman 帮助我们快速测试API。&lt;/p&gt;
 
-&lt;script&gt;
-    (function(){
-        if('gorpeln.'){
-            if (prompt('请输入密码') !== 'gorpeln.'){
-                alert('密码错误');
-                window.close();
-                window.history.go(-1);
-                history.back(-1);
-            }
-        }
-    })();  
-&lt;/script&gt;
+&lt;p&gt;&lt;a href=&quot;http://www.getmarkman.com/&quot;&gt;Mark Man&lt;/a&gt; - 高效的设计稿标注、测量工具&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;CleanMymac&lt;/a&gt; - 电脑清理软件&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;Parallels Desktop&lt;/a&gt; - 一款运行在 Mac 电脑上的极为优秀的虚拟机软件&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;Keka&lt;/a&gt; - Keka可以帮助你快速、⾼效的压缩、解压缩。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;Xmind&lt;/a&gt; - ⼀款思维导图软件&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;Cornerstone&lt;/a&gt; - SVN管理软件&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;sourceTree&lt;/a&gt; - ⼀款免费的SVN、Git和Hg客户端&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;App Icon Gear&lt;/a&gt; - 一款App图标、启动图及Xcode Asset图片资源压制工具&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;OneDrive&lt;/a&gt; - 同步盘&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;Handshaker&lt;/a&gt; - 安卓手机与Mac电脑文件传输管理器&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;BreakTime&lt;/a&gt; - 实用的休息定时提醒软件&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;&quot;&gt;SQLPro for SQLite&lt;/a&gt; - SQLite数据库管理软件&lt;/p&gt;
 
 </description>
       </item>

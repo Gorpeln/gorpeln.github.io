@@ -568,6 +568,9 @@ li.article a:hover,li.article a:focus{
 .siteNav ul li {
     padding: 5px 0;
     background: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .siteNav ul li.active {}
