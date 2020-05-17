@@ -1,0 +1,11 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "NE2F8482PW.com.gorpeln.notes",
+                "paths": [ "*" ]
+            }
+        ]
+    }
+}

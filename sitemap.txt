@@ -99,6 +99,7 @@ https://gorpeln.com/about
 https://gorpeln.com/idcard
 https://gorpeln.com/timeline
 https://gorpeln.com/404
+https://gorpeln.com/apple-app-site-association
 https://gorpeln.com/login
 https://gorpeln.com/works
 https://gorpeln.com/mysite
