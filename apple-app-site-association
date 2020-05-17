@@ -5,7 +5,11 @@
             {
                 "appID": "NE2F8482PW.com.gorpeln.notes",
                 "paths": [ "*" ]
-            }
+            },
+	   {
+               "appID": "NE2F8482PW.com.gorpeln.notes",
+              "paths": [ "*","/qq_conn/1110435763/*" ]
+           }
         ]
     }
 }
