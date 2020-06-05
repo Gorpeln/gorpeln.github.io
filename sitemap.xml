@@ -1,11 +1,23 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
+        <loc>https://gorpeln.com/article/15821713417</loc>
+        <priority>0.8</priority>
+    </url>
+    <url>
         <loc>https://gorpeln.com/article/2</loc>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://gorpeln.com/article/1</loc>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15805392787</loc>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15788283058</loc>
         <priority>0.8</priority>
     </url>
     <url>
@@ -202,6 +214,10 @@
     </url>
     <url>
         <loc>https://gorpeln.com/article/15261978139</loc>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/article/15228363519</loc>
         <priority>0.8</priority>
     </url>
     <url>
@@ -434,6 +450,10 @@
     </url>
     <url>
         <loc>https://gorpeln.com/page9/</loc>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://gorpeln.com/page10/</loc>
         <priority>0.9</priority>
     </url>
 </urlset>

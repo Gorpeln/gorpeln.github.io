@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>返回并刷新上一个页面 | gorpeln的个人博客 - gorpeln</title>
+  <title>Github pages个人域名添加SSL | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表">
+  <meta name="description" content="准备  个人域名 https://gorpeln.com  Github pages  百度云(其他云也可以)购买的SSL证书">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/15664680297">
+  <link rel="canonical" href="/article/15228363519">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 </head>
 
@@ -321,18 +321,20 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">返回并刷新上一个页面</h1>
+    <h1 class="post-title">Github pages个人域名添加SSL</h1>
     <div class="info">
-	    <p class="post-meta">时间：2019-08-22</p>
+	    <p class="post-meta">时间：2018-04-04</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#微信小程序" target="_blank">
-        	微信小程序
+		<a class="item-date" style="color:#6666cc;" href="/categories#个人博客" target="_blank">
+        	个人博客
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
+			<a class="pjaxlink" href="/tags#个人博客"  target="_blank">个人博客</a>
+		
+			<a class="pjaxlink" href="/tags#SSL"  target="_blank">SSL</a>
 		
 		</span>
 	    
@@ -340,31 +342,36 @@
   </header>
 
 <div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/15664680297
+转载请注明出处：https://gorpeln.com/article/15228363519
 </div>
 
 
   <article class="post-content">
-    <p>由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表</p>
-
-<h4 id="如何获取当前页面栈">如何获取当前页面栈</h4>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();  
-var beforePage = pages[pages.length - 2];  
-var currentPage = pages[pages.length - 1];  
-</code></pre></div></div>
-
-<p>然后你就可以通过对象直接操作当前页面，比如调用函数。</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();
-var beforePage = pages[pages.length - 2];
-beforePage.loadData();
-wx.navigateBack();
-</code></pre></div></div>
-
+    <h3 id="准备">准备</h3>
 <ul>
-  <li>建议在列表页的onLoad函数中，将数据请求单独放在一个函数中进行调用，比如这里的loadData，这样在create页面就能只刷新数据，而onLoad中可能存在的，比如获取用户id等操作，则不会重复再次执行</li>
+  <li>个人域名 <a href="https://gorpeln.com">https://gorpeln.com</a></li>
+  <li>Github pages</li>
+  <li>百度云(<code class="highlighter-rouge">其他云也可以</code>)购买的SSL证书</li>
 </ul>
+
+<h3 id="添加ssl证书">添加SSL证书</h3>
+<ol>
+  <li>进入百度云控制台购买证书：每个用户ID限申请3张免费的DV型单域名证书，点击购买即可。其他平台购买也可以，操作都一样的！<br />
+<code class="highlighter-rouge">注意:免费的SSL证书有效期只有一年，过期之后就需要重新申请了。</code><br />
+<img src="https://img.gorpeln.com/blog_ssl_0604_01.png" alt="blog_ssl_0604_01" /></li>
+  <li>
+    <p>支付成功后，点击进入证书控制台，然后点击补全，填写相关信息，提交申请，等待审核成功。</p>
+  </li>
+  <li>在浏览器中输入https://域名/ ，可以看到地址栏前面有一个小绿锁，很惊喜有没有~</li>
+</ol>
+
+<h3 id="http强制跳转https">http强制跳转https</h3>
+<p>按照上述步骤添加了SSL证书后，发现如果在地址栏中输入的是https://域名/ 就会有绿锁头，如果输入的是http://域名/ ，则还是http,并不会自动跳转至https。怎样让访客点击http://域名/ 时能强制跳转到https呢？</p>
+
+<p>登录Github，进入自己的Github.io项目中，点击Setting，往下拉，可以看到有个选项叫Enforce HTTPS,点击勾选。</p>
+
+<p><img src="https://img.gorpeln.com/blog_ssl_0604_02.png" alt="blog_ssl_0604_02" /></p>
+
 
   </article>
 </div>
@@ -372,12 +379,12 @@ wx.navigateBack();
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15692409843" title="Jekyll 简单加密 (pwd=123456)" style="color: #6666cc"  target="_blank">Jekyll 简单加密 (pwd=123456)</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15261978139" title="编程十里，不如你" style="color: #6666cc"  target="_blank">编程十里，不如你</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15662012632" title="七牛云上传图片 - 客户端" style="color: #6666cc"  target="_blank">七牛云上传图片 - 客户端</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15226027614" title="架构师说" style="color: #6666cc"  target="_blank">架构师说</a>
 	    </div>
 	  
 	 

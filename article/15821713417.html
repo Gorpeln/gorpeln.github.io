@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>返回并刷新上一个页面 | gorpeln的个人博客 - gorpeln</title>
+  <title>优惠券设计思路浅析 | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表">
+  <meta name="description" content="一、明确优惠券活动的目的及意义　　优惠券随处可见，基本你知道的行业，都有优惠券的存在，通过发放优惠券，让用户在下单的时候抵扣一定的费用，达到促销的目的。优惠券另一个用处就是合理的提高客单价，从而提高产品的销售利润。">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/15664680297">
+  <link rel="canonical" href="/article/15821713417">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 </head>
 
@@ -321,18 +321,18 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">返回并刷新上一个页面</h1>
+    <h1 class="post-title">优惠券设计思路浅析</h1>
     <div class="info">
-	    <p class="post-meta">时间：2019-08-22</p>
+	    <p class="post-meta">时间：2020-02-20</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#微信小程序" target="_blank">
-        	微信小程序
+		<a class="item-date" style="color:#6666cc;" href="/categories#架构和算法" target="_blank">
+        	架构和算法
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
+			<a class="pjaxlink" href="/tags#优惠券"  target="_blank">优惠券</a>
 		
 		</span>
 	    
@@ -340,44 +340,117 @@
   </header>
 
 <div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/15664680297
+转载请注明出处：https://gorpeln.com/article/15821713417
 </div>
 
 
   <article class="post-content">
-    <p>由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表</p>
+    <h3 id="一明确优惠券活动的目的及意义">一、明确优惠券活动的目的及意义</h3>
+<p>　　优惠券随处可见，基本你知道的行业，都有优惠券的存在，通过发放优惠券，让用户在下单的时候抵扣一定的费用，达到促销的目的。优惠券另一个用处就是合理的提高客单价，从而提高产品的销售利润。</p>
 
-<h4 id="如何获取当前页面栈">如何获取当前页面栈</h4>
+<p>　　但很多人都不把优惠券当回事，觉得发出去没多少人会使用。但凡抱着这种想法的人，都不是好运营，首先要明白优惠券并不是交易工具，而是一种运营策略。对活动来说，优惠券是订单转化和拉升客单价的有力工具对品牌来说，优惠券是用户维护乃至用户召回的重要手段。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();  
-var beforePage = pages[pages.length - 2];  
-var currentPage = pages[pages.length - 1];  
-</code></pre></div></div>
+<p>举个栗子来说：</p>
+<blockquote>
+  <p>假设一个汉堡成本5元，定价10元时，100人会接受此价格。定价15元时，有60人会接受此价格，前者利润为（10-5）×100=500元，后者利润为（15-5）×60=600元。但商家不想放弃另外40个支付意愿较低的消费者，于是决定用5元优惠券来吸引他们，同时对剩下那60个对价格不敏感的消费者依然维持15元的原价销售。此时商家利润为 60×15＋40×10－5×100=800元，达到了最大化。</p>
+</blockquote>
 
-<p>然后你就可以通过对象直接操作当前页面，比如调用函数。</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();
-var beforePage = pages[pages.length - 2];
-beforePage.loadData();
-wx.navigateBack();
-</code></pre></div></div>
+<p>那么优惠券到底有哪些种类，他们常见的使用场景都是在什么样的呢？</p>
 
 <ul>
-  <li>建议在列表页的onLoad函数中，将数据请求单独放在一个函数中进行调用，比如这里的loadData，这样在create页面就能只刷新数据，而onLoad中可能存在的，比如获取用户id等操作，则不会重复再次执行</li>
+  <li>优惠方式：满减券、代金券、折扣券、通用券；</li>
+  <li>适用范围： 单品券、品类券、店铺券、包邮券（运费券）。</li>
 </ul>
+
+<p><img src="https://img.gorpeln.com/blog_coupon_01.png" alt="blog_coupon_01" /></p>
+
+<p>实际上，因为折扣方式的优惠，用户对自己获得的优惠金额不敏感，且商家或平台方对成本核算比较困难，所以折扣券很少会在电商平台中出现。比较常见的是满减券，满减券一般有一定的使用门槛，需要达到一定的订单金额才能使用。这里“满减”不同于“每满xxx 减”，订单结算时，只计算一次。</p>
+
+<p>简单总结一下优惠券大致是这样的：</p>
+
+<p><img src="https://img.gorpeln.com/blog_coupon_02.png" alt="blog_coupon_02" /></p>
+
+<h3 id="二优惠券常见的六种发放形式">二、优惠券常见的六种发放形式</h3>
+<h5 id="1主动发券">（1）主动发券</h5>
+
+<p>主动发券顾名思义，是商家主动给用户发券。</p>
+
+<p>线上的玩法通常是新人注册礼包、用户福利活动等，承载形式可以是小游戏、品牌宣传等，用户输入账号即可领取，线下一般就是优惠传单。</p>
+
+<h5 id="2消费返券">（2）消费返券</h5>
+
+<p>消费返券指的是在用户消费后发券，主要目的是实现二次复购，通常的形式都是满100减X元。</p>
+
+<p>这个玩法也比较多，通常都是直接给纸质优惠券，或者可以邀请用户扫公众号，输入特定关键词领取优惠券链接，也可以是邀请用户参加抽奖活动，设定不同的优惠券档次随机抽取</p>
+
+<h5 id="3分享发券">（3）分享发券</h5>
+
+<p>这是目前使用最多的发券玩法，用户在获得红包时需分享后打开领取。最常见的有邀请送红包、外卖红包等，既可以回馈下单用户福利。又可以促活老用户，还可以实现拉新目的。</p>
+
+<h5 id="4积分兑券">（4）积分兑券</h5>
+
+<p>这是属于用户体系的一部分，通过在积分商城兑换的方式，一方面可以让用户获取福利，同时还能通过消耗积分的方式，让用户为了获取积分再次活跃。</p>
+
+<p>积分的获取来源方式也很多，比如：公众号打卡签到、积分宝任务获取积分等。</p>
+
+<h5 id="5任务发券">（5）任务发券</h5>
+
+<p>这是最简单的一种发券方式，用户完成特定任务/活动/游戏后即可获得优惠券。</p>
+
+<p>比如：春节知识问答活动，通过回答春节小问题，根据回答程度领取不同的优惠券</p>
+
+<h5 id="6异业发券">（6）异业发券</h5>
+
+<p>这种不属于任何发券玩法，完全是通过异业合作的形式达到目的。</p>
+
+<p>例如：选择与自家目标用户有重叠的平台合作，在该平台发券导流该平台用户到自家平台，实现换量拉新。</p>
+
+<h3 id="三优惠券的使用">三、优惠券的使用</h3>
+<h5 id="31提醒用户">3.1、提醒用户</h5>
+<p>优惠券一经发放，主动权就交到了用户手中。从用户获得优惠券到优惠券失效这段时间，运营人需要做的是提醒用户不要忘记使用。</p>
+
+<ul>
+  <li>一是无声提醒，把优惠券适用的商品或服务尽可能展现到用户面前；</li>
+  <li>二是有声提醒，手机短信和站内消息都可以派上用场，主动提醒用户有优惠券将要到期并带上链接。</li>
+</ul>
+
+<h5 id="32-利用优惠券实现业绩突破">3.2、 利用优惠券实现业绩突破</h5>
+<p>为了冲业绩，在不亏本的前提下优惠力度要尽量大，最大化刺激用户购买下单。</p>
+
+<p>为了提升客单价，需要制定阶段性价格策略，比如现在客单价是50元，则可以制定满70元减20元的优惠券。</p>
+
+<p>为了维护用户粘性，针对已有的会员用户体系，可以对不同等级的用户发放不同优惠券，VIP1享受满20减5元优惠券，VIP2享受满30减10元优惠券，VIP3享受满50减20元优惠券，以此类推。</p>
+
+<p>为了刺激用户留存使用，需要针对潜在流失人群发放优惠券，最常见的就是支付宝红包，支付宝红包的逻辑就是，长时间未使用支付宝的用户红包金额，会大于高活跃用户，这也是防止用户流失的一个手段。</p>
+
+<h5 id="33-优惠券使用逻辑">3.3、 优惠券使用逻辑</h5>
+<p><img src="https://img.gorpeln.com/blog_coupon_03.png" alt="blog_coupon_03" /></p>
+
+<h3 id="四数据统计分析">四、数据统计分析</h3>
+<p>数据是衡量工作的一个重要标准，既然发放了优惠券，在结束后要有相应的数据统计。<br />
+一般的数学模型通常是：渠道推广量&gt;用户领取量&gt;实际使用量</p>
+<ul>
+  <li>从推广量到领取量的转化，说明渠道的有效性和优惠券领取页面是否存在问题，也说明优惠券对用户的吸引力如何；</li>
+  <li>从领取量到使用量的转化说明优惠券的吸引力，也说明运营提醒是否有效；</li>
+  <li>实际使用量则代表最终的转化，衡量本次优惠券是否成功。</li>
+</ul>
+
+<p>此外还要根据发放目的进行针对性的数据总结分析，比如销售量提升指数、拉新量、用户活跃度提升指数、流失用户召回量等，最终形成一个完整的优惠券数据分析，为以后使用优惠券的运营方案提供参考。</p>
+
+<h3 id="五总结">五、总结</h3>
+<p>其实优惠券活动并不简单，它涉及到经济学、心理学等多方面问题，也是运营人需要掌握的重要运营策略，尤其是不同行业的运营，更需要针对自身行业钻研优惠券的玩法。</p>
+
+<p>如何使用优惠券手段不单是运营人的工作，运营人在想清目的、做好策划、定好规则后，要和产品、开发同事充分沟通，确保发放、核销、统计等前端和后台功能完善，这样才能顺利使用好优惠券这一运营策略，达到想要的目的。</p>
+
 
   </article>
 </div>
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15692409843" title="Jekyll 简单加密 (pwd=123456)" style="color: #6666cc"  target="_blank">Jekyll 简单加密 (pwd=123456)</a>
-	    </div>
-	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15662012632" title="七牛云上传图片 - 客户端" style="color: #6666cc"  target="_blank">七牛云上传图片 - 客户端</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/2" title="背诵全文二" style="color: #6666cc"  target="_blank">背诵全文二</a>
 	    </div>
 	  
 	 

@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>返回并刷新上一个页面 | gorpeln的个人博客 - gorpeln</title>
+  <title>iOS 微信打开第三方应用（Universal Links 和 URL Schemes） | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表">
+  <meta name="description" content="一、前言项目中时常有这种需求, 是通过链接跳转到应用内部，现在iOS主流的方案有两个">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/15664680297">
+  <link rel="canonical" href="/article/15788283058">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 </head>
 
@@ -321,18 +321,22 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">返回并刷新上一个页面</h1>
+    <h1 class="post-title">iOS 微信打开第三方应用（Universal Links 和 URL Schemes）</h1>
     <div class="info">
-	    <p class="post-meta">时间：2019-08-22</p>
+	    <p class="post-meta">时间：2020-01-12</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#微信小程序" target="_blank">
-        	微信小程序
+		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
+        	iOS
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
+			<a class="pjaxlink" href="/tags#微信"  target="_blank">微信</a>
+		
+			<a class="pjaxlink" href="/tags#Universal Links"  target="_blank">Universal Links</a>
+		
+			<a class="pjaxlink" href="/tags#URL Schemes"  target="_blank">URL Schemes</a>
 		
 		</span>
 	    
@@ -340,31 +344,124 @@
   </header>
 
 <div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/15664680297
+转载请注明出处：https://gorpeln.com/article/15788283058
 </div>
 
 
   <article class="post-content">
-    <p>由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表</p>
-
-<h4 id="如何获取当前页面栈">如何获取当前页面栈</h4>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();  
-var beforePage = pages[pages.length - 2];  
-var currentPage = pages[pages.length - 1];  
-</code></pre></div></div>
-
-<p>然后你就可以通过对象直接操作当前页面，比如调用函数。</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();
-var beforePage = pages[pages.length - 2];
-beforePage.loadData();
-wx.navigateBack();
-</code></pre></div></div>
+    <h3 id="一前言">一、前言</h3>
+<p>项目中时常有这种需求, 是通过链接跳转到应用内部，现在iOS主流的方案有两个</p>
 
 <ul>
-  <li>建议在列表页的onLoad函数中，将数据请求单独放在一个函数中进行调用，比如这里的loadData，这样在create页面就能只刷新数据，而onLoad中可能存在的，比如获取用户id等操作，则不会重复再次执行</li>
+  <li><strong>Schema</strong>： 常用在于一个应用跳转到另一个应用内部，属于应用间的跳转。当然ios9以下，网页可以通过schema://跳转到App内部。但是这种方式跳转比较生硬，在每次跳转的时候都会弹框询问。如果iPhone中如果没有安装则会直接弹出错误提示。</li>
+  <li><strong>Universal Links（通用链接）</strong>： 常用于https链接来打开APP（手机中已经安装此APP），或者跳转到https链接（手机中没有安装此APP）。Universal Links就是一个通用链接，iOS9以上的用户，可以通过点击这个链接无缝的重定向到一个app应用，而不需要通过safari打开跳转。如果用户没有安装这个app，则会在safari中打开这个链接指向的网页。</li>
 </ul>
+
+<p><br />
+<strong>Universal Links(通用链接)的优点</strong></p>
+<ul>
+  <li><code class="highlighter-rouge">唯一性</code>: 不像自定义的scheme,因为它使用标准的http/https链接到你的web站点,所以它不会被其它的app所声明.另外,Custom URL scheme 因为是自定义的协议，所以在没有安装 app 的情况下是无法直接打开的，而 universal links 本身是一个 HTTP/HTTPS 链接，所以有更好的兼容性</li>
+  <li><code class="highlighter-rouge">安全</code>: 当用户的手机上安装了你的app,那么iOS将去你的网站上去下载你上传上去的说明文件(这个说明文件声明了你的app可以打开哪些类型的http链接).因为只有你自己才能上传文件到你网站的根目录,所以你的网站和你的app之间的关联是安全的.</li>
+  <li><code class="highlighter-rouge">可变</code>: 当用户手机上没有安装你的app的时候,Universal Links也能够工作.如果你愿意,在没有安装你的app的时候,用户点击链接,会在safari中展示你网站的内容.</li>
+  <li><code class="highlighter-rouge">简单</code>: 一个URL链接,可以同时作用于网站和app</li>
+  <li><code class="highlighter-rouge">私有</code>: 其它app可以在不需要知道你的app是否安装了的情况下和你的app相互通信.</li>
+</ul>
+
+<h3 id="二需求场景">二、需求场景</h3>
+<p>（1）第三方应用集成了友盟分享到QQ和微信的功能<br />
+（2）第三方应用分享了一个web页面到微信或QQ<br />
+（3）打开分享的web页面，点击上面的某一个按钮<br />
+（4）如果用户安装了该应用，直接打开应用根据web地址中的参数跳转到对应的页面<br />
+（5）如果用户没有安装应用，直接跳转到appStore</p>
+
+<h3 id="三需求实现方案">三、需求实现方案</h3>
+<p>iOS9 之后提供的 Universal Links 功能</p>
+
+<h3 id="四需求实现步骤">四、需求实现步骤</h3>
+<h4 id="1-创建一个json文件名称必须为-apple-app-site-association️该文件不可带-json-的后缀名">1. 创建一个json文件，名称必须为 apple-app-site-association，⚠️该文件不可带 .json 的后缀名</h4>
+
+<p>apple-app-site-association 文件必须放在https服务器的根目录下，例：<code class="highlighter-rouge">https://gorpeln.com</code> 这个路径下 ⚠️一定是根目录，也就是说该文件必须是一级目录，供下载使用</p>
+
+<p>apple-app-site-association 文件格式：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    "applinks": {
+        "apps": [],
+        "details": [{
+            "appID": "teamID.com.gorpeln.notes",
+            "paths": ["*"]
+        },
+        {
+            "appID": "teamID.com.gorpeln.notes",
+            "paths": ["*", "/qq_conn/111878720/*"]
+        }]
+    }
+}
+</code></pre></div></div>
+<p><strong><em>1）appID ：</em></strong> <br />
+　　appID 格式为 teamID.bundleId形式，譬如说我的teamID是xxxxxxxxxxx，bundleId是com.gorpeln.notes那么我的appID就是：xxxxxxxxxxx.com.gorpeln.notes。<br />
+　　teamID：打开<a href="https://developer.apple.com/account/">苹果官网</a>，点击Account，点击左边栏的 Membership,查找teamID</p>
+
+<p><img src="https://img.gorpeln.com/blog_universalLinks_01.png" alt="blog_universalLinks_01" /></p>
+
+<p><strong><em>2) paths：</em></strong>  <br />
+　　设定一个App的路径支持列表，只有这些指定的路径链接才会被App所处理。格式如下：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"paths": [ "/wwdc/news/", "NOT /videos/wwdc/2010/*", "/videos/wwdc/201?/*"]
+</code></pre></div></div>
+<ul>
+  <li>使用*配置，则整个网站都可以使用</li>
+  <li>使用特定的URL，例如<code class="highlighter-rouge">/wwdc/news/</code>来指定某一个特殊的链接。</li>
+  <li>在特定URL后面添加<code class="highlighter-rouge">*</code>，例如 <code class="highlighter-rouge">/videos/wwdc/2015/*</code>, 来指定网站的某一部分。如果你的网站是gorpeln.com,你的path写的是<code class="highlighter-rouge">/support/*</code>,那么当用户点击<code class="highlighter-rouge">gorpeln.com/support/myDoucument</code>,就可以进入你的app了,相反<code class="highlighter-rouge">gorpeln.com/other</code> 就不会.</li>
+  <li>除了使用<code class="highlighter-rouge">*</code>来匹配任意字符，你也可以使用 ?来匹配单个字符，你可以在路径当中结合这两个字符使用，例如 <code class="highlighter-rouge">/foo/*/bar/201?/mypage</code>。（配置的paths路径，是区分大小写的）</li>
+</ul>
+
+<p><strong><em>3) 验证apple-app-site-association文件</em></strong>  <br />
+　　文件配置完成之后，将其上传到你的服务器根目录或者.well-known这个子目录下。</p>
+
+<ul>
+  <li>确保使用<code class="highlighter-rouge">https://yourdomain.com/apple-app-site-association</code>这个链接可以访问到，<code class="highlighter-rouge">yourdomain.com</code>为你的服务器域名。</li>
+  <li>也可以使用苹果的<a href="https://search.developer.apple.com/appsearch-validation-tool">验证网站</a>，验证文件是否能被苹果请求到。出现该提示为<code class="highlighter-rouge">apple-app-site-association</code>文件配置正确。
+<img src="https://img.gorpeln.com/blog_universalLinks_02.png" alt="blog_universalLinks_02" /></li>
+  <li>出现404错误码提示，则为<code class="highlighter-rouge">apple-app-site-association</code>文件未上传成功，或者使用<code class="highlighter-rouge">https://yourdomain.com/apple-app-site-association</code>路径无法访问。</li>
+</ul>
+
+<h4 id="2-建立web网页和app应用之间的关联---app-ids配置-和-项目配置">2. 建立web网页和app应用之间的关联 -&gt; app IDs配置 和 项目配置</h4>
+<p><strong><em>（1）app IDs 配置</em></strong><br />
+　　进入开发者网站，找到你自己的bundleId，可以点击edit按钮，开启associate domains，如下图：
+<img src="https://img.gorpeln.com/blog_universalLinks_03.png" alt="blog_universalLinks_03" /></p>
+
+<p><strong><em>（2）项目配置</em></strong> <br />
+　　在项目的Capablities中开启Associated domains，如下图：</p>
+
+<p><img src="https://img.gorpeln.com/blog_universalLinks_04.png" alt="blog_universalLinks_04" /></p>
+
+<p>注意<code class="highlighter-rouge">domains</code>可以添加多个，前缀必须为<code class="highlighter-rouge">applinks:</code>，<code class="highlighter-rouge">applinks:</code>后为你的服务器的域名。</p>
+
+<p>代码接收Universal Links唤醒</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler
+{
+    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
+        NSURL *webpageURL = userActivity.webpageURL;
+        NSString *host = webpageURL.host;
+        if ([host isEqualToString:@"gorpeln.com"]) {
+            //进行我们需要的处理
+        }
+        else {
+            [[UIApplication sharedApplication]openURL:webpageURL];
+        }
+    }
+    return YES;
+}
+</code></pre></div></div>
+<p>在appdelegate中实现上面这个方法，当使用Universal Links唤醒app时就执行这个方法。</p>
+
+<p><strong><em>（3）验证以上配置</em></strong> <br />
+　　快捷验证，在备忘录中输入<code class="highlighter-rouge">https://yourdomain.com/apple-app-site-association</code>，长按这个链接，出现下图提示则配置成功。</p>
+
+<p><img src="https://img.gorpeln.com/blog_universalLinks_05.png" alt="blog_universalLinks_05" /></p>
+
+<p>备注：如果我们在手机上没有安装相应的应用，就可以通过Universal Links重定向进行跳转到下载也进行下载操作。因为我们在paths设置了路径限制，只要我们重定向的路径符合限制，就能先走本地是否安装程序，如果没有再跳转到相应下载页。</p>
+
 
   </article>
 </div>
@@ -372,12 +469,12 @@ wx.navigateBack();
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15692409843" title="Jekyll 简单加密 (pwd=123456)" style="color: #6666cc"  target="_blank">Jekyll 简单加密 (pwd=123456)</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15805392787" title="关于 ASO 优化（一）" style="color: #6666cc"  target="_blank">关于 ASO 优化（一）</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15662012632" title="七牛云上传图片 - 客户端" style="color: #6666cc"  target="_blank">七牛云上传图片 - 客户端</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15786589400" title="临时邮箱 和 短信接码平台" style="color: #6666cc"  target="_blank">临时邮箱 和 短信接码平台</a>
 	    </div>
 	  
 	 

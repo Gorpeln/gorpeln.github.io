@@ -150,7 +150,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">91</span>
+                                    <span class="site-state-item-count">95</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -162,7 +162,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">85</span>
+                                    <span class="site-state-item-count">92</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -179,11 +179,11 @@
                                 </a>
                             </li>
                             <li><a href="/tags" target="_blank"><i class="fas fa-tag fa-fw"></i>标签</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">85
+                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">92
                                 </a>
                             </li>
                             <li><a href="/archives" target="_blank"><i class="fas fa-archive fa-fw""></i>归档</a>
-                            	<a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">91
+                            	<a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">95
                                 </a>
                             </li>
                             <li><a href="/about" target="_blank"><i class="fas fa-user fa-fw"></i>关于</a></li>
@@ -206,7 +206,7 @@
                             
                             <li>
                                 <a href="/categories#个人博客" name="个人博客" style="color: #37374c;" target="_blank">个人博客</a>
-                                <a href="/categories#个人博客" name="个人博客" style="font-size:14px;color: white" class="articleCount" target="_blank">7
+                                <a href="/categories#个人博客" name="个人博客" style="font-size:14px;color: white" class="articleCount" target="_blank">8
                                 </a>
                             </li>
                             
@@ -224,7 +224,7 @@
                             
                             <li>
                                 <a href="/categories#其他" name="其他" style="color: #37374c;" target="_blank">其他</a>
-                                <a href="/categories#其他" name="其他" style="font-size:14px;color: white" class="articleCount" target="_blank">3
+                                <a href="/categories#其他" name="其他" style="font-size:14px;color: white" class="articleCount" target="_blank">5
                                 </a>
                             </li>
                             
@@ -248,7 +248,7 @@
                             
                             <li>
                                 <a href="/categories#架构和算法" name="架构和算法" style="color: #37374c;" target="_blank">架构和算法</a>
-                                <a href="/categories#架构和算法" name="架构和算法" style="font-size:14px;color: white" class="articleCount" target="_blank">6
+                                <a href="/categories#架构和算法" name="架构和算法" style="font-size:14px;color: white" class="articleCount" target="_blank">7
                                 </a>
                             </li>
                             
@@ -523,8 +523,184 @@
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
 
     <!-- 普通文章 -->
+    
+    
+	    
+	    <div class="postbox">
+        	<div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="/article/15136989613" target="_blank">GCD 应用场景</a>
+            </div>
+            <hr>
+            <div class="info">
+                    时间：2017-12-19&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                    <a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
+                        iOS
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    标签：
+                    <span class="index-post-tag">
+                        
+                        <a class="" href="/tags.html#GCD" target="_blank">GCD</a>
+                        
+                    </span>
+                    
+            </div>
+                    
+                <div class="contentAbstract">1.耗时操作
+这是应用最广泛的场景，为了避免阻塞主线程，将耗时操作放在子线程处理，然后在主线程使用处理结果。
+
+2.延时执行
+延时一段时间后执行代码，一般见于打开 App 一段时间后，弹出求好评对话框。
+
+3.定时器
+由于 Timer 的 Target 是强引用，对于 Timer 的销毁需要特别处理，此外，Timer 的运行依赖于 Runloop，在 Runloop 的一次循环中，Timer...</div>
+            
+        	</div>
+            <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+                <a href="/article/15136989613" class="readmore" target="_blank">阅读全文 》</a>
+            </div>
+    	</div>
+	    
+    
+    
+    
+	    
+	    <div class="postbox">
+        	<div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="/article/15119562214" target="_blank">iOS页面流畅技巧</a>
+            </div>
+            <hr>
+            <div class="info">
+                    时间：2017-11-29&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                    <a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
+                        iOS
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    标签：
+                    <span class="index-post-tag">
+                        
+                        <a class="" href="/tags.html#页面流畅" target="_blank">页面流畅</a>
+                        
+                    </span>
+                    
+            </div>
+                    
+                <div class="contentAbstract">一、屏幕显示图像原理
+
+
+
+首先明确两个概念：水平同步信号、垂直同步信号。
+CRT的电子枪按照上图中的方式，从上到下一行行扫描扫描完成后显示器就呈现一帧画面，随后电子枪回到初始位置继续下一次的扫描。当电子枪切换到新的一行准备扫描时，显示器会发送一个水平同步信号（Horizonal Synchronization），简称HSync；完成一帧画面绘制后，电子枪会回到原位，显示器会发送一个垂直同步...</div>
+            
+        	</div>
+            <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+                <a href="/article/15119562214" class="readmore" target="_blank">阅读全文 》</a>
+            </div>
+    	</div>
+	    
+    
+    
+    
+	    
+	    <div class="postbox">
+        	<div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="/article/15115957926" target="_blank">整站下载工具httrack使用 MAC</a>
+            </div>
+            <hr>
+            <div class="info">
+                    时间：2017-11-25&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                    <a class="item-date" style="color:#6666cc;" href="/categories.html#Software MAC" target="_blank">
+                        Software MAC
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    标签：
+                    <span class="index-post-tag">
+                        
+                        <a class="" href="/tags.html#httrack" target="_blank">httrack</a>
+                        
+                    </span>
+                    
+            </div>
+                    
+                <div class="contentAbstract">1. 安装
+
+brew install httrack
+
+
+2. 运行(以下命令行操作)
+
+#httrack
+
+
+
+  Welcome to HTTrack Website Copier (Offline Browser) 3.48-21
+Copyright (C) 1998-2015 Xavier Roche and other contributors
+To see the option...</div>
+            
+        	</div>
+            <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+                <a href="/article/15115957926" class="readmore" target="_blank">阅读全文 》</a>
+            </div>
+    	</div>
+	    
+    
+    
+    
+	    
+	    <div class="postbox">
+        	<div class="allpost">
+            <div class="title">
+                <a class="pjaxlink" href="/article/15090326823" target="_blank">PhpStorm2017 激活和汉化 MAC</a>
+            </div>
+            <hr>
+            <div class="info">
+                    时间：2017-10-26&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+                    <a class="item-date" style="color:#6666cc;" href="/categories.html#Software MAC" target="_blank">
+                        Software MAC
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    标签：
+                    <span class="index-post-tag">
+                        
+                        <a class="" href="/tags.html#PhpStorm2017" target="_blank">PhpStorm2017</a>
+                        
+                    </span>
+                    
+            </div>
+                    
+                <div class="contentAbstract">激活
+试用期的用户可在 PhpStorm菜单栏–&gt;Help–&gt;Register打开
+
+
+
+选择License server，输入以下任意一个地址：
+
+http://xidea.online  
+http://idea.imsxm.com/   
+http://114.215.133.70:41017﻿/   
+http://mcpmcc.com:1017   
+http://id...</div>
+            
+        	</div>
+            <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
+                <a href="/article/15090326823" class="readmore" target="_blank">阅读全文 》</a>
+            </div>
+    	</div>
+	    
+    
     
     
 	    
@@ -784,175 +960,6 @@ Lemon,Pineapp...</div>
 	    
     
     
-    
-	    
-	    <div class="postbox">
-        	<div class="allpost">
-            <div class="title">
-                <a class="pjaxlink" href="/article/14970863549" target="_blank">App提交苹果审核被拒原因总结(二)</a>
-            </div>
-            <hr>
-            <div class="info">
-                    时间：2017-06-10&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-                    <a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                        iOS
-                    </a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    标签：
-                    <span class="index-post-tag">
-                        
-                        <a class="" href="/tags.html#APP审核" target="_blank">APP审核</a>
-                        
-                    </span>
-                    
-            </div>
-                    
-                <div class="contentAbstract">持续更新中…
-
-</div>
-            
-        	</div>
-            <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-                <a href="/article/14970863549" class="readmore" target="_blank">阅读全文 》</a>
-            </div>
-    	</div>
-	    
-    
-    
-    
-	    
-	    <div class="postbox">
-        	<div class="allpost">
-            <div class="title">
-                <a class="pjaxlink" href="/article/14968977690" target="_blank">App提交苹果审核被拒原因总结(一)</a>
-            </div>
-            <hr>
-            <div class="info">
-                    时间：2017-06-08&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-                    <a class="item-date" style="color:#6666cc;" href="/categories.html#iOS" target="_blank">
-                        iOS
-                    </a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    标签：
-                    <span class="index-post-tag">
-                        
-                        <a class="" href="/tags.html#APP审核" target="_blank">APP审核</a>
-                        
-                    </span>
-                    
-            </div>
-                    
-                <div class="contentAbstract">1、应用内包含检查更新功能
-
-
-  iOS 应用的版本更新必须通过 App Store 进行，自身 App 内不能包含提示更新功能。从2015年3月起，所有包含检查更新功能的 App 都会被拒绝上架。
-
-
-2、使用第三方登录时未做安装检测
-
-
-  接入第三方登录要检测是否安装了第三方客户端，未安装时不要显示对应按钮。2015年9月之前，通常可以采用判断未安装则隐藏登录按钮的方式。但目前隐藏按...</div>
-            
-        	</div>
-            <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-                <a href="/article/14968977690" class="readmore" target="_blank">阅读全文 》</a>
-            </div>
-    	</div>
-	    
-    
-    
-    
-	    
-	    <div class="postbox">
-        	<div class="allpost">
-            <div class="title">
-                <a class="pjaxlink" href="/article/14957851016" target="_blank">甲方：你能不能在放大LOGO的同时缩小点？</a>
-            </div>
-            <hr>
-            <div class="info">
-                    时间：2017-05-26&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-                    <a class="item-date" style="color:#6666cc;" href="/categories.html#程序人生" target="_blank">
-                        程序人生
-                    </a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    标签：
-                    <span class="index-post-tag">
-                        
-                        <a class="" href="/tags.html#程序人生" target="_blank">程序人生</a>
-                        
-                    </span>
-                    
-            </div>
-                    
-                <div class="contentAbstract">
-
-对于甲方爸爸的百般刁难
-设计师是不是每次都只能认输呢？
-
-最近有一张图在微博跟朋友圈都非常火爆
-这图大概是长这样的
-
-
-
-甲方爸爸的要求是：
-你能不能在放大LOGO的同时缩小点？
-WTF!!!?
-
-
-
-这句话乍一看的感觉就是
-
-你能不能在长高的情况下再矮点
-你能不能在长胖之后体重变轻点
-你能不能在涨价之后价格再低点
-
-这种神逻辑怎么看都是
-
-不！可！能！的！任！务！
-
-辣么我们今天将要挑...</div>
-            
-        	</div>
-            <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-                <a href="/article/14957851016" class="readmore" target="_blank">阅读全文 》</a>
-            </div>
-    	</div>
-	    
-    
-    
-    
-	    
-	    <div class="postbox">
-        	<div class="allpost">
-            <div class="title">
-                <a class="pjaxlink" href="/article/14922464812" target="_blank">程序员眼中的用户</a>
-            </div>
-            <hr>
-            <div class="info">
-                    时间：2017-04-15&nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-                    <a class="item-date" style="color:#6666cc;" href="/categories.html#程序人生" target="_blank">
-                        程序人生
-                    </a>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    标签：
-                    <span class="index-post-tag">
-                        
-                        <a class="" href="/tags.html#程序人生" target="_blank">程序人生</a>
-                        
-                    </span>
-                    
-            </div>
-                    
-                <div class="contentAbstract">　　程序员不是一般的人，是具有某种超能力的人。但问题是，程序员往往意识不到自己的这种特异功能，在他们的眼里，会认为自己很普通，跟常人一样，所以，程序员认为，他们能做到的事情，其他人——比如他们的客户/软件用户——也应该很容易做到。但事实上，由于大部分人——绝大部分人（包括软件开发公司的客户/购买软件的用户）——都是电脑小白（对电脑知识/计算机知识/软件知识知之甚少的人）。一个对于程序员来说很...</div>
-            
-        	</div>
-            <div style="height:25px;width:100%;background:#fff;margin-top:5px;margin-bottom:5px">
-                <a href="/article/14922464812" class="readmore" target="_blank">阅读全文 》</a>
-            </div>
-    	</div>
-	    
-    
-    
 
     <!-- 分页 -->
     
@@ -964,10 +971,6 @@ WTF!!!?
         
         
              
-                
-                
-                <a class="pjaxlink" href="/page5"><span class="x1">5</span></a>
-                
                 
                 
                 <a class="pjaxlink" href="/page6"><span class="x1">6</span></a>
@@ -986,9 +989,13 @@ WTF!!!?
                 
                 
                 
+                <a class="pjaxlink" href="/page10"><span class="x1">10</span></a>
+                
+                
+                
                 <a class="pjaxlink" href="/page8"><span class="x1"><i class="fa fa-angle-right" style="font-size:20px;"></i></span></a>
                 
-                <a class="pjaxlink" href="/page9"><span class="x1">末</span></a>
+                <a class="pjaxlink" href="/page10"><span class="x1">末</span></a>
     </div>
     
 </div>
@@ -1088,7 +1095,7 @@ var _hmt = _hmt || [];
 
 <!-- 百度自动收录 -->
 <script>
-    (function(){
+(function(){
     var bp = document.createElement('script');
     var curProtocol = window.location.protocol.split(':')[0];
     if (curProtocol === 'https') {
@@ -1115,7 +1122,7 @@ var _hmt = _hmt || [];
 <!-- 360 自动收录 -->
 <script>
 (function(){
-var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?681e470e17f5eb08ab7220e6bc883afa":"https://jspassport.ssl.qhimg.com/11.0.1.js?681e470e17f5eb08ab7220e6bc883afa";
+var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
 document.write('<script src="' + src + '" id="sozz"><\/script>');
 })();
 </script>

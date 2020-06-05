@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>返回并刷新上一个页面 | gorpeln的个人博客 - gorpeln</title>
+  <title>关于 ASO 优化（一） | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
-  <meta name="description" content="由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表">
+  <meta name="description" content="一、了解苹果应用商店应用商店的内容：精品推荐、排行榜、探索、搜索">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/15664680297">
+  <link rel="canonical" href="/article/15805392787">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 </head>
 
@@ -321,18 +321,20 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">返回并刷新上一个页面</h1>
+    <h1 class="post-title">关于 ASO 优化（一）</h1>
     <div class="info">
-	    <p class="post-meta">时间：2019-08-22</p>
+	    <p class="post-meta">时间：2020-02-01</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#微信小程序" target="_blank">
-        	微信小程序
+		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
+        	iOS
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
+			<a class="pjaxlink" href="/tags#App Store"  target="_blank">App Store</a>
+		
+			<a class="pjaxlink" href="/tags#app 推广"  target="_blank">app 推广</a>
 		
 		</span>
 	    
@@ -340,31 +342,131 @@
   </header>
 
 <div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/15664680297
+转载请注明出处：https://gorpeln.com/article/15805392787
 </div>
 
 
   <article class="post-content">
-    <p>由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表</p>
-
-<h4 id="如何获取当前页面栈">如何获取当前页面栈</h4>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();  
-var beforePage = pages[pages.length - 2];  
-var currentPage = pages[pages.length - 1];  
-</code></pre></div></div>
-
-<p>然后你就可以通过对象直接操作当前页面，比如调用函数。</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>var pages = getCurrentPages();
-var beforePage = pages[pages.length - 2];
-beforePage.loadData();
-wx.navigateBack();
-</code></pre></div></div>
+    <h3 id="一了解苹果应用商店">一、了解苹果应用商店</h3>
+<p>应用商店的内容：<code class="highlighter-rouge">精品推荐</code>、<code class="highlighter-rouge">排行榜</code>、<code class="highlighter-rouge">探索</code>、<code class="highlighter-rouge">搜索</code></p>
 
 <ul>
-  <li>建议在列表页的onLoad函数中，将数据请求单独放在一个函数中进行调用，比如这里的loadData，这样在create页面就能只刷新数据，而onLoad中可能存在的，比如获取用户id等操作，则不会重复再次执行</li>
+  <li>精品推荐：为苹果手动编辑的，苹果认为设计优良，很好的app。这些位置不容易被优化。</li>
+  <li>排行榜：排行榜分为免费榜，付费榜，推荐榜。</li>
+  <li>探索：内容过于深，用户使用不多。</li>
+  <li>搜索：
+    <ul>
+      <li>直接搜索：搜索精确，目的性强。</li>
+      <li>关键词搜索：搜索相关度高，寻找功能类似APP。</li>
+    </ul>
+  </li>
 </ul>
+
+<h3 id="二影响aso的主要因素">二、影响ASO的主要因素</h3>
+<ol>
+  <li>应用名称；</li>
+  <li>关键字标签；</li>
+  <li>应用描述；</li>
+  <li>应用icon；</li>
+  <li>应用截图及视频；</li>
+  <li>用户评价；</li>
+  <li>下载激活量；</li>
+  <li>活跃用户量；</li>
+  <li>用户留存量；</li>
+  <li>社会化分享的数据；</li>
+</ol>
+
+<h4 id="1权重大小排序">1、权重大小排序：</h4>
+<p>App Title &gt; Keywords &gt; APP Description &gt; IAP item Name／Description<br />
+即 APP名称 &gt; APP关键词 &gt; APP描述 &gt; 应用内购买名或描述。</p>
+
+<h4 id="2app-title撰写规则">2、App Title撰写规则</h4>
+<ol>
+  <li>App Title允许255个字节，大概90个字符，原则上充分利用所有字符；例如《趣味牛牛－史上最休闲的游戏，天天QQ微信博易空间飞车坑爹泡泡龙12306狗我多米虾音乐节奏大师，找你妹酷跑保卫萝卜陌陌游览器爱消除yyppstv，炸金花全民英雄NBA快播联盟魔漫相机斗地主风行唱吧》。随着苹果审核愈趋严格的大环境下，单纯的热词堆砌是行不通的，在热词填充APP Title时需要保证语句的通畅以及无矛盾存在（苹果审核人员的汉语理解能力这两年可用突飞猛进形容）。</li>
+  <li>APP Title与Keywords的权重无法叠加，如果在Title中出现，最好不要在Keywords再出现，浪费字符。</li>
+  <li>APP Title采用主标题加副标题的形式，主标题是APP名，副标题介绍APP作用并提升核心关键词的权重，例如《今日头条－个性化阅读推荐平台，定制你的新闻资讯》。</li>
+  <li>利用副标题的高权重，采用轮换战术，优化各个关核心键词，当已有核心关键词排名优化靠前，选用其他的核心关键词。如小咖秀－最火对嘴表演飙戏APP，自带美颜美妆功能的拍摄神器；</li>
+</ol>
+
+<h4 id="3keywords-撰写规则">3、Keywords 撰写规则</h4>
+<ol>
+  <li>Keywords共有100字符，越靠前的关键词权重越大。</li>
+  <li>没搜索排名，没热度的，并且分词没意义的，下一版删除。</li>
+  <li>核心关键词，务必放在App Title的副标题里面。</li>
+  <li>大量分析竞品的关键词，比对热度，建立属于自己APP的热词库。</li>
+  <li>挑选10个竞品，按照热度降序，排名前5的竞品词都可以放在Keywords。</li>
+</ol>
+
+<h4 id="4app-description-撰写规则">4、App Description 撰写规则</h4>
+<ol>
+  <li>描述性的字数控制在300-500，并保证核心关键词8-12的频次出现。</li>
+  <li>最好出现公司的联系方式，如公众号/微博账号/服务QQ/QQ群等。</li>
+  <li>描述中出现的关键词主要是对Keywords的补充，Keywords的权重和描述的权重是可以叠加的。</li>
+</ol>
+
+<h4 id="5用户评论撰写规则">5、用户评论撰写规则</h4>
+<p>自去年下半年苹果严打刷榜以来，下载量和评论的权重被逐步调低，尤其是那些本身权重就很低的账号去做下载和评论，几乎对APP权重影响不大，除非是堆量，但这样做风险系数很大。即使评论的权重被相应调低，但依旧是比重很高的一块，催生出现在的真实账户评论的业务。在做评论时，提前写好评论，如果想重点优化某些关键词，可让这些关键词在每条评论中频繁出现，这样操作对关键词排名的提升帮助较大。</p>
+
+<h4 id="6应用截图及视频">6、应用截图及视频</h4>
+<h5 id="1视频">1、视频</h5>
+<p>据说有效果，在AppStore推出来后大力推过，编辑对有视频的产品都很感冒;<br />
+但实际情况是编辑是否感冒无法有效确认，而视频的制作要求太多，麻烦的一塌糊涂，这也是绝大部分非游戏APP并不做视频的缘由吧;<br />
+结合自身实际情况，考虑进投入产出比，如果有资源也敢试一下，那不妨做下视频，总比没有的强。</p>
+
+<h5 id="2裸截图">2、裸截图</h5>
+<p>所谓裸截图，就是直接在手机上截图出来，不做任何设计修饰;<br />
+好处是APP本身内容是什么一目了然，用户不用下载就能提前了解到下载后的APP会长个什么样子，减少了盲知成本;<br />
+坏处就是裸截图一般都不会很好看，在这个还是看颜值的世界，不管对编辑还是对用户，都达不到一种视觉强奸，因此可能会影响编辑推荐的机会，也影响用户看到的第一感知，也许就不会下载甚至点击进去了。</p>
+
+<h5 id="3设计过的截图">3、设计过的截图</h5>
+
+<p>与裸截图相对，即对APP的裸截图进行包装设计;<br />
+一般都是添加背景色、文字描述、手机壳等，使得第一眼看起来有颜值，而且简短的文字描述能够很清晰的向用户介绍自己的APP是什么，能干什么等，有助于编辑和用户一见钟情。</p>
+
+<h4 id="7马甲">7、马甲</h4>
+<p>千万别做了，案例我就不举了，有⾥有⾯，⾏业操守，都在这摆着呢。⻢甲流早起还可以，现在真真的别想了，⼀个免费，⼀个付费，还差不多，⽤⻢甲包的 Title 去搏杀类别⼤词，再往主包导量，着实不是明智之举。App Store 已经觉醒，以前不是管不了，⽽是⼈家不想管，「放任⾃流」，当下每天扫⼏⼗万次，隔着⼀层半透明的玻璃，咱看不⻅⼈家，⼈家看咱们是⾮常清楚的。有⼀些⽅法，可以将付费版 App 爬到分榜 Top 10，之后再操作下就没问题了。</p>
+
+<h3 id="三关键字优化">三、关键字优化</h3>
+
+<h5 id="1关键词优化三大概念">1、关键词优化三大概念</h5>
+<ol>
+  <li>关联性（Relevance）：某个特定关键字与自家应用／目标用户之间的相关性，不相关的关键字很难产生有效的转化率。</li>
+  <li>难度（Difficulty）：某个特定关键字的竞争激励程度，对应值越高意味着它更难进入前列排名。</li>
+  <li>流量（Traffic）：某个特定关键字的抢手程度，在搜索中被搜索的次数越高，对应的值就越高，就是我们常说的高热度词。</li>
+</ol>
+
+<p>对于大多数人来说，都想挤破脑袋去抢关联性高／流量大的关键词，但这同时意味着关键词的竞争难度很大，如果选定关键词的设置位置不当以及APP本身没有较为可观的新增，排名在30开外是很正常。各位在追逐高热度词时一定要结合APP的现状进行分析，下面我给各位提供一套判定逻辑：<code class="highlighter-rouge">高关联性 + 合理难度 + 适当流量 ＋ （正确位置放置） = 增加自然下载量</code></p>
+<h5 id="2关键词优化具体操作">2、关键词优化具体操作</h5>
+<p>可以沿着 品牌词／关联词／竞品词／竞品关键词 的思路发掘理想的高关联度的关键词</p>
+
+<p>我们需要那些拥有一些搜索量的关键字，否则我们就会浪费关键字列表的宝贵空间，没有流量也就没有下载量。流量过高的，APP不一定能拥有好的排名，没有理想的排名，意味着没有下载量。<br />
+　　</p>
+<h5 id="3选词">3、选词</h5>
+<p>关键词的分类有品牌词、行为词、竞品词和长尾词。推荐工具：<a href="https://www.qimai.cn/">ASO100</a>（使用搜索指数排行，查询APP对应行业的关键词热度）。现在我们以脉脉为例进行详解。</p>
+
+<p>选词第一种方式：<code class="highlighter-rouge">榜单选词</code>。首先进行APP属性分析，从对应属性中寻找高热度关键词（后面简称“热词”），由于App Store属性分析过于冗杂，大家在利用这种方式寻找热词时一定要寻找与产品吻合度高的。脉脉为商务分榜，根据这种方式依次筛选出：脉脉、招聘、找工作、51job、猎聘网、领英、名片、大街网、工作、拉勾网、求职、人脉等热词。对热词进行分类。</p>
+
+<p>选词第二种方式：<code class="highlighter-rouge">竞品选词</code>。首先分析自家的产品有那些竞品，逐一分析竞品优化比较理想的关键词（重点关注TOP10），通过关键词热度、相关APP数量及质量、百度移动指数来判定关键词是否可用。分析脉脉竞品——赤兔，推荐工具<a href="https://www.qimai.cn/">七麦数据</a>。</p>
+
+<p>通过这种方式筛选出的关键词：领英、职场社交、linkedin、职场、人脉、职业、职位、简历等。对关键词进行分类。</p>
+
+<h5 id="4关键词拓展">4、关键词拓展</h5>
+<p>关键词拓展是通过苹果的检索规则，形成原本未添加的关键词，从而达到增加关键词覆盖数的目的，主要方式有：</p>
+<ol>
+  <li><code class="highlighter-rouge">组词</code>：在热词前后添加长尾词，长尾词是指两个或多个组合在一起的热度非最高的关键词。例如“职场社交”——“职场”热度4673、“社交”热度：6408，职场为长尾词。</li>
+  <li><code class="highlighter-rouge">分词</code>：分词是将添加设置的关键词进行相应分离，如在keyword中设置“职场社交”可能会形成“职场”和“社交”等关键词。</li>
+</ol>
+
+<p>通过组词（长尾词与热词组合成关键词的一种方式），可达到以下几点效果：</p>
+
+<p>1) 增加关键词覆盖数；<br />
+2) 稳定热词排名；<br />
+3) 降低优化难度，提升APP整体权重。</p>
+
+<p>组词技巧：选用热度适中，相关APP数量较多的长尾词，如“技巧”、“活动” 、“全民”就属于这类长尾词，以“技巧”为例，可以组合成“社交技巧” 、“职场技巧” 、“求职技巧”等。选这些词的原因很简单，关键词被收录的概率很大。</p>
+
+<p><img src="https://img.gorpeln.com/blog_aso_01.png" alt="blog_aso_01" /></p>
+
 
   </article>
 </div>
@@ -372,12 +474,12 @@ wx.navigateBack();
   <div class="prevandnext">
     	  
 	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15692409843" title="Jekyll 简单加密 (pwd=123456)" style="color: #6666cc"  target="_blank">Jekyll 简单加密 (pwd=123456)</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/1" title="背诵全文" style="color: #6666cc"  target="_blank">背诵全文</a>
 	    </div>
 	  
   	  
 	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15662012632" title="七牛云上传图片 - 客户端" style="color: #6666cc"  target="_blank">七牛云上传图片 - 客户端</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15788283058" title="iOS 微信打开第三方应用（Universal Links 和 URL Schemes）" style="color: #6666cc"  target="_blank">iOS 微信打开第三方应用（Universal Links 和 URL Schemes）</a>
 	    </div>
 	  
 	 
