@@ -173,94 +173,94 @@
                     <div class="siteNav">
                         <div class="navTitle">博客导航</div>
                         <ul>
-                            <li><a href="/"><i class="fas fa-home fa-fw"></i>首页</a></li>
-                            <li><a href="/categories" target="_blank"><i class="fas fa-th fa-fw"></i>分类</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">10
-                                </a>
+                            <li onclick="pushNew('/')"><a><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li onclick="pushNew('/categories')"><a><i class="fas fa-th fa-fw"></i>分类</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">10
+                                </span>
                             </li>
-                            <li><a href="/tags" target="_blank"><i class="fas fa-tag fa-fw"></i>标签</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">92
-                                </a>
+                            <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">92
+                                </span>
                             </li>
-                            <li><a href="/archives" target="_blank"><i class="fas fa-archive fa-fw""></i>归档</a>
-                            	<a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">95
-                                </a>
+                            <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
+                            	<span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">95
+                                </span>
                             </li>
-                            <li><a href="/about" target="_blank"><i class="fas fa-user fa-fw"></i>关于</a></li>
-                            <li><a href="/links" target="_blank"><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
-                            <li><a href="/login" target="_blank"><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">※
-                                </a>
+                            <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li onclick="pushNew('/links')"><a><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li onclick="pushNew('/login')"><a><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">※
+                                </span>
                             </li>
-                            <li><a href="/mysite" target="_blank"><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
-                            <li><a href="/works" target="_blank"><i class="fab fa-git-square fa-fw"></i>项目</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">3
-                                </a>
+                            <li onclick="pushNew('/mysite')"><a><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li onclick="pushNew('/works')"><a><i class="fab fa-git-square fa-fw"></i>项目</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">3
+                                </span>
                             </li>
-                            <li><a id="cb-search-btn-two"><i class="fas fa-search fa-fw"></i>搜索</a></li>
+                            <li id="cb-search-btn-two"><a><i class="fas fa-search fa-fw"></i>搜索</a></li>
                         </ul>
                     </div>
                     <div class="categoryNav">
                         <div class="categoryNavTitle">文章分类</div>
                         <ul>
                             
-                            <li>
-                                <a href="/categories#个人博客" name="个人博客" style="color: #37374c;" target="_blank">个人博客</a>
-                                <a href="/categories#个人博客" name="个人博客" style="font-size:14px;color: white" class="articleCount" target="_blank">8
+                            <li onclick="pushNew('/categories#个人博客')">
+                                <a name="个人博客">个人博客</a>
+                                <a name="个人博客" style="font-size:14px;color: white" class="articleCount">8
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#Linux" name="Linux" style="color: #37374c;" target="_blank">Linux</a>
-                                <a href="/categories#Linux" name="Linux" style="font-size:14px;color: white" class="articleCount" target="_blank">1
+                            <li onclick="pushNew('/categories#Linux')">
+                                <a name="Linux">Linux</a>
+                                <a name="Linux" style="font-size:14px;color: white" class="articleCount">1
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#web前端" name="web前端" style="color: #37374c;" target="_blank">web前端</a>
-                                <a href="/categories#web前端" name="web前端" style="font-size:14px;color: white" class="articleCount" target="_blank">5
+                            <li onclick="pushNew('/categories#web前端')">
+                                <a name="web前端">web前端</a>
+                                <a name="web前端" style="font-size:14px;color: white" class="articleCount">5
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#其他" name="其他" style="color: #37374c;" target="_blank">其他</a>
-                                <a href="/categories#其他" name="其他" style="font-size:14px;color: white" class="articleCount" target="_blank">5
+                            <li onclick="pushNew('/categories#其他')">
+                                <a name="其他">其他</a>
+                                <a name="其他" style="font-size:14px;color: white" class="articleCount">5
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#iOS" name="iOS" style="color: #37374c;" target="_blank">iOS</a>
-                                <a href="/categories#iOS" name="iOS" style="font-size:14px;color: white" class="articleCount" target="_blank">25
+                            <li onclick="pushNew('/categories#iOS')">
+                                <a name="iOS">iOS</a>
+                                <a name="iOS" style="font-size:14px;color: white" class="articleCount">25
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#程序人生" name="程序人生" style="color: #37374c;" target="_blank">程序人生</a>
-                                <a href="/categories#程序人生" name="程序人生" style="font-size:14px;color: white" class="articleCount" target="_blank">18
+                            <li onclick="pushNew('/categories#程序人生')">
+                                <a name="程序人生">程序人生</a>
+                                <a name="程序人生" style="font-size:14px;color: white" class="articleCount">18
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#Software MAC" name="Software MAC" style="color: #37374c;" target="_blank">Software MAC</a>
-                                <a href="/categories#Software MAC" name="Software MAC" style="font-size:14px;color: white" class="articleCount" target="_blank">11
+                            <li onclick="pushNew('/categories#Software MAC')">
+                                <a name="Software MAC">Software MAC</a>
+                                <a name="Software MAC" style="font-size:14px;color: white" class="articleCount">11
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#架构和算法" name="架构和算法" style="color: #37374c;" target="_blank">架构和算法</a>
-                                <a href="/categories#架构和算法" name="架构和算法" style="font-size:14px;color: white" class="articleCount" target="_blank">7
+                            <li onclick="pushNew('/categories#架构和算法')">
+                                <a name="架构和算法">架构和算法</a>
+                                <a name="架构和算法" style="font-size:14px;color: white" class="articleCount">7
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#Git" name="Git" style="color: #37374c;" target="_blank">Git</a>
-                                <a href="/categories#Git" name="Git" style="font-size:14px;color: white" class="articleCount" target="_blank">5
+                            <li onclick="pushNew('/categories#Git')">
+                                <a name="Git">Git</a>
+                                <a name="Git" style="font-size:14px;color: white" class="articleCount">5
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#微信小程序" name="微信小程序" style="color: #37374c;" target="_blank">微信小程序</a>
-                                <a href="/categories#微信小程序" name="微信小程序" style="font-size:14px;color: white" class="articleCount" target="_blank">10
+                            <li onclick="pushNew('/categories#微信小程序')">
+                                <a name="微信小程序">微信小程序</a>
+                                <a name="微信小程序" style="font-size:14px;color: white" class="articleCount">10
                                 </a>
                             </li>
                             
@@ -285,15 +285,12 @@
                                 <img src="/assets/img/social/csdnLogo.png">
                                 <span class="contact-name">gorpeln.blog.csdn.net</span>
                             </a>
-                            <a class="contact-item" href="https://blog.csdn.net/gorpeln" target="_blank">
-                                <img src="/assets/img/social/csdnLogo.png">
-                                <span class="contact-name">blog.csdn.net/gorpeln</span>
-                            </a>
-                            <a class="contact-item" href="/mysite.html" target="_blank">
-                                <img src="/assets/img/social/meLogo.png">
-                                <span class="contact-name">mysite</span>
+                            <a class="contact-item" href="/about" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="contact-name">更多...</span>
                             </a>
                         </div>
+
                     </div>
                     <div class="friendlinkNav">
                         <div class="friendlinkNavTitle">友情链接</div>
@@ -977,7 +974,7 @@ top: true
         </div>
     </div>
     <footer class="site-footer">
-	<div id="htmer_time" style="color: #666;width: 100%;text-align: center;font-size: 13px;">安全运行</div>
+	<div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
         ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
     </div>
@@ -1044,6 +1041,15 @@ setInterval(setTime, 1000);
             }
             return time;
         }
+
+            function over(obj){      
+                obj.innerHTML = "有人质疑为什么网站运行时间和域名申请时间不一致？   - 博客中有讲述博客的运行的原理，非独立域名也可以直接访问，并支持多域名。";        
+            }
+            function out(obj){        
+
+            }
+
+
 </script>
 <!-- 百度统计 -->
 <script>
@@ -1094,11 +1100,27 @@ document.write('<script src="' + src + '" id="sozz"><\/script>');
 
 
 
+
+<style>
+    .runTime{
+        color: #666;
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+    }
+
+
+</style>
 </body>
 <script>
-$('ul').on('click', 'li', function() {
-    $("a", this)[0].click();
-});
+
+    function pushNew(path){
+        if (path == '/') {
+            window.location.href = path;
+        }else{
+            window.open(path);
+        }
+    }
 </script>
 <style>
 	.articleCount{
@@ -1114,5 +1136,8 @@ $('ul').on('click', 'li', function() {
 		height: 1.4em;
 		margin-top: 0.1em;
 	}
+    li{
+        cursor: pointer;
+    }
 </style>
 </html>

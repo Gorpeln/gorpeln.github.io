@@ -173,94 +173,94 @@
                     <div class="siteNav">
                         <div class="navTitle">博客导航</div>
                         <ul>
-                            <li><a href="/"><i class="fas fa-home fa-fw"></i>首页</a></li>
-                            <li><a href="/categories" target="_blank"><i class="fas fa-th fa-fw"></i>分类</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">10
-                                </a>
+                            <li onclick="pushNew('/')"><a><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li onclick="pushNew('/categories')"><a><i class="fas fa-th fa-fw"></i>分类</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">10
+                                </span>
                             </li>
-                            <li><a href="/tags" target="_blank"><i class="fas fa-tag fa-fw"></i>标签</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">92
-                                </a>
+                            <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">92
+                                </span>
                             </li>
-                            <li><a href="/archives" target="_blank"><i class="fas fa-archive fa-fw""></i>归档</a>
-                            	<a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">95
-                                </a>
+                            <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
+                            	<span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">95
+                                </span>
                             </li>
-                            <li><a href="/about" target="_blank"><i class="fas fa-user fa-fw"></i>关于</a></li>
-                            <li><a href="/links" target="_blank"><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
-                            <li><a href="/login" target="_blank"><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">※
-                                </a>
+                            <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li onclick="pushNew('/links')"><a><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li onclick="pushNew('/login')"><a><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">※
+                                </span>
                             </li>
-                            <li><a href="/mysite" target="_blank"><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
-                            <li><a href="/works" target="_blank"><i class="fab fa-git-square fa-fw"></i>项目</a>
-                                <a style="font-size:14px;color: white;padding: 0 8px;" class="articleCount" target="_blank">3
-                                </a>
+                            <li onclick="pushNew('/mysite')"><a><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li onclick="pushNew('/works')"><a><i class="fab fa-git-square fa-fw"></i>项目</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">3
+                                </span>
                             </li>
-                            <li><a id="cb-search-btn-two"><i class="fas fa-search fa-fw"></i>搜索</a></li>
+                            <li id="cb-search-btn-two"><a><i class="fas fa-search fa-fw"></i>搜索</a></li>
                         </ul>
                     </div>
                     <div class="categoryNav">
                         <div class="categoryNavTitle">文章分类</div>
                         <ul>
                             
-                            <li>
-                                <a href="/categories#个人博客" name="个人博客" style="color: #37374c;" target="_blank">个人博客</a>
-                                <a href="/categories#个人博客" name="个人博客" style="font-size:14px;color: white" class="articleCount" target="_blank">8
+                            <li onclick="pushNew('/categories#个人博客')">
+                                <a name="个人博客">个人博客</a>
+                                <a name="个人博客" style="font-size:14px;color: white" class="articleCount">8
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#Linux" name="Linux" style="color: #37374c;" target="_blank">Linux</a>
-                                <a href="/categories#Linux" name="Linux" style="font-size:14px;color: white" class="articleCount" target="_blank">1
+                            <li onclick="pushNew('/categories#Linux')">
+                                <a name="Linux">Linux</a>
+                                <a name="Linux" style="font-size:14px;color: white" class="articleCount">1
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#web前端" name="web前端" style="color: #37374c;" target="_blank">web前端</a>
-                                <a href="/categories#web前端" name="web前端" style="font-size:14px;color: white" class="articleCount" target="_blank">5
+                            <li onclick="pushNew('/categories#web前端')">
+                                <a name="web前端">web前端</a>
+                                <a name="web前端" style="font-size:14px;color: white" class="articleCount">5
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#其他" name="其他" style="color: #37374c;" target="_blank">其他</a>
-                                <a href="/categories#其他" name="其他" style="font-size:14px;color: white" class="articleCount" target="_blank">5
+                            <li onclick="pushNew('/categories#其他')">
+                                <a name="其他">其他</a>
+                                <a name="其他" style="font-size:14px;color: white" class="articleCount">5
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#iOS" name="iOS" style="color: #37374c;" target="_blank">iOS</a>
-                                <a href="/categories#iOS" name="iOS" style="font-size:14px;color: white" class="articleCount" target="_blank">25
+                            <li onclick="pushNew('/categories#iOS')">
+                                <a name="iOS">iOS</a>
+                                <a name="iOS" style="font-size:14px;color: white" class="articleCount">25
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#程序人生" name="程序人生" style="color: #37374c;" target="_blank">程序人生</a>
-                                <a href="/categories#程序人生" name="程序人生" style="font-size:14px;color: white" class="articleCount" target="_blank">18
+                            <li onclick="pushNew('/categories#程序人生')">
+                                <a name="程序人生">程序人生</a>
+                                <a name="程序人生" style="font-size:14px;color: white" class="articleCount">18
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#Software MAC" name="Software MAC" style="color: #37374c;" target="_blank">Software MAC</a>
-                                <a href="/categories#Software MAC" name="Software MAC" style="font-size:14px;color: white" class="articleCount" target="_blank">11
+                            <li onclick="pushNew('/categories#Software MAC')">
+                                <a name="Software MAC">Software MAC</a>
+                                <a name="Software MAC" style="font-size:14px;color: white" class="articleCount">11
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#架构和算法" name="架构和算法" style="color: #37374c;" target="_blank">架构和算法</a>
-                                <a href="/categories#架构和算法" name="架构和算法" style="font-size:14px;color: white" class="articleCount" target="_blank">7
+                            <li onclick="pushNew('/categories#架构和算法')">
+                                <a name="架构和算法">架构和算法</a>
+                                <a name="架构和算法" style="font-size:14px;color: white" class="articleCount">7
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#Git" name="Git" style="color: #37374c;" target="_blank">Git</a>
-                                <a href="/categories#Git" name="Git" style="font-size:14px;color: white" class="articleCount" target="_blank">5
+                            <li onclick="pushNew('/categories#Git')">
+                                <a name="Git">Git</a>
+                                <a name="Git" style="font-size:14px;color: white" class="articleCount">5
                                 </a>
                             </li>
                             
-                            <li>
-                                <a href="/categories#微信小程序" name="微信小程序" style="color: #37374c;" target="_blank">微信小程序</a>
-                                <a href="/categories#微信小程序" name="微信小程序" style="font-size:14px;color: white" class="articleCount" target="_blank">10
+                            <li onclick="pushNew('/categories#微信小程序')">
+                                <a name="微信小程序">微信小程序</a>
+                                <a name="微信小程序" style="font-size:14px;color: white" class="articleCount">10
                                 </a>
                             </li>
                             
@@ -285,15 +285,12 @@
                                 <img src="/assets/img/social/csdnLogo.png">
                                 <span class="contact-name">gorpeln.blog.csdn.net</span>
                             </a>
-                            <a class="contact-item" href="https://blog.csdn.net/gorpeln" target="_blank">
-                                <img src="/assets/img/social/csdnLogo.png">
-                                <span class="contact-name">blog.csdn.net/gorpeln</span>
-                            </a>
-                            <a class="contact-item" href="/mysite.html" target="_blank">
-                                <img src="/assets/img/social/meLogo.png">
-                                <span class="contact-name">mysite</span>
+                            <a class="contact-item" href="/about" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="contact-name">更多...</span>
                             </a>
                         </div>
+
                     </div>
                     <div class="friendlinkNav">
                         <div class="friendlinkNavTitle">友情链接</div>
@@ -321,189 +318,189 @@
                     <div class="page-content" id="pjax"><div class="home">
 	<div class="page-tag">
 		
-			<a class="pjaxlink"  href="#个人博客" name="个人博客">个人博客(8)</a>
+			<a class="pjaxlink"  href="#个人博客" name="个人博客">个人博客　<span style="color: #888;">(8)</span></a>
 		
-			<a class="pjaxlink"  href="#书写笔记" name="书写笔记">书写笔记(1)</a>
+			<a class="pjaxlink"  href="#书写笔记" name="书写笔记">书写笔记　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Linux" name="Linux">Linux(1)</a>
+			<a class="pjaxlink"  href="#Linux" name="Linux">Linux　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#web规范" name="web规范">web规范(1)</a>
+			<a class="pjaxlink"  href="#web规范" name="web规范">web规范　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#MySQL" name="MySQL">MySQL(1)</a>
+			<a class="pjaxlink"  href="#MySQL" name="MySQL">MySQL　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Bug调试" name="Bug调试">Bug调试(2)</a>
+			<a class="pjaxlink"  href="#Bug调试" name="Bug调试">Bug调试　<span style="color: #888;">(2)</span></a>
 		
-			<a class="pjaxlink"  href="#程序人生" name="程序人生">程序人生(18)</a>
+			<a class="pjaxlink"  href="#程序人生" name="程序人生">程序人生　<span style="color: #888;">(18)</span></a>
 		
-			<a class="pjaxlink"  href="#冒泡排序" name="冒泡排序">冒泡排序(1)</a>
+			<a class="pjaxlink"  href="#冒泡排序" name="冒泡排序">冒泡排序　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#贝塞尔曲线" name="贝塞尔曲线">贝塞尔曲线(1)</a>
+			<a class="pjaxlink"  href="#贝塞尔曲线" name="贝塞尔曲线">贝塞尔曲线　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#代码段" name="代码段">代码段(9)</a>
+			<a class="pjaxlink"  href="#代码段" name="代码段">代码段　<span style="color: #888;">(9)</span></a>
 		
-			<a class="pjaxlink"  href="#push" name="push">push(1)</a>
+			<a class="pjaxlink"  href="#push" name="push">push　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#pop" name="pop">pop(1)</a>
+			<a class="pjaxlink"  href="#pop" name="pop">pop　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#NSString" name="NSString">NSString(1)</a>
+			<a class="pjaxlink"  href="#NSString" name="NSString">NSString　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#GIF动画" name="GIF动画">GIF动画(1)</a>
+			<a class="pjaxlink"  href="#GIF动画" name="GIF动画">GIF动画　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#UITextField" name="UITextField">UITextField(1)</a>
+			<a class="pjaxlink"  href="#UITextField" name="UITextField">UITextField　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#开发规范" name="开发规范">开发规范(1)</a>
+			<a class="pjaxlink"  href="#开发规范" name="开发规范">开发规范　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#UIlabel" name="UIlabel">UIlabel(1)</a>
+			<a class="pjaxlink"  href="#UIlabel" name="UIlabel">UIlabel　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#NSArray" name="NSArray">NSArray(1)</a>
+			<a class="pjaxlink"  href="#NSArray" name="NSArray">NSArray　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#倒序" name="倒序">倒序(1)</a>
+			<a class="pjaxlink"  href="#倒序" name="倒序">倒序　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#乱序" name="乱序">乱序(1)</a>
+			<a class="pjaxlink"  href="#乱序" name="乱序">乱序　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#present" name="present">present(1)</a>
+			<a class="pjaxlink"  href="#present" name="present">present　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#dismiss" name="dismiss">dismiss(1)</a>
+			<a class="pjaxlink"  href="#dismiss" name="dismiss">dismiss　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#值传递" name="值传递">值传递(1)</a>
+			<a class="pjaxlink"  href="#值传递" name="值传递">值传递　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#HTTP协议" name="HTTP协议">HTTP协议(1)</a>
+			<a class="pjaxlink"  href="#HTTP协议" name="HTTP协议">HTTP协议　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#APP审核" name="APP审核">APP审核(2)</a>
+			<a class="pjaxlink"  href="#APP审核" name="APP审核">APP审核　<span style="color: #888;">(2)</span></a>
 		
-			<a class="pjaxlink"  href="#HTML" name="HTML">HTML(1)</a>
+			<a class="pjaxlink"  href="#HTML" name="HTML">HTML　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#增删改查" name="增删改查">增删改查(1)</a>
+			<a class="pjaxlink"  href="#增删改查" name="增删改查">增删改查　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#iOS11" name="iOS11">iOS11(1)</a>
+			<a class="pjaxlink"  href="#iOS11" name="iOS11">iOS11　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#MAC使用" name="MAC使用">MAC使用(1)</a>
+			<a class="pjaxlink"  href="#MAC使用" name="MAC使用">MAC使用　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#PhpStorm2017" name="PhpStorm2017">PhpStorm2017(1)</a>
+			<a class="pjaxlink"  href="#PhpStorm2017" name="PhpStorm2017">PhpStorm2017　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#httrack" name="httrack">httrack(1)</a>
+			<a class="pjaxlink"  href="#httrack" name="httrack">httrack　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#页面流畅" name="页面流畅">页面流畅(1)</a>
+			<a class="pjaxlink"  href="#页面流畅" name="页面流畅">页面流畅　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#GCD" name="GCD">GCD(1)</a>
+			<a class="pjaxlink"  href="#GCD" name="GCD">GCD　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Jekyll" name="Jekyll">Jekyll(4)</a>
+			<a class="pjaxlink"  href="#Jekyll" name="Jekyll">Jekyll　<span style="color: #888;">(4)</span></a>
 		
-			<a class="pjaxlink"  href="#Chrome" name="Chrome">Chrome(1)</a>
+			<a class="pjaxlink"  href="#Chrome" name="Chrome">Chrome　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#插件" name="插件">插件(1)</a>
+			<a class="pjaxlink"  href="#插件" name="插件">插件　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#验证码" name="验证码">验证码(1)</a>
+			<a class="pjaxlink"  href="#验证码" name="验证码">验证码　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#UITextView" name="UITextView">UITextView(1)</a>
+			<a class="pjaxlink"  href="#UITextView" name="UITextView">UITextView　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#扫码" name="扫码">扫码(1)</a>
+			<a class="pjaxlink"  href="#扫码" name="扫码">扫码　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#登录" name="登录">登录(1)</a>
+			<a class="pjaxlink"  href="#登录" name="登录">登录　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#SSL" name="SSL">SSL(1)</a>
+			<a class="pjaxlink"  href="#SSL" name="SSL">SSL　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#TCP" name="TCP">TCP(1)</a>
+			<a class="pjaxlink"  href="#TCP" name="TCP">TCP　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#在吗" name="在吗">在吗(2)</a>
+			<a class="pjaxlink"  href="#在吗" name="在吗">在吗　<span style="color: #888;">(2)</span></a>
 		
-			<a class="pjaxlink"  href="#tomcat" name="tomcat">tomcat(1)</a>
+			<a class="pjaxlink"  href="#tomcat" name="tomcat">tomcat　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#KVO" name="KVO">KVO(1)</a>
+			<a class="pjaxlink"  href="#KVO" name="KVO">KVO　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Github" name="Github">Github(1)</a>
+			<a class="pjaxlink"  href="#Github" name="Github">Github　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Cocoapods" name="Cocoapods">Cocoapods(1)</a>
+			<a class="pjaxlink"  href="#Cocoapods" name="Cocoapods">Cocoapods　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#zip" name="zip">zip(1)</a>
+			<a class="pjaxlink"  href="#zip" name="zip">zip　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#终端" name="终端">终端(1)</a>
+			<a class="pjaxlink"  href="#终端" name="终端">终端　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#微信小程序" name="微信小程序">微信小程序(10)</a>
+			<a class="pjaxlink"  href="#微信小程序" name="微信小程序">微信小程序　<span style="color: #888;">(10)</span></a>
 		
-			<a class="pjaxlink"  href="#Automator" name="Automator">Automator(1)</a>
+			<a class="pjaxlink"  href="#Automator" name="Automator">Automator　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Git" name="Git">Git(4)</a>
+			<a class="pjaxlink"  href="#Git" name="Git">Git　<span style="color: #888;">(4)</span></a>
 		
-			<a class="pjaxlink"  href="#GitHub" name="GitHub">GitHub(4)</a>
+			<a class="pjaxlink"  href="#GitHub" name="GitHub">GitHub　<span style="color: #888;">(4)</span></a>
 		
-			<a class="pjaxlink"  href="#历史版本" name="历史版本">历史版本(1)</a>
+			<a class="pjaxlink"  href="#历史版本" name="历史版本">历史版本　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Coding" name="Coding">Coding(1)</a>
+			<a class="pjaxlink"  href="#Coding" name="Coding">Coding　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#GitTalk" name="GitTalk">GitTalk(1)</a>
+			<a class="pjaxlink"  href="#GitTalk" name="GitTalk">GitTalk　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#云开发" name="云开发">云开发(1)</a>
+			<a class="pjaxlink"  href="#云开发" name="云开发">云开发　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#WePY" name="WePY">WePY(1)</a>
+			<a class="pjaxlink"  href="#WePY" name="WePY">WePY　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#QQ" name="QQ">QQ(1)</a>
+			<a class="pjaxlink"  href="#QQ" name="QQ">QQ　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#视频路径" name="视频路径">视频路径(1)</a>
+			<a class="pjaxlink"  href="#视频路径" name="视频路径">视频路径　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#博客成长" name="博客成长">博客成长(1)</a>
+			<a class="pjaxlink"  href="#博客成长" name="博客成长">博客成长　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#App瘦身" name="App瘦身">App瘦身(1)</a>
+			<a class="pjaxlink"  href="#App瘦身" name="App瘦身">App瘦身　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#性能优化" name="性能优化">性能优化(1)</a>
+			<a class="pjaxlink"  href="#性能优化" name="性能优化">性能优化　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Sublime Text3" name="Sublime Text3">Sublime Text3(1)</a>
+			<a class="pjaxlink"  href="#Sublime Text3" name="Sublime Text3">Sublime Text3　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#网络优化" name="网络优化">网络优化(1)</a>
+			<a class="pjaxlink"  href="#网络优化" name="网络优化">网络优化　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#签名机制" name="签名机制">签名机制(1)</a>
+			<a class="pjaxlink"  href="#签名机制" name="签名机制">签名机制　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#后缀名" name="后缀名">后缀名(1)</a>
+			<a class="pjaxlink"  href="#后缀名" name="后缀名">后缀名　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#WOW" name="WOW">WOW(1)</a>
+			<a class="pjaxlink"  href="#WOW" name="WOW">WOW　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#动画" name="动画">动画(1)</a>
+			<a class="pjaxlink"  href="#动画" name="动画">动画　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#抽奖" name="抽奖">抽奖(2)</a>
+			<a class="pjaxlink"  href="#抽奖" name="抽奖">抽奖　<span style="color: #888;">(2)</span></a>
 		
-			<a class="pjaxlink"  href="#算法" name="算法">算法(2)</a>
+			<a class="pjaxlink"  href="#算法" name="算法">算法　<span style="color: #888;">(2)</span></a>
 		
-			<a class="pjaxlink"  href="#项目" name="项目">项目(1)</a>
+			<a class="pjaxlink"  href="#项目" name="项目">项目　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#圈小猫" name="圈小猫">圈小猫(1)</a>
+			<a class="pjaxlink"  href="#圈小猫" name="圈小猫">圈小猫　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#游戏" name="游戏">游戏(1)</a>
+			<a class="pjaxlink"  href="#游戏" name="游戏">游戏　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#文章置顶" name="文章置顶">文章置顶(1)</a>
+			<a class="pjaxlink"  href="#文章置顶" name="文章置顶">文章置顶　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#七牛云" name="七牛云">七牛云(1)</a>
+			<a class="pjaxlink"  href="#七牛云" name="七牛云">七牛云　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#上传" name="上传">上传(1)</a>
+			<a class="pjaxlink"  href="#上传" name="上传">上传　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#加密" name="加密">加密(1)</a>
+			<a class="pjaxlink"  href="#加密" name="加密">加密　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#锚点" name="锚点">锚点(1)</a>
+			<a class="pjaxlink"  href="#锚点" name="锚点">锚点　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#html" name="html">html(1)</a>
+			<a class="pjaxlink"  href="#html" name="html">html　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#苹果审核" name="苹果审核">苹果审核(1)</a>
+			<a class="pjaxlink"  href="#苹果审核" name="苹果审核">苹果审核　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#AppStore" name="AppStore">AppStore(1)</a>
+			<a class="pjaxlink"  href="#AppStore" name="AppStore">AppStore　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Software MAC" name="Software MAC">Software MAC(1)</a>
+			<a class="pjaxlink"  href="#Software MAC" name="Software MAC">Software MAC　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#临时邮箱" name="临时邮箱">临时邮箱(1)</a>
+			<a class="pjaxlink"  href="#临时邮箱" name="临时邮箱">临时邮箱　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#短信" name="短信">短信(1)</a>
+			<a class="pjaxlink"  href="#短信" name="短信">短信　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#微信" name="微信">微信(1)</a>
+			<a class="pjaxlink"  href="#微信" name="微信">微信　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#Universal Links" name="Universal Links">Universal Links(1)</a>
+			<a class="pjaxlink"  href="#Universal Links" name="Universal Links">Universal Links　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#URL Schemes" name="URL Schemes">URL Schemes(1)</a>
+			<a class="pjaxlink"  href="#URL Schemes" name="URL Schemes">URL Schemes　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#App Store" name="App Store">App Store(1)</a>
+			<a class="pjaxlink"  href="#App Store" name="App Store">App Store　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#app 推广" name="app 推广">app 推广(1)</a>
+			<a class="pjaxlink"  href="#app 推广" name="app 推广">app 推广　<span style="color: #888;">(1)</span></a>
 		
-			<a class="pjaxlink"  href="#面试题" name="面试题">面试题(2)</a>
+			<a class="pjaxlink"  href="#面试题" name="面试题">面试题　<span style="color: #888;">(2)</span></a>
 		
-			<a class="pjaxlink"  href="#优惠券" name="优惠券">优惠券(1)</a>
+			<a class="pjaxlink"  href="#优惠券" name="优惠券">优惠券　<span style="color: #888;">(1)</span></a>
 		
 	</div>
 
@@ -2206,7 +2203,7 @@
         </div>
     </div>
     <footer class="site-footer">
-	<div id="htmer_time" style="color: #666;width: 100%;text-align: center;font-size: 13px;">安全运行</div>
+	<div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
         ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
     </div>
@@ -2273,6 +2270,15 @@ setInterval(setTime, 1000);
             }
             return time;
         }
+
+            function over(obj){      
+                obj.innerHTML = "有人质疑为什么网站运行时间和域名申请时间不一致？   - 博客中有讲述博客的运行的原理，非独立域名也可以直接访问，并支持多域名。";        
+            }
+            function out(obj){        
+
+            }
+
+
 </script>
 <!-- 百度统计 -->
 <script>
@@ -2323,11 +2329,27 @@ document.write('<script src="' + src + '" id="sozz"><\/script>');
 
 
 
+
+<style>
+    .runTime{
+        color: #666;
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+    }
+
+
+</style>
 </body>
 <script>
-$('ul').on('click', 'li', function() {
-    $("a", this)[0].click();
-});
+
+    function pushNew(path){
+        if (path == '/') {
+            window.location.href = path;
+        }else{
+            window.open(path);
+        }
+    }
 </script>
 <style>
 	.articleCount{
@@ -2343,5 +2365,8 @@ $('ul').on('click', 'li', function() {
 		height: 1.4em;
 		margin-top: 0.1em;
 	}
+    li{
+        cursor: pointer;
+    }
 </style>
 </html>

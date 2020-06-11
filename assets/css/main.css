@@ -226,7 +226,7 @@ div.page-tag {
     color: #333333;
     float: left;
     margin: 0 1em 1em 0;
-    padding: 5px 10px;
+    padding: 4px 10px;
     border: 1px solid #d9d9d9;
     /*border-radius: 14px;*/
     box-sizing: border-box;
@@ -235,6 +235,7 @@ div.page-tag {
     font-weight: normal;
     line-height: 1.5;
     opacity: 0.7;
+    border-radius: 8px;
 }
 
 .page-tag a:visited {
@@ -527,6 +528,13 @@ li.article a:hover,li.article a:focus{
     display: flex;
 }
 
+.friend-item:hover {
+    background: #ececec;
+    border-radius: 8px;
+    padding: 0 8px;
+}
+
+
 .friend-item .friend-name {
     color: #000000;
     font-size: 14px;
@@ -576,13 +584,21 @@ li.article a:hover,li.article a:focus{
     justify-content: space-between;
     align-items: center;
 }
-
+.siteNav ul li:hover {
+  background: #ececec;
+  border-radius: 8px;
+  padding: 5px 10px;
+}
 .siteNav ul li.active {}
 
 .siteNav ul li a {
     color: #37374c;
     padding: 5px;
     font-size: 16px;
+}
+
+.siteNav ul li a:hover{
+    color: #6666cc;
 }
 
 .siteNav ul li a i {
@@ -630,6 +646,14 @@ li.article a:hover,li.article a:focus{
     margin-top: 7.5%;
     display: flex;
 }
+
+
+.contact-item:hover {
+    background: #ececec;
+    border-radius: 8px;
+    padding: 0 8px;
+}
+
 
 .contact-item .contact-name {
     color: #000000;
@@ -1151,12 +1175,17 @@ div.gavatar a:hover {
 
 .site-state-item {
     display: inline-block;
-    border-left: 1px solid #eee;
     width: 30%;
 }
 
-.site-state-item:first-child {
-    border-left: none;
+.site-state-item:nth-child(2) {
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+}
+
+.site-state-item:hover{
+    background: #ececec;
+    border-radius: 8px;
 }
 
 .site-state-item a {
@@ -1172,8 +1201,11 @@ div.gavatar a:hover {
 }
 
 .site-state-item-name {
-    font-size: 14px;
-    color: #999;
+    font-size: 12px;
+    color: #aaa;
+    display: block;
+    text-align: center;
+    margin-top: 0.1em;
 }
 
 .rss-subscribe {
@@ -1200,7 +1232,7 @@ div.gavatar a:hover {
     background: #37374c;
     text-decoration: none;
     padding: 2px 5px;
-
+    border-radius: 6px;
 }
 
 
@@ -1280,11 +1312,21 @@ div.gavatar a:hover {
     background: #fff;
 }
 
+.categoryNav ul li:hover {
+  background: #ececec;
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
 .categoryNav ul li.active {}
 
 .categoryNav ul li a {
     color: #37374c;
     font-size: 16px;
+}
+
+.categoryNav ul li a:hover{
+    color: #6666cc;
 }
 
 .categoryNav ul li a i {
