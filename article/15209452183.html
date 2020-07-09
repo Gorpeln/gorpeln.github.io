@@ -429,15 +429,12 @@ textView.frame = frame;
   </div>
   
   <div class="livere">
-    <!-- Link Gitalk 的支持文件  -->
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
 <script type="text/javascript" src="/assets/js/md5.min.js"></script>
 <div id="gitalk-container"></div>     
 <script type="text/javascript">
     var gitalk = new Gitalk({
-
-    // gitalk的主要参数
         clientID: '5c495e6cc6996908ba54',
         clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
         repo: 'Gitalk',
@@ -447,11 +444,50 @@ textView.frame = frame;
 
     });
     gitalk.render('gitalk-container');
-</script> 
-<!-- Gitalk end -->
+</script>  -->
+
+<head>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+</head>
+<style>
+#veditor {
+    background-image: url(https://cdn.jsdelivr.net/gh/drew233/cdn/20200409110727.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: vertical
+}
+
+.v .vwrap {
+    border: 1px solid #37374b !important;
+}
+</style>
+
+<body>
+    <div id="vcomments"></div>
+    <script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'Jc31cFDJbalRKtcpsQ9kpnaH-gzGzoHsz',
+        appKey: '6MfHpQqh9MFU43xg4bwjGAJu',
+        placeholder: '无需注册，支持Markdown语法，填写邮箱可以收到回复通知。',
+        avatar: 'monsterid',
+        pageSize: '10',
+        lang: 'zh-cn',
+        path: location.pathname,
+        recordIP: 'true',
+        serverURLs: '',
+        enableQQ: true,
+        visitor: true,
+        requiredFields: ['nick', 'mail']
+    })
 
 
-
+    document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
+    document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
+    </script>
+</body>
   </div>
    
 
