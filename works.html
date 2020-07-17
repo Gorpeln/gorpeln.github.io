@@ -131,7 +131,7 @@
     <div class="content">
         <div class="container">
             <div class="row">
-                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
                     <div class="profile box-shadow center">
                         <div class="overlay"></div>
                         <div class="center gavatar">
@@ -277,10 +277,6 @@
                                 <img src="/assets/img/social/gmailLogo.png">
                                 <span class="contact-name">gorpeln*163.com(*=>@)</span>
                             </a>
-                            <a class="contact-item" href="https://github.com/gorpeln" target="_blank">
-                                <img src="/assets/img/social/githubLogo.png">
-                                <span class="contact-name">github.com/gorpeln</span>
-                            </a>
                             <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
                                 <img src="/assets/img/social/csdnLogo.png">
                                 <span class="contact-name">gorpeln.blog.csdn.net</span>
@@ -314,7 +310,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2">
                     <div class="page-content" id="pjax"><!DOCTYPE html>
 <html lang="zh">
 
@@ -339,7 +335,7 @@
 
 }
 
-.box img {
+.itemImg {
     width: 5em;
     height: 5em;
     border-radius: 0.8em !important;
@@ -365,142 +361,410 @@
 
 }
 
-.htmlTitle{
+.htmlTitle {
     text-indent: 2em;
     line-height: 2em;
 }
 
-.htmlTitle a{
+.htmlTitle a {}
+
+.demoCategoryTitle {
+    margin-bottom: 0.2em;
 }
 
-.demoCategoryTitle{
-    margin-bottom: 0.2em;
+
+.demoBox {}
+
+.demoBox .head span {
+    font-size: 18px;
+    color: #333;
+}
+
+.demoBox .head {
+    margin-bottom: 20px;
+}
+
+.demoBox .head a {
+    text-decoration: none;
+    float: right;
+    font-size: 15px;
+    color: #333;
+}
+
+.demoBox .head a:hover {
+    color: #F00;
+}
+
+.demoBox ul {
+    margin-left: 0;
+}
+
+.demoBox ul li {
+    width: calc(25% - 20px);
+    list-style: none;
+    position: relative;
+    float: left;
+    margin: 0 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.demoBox ul li .deatil {
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: -100%;
+    -webkit-transition: all 0.3s ease;
+}
+
+.demoBox ul li .deatil h2 {
+    font-size: 18px;
+    color: #fff;
+    text-align: center;
+    padding-top: 30px;
+}
+
+.demoBox ul li .deatil p {
+    font-size: 16px;
+    text-align: center;
+    margin: 30px;
+    color: #fff;
+}
+
+.demoBox ul li .deatil a {
+    font-size: 15px;
+    display: block;
+    color: #fff;
+    background-color: #F00;
+    text-decoration: none;
+    width: 100px;
+    height: 40px;
+    text-align: center;
+    line-height: 40px;
+    margin: 0 auto;
+}
+
+.previewImg {
+    width: 100%;
+    height: 100%;
+    background: #f6f6f6;
+}
+
+.demoBox ul li:hover .deatil {
+    top: 0;
+}
+
+@media screen and (max-width: 600px) {
+    .demoBox ul li {
+        width: 100%;
+    }
+
+    .demoBox ul li {
+        margin: 0 0 10px 0;
+    }
 }
 </style>
 
 <body>
-
     <script>
     var demoDic = [{
-        "demoTitle": "gorpeln的个人博客 - gorpeln",
-        "demoDes": "趁年轻，做自己想做的！ - 【记录技术、记录生活】",
-        "demoUrl": "/",
-        "demoImage": "https://img.gorpeln.com/gorpeln.png",
-    }, 
-{
-        "demoTitle": "时光本  - 【iOS】",
-        "demoDes": "记录美好生活，记录你！ - 【专注效率与记录的笔记工具】",
-        "demoUrl": "https://apps.apple.com/cn/app/id1495623965",
-        "demoImage": "https://img.gorpeln.com/blog_logo_shiguangben.png",
-    }, 
-    {
-        "demoTitle": "gorpeln - 【微信小程序】",
-        "demoDes": "在线商城 - 【商品收藏、购买等】",
-        "demoUrl": "/article/15618778699",
-        "demoImage": "https://img.gorpeln.com/blog_wxmini_qrcode.jpg",
-    }, 
+            "demoTitle": "gorpeln的个人博客 - gorpeln",
+            "demoDes": "趁年轻，做自己想做的！ - 记录技术、记录生活",
+            "demoUrl": "/",
+            "demoImage": "https://img.gorpeln.com/gorpeln.png",
+        },
+        {
+            "demoTitle": "时光本  - 【iOS、App Store】",
+            "demoDes": "时光本是一款专注效率与记录的笔记工具。可以帮助你整理各种信息，包括便签、清单、图片、纪念日、地址、链接、银行卡、名片等。",
+            "demoUrl": "https://apps.apple.com/cn/app/id1495623965",
+            "demoImage": "https://img.gorpeln.com/blog_logo_shiguangben.png",
+        },
+        {
+            "demoTitle": "gorpeln - 【微信小程序】",
+            "demoDes": "在线商城 - 商品收藏、购买等",
+            "demoUrl": "/article/15618778699",
+            "demoImage": "https://img.gorpeln.com/blog_wxmini_qrcode.jpg",
+        },
     ];
 
 
     for (var i = 0; i < demoDic.length; i++) {
-        document.write("<div class='box'><a target='_blank' href=" + demoDic[i]['demoUrl'] + "> <img src=" + demoDic[i]['demoImage'] + "><div class='title'>" + demoDic[i]['demoTitle'] + "</div><div class='des'>" + demoDic[i]['demoDes'] + "</div></a></div>");
+        document.write("<div class='box'><a target='_blank' href=" + demoDic[i]['demoUrl'] + "> <img class='itemImg' src=" + demoDic[i]['demoImage'] + "><div class='title'>" + demoDic[i]['demoTitle'] + "</div><div class='des'>" + demoDic[i]['demoDes'] + "</div></a></div>");
     }
     </script>
+    <div class="box">
+        <div class="demoCategoryTitle">iOS DEMO：</div>
+        <div class="demoBox">
+            <ul>
+                <script>
+                var demoDic = [{
+                        "demoTitle": "GPHome",
+                        "demoDes": "项目框架 Home",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPHome.gif",
+                    },
+                    {
+                        "demoTitle": "GPQRCode",
+                        "demoDes": "二维码扫描",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPQRCode.jpg",
+                    },
+                    {
+                        "demoTitle": "GPToDoEditor",
+                        "demoDes": "TODO 列表编辑",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPToDoEditor.gif",
+                    },
+                    {
+                        "demoTitle": "GPAppUpdateCheck",
+                        "demoDes": "应用更新提示",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPAppUpdateCheck.gif",
+                    },
+                    {
+                        "demoTitle": "GPBankManager",
+                        "demoDes": "根据卡号自动识别银行",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPBankManager.gif",
+                    },
+                    {
+                        "demoTitle": "GPCountDown",
+                        "demoDes": "倒计时",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPCountDown.gif",
+                    },
+                    {
+                        "demoTitle": "GPCustomTextView",
+                        "demoDes": "自定义TextView",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPCustomTextView.gif",
+                    },
+                    {
+                        "demoTitle": "GPCustomTools",
+                        "demoDes": "自定义Tools",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPCustomTools.gif",
+                    },
+                    {
+                        "demoTitle": "GPDebugTool",
+                        "demoDes": "自定义调试工具",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPDebugTool.gif",
+                    },
+                    {
+                        "demoTitle": "GPFeatureGuideView",
+                        "demoDes": "新手引导页",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPFeatureGuideView.gif",
+                    },
+                    {
+                        "demoTitle": "GPFloatWindowButton",
+                        "demoDes": "浮动Button",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPFloatWindowButton.gif",
+                    },
+                    {
+                        "demoTitle": "GPInterfaceTool",
+                        "demoDes": "接口调试工具",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPInterfaceTool.gif",
+                    },
+                    {
+                        "demoTitle": "GPKeyChainUUID",
+                        "demoDes": "设备UUID",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPKeyChainUUID.gif",
+                    },
+                    {
+                        "demoTitle": "GPLocalNotification",
+                        "demoDes": "本地通知",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPLocalNotification.png",
+                    },
+                    {
+                        "demoTitle": "GPMagnifyButton",
+                        "demoDes": "Button 扩展",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPMagnifyButton.gif",
+                    },
+                    {
+                        "demoTitle": "GPTabbarButton",
+                        "demoDes": "自定义TabBar按钮",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPTabbarButton.gif",
+                    },
+                    {
+                        "demoTitle": "GPTextView",
+                        "demoDes": "GPTextView 字数限制",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPTextView.gif",
+                    },
+                    {
+                        "demoTitle": "GPThemeDemo",
+                        "demoDes": "主题修改",
+                        "demoUrl": "",
+                        "demoImage": "https://img.gorpeln.com/demo/GPThemeDemo.gif",
+                    },
 
-</body>
-
-
-<div class="box">
-    <div class="demoCategoryTitle">HTML 练习：</div>
-    <div class="demoTitle">
-        <script>
-        var demoDic = [
-            {
-                "demoTitle": "黑客帝国 效果",
-                "demoDes": "",
-                "demoUrl": "/projects/hack/index",
-                "demoImage": "",
-
-            },
-            {
-                "demoTitle": "idcard生成",
-                "demoDes": "",
-                "demoUrl": "/idcard",
-                "demoImage": "",
-
-            },
-            {
-                "demoTitle": "加密解密",
-                "demoDes": "",
-                "demoUrl": "/encrypt",
-                "demoImage": "",
-
-            },
-            {
-                "demoTitle": "圈小猫~ 【小游戏】",
-                "demoDes": "",
-                "demoUrl": "/cat",
-                "demoImage": "",
-
-            },
-            {
-                "demoTitle": "在图片上滑动显示说明",
-                "demoDes": "",
-                "demoUrl": "/projects/hoverDisplay/index",
-                "demoImage": "",
-
-            },
-            {
-                "demoTitle": "悬停放大突出内容",
-                "demoDes": "",
-                "demoUrl": "/projects/hoverOutstand/index",
-                "demoImage": "",
-            },
-            {
-                "demoTitle": "按钮Hover动画特效",
-                "demoDes": "",
-                "demoUrl": "/projects/hoverAnimation/index",
-                "demoImage": "",
-            },
-        ];
-
-
-        for (var i = 0; i < demoDic.length; i++) {
-            document.write("<div class='htmlTitle'><a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a></div>");
-        }
-        </script>
+                ];
+                for (var i = 0; i < demoDic.length; i++) {
+                    document.write("<li><div class='deatil'><h2>" + demoDic[i]['demoTitle'] + "</h2><p>" + demoDic[i]['demoDes'] + "</p><a href='javascript:void(0)' onclick='goBottom()'>留言点赞</a></div><img class='previewImg' src=" + demoDic[i]['demoImage'] + "></li>");
+                }
+                </script>
+            </ul>
+        </div>
     </div>
-</div>
+    <div class="box">
+        <div class="demoCategoryTitle">HTML DEMO：</div>
+        <div class="demoTitle">
+            <script>
+            var demoDic = [{
+                    "demoTitle": "黑客帝国 效果",
+                    "demoDes": "",
+                    "demoUrl": "/projects/hack/index",
+                    "demoImage": "",
+
+                },
+                {
+                    "demoTitle": "idcard生成",
+                    "demoDes": "",
+                    "demoUrl": "/idcard",
+                    "demoImage": "",
+
+                },
+                {
+                    "demoTitle": "加密解密",
+                    "demoDes": "",
+                    "demoUrl": "/encrypt",
+                    "demoImage": "",
+
+                },
+                {
+                    "demoTitle": "圈小猫~ 【小游戏】",
+                    "demoDes": "",
+                    "demoUrl": "/cat",
+                    "demoImage": "",
+
+                },
+                {
+                    "demoTitle": "在图片上滑动显示说明",
+                    "demoDes": "",
+                    "demoUrl": "/projects/hoverDisplay/index",
+                    "demoImage": "",
+
+                },
+                {
+                    "demoTitle": "悬停放大突出内容",
+                    "demoDes": "",
+                    "demoUrl": "/projects/hoverOutstand/index",
+                    "demoImage": "",
+                },
+                {
+                    "demoTitle": "按钮Hover动画特效",
+                    "demoDes": "",
+                    "demoUrl": "/projects/hoverAnimation/index",
+                    "demoImage": "",
+                },
+            ];
 
 
-<div class="box">
-    <div class="demoCategoryTitle">优秀 项目 收藏：</div>
-    <div class="demoTitle">
-        <script>
-        var demoDic = [
-            {
+            for (var i = 0; i < demoDic.length; i++) {
+                document.write("<div class='htmlTitle'><a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a></div>");
+            }
+            </script>
+        </div>
+    </div>
+    <div class="box">
+        <div class="demoCategoryTitle">项目 收藏：</div>
+        <div class="demoTitle">
+            <script>
+            var demoDic = [{
                 "demoTitle": "未完待续...",
                 "demoDes": "",
                 "demoUrl": "/",
                 "demoImage": "",
-            },
-        ];
+            }, ];
 
 
-        for (var i = 0; i < demoDic.length; i++) {
-            document.write("<div class='htmlTitle'><a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a></div>");
-        }
-        </script>
+            for (var i = 0; i < demoDic.length; i++) {
+                document.write("<div class='htmlTitle'><a target='_blank' href=" + demoDic[i]['demoUrl'] + " title=" + demoDic[i]['demoDes'] + ">" + demoDic[i]['demoTitle'] + "</a></div>");
+            }
+            </script>
+        </div>
     </div>
-</div>
+    <script>
+    function goBottom() {
+        window.scrollTo(0, document.documentElement.scrollHeight - document.documentElement.clientHeight);
+    }
+    </script>
+    <div class="box">
+        <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'gorpeln',
+        admin: ['gorpeln'],
+        id: md5(location.pathname),
 
+    });
+    gitalk.render('gitalk-container');
+</script>  -->
+
+<head>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+</head>
+<style>
+#veditor {
+    background-image: url(https://cdn.jsdelivr.net/gh/drew233/cdn/20200409110727.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: vertical
+}
+
+.v .vwrap {
+    border: 1px solid #37374b !important;
+}
+</style>
+
+<body>
+    <div id="vcomments"></div>
+    <script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'Jc31cFDJbalRKtcpsQ9kpnaH-gzGzoHsz',
+        appKey: '6MfHpQqh9MFU43xg4bwjGAJu',
+        placeholder: '无需注册，支持Markdown语法，填写邮箱可以收到回复通知。',
+        avatar: 'monsterid',
+        pageSize: '10',
+        lang: 'zh-cn',
+        recordIP: 'true',
+        serverURLs: '',
+        enableQQ: true,
+        visitor: true,
+        requiredFields: ['nick', 'mail']
+    })
+
+    document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
+    document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
+    </script>
+</body>
+    </div>
+</body>
 
 </html></div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
         <div id="backtotop">
             <a href="#">
                 <div class="bttbg"></div>
@@ -508,7 +772,7 @@
         </div>
     </div>
     <footer class="site-footer">
-	<div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
         ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
     </div>
@@ -543,47 +807,46 @@ function setTime() {
 setInterval(setTime, 1000);
 </script>
 <script language=JavaScript>
-        function secondToDate(second) {
-            if (!second) {
-                return 0;
-            }
+function secondToDate(second) {
+    if (!second) {
+        return 0;
+    }
 
-            var time = new Array(0, 0, 0, 0, 0);
+    var time = new Array(0, 0, 0, 0, 0);
 
-            if (second >= 365 * 24 * 3600) {
-                time[0] = parseInt(second / (365 * 24 * 3600));
-                second %= 365 * 24 * 3600;
-            }
+    if (second >= 365 * 24 * 3600) {
+        time[0] = parseInt(second / (365 * 24 * 3600));
+        second %= 365 * 24 * 3600;
+    }
 
-            if (second >= 24 * 3600) {
-                time[1] = parseInt(second / (24 * 3600));
-                second %= 24 * 3600;
-            }
+    if (second >= 24 * 3600) {
+        time[1] = parseInt(second / (24 * 3600));
+        second %= 24 * 3600;
+    }
 
-            if (second >= 3600) {
-                time[2] = parseInt(second / 3600);
-                second %= 3600;
-            }
+    if (second >= 3600) {
+        time[2] = parseInt(second / 3600);
+        second %= 3600;
+    }
 
-            if (second >= 60) {
-                time[3] = parseInt(second / 60);
-                second %= 60;
-            }
+    if (second >= 60) {
+        time[3] = parseInt(second / 60);
+        second %= 60;
+    }
 
-            if (second > 0) {
-                time[4] = second;
-            }
-            return time;
-        }
+    if (second > 0) {
+        time[4] = second;
+    }
+    return time;
+}
 
-            function over(obj){      
-                obj.innerHTML = "有人质疑为什么网站运行时间和域名申请时间不一致？   - 博客中有讲述博客的运行的原理，非独立域名也可以直接访问，并支持多域名。";        
-            }
-            function out(obj){        
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
 
-            }
+function out(obj) {
 
-
+}
 </script>
 <!-- 百度统计 -->
 <script>
@@ -634,16 +897,13 @@ document.write('<script src="' + src + '" id="sozz"><\/script>');
 
 
 
-
 <style>
-    .runTime{
-        color: #666;
-        width: 100%;
-        text-align: center;
-        font-size: 13px;
-    }
-
-
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
 </style>
 </body>
 <script>

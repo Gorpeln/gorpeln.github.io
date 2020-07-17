@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>gorpeln - 个人导航 | gorpeln的个人博客 - gorpeln</title>
+  <title>个人导航 - gorpeln | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
   <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
@@ -131,7 +131,7 @@
     <div class="content">
         <div class="container">
             <div class="row">
-                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
                     <div class="profile box-shadow center">
                         <div class="overlay"></div>
                         <div class="center gavatar">
@@ -277,10 +277,6 @@
                                 <img src="/assets/img/social/gmailLogo.png">
                                 <span class="contact-name">gorpeln*163.com(*=>@)</span>
                             </a>
-                            <a class="contact-item" href="https://github.com/gorpeln" target="_blank">
-                                <img src="/assets/img/social/githubLogo.png">
-                                <span class="contact-name">github.com/gorpeln</span>
-                            </a>
                             <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
                                 <img src="/assets/img/social/csdnLogo.png">
                                 <span class="contact-name">gorpeln.blog.csdn.net</span>
@@ -314,14 +310,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2">
                     <div class="page-content" id="pjax"><!DOCTYPE html>
 <html lang="zh">
 
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>gorpeln - 个人导航</title>
+    <title>个人导航 - gorpeln</title>
     <link rel="shortcut icon" href="/assets/img/favicon.ico" />
     <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
     <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
@@ -374,10 +370,10 @@
             </div>
         </div>
 
-        <!-- 网站运营 -->
+        <!-- 数据服务 -->
         <div class="box">
             <div class="sub-category">
-                <div><a href="#"> 网站运营</a></div>
+                <div><a href="#"> 数据服务</a></div>
             </div>
             <div>
                 <script type="text/javascript" src="/assets/js/jquery.js"></script>
@@ -392,7 +388,23 @@
             </div>
         </div>
 
-
+        <!-- 站长统计 -->
+        <div class="box">
+            <div class="sub-category">
+                <div><a href="#"> 站长统计</a></div>
+            </div>
+            <div>
+                <script type="text/javascript" src="/assets/js/jquery.js"></script>
+                <script type="text/javascript">
+                $(function() {
+                    var websiteStatisticsSite = $("#websiteStatisticsSite").val();
+                });
+                for (var i = 0; i < websiteStatisticsSite.length; i++) {
+                    document.write("<a target='_blank' href=" + websiteStatisticsSite[i]['siteToUrl'] + ">" + "<div class='item'>" + "<div class='logo'>" + "<img src=" + websiteStatisticsSite[i]['siteImg'] + ">" + "<text>" + websiteStatisticsSite[i]['siteTitle'] + "</text></div>" + "<div class='desc'>" + websiteStatisticsSite[i]['siteDes'] + "</div>" + "</div>" + "</a>");
+                }
+                </script>
+            </div>
+        </div>
 
 
     </div>
@@ -403,7 +415,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
         <div id="backtotop">
             <a href="#">
                 <div class="bttbg"></div>
@@ -411,7 +423,7 @@
         </div>
     </div>
     <footer class="site-footer">
-	<div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
         ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
     </div>
@@ -446,47 +458,46 @@ function setTime() {
 setInterval(setTime, 1000);
 </script>
 <script language=JavaScript>
-        function secondToDate(second) {
-            if (!second) {
-                return 0;
-            }
+function secondToDate(second) {
+    if (!second) {
+        return 0;
+    }
 
-            var time = new Array(0, 0, 0, 0, 0);
+    var time = new Array(0, 0, 0, 0, 0);
 
-            if (second >= 365 * 24 * 3600) {
-                time[0] = parseInt(second / (365 * 24 * 3600));
-                second %= 365 * 24 * 3600;
-            }
+    if (second >= 365 * 24 * 3600) {
+        time[0] = parseInt(second / (365 * 24 * 3600));
+        second %= 365 * 24 * 3600;
+    }
 
-            if (second >= 24 * 3600) {
-                time[1] = parseInt(second / (24 * 3600));
-                second %= 24 * 3600;
-            }
+    if (second >= 24 * 3600) {
+        time[1] = parseInt(second / (24 * 3600));
+        second %= 24 * 3600;
+    }
 
-            if (second >= 3600) {
-                time[2] = parseInt(second / 3600);
-                second %= 3600;
-            }
+    if (second >= 3600) {
+        time[2] = parseInt(second / 3600);
+        second %= 3600;
+    }
 
-            if (second >= 60) {
-                time[3] = parseInt(second / 60);
-                second %= 60;
-            }
+    if (second >= 60) {
+        time[3] = parseInt(second / 60);
+        second %= 60;
+    }
 
-            if (second > 0) {
-                time[4] = second;
-            }
-            return time;
-        }
+    if (second > 0) {
+        time[4] = second;
+    }
+    return time;
+}
 
-            function over(obj){      
-                obj.innerHTML = "有人质疑为什么网站运行时间和域名申请时间不一致？   - 博客中有讲述博客的运行的原理，非独立域名也可以直接访问，并支持多域名。";        
-            }
-            function out(obj){        
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
 
-            }
+function out(obj) {
 
-
+}
 </script>
 <!-- 百度统计 -->
 <script>
@@ -537,16 +548,13 @@ document.write('<script src="' + src + '" id="sozz"><\/script>');
 
 
 
-
 <style>
-    .runTime{
-        color: #666;
-        width: 100%;
-        text-align: center;
-        font-size: 13px;
-    }
-
-
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
 </style>
 </body>
 <script>

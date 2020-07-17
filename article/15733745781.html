@@ -131,7 +131,7 @@
     <div class="content">
         <div class="container">
             <div class="row">
-                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
                     <div class="profile box-shadow center">
                         <div class="overlay"></div>
                         <div class="center gavatar">
@@ -277,10 +277,6 @@
                                 <img src="/assets/img/social/gmailLogo.png">
                                 <span class="contact-name">gorpeln*163.com(*=>@)</span>
                             </a>
-                            <a class="contact-item" href="https://github.com/gorpeln" target="_blank">
-                                <img src="/assets/img/social/githubLogo.png">
-                                <span class="contact-name">github.com/gorpeln</span>
-                            </a>
                             <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
                                 <img src="/assets/img/social/csdnLogo.png">
                                 <span class="contact-name">gorpeln.blog.csdn.net</span>
@@ -314,7 +310,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow fadein-right aside2">
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2">
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
@@ -560,14 +556,12 @@
         avatar: 'monsterid',
         pageSize: '10',
         lang: 'zh-cn',
-        path: location.pathname,
         recordIP: 'true',
         serverURLs: '',
         enableQQ: true,
         visitor: true,
         requiredFields: ['nick', 'mail']
     })
-
 
     document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
     document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
@@ -581,7 +575,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1 fadein-left">
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
         <div id="backtotop">
             <a href="#">
                 <div class="bttbg"></div>
@@ -589,7 +583,7 @@
         </div>
     </div>
     <footer class="site-footer">
-	<div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
         ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
     </div>
@@ -624,47 +618,46 @@ function setTime() {
 setInterval(setTime, 1000);
 </script>
 <script language=JavaScript>
-        function secondToDate(second) {
-            if (!second) {
-                return 0;
-            }
+function secondToDate(second) {
+    if (!second) {
+        return 0;
+    }
 
-            var time = new Array(0, 0, 0, 0, 0);
+    var time = new Array(0, 0, 0, 0, 0);
 
-            if (second >= 365 * 24 * 3600) {
-                time[0] = parseInt(second / (365 * 24 * 3600));
-                second %= 365 * 24 * 3600;
-            }
+    if (second >= 365 * 24 * 3600) {
+        time[0] = parseInt(second / (365 * 24 * 3600));
+        second %= 365 * 24 * 3600;
+    }
 
-            if (second >= 24 * 3600) {
-                time[1] = parseInt(second / (24 * 3600));
-                second %= 24 * 3600;
-            }
+    if (second >= 24 * 3600) {
+        time[1] = parseInt(second / (24 * 3600));
+        second %= 24 * 3600;
+    }
 
-            if (second >= 3600) {
-                time[2] = parseInt(second / 3600);
-                second %= 3600;
-            }
+    if (second >= 3600) {
+        time[2] = parseInt(second / 3600);
+        second %= 3600;
+    }
 
-            if (second >= 60) {
-                time[3] = parseInt(second / 60);
-                second %= 60;
-            }
+    if (second >= 60) {
+        time[3] = parseInt(second / 60);
+        second %= 60;
+    }
 
-            if (second > 0) {
-                time[4] = second;
-            }
-            return time;
-        }
+    if (second > 0) {
+        time[4] = second;
+    }
+    return time;
+}
 
-            function over(obj){      
-                obj.innerHTML = "有人质疑为什么网站运行时间和域名申请时间不一致？   - 博客中有讲述博客的运行的原理，非独立域名也可以直接访问，并支持多域名。";        
-            }
-            function out(obj){        
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
 
-            }
+function out(obj) {
 
-
+}
 </script>
 <!-- 百度统计 -->
 <script>
@@ -715,16 +708,13 @@ document.write('<script src="' + src + '" id="sozz"><\/script>');
 
 
 
-
 <style>
-    .runTime{
-        color: #666;
-        width: 100%;
-        text-align: center;
-        font-size: 13px;
-    }
-
-
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
 </style>
 </body>
 <script>
