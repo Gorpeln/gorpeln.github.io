@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>iOS多线程：NSThread (二) | gorpeln的个人博客 - gorpeln</title>
+
+  <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+  <meta name="description" content="NSThread 是苹果官方提供的，简单易用，可以直接操作线程对象。不过也需要需要程序员自己管理线程的生命周期(主要是创建)，我们在开发的过程中偶尔使用 NSThread。比如我们会经常调用[NSThread currentThread]来显示当前的进程信息。">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
+
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="/article/15860813363">
+  <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
+
+  
+</head>
+
+
+
+
+<header class="site-header">
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style type="text/css">
+    html * {
+        
+    }
+
+    .menuNav {
+        margin-top: 100px;
+        position: absolute;
+    }
+
+    .menuNav * {
+        text-decoration: none;
+        font-size: 9pt;
+    }
+
+    .menuNav * a:hover {
+        /*background-color: rgb(0, 0, 0, 0.75);*/
+    }
+
+    .menuNav {
+        list-style: none;
+        display: none;
+        margin-left: -1px;
+    }
+
+    .menuNav li {
+        float: left;
+        border-top: 1px solid #aaa;
+        background-color: rgb(0, 0, 0, 0.75);
+
+    }
+
+    .menuNav li a {
+    color: #fff;
+    padding: 15px 0;
+    display: block;
+    width: 2em;
+    text-align: center;
+    }
+
+    .menuNav li a:focus {
+        -moz-outline-style: none;
+    }
+
+    .menuNav li .sub-nav {
+     position: absolute;
+    top: -110%;
+    left: calc(2em - 30px);
+    list-style: none;
+    /*background-color: rgb(0, 0, 0, 0.6);*/
+    display: none;
+    }
+
+    .menuNav li .sub-nav li {
+        text-align: center;
+        clear: left;
+        width: 140px;
+        height: 35px;
+        line-height: 35px;
+        position: relative;
+    }
+
+    .menuNav li .sub-nav li a {
+        height: 34px;
+        line-height: 34px;
+        width: 138px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    @media (max-width: 678px) {
+        .menuNav {
+            display: block;
+        }
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        $(".menuNav>li").hover(function() {
+            $(this).children('ul').stop(true, true).show(300);
+        }, function() {
+            $(this).children('ul').stop(true, true).hide(300);
+        })
+    })
+    </script>
+            <ul class="menuNav">
+                <li><a href="#">菜<br/>单</a>
+                    <ul class="sub-nav">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/categories">分类</a></li>
+                        <li><a href="/tags">标签</a></li>
+                        <li><a href="/archives">归档</a></li>
+                        <li><a href="/about">关于</a></li>
+                        <li><a href="/works">项目</a></li>
+                        <li><a href="/mysite">导航</a></li>
+                    </ul>
+                </li>
+            </ul>
+</header>
+
+<body>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#toc').toc();
+    });
+    </script>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">101</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">10</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">95</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a target="_blank" href="/feed.xml"><i class="fas fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">博客导航</div>
+                        <ul>
+                            <li onclick="pushNew('/')"><a><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li onclick="pushNew('/categories')"><a><i class="fas fa-th fa-fw"></i>分类</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">10
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">95
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
+                                <span style=" font-size:14px;color: white;padding: 0 8px;" class="articleCount">101
+                                        </span>
+                            </li>
+                            <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li onclick="pushNew('/links')"><a><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li onclick="pushNew('/login')"><a><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">※
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/mysite')"><a><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li onclick="pushNew('/works')"><a><i class="fab fa-git-square fa-fw"></i>项目</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">3
+                                </span>
+                            </li>
+                            <li id="cb-search-btn-two"><a><i class="fas fa-search fa-fw"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">文章分类</div>
+                        <ul>
+                            
+                            <li onclick="pushNew('/categories#个人博客')">
+                                <a name="个人博客" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">个人博客</a>
+                                <a name="个人博客" style="font-size:14px;color: white" class="articleCount">8
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Linux')">
+                                <a name="Linux" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Linux</a>
+                                <a name="Linux" style="font-size:14px;color: white" class="articleCount">1
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#web前端')">
+                                <a name="web前端" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">web前端</a>
+                                <a name="web前端" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#其他')">
+                                <a name="其他" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">其他</a>
+                                <a name="其他" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#iOS')">
+                                <a name="iOS" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">iOS</a>
+                                <a name="iOS" style="font-size:14px;color: white" class="articleCount">31
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#程序人生')">
+                                <a name="程序人生" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">程序人生</a>
+                                <a name="程序人生" style="font-size:14px;color: white" class="articleCount">18
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Software MAC')">
+                                <a name="Software MAC" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Software MAC</a>
+                                <a name="Software MAC" style="font-size:14px;color: white" class="articleCount">11
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#架构和算法')">
+                                <a name="架构和算法" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">架构和算法</a>
+                                <a name="架构和算法" style="font-size:14px;color: white" class="articleCount">7
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Git')">
+                                <a name="Git" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Git</a>
+                                <a name="Git" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#微信小程序')">
+                                <a name="微信小程序" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">微信小程序</a>
+                                <a name="微信小程序" style="font-size:14px;color: white" class="articleCount">10
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="contactNav">
+                        <div class="contactNavTitle">个人档案</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.jpg" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <span class="contact-name">33964471</span>
+                            </a>
+                            <a class="contact-item" href="/" target="_blank">
+                                <img src="/assets/img/social/gmailLogo.png">
+                                <span class="contact-name">gorpeln*163.com(*=>@)</span>
+                            </a>
+                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">gorpeln.blog.csdn.net</span>
+                            </a>
+                            <a class="contact-item" href="/about" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="contact-name">更多...</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlinkNav" id="friendlinkNav">
+                        <div class="friendlinkNavTitle">友情链接</div>
+                        <div class="friend-container">
+                            
+                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                <img src="/assets/img/blogwe.ico">
+                                <span class="friend-name">博客大全</span>
+                            </a>
+                            
+                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                <img src="/assets/img/foreverblog.ico">
+                                <span class="friend-name">十年之约</span>
+                            </a>
+                            
+                            <a class="friend-item" href="/links" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="friend-name">更多...</span>
+                            </a>
+                            
+                        </div>
+                    </div>
+                    <!-- <div id="toc" class="navbar navbar-default customCatalog"></div> -->
+                    <div id="toc" class="customCatalog"></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">iOS多线程：NSThread (二)</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2020-04-05</p>
+	    
+	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
+        	iOS
+		</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		<span class="index-post-tag">
+		
+			<a class="pjaxlink" href="/tags#NSThread"  target="_blank">NSThread</a>
+		
+			<a class="pjaxlink" href="/tags#多线程"  target="_blank">多线程</a>
+		
+		</span>
+	    
+    </div>
+  </header>
+
+<div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
+转载请注明出处：https://gorpeln.com/article/15860813363
+</div>
+
+
+  <article class="post-content">
+    <p>NSThread 是苹果官方提供的，简单易用，可以直接操作线程对象。不过也需要需要程序员自己管理线程的生命周期(主要是创建)，我们在开发的过程中偶尔使用 NSThread。比如我们会经常调用[NSThread currentThread]来显示当前的进程信息。</p>
+
+<h3 id="1-创建启动线程">1. 创建、启动线程</h3>
+<ul>
+  <li>先创建线程，再启动线程</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. 创建线程
+NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+// 2. 启动线程
+[thread start];    // 线程一启动，就会在线程thread中执行self的run方法
+
+// 新线程调用方法，里边为需要执行的任务
+- (void)run {
+     NSLog(@"%@", [NSThread currentThread]);
+}
+</code></pre></div></div>
+<ul>
+  <li>创建线程后自动启动线程</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. 创建线程后自动启动线程
+[NSThread detachNewThreadSelector:@selector(run) toTarget:self withObject:nil];
+
+// 新线程调用方法，里边为需要执行的任务
+- (void)run {
+     NSLog(@"%@", [NSThread currentThread]);
+}
+</code></pre></div></div>
+<ul>
+  <li>隐式创建并启动线程</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 1. 隐式创建并启动线程
+[self performSelectorInBackground:@selector(run) withObject:nil];
+
+// 新线程调用方法，里边为需要执行的任务
+- (void)run {
+     NSLog(@"%@", [NSThread currentThread]);
+}
+</code></pre></div></div>
+<h3 id="2-线程相关用法">2. 线程相关用法</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 获得主线程
++ (NSThread *)mainThread;    
+
+// 判断是否为主线程(对象方法)
+- (BOOL)isMainThread;
+
+// 判断是否为主线程(类方法)
++ (BOOL)isMainThread;    
+
+// 获得当前线程
+NSThread *current = [NSThread currentThread];
+
+// 线程的名字——setter方法
+- (void)setName:(NSString *)n;    
+
+// 线程的名字——getter方法
+- (NSString *)name;  
+</code></pre></div></div>
+
+<h3 id="3-线程状态控制方法">3. 线程状态控制方法</h3>
+<ul>
+  <li>启动线程方法</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)start;
+// 线程进入就绪状态 -&gt; 运行状态。当线程任务执行完毕，自动进入死亡状态
+</code></pre></div></div>
+<ul>
+  <li>阻塞（暂停）线程方法</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+ (void)sleepUntilDate:(NSDate *)date;
++ (void)sleepForTimeInterval:(NSTimeInterval)ti;
+// 线程进入阻塞状态
+</code></pre></div></div>
+
+<ul>
+  <li>强制停止线程</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+ (void)exit;
+// 线程进入死亡状态
+</code></pre></div></div>
+
+<h3 id="4-线程之间的通信">4. 线程之间的通信</h3>
+<p>在开发中，我们经常会在子线程进行耗时操作，操作结束后再回到主线程去刷新 UI。这就涉及到了子线程和主线程之间的通信。我们先来了解一下官方关于 NSThread 的线程间通信的方法。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 在主线程上执行操作
+- (void)performSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait;
+- (void)performSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray&lt;NSString *&gt; *)array;
+  // equivalent to the first method with kCFRunLoopCommonModes
+
+// 在指定线程上执行操作
+- (void)performSelector:(SEL)aSelector onThread:(NSThread *)thr withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array NS_AVAILABLE(10_5, 2_0);
+- (void)performSelector:(SEL)aSelector onThread:(NSThread *)thr withObject:(id)arg waitUntilDone:(BOOL)wait NS_AVAILABLE(10_5, 2_0);
+
+// 在当前线程上执行操作，调用 NSObject 的 performSelector:相关方法
+- (id)performSelector:(SEL)aSelector;
+- (id)performSelector:(SEL)aSelector withObject:(id)object;
+- (id)performSelector:(SEL)aSelector withObject:(id)object1 withObject:(id)object2;
+</code></pre></div></div>
+
+<p>下面通过一个经典的下载图片 DEMO 来展示线程之间的通信。具体步骤如下：</p>
+
+<ol>
+  <li>开启一个子线程，在子线程中下载图片。</li>
+  <li>回到主线程刷新 UI，将图片展示在 UIImageView 中。</li>
+</ol>
+
+<p>DEMO 代码如下：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ * 创建一个线程下载图片
+ */
+- (void)downloadImageOnSubThread {
+    // 在创建的子线程中调用downloadImage下载图片
+    [NSThread detachNewThreadSelector:@selector(downloadImage) toTarget:self withObject:nil];
+}
+
+/**
+ * 下载图片，下载完之后回到主线程进行 UI 刷新
+ */
+- (void)downloadImage {
+    NSLog(@"current thread -- %@", [NSThread currentThread]);
+    
+    // 1. 获取图片 imageUrl
+    NSURL *imageUrl = [NSURL URLWithString:@"https://img.gorpeln.com/blog_logo_shiguangben.png"];
+    
+    // 2. 从 imageUrl 中读取数据(下载图片) -- 耗时操作
+    NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
+    // 通过二进制 data 创建 image
+    UIImage *image = [UIImage imageWithData:imageData];
+    
+    // 3. 回到主线程进行图片赋值和界面刷新
+    [self performSelectorOnMainThread:@selector(refreshOnMainThread:) withObject:image waitUntilDone:YES];
+}
+
+/**
+ * 回到主线程进行图片赋值和界面刷新
+ */
+- (void)refreshOnMainThread:(UIImage *)image {
+    NSLog(@"current thread -- %@", [NSThread currentThread]);
+    
+    // 赋值图片到imageview
+    self.imageView.image = image;
+}
+</code></pre></div></div>
+<h3 id="5-nsthread-线程安全和线程同步">5. NSThread 线程安全和线程同步</h3>
+<p><strong>线程安全</strong>：如果你的代码所在的进程中有多个线程在同时运行，而这些线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量的值也和预期的是一样的，就是线程安全的。</p>
+
+<p>若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作（更改变量），一般都需要考虑线程同步，否则的话就可能影响线程安全。<br />
+  <br />
+<strong>线程同步</strong>：可理解为线程 A 和 线程 B 一块配合，A 执行到一定程度时要依靠线程 B 的某个结果，于是停下来，示意 B 运行；B 依言执行，再将结果给 A；A 再继续操作。</p>
+
+<p>举个简单例子就是：两个人在一起聊天。两个人不能同时说话，避免听不清(操作冲突)。等一个人说完(一个线程结束操作)，另一个再说(另一个线程再开始操作)。</p>
+
+<p>下面，我们模拟火车票售卖的方式，实现 NSThread 线程安全和解决线程同步问题。</p>
+
+<p>场景：总共有50张火车票，有两个售卖火车票的窗口，一个是北京火车票售卖窗口，另一个是上海火车票售卖窗口。两个窗口同时售卖火车票，卖完为止。</p>
+
+<h4 id="251-nsthread-非线程安全">2.5.1 NSThread 非线程安全</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ * 初始化火车票数量、卖票窗口(非线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    // 1. 设置剩余火车票为 50
+    self.ticketSurplusCount = 50;
+    
+    // 2. 设置北京火车票售卖窗口的线程
+    self.ticketSaleWindow1 = [[NSThread alloc]initWithTarget:self selector:@selector(saleTicketNotSafe) object:nil];
+    self.ticketSaleWindow1.name = @"北京火车票售票窗口";
+    
+    // 3. 设置上海火车票售卖窗口的线程
+    self.ticketSaleWindow2 = [[NSThread alloc]initWithTarget:self selector:@selector(saleTicketNotSafe) object:nil];
+    self.ticketSaleWindow2.name = @"上海火车票售票窗口";
+    
+    // 4. 开始售卖火车票
+    [self.ticketSaleWindow1 start];
+    [self.ticketSaleWindow2 start];
+
+}
+
+/**
+ * 售卖火车票(非线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        //如果还有票，继续售卖
+        if (self.ticketSurplusCount &gt; 0) {
+            self.ticketSurplusCount --;
+            NSLog(@"%@", [NSString stringWithFormat:@"剩余票数：%ld 窗口：%@", self.ticketSurplusCount, [NSThread currentThread].name]);
+            [NSThread sleepForTimeInterval:0.2];
+        }
+        //如果已卖完，关闭售票窗口
+        else {
+            NSLog(@"所有火车票均已售完");
+            break;
+        }
+    }
+}
+</code></pre></div></div>
+<p>运行结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>剩余票数：48 窗口：上海火车票售票窗口
+剩余票数：49 窗口：北京火车票售票窗口
+剩余票数：47 窗口：上海火车票售票窗口
+剩余票数：46 窗口：北京火车票售票窗口
+剩余票数：45 窗口：上海火车票售票窗口
+......
+剩余票数：3 窗口：北京火车票售票窗口
+剩余票数：1 窗口：北京火车票售票窗口
+剩余票数：1 窗口：上海火车票售票窗口
+剩余票数：0 窗口：北京火车票售票窗口
+所有火车票均已售完
+所有火车票均已售完
+</code></pre></div></div>
+
+<blockquote>
+  <p>可以看到在不考虑线程安全的情况下，得到票数是错乱的，这样显然不符合我们的需求，所以我们需要考虑线程安全问题。</p>
+</blockquote>
+
+<h4 id="252-nsthread-线程安全">2.5.2 NSThread 线程安全</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+- (void)initTicketStatusSave {
+    // 1. 设置剩余火车票为 50
+    self.ticketSurplusCount = 50;
+    
+    // 2. 设置北京火车票售卖窗口的线程
+    self.ticketSaleWindow1 = [[NSThread alloc]initWithTarget:self selector:@selector(saleTicketSafe) object:nil];
+    self.ticketSaleWindow1.name = @"北京火车票售票窗口";
+    
+    // 3. 设置上海火车票售卖窗口的线程
+    self.ticketSaleWindow2 = [[NSThread alloc]initWithTarget:self selector:@selector(saleTicketSafe) object:nil];
+    self.ticketSaleWindow2.name = @"上海火车票售票窗口";
+    
+    // 4. 开始售卖火车票
+    [self.ticketSaleWindow1 start];
+    [self.ticketSaleWindow2 start];
+    
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketSafe {
+    while (1) {
+        // 互斥锁
+        @synchronized (self) {
+            //如果还有票，继续售卖
+            if (self.ticketSurplusCount &gt; 0) {
+                self.ticketSurplusCount --;
+                NSLog(@"%@", [NSString stringWithFormat:@"剩余票数：%ld 窗口：%@", self.ticketSurplusCount, [NSThread currentThread].name]);
+                [NSThread sleepForTimeInterval:0.2];
+            }
+            //如果已卖完，关闭售票窗口
+            else {
+                NSLog(@"所有火车票均已售完");
+                break;
+            }
+        }
+    }
+}
+</code></pre></div></div>
+
+<p>运行结果:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>剩余票数：49 窗口：上海火车票售票窗口
+剩余票数：48 窗口：上海火车票售票窗口
+剩余票数：47 窗口：北京火车票售票窗口
+剩余票数：46 窗口：北京火车票售票窗口
+剩余票数：45 窗口：北京火车票售票窗口
+剩余票数：44 窗口：北京火车票售票窗口
+剩余票数：43 窗口：上海火车票售票窗口
+......
+剩余票数：5 窗口：上海火车票售票窗口
+剩余票数：4 窗口：上海火车票售票窗口
+剩余票数：3 窗口：上海火车票售票窗口
+剩余票数：2 窗口：上海火车票售票窗口
+剩余票数：1 窗口：上海火车票售票窗口
+剩余票数：0 窗口：上海火车票售票窗口
+所有火车票均已售完
+所有火车票均已售完
+</code></pre></div></div>
+
+<blockquote>
+  <p>可以看出，在考虑了线程安全的情况下，加锁之后，得到的票数是正确的，没有出现混乱的情况。我们也就解决了多个线程同步的问题。</p>
+</blockquote>
+
+<h3 id="26-线程的状态转换">2.6 线程的状态转换</h3>
+<p>当我们新建一条线程<code class="highlighter-rouge">NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];</code>，在内存中的表现为：</p>
+
+<p><img src="https://img.gorpeln.com/blog_ thread_001.png" alt="blog_ thread_001" /></p>
+
+<p>当调用<code class="highlighter-rouge">[thread start];</code>后，系统把线程对象放入可调度线程池中，线程对象进入就绪状态，如下图所示。</p>
+
+<p><img src="https://img.gorpeln.com/blog_ thread_002.png" alt="blog_ thread_002" /></p>
+
+<p>当然，可调度线程池中，会有其他的线程对象，如下图所示。在这里我们只关心左边的线程对象。
+<img src="https://img.gorpeln.com/blog_ thread_003.png" alt="blog_ thread_003" /></p>
+
+<p><strong>下边我们来看看当前线程的状态转换:</strong></p>
+<ul>
+  <li>如果CPU现在调度当前线程对象，则当前线程对象进入运行状态，如果CPU调度其他线程对象，则当前线程对象回到就绪状态。</li>
+  <li>如果CPU在运行当前线程对象的时候调用了sleep方法\等待同步锁，则当前线程对象就进入了阻塞状态，等到sleep到时\得到同步锁，则回到就绪状态。</li>
+  <li>如果CPU在运行当前线程对象的时候线程任务执行完毕\异常强制退出，则当前线程对象进入死亡状态。</li>
+</ul>
+
+<p><img src="https://img.gorpeln.com/blog_ thread_004.png" alt="blog_ thread_004" /></p>
+
+  </article>
+</div>
+
+  <div class="prevandnext">
+    	  
+	    <div style="margin:0.25em;">
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15861494710" title="iOS多线程：GCD (三)" style="color: #6666cc"  target="_blank">iOS多线程：GCD (三)</a>
+	    </div>
+	  
+  	  
+	    <div style="margin:0.25em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15854795957" title="iOS多线程：基础 (一)" style="color: #6666cc"  target="_blank">iOS多线程：基础 (一)</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'gorpeln',
+        admin: ['gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script>  -->
+
+<head>
+    <script type="text/javascript" src="/assets/js/Valine.min.js"></script>
+</head>
+<style>
+#veditor {
+    background-image: url(https://cdn.jsdelivr.net/gh/drew233/cdn/20200409110727.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: vertical
+}
+
+.v .vwrap {
+    border: 1px solid #37374b !important;
+}
+</style>
+
+<body>
+    <div id="vcomments"></div>
+    <script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'Jc31cFDJbalRKtcpsQ9kpnaH-gzGzoHsz',
+        appKey: '6MfHpQqh9MFU43xg4bwjGAJu',
+        placeholder: '无需注册，支持Markdown语法，填写邮箱可以收到回复通知。',
+        avatar: 'monsterid',
+        pageSize: '10',
+        lang: 'zh-cn',
+        recordIP: 'true',
+        serverURLs: '',
+        enableQQ: true,
+        visitor: true,
+        requiredFields: ['nick', 'mail']
+    })
+
+    document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
+    document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
+    </script>
+</body>
+  </div>
+
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+    </div>
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 动态显示网站运行时间 -->
+<script type="text/javascript" language="javascript">
+function setTime() {
+    var create_time = Math.round(new Date(Date.UTC(2015, 08, 23, 12, 0, 0)).getTime() / 1000);
+    var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+    currentTime = secondToDate((timestamp - create_time));
+    currentTimeHtml = '本站已安全运行：' + currentTime[0] + '年' + currentTime[1] + '天' + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4] + '秒';
+    document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+}
+setInterval(setTime, 1000);
+</script>
+<script language=JavaScript>
+function secondToDate(second) {
+    if (!second) {
+        return 0;
+    }
+
+    var time = new Array(0, 0, 0, 0, 0);
+
+    if (second >= 365 * 24 * 3600) {
+        time[0] = parseInt(second / (365 * 24 * 3600));
+        second %= 365 * 24 * 3600;
+    }
+
+    if (second >= 24 * 3600) {
+        time[1] = parseInt(second / (24 * 3600));
+        second %= 24 * 3600;
+    }
+
+    if (second >= 3600) {
+        time[2] = parseInt(second / 3600);
+        second %= 3600;
+    }
+
+    if (second >= 60) {
+        time[3] = parseInt(second / 60);
+        second %= 60;
+    }
+
+    if (second > 0) {
+        time[4] = second;
+    }
+    return time;
+}
+
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
+
+function out(obj) {
+
+}
+</script>
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+<style>
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
+</style>
+</body>
+<script>
+function pushNew(path) {
+    if (path == '/') {
+        window.location.href = path;
+    } else {
+        window.open(path);
+    }
+}
+</script>
+
+<script type="text/javascript">
+  function menuFixed(id,otherId) {
+    var obj = document.getElementById(id);
+    var _getHeight = obj.offsetTop;
+
+    window.onscroll = function () {
+      changePos(id, _getHeight,otherId);
+    }
+  }
+
+  function changePos(id, height,otherId) {
+    var obj = document.getElementById(id);
+    var friendlinkObj = document.getElementById(otherId);
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop < height) {
+      obj.style.position = 'relative';
+      obj.style.width = friendlinkObj.offsetWidth + 'px';
+    } else {
+      obj.style.position = 'fixed';
+      obj.style.width = friendlinkObj.offsetWidth + 'px';
+    }
+  }
+  window.onload = function () {
+    menuFixed('toc','friendlinkNav');
+  }
+</script>
+
+
+<style>
+.articleCount {
+    float: right;
+    color: #ffffff;
+    background: #ddd;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 32px;
+    text-align: center;
+    line-height: 1.4em;
+    height: 1.4em;
+    margin-top: 0.1em;
+}
+.customCatalog{
+    display: block;
+    margin-top: 1em;
+    background: #fff;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    width: 100%;
+    padding-bottom: 7.5%;
+    padding: 1em;
+    position: relative;
+    top: 0;
+    overflow-y:scroll;
+    max-height: calc(100% - 2em);
+}
+
+.element::-webkit-scrollbar { width: 0 !important }
+.element { -ms-overflow-style: none; }
+.element { overflow: -moz-scrollbars-none; }
+
+
+</style>
+
+</html>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>iOS多线程：基础 (一) | gorpeln的个人博客 - gorpeln</title>
+
+  <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+  <meta name="description" content="一、 进程：  进程是一个具有一定独立功能的程序关于某次数据集合的一次运行活动，它是操作系统分配资源的基本单元。  进程是指在系统中正在运行的一个应用程序，就是一段程序的执行过程，我们可以理解为手机上的一个app。  每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内，拥有独立运行所需的全部资源。">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
+
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="/article/15854795957">
+  <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
+
+  
+</head>
+
+
+
+
+<header class="site-header">
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style type="text/css">
+    html * {
+        
+    }
+
+    .menuNav {
+        margin-top: 100px;
+        position: absolute;
+    }
+
+    .menuNav * {
+        text-decoration: none;
+        font-size: 9pt;
+    }
+
+    .menuNav * a:hover {
+        /*background-color: rgb(0, 0, 0, 0.75);*/
+    }
+
+    .menuNav {
+        list-style: none;
+        display: none;
+        margin-left: -1px;
+    }
+
+    .menuNav li {
+        float: left;
+        border-top: 1px solid #aaa;
+        background-color: rgb(0, 0, 0, 0.75);
+
+    }
+
+    .menuNav li a {
+    color: #fff;
+    padding: 15px 0;
+    display: block;
+    width: 2em;
+    text-align: center;
+    }
+
+    .menuNav li a:focus {
+        -moz-outline-style: none;
+    }
+
+    .menuNav li .sub-nav {
+     position: absolute;
+    top: -110%;
+    left: calc(2em - 30px);
+    list-style: none;
+    /*background-color: rgb(0, 0, 0, 0.6);*/
+    display: none;
+    }
+
+    .menuNav li .sub-nav li {
+        text-align: center;
+        clear: left;
+        width: 140px;
+        height: 35px;
+        line-height: 35px;
+        position: relative;
+    }
+
+    .menuNav li .sub-nav li a {
+        height: 34px;
+        line-height: 34px;
+        width: 138px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    @media (max-width: 678px) {
+        .menuNav {
+            display: block;
+        }
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        $(".menuNav>li").hover(function() {
+            $(this).children('ul').stop(true, true).show(300);
+        }, function() {
+            $(this).children('ul').stop(true, true).hide(300);
+        })
+    })
+    </script>
+            <ul class="menuNav">
+                <li><a href="#">菜<br/>单</a>
+                    <ul class="sub-nav">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/categories">分类</a></li>
+                        <li><a href="/tags">标签</a></li>
+                        <li><a href="/archives">归档</a></li>
+                        <li><a href="/about">关于</a></li>
+                        <li><a href="/works">项目</a></li>
+                        <li><a href="/mysite">导航</a></li>
+                    </ul>
+                </li>
+            </ul>
+</header>
+
+<body>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#toc').toc();
+    });
+    </script>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">101</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">10</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">95</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a target="_blank" href="/feed.xml"><i class="fas fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">博客导航</div>
+                        <ul>
+                            <li onclick="pushNew('/')"><a><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li onclick="pushNew('/categories')"><a><i class="fas fa-th fa-fw"></i>分类</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">10
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">95
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
+                                <span style=" font-size:14px;color: white;padding: 0 8px;" class="articleCount">101
+                                        </span>
+                            </li>
+                            <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li onclick="pushNew('/links')"><a><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li onclick="pushNew('/login')"><a><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">※
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/mysite')"><a><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li onclick="pushNew('/works')"><a><i class="fab fa-git-square fa-fw"></i>项目</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">3
+                                </span>
+                            </li>
+                            <li id="cb-search-btn-two"><a><i class="fas fa-search fa-fw"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">文章分类</div>
+                        <ul>
+                            
+                            <li onclick="pushNew('/categories#个人博客')">
+                                <a name="个人博客" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">个人博客</a>
+                                <a name="个人博客" style="font-size:14px;color: white" class="articleCount">8
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Linux')">
+                                <a name="Linux" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Linux</a>
+                                <a name="Linux" style="font-size:14px;color: white" class="articleCount">1
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#web前端')">
+                                <a name="web前端" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">web前端</a>
+                                <a name="web前端" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#其他')">
+                                <a name="其他" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">其他</a>
+                                <a name="其他" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#iOS')">
+                                <a name="iOS" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">iOS</a>
+                                <a name="iOS" style="font-size:14px;color: white" class="articleCount">31
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#程序人生')">
+                                <a name="程序人生" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">程序人生</a>
+                                <a name="程序人生" style="font-size:14px;color: white" class="articleCount">18
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Software MAC')">
+                                <a name="Software MAC" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Software MAC</a>
+                                <a name="Software MAC" style="font-size:14px;color: white" class="articleCount">11
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#架构和算法')">
+                                <a name="架构和算法" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">架构和算法</a>
+                                <a name="架构和算法" style="font-size:14px;color: white" class="articleCount">7
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Git')">
+                                <a name="Git" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Git</a>
+                                <a name="Git" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#微信小程序')">
+                                <a name="微信小程序" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">微信小程序</a>
+                                <a name="微信小程序" style="font-size:14px;color: white" class="articleCount">10
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="contactNav">
+                        <div class="contactNavTitle">个人档案</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.jpg" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <span class="contact-name">33964471</span>
+                            </a>
+                            <a class="contact-item" href="/" target="_blank">
+                                <img src="/assets/img/social/gmailLogo.png">
+                                <span class="contact-name">gorpeln*163.com(*=>@)</span>
+                            </a>
+                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">gorpeln.blog.csdn.net</span>
+                            </a>
+                            <a class="contact-item" href="/about" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="contact-name">更多...</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlinkNav" id="friendlinkNav">
+                        <div class="friendlinkNavTitle">友情链接</div>
+                        <div class="friend-container">
+                            
+                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                <img src="/assets/img/blogwe.ico">
+                                <span class="friend-name">博客大全</span>
+                            </a>
+                            
+                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                <img src="/assets/img/foreverblog.ico">
+                                <span class="friend-name">十年之约</span>
+                            </a>
+                            
+                            <a class="friend-item" href="/links" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="friend-name">更多...</span>
+                            </a>
+                            
+                        </div>
+                    </div>
+                    <!-- <div id="toc" class="navbar navbar-default customCatalog"></div> -->
+                    <div id="toc" class="customCatalog"></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">iOS多线程：基础 (一)</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2020-03-29</p>
+	    
+	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
+        	iOS
+		</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		<span class="index-post-tag">
+		
+			<a class="pjaxlink" href="/tags#GCD"  target="_blank">GCD</a>
+		
+			<a class="pjaxlink" href="/tags#多线程"  target="_blank">多线程</a>
+		
+		</span>
+	    
+    </div>
+  </header>
+
+<div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
+转载请注明出处：https://gorpeln.com/article/15854795957
+</div>
+
+
+  <article class="post-content">
+    <h3 id="一-进程">一、 进程：</h3>
+<ol>
+  <li>进程是一个具有一定独立功能的程序关于某次数据集合的一次运行活动，它是操作系统分配资源的基本单元。</li>
+  <li>进程是指在系统中正在运行的一个应用程序，就是一段程序的执行过程，我们可以理解为手机上的一个app。</li>
+  <li>每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内，拥有独立运行所需的全部资源。</li>
+</ol>
+
+<h3 id="二-线程">二、 线程</h3>
+<ol>
+  <li>程序执行流的最小单元，线程是进程中的一个实体.</li>
+  <li>一个进程要想执行任务，必须至少有一条线程。应用程序启动的时候，系统会默认开启一条线程，也就是主线程。</li>
+</ol>
+
+<h3 id="三-进程和线程的关系">三、 进程和线程的关系</h3>
+<ol>
+  <li>线程是进程的执行单元，进程的所有任务都在线程中执行。</li>
+  <li>线程是 CPU 分配资源和调度的最小单位。</li>
+  <li>一个程序可以对应多个进程(多进程)，一个进程中可有多个线程，但至少要有一条线程。</li>
+  <li>同一个进程内的线程共享进程资源。</li>
+</ol>
+
+<h3 id="四-多进程">四、 多进程</h3>
+
+<ol>
+  <li>进程是程序在计算机上的一次执行活动。当你运行一个程序，你就启动了一个进程。显然，程序是死的(静态的)，进程是活的(动态的)。</li>
+  <li>进程可以分为系统进程和用户进程。凡是用于完成操作系统的各种功能的进程就是系统进程，它们就是处于运行状态下的操作系统本身;所有由用户启动的进程都是用户进程。进程是操作系统进行资源分配的单位。</li>
+  <li>进程又被细化为线程，也就是一个进程下有多个能独立运行的更小的单位。在同一个时间里，同一个计算机系统中如果允许两个或两个以上的进程处于运行状态，这便是多进程。</li>
+</ol>
+
+<h3 id="五-多线程">五、 多线程</h3>
+<ol>
+  <li>
+    <p>同一时间，CPU只能处理1条线程，只有1条线程在执行。多线程并发执行，其实是CPU快速地在多条线程之间调度（切换）。如果CPU调度线程的时间足够快，就造成了多线程并发执行的假象</p>
+  </li>
+  <li>
+    <p>如果线程非常非常多，CPU会在N多线程之间调度，消耗大量的CPU资源，每条线程被调度执行的频次会降低（线程的执行效率降低）</p>
+  </li>
+  <li>多线程的优点:
+    <ul>
+      <li>能适当提高程序的执行效率</li>
+      <li>能适当提高资源利用率（CPU、内存利用率）</li>
+    </ul>
+  </li>
+  <li>多线程的缺点:
+    <ul>
+      <li>开启线程需要占用一定的内存空间（默认情况下，主线程占用1M，子线程占用512KB），如果开启大量的线程，会占用大量的内存空间，降低程序的性能</li>
+      <li>线程越多，CPU在调度线程上的开销就越大</li>
+      <li>程序设计更加复杂：比如线程之间的通信、多线程的数据共享</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="六任务">六、任务</h3>
+<p>就是执行操作的意思，也就是在线程中执行的那段代码。在 GCD 中是放在 block 中的。执行任务有两种方式：<code class="highlighter-rouge">同步执行（sync）</code>和<code class="highlighter-rouge">异步执行（async）</code></p>
+
+<ul>
+  <li>同步(Sync)：同步添加任务到指定的队列中，在添加的任务执行结束之前，会一直等待，直到队列里面的任务完成之后再继续执行，即会阻塞线程。只能在当前线程中执行任务(是当前线程，不一定是主线程)，不具备开启新线程的能力。</li>
+  <li>异步(Async)：线程会立即返回，无需等待就会继续执行下面的任务，不阻塞当前线程。可以在新的线程中执行任务，具备开启新线程的能力(并不一定开启新线程)。如果不是添加到主队列上，异步会在子线程中执行任务</li>
+</ul>
+
+<h3 id="七队列">七、队列</h3>
+<p>队列（Dispatch Queue）：这里的队列指执行任务的等待队列，即用来存放任务的队列。队列是一种特殊的线性表，采用 FIFO（先进先出）的原则，即新任务总是被插入到队列的末尾，而读取任务的时候总是从队列的头部开始读取。每读取一个任务，则从队列中释放一个任务。<br />
+在 GCD 中有两种队列：<code class="highlighter-rouge">串行队列</code>和<code class="highlighter-rouge">并发队列</code>。两者都符合 FIFO（先进先出）的原则。两者的主要区别是：执行顺序不同，以及开启线程数不同。</p>
+
+<ul>
+  <li>
+    <p>串行队列（Serial Dispatch Queue）：<br />
+同一时间内，队列中只能执行一个任务，只有当前的任务执行完成之后，才能执行下一个任务。（只开启一个线程，一个任务执行完毕后，再执行下一个任务）。主队列是主线程上的一个串行队列,是系统自动为我们创建的</p>
+  </li>
+  <li>
+    <p>并发队列（Concurrent Dispatch Queue）：<br />
+同时允许多个任务并发执行。（可以开启多个线程，并且同时执行任务）。并发队列的并发功能只有在异步（dispatch_async）函数下才有效
+<img src="https://img.gorpeln.com/blog_ multithreading_001.png" alt="blog_ multithreading_001" /></p>
+  </li>
+</ul>
+
+<h3 id="八ios中的多线程">八、iOS中的多线程</h3>
+<p>主要有三种：<code class="highlighter-rouge">NSThread</code>、<code class="highlighter-rouge">NSoperationQueue</code>、<code class="highlighter-rouge">GCD</code></p>
+
+<h4 id="1-nsthread轻量级别的多线程技术">1. NSThread：轻量级别的多线程技术</h4>
+<p>是我们自己手动开辟的子线程，如果使用的是初始化方式就需要我们自己启动，如果使用的是构造器方式它就会自动启动。只要是我们手动开辟的线程，都需要我们自己管理该线程，不只是启动，还有该线程使用完毕后的资源回收</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(testThread:) object:@"我是参数"];
+// 当使用初始化方法出来的主线程需要start启动
+[thread start];
+// 可以为开辟的子线程起名字
+thread.name = @"NSThread线程";
+// 调整Thread的权限 线程权限的范围值为0 ~ 1 。越大权限越高，先执行的概率就会越高，由于是概率，所以并不能很准确的的实现我们想要的执行顺序，默认值是0.5
+thread.threadPriority = 1;
+// 取消当前已经启动的线程
+[thread cancel];
+// 通过遍历构造器开辟子线程
+[NSThread detachNewThreadSelector:@selector(testThread:) toTarget:self withObject:@"构造器方式"];
+</code></pre></div></div>
+
+<p>performSelector…只要是NSObject的子类或者对象都可以通过调用方法进入子线程和主线程，其实这些方法所开辟的子线程也是NSThread的另一种体现方式。<br />
+在编译阶段并不会去检查方法是否有效存在，如果不存在只会给出警告</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//在当前线程。延迟1s执行。响应了OC语言的动态性:延迟到运行时才绑定方法
+[self performSelector:@selector(aaa) withObject:nil afterDelay:1];
+// 回到主线程。waitUntilDone:是否将该回调方法执行完在执行后面的代码，如果为YES:就必须等回调方法执行完成之后才能执行后面的代码，说白了就是阻塞当前的线程；如果是NO：就是不等回调方法结束，不会阻塞当前线程
+[self performSelectorOnMainThread:@selector(aaa) withObject:nil waitUntilDone:YES];
+//开辟子线程
+[self performSelectorInBackground:@selector(aaa) withObject:nil];
+//在指定线程执行
+[self performSelector:@selector(aaa) onThread:[NSThread currentThread] withObject:nil waitUntilDone:YES]
+</code></pre></div></div>
+
+<p>需要注意的是：如果是带afterDelay的延时函数，会在内部创建一个 NSTimer，然后添加到当前线程的Runloop中。也就是如果当前线程没有开启runloop，该方法会失效。在子线程中，需要启动runloop(注意调用顺序)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self performSelector:@selector(aaa) withObject:nil afterDelay:1];
+[[NSRunLoop currentRunLoop] run];
+</code></pre></div></div>
+
+<p>而performSelector:withObject:只是一个单纯的消息发送，和时间没有一点关系。所以不需要添加到子线程的Runloop中也能执行</p>
+
+<p><a href="/article/15860813363">更多关于NSThread：iOS多线程：NSThread (二)</a></p>
+
+<h4 id="2-gcd">2. GCD</h4>
+<ol>
+  <li>实际项目开发中，很多时候只是会用到异步操作，不会有特别复杂的线程关系管理，所以苹果推崇的且优化完善、运行快速的GCD是首选</li>
+  <li>如果考虑异步操作之间的事务性，顺序行，依赖关系，比如多线程并发下载，GCD需要自己写更多的代码来实现，而NSOperationQueue已经内建了这些支持</li>
+  <li>不论是GCD还是NSOperationQueue，我们接触的都是任务和队列，都没有直接接触到线程，事实上线程管理也的确不需要我们操心，系统对于线程的创建，调度管理和释放都做得很好。而NSThread需要我们自己去管理线程的生命周期，还要考虑线程同步、加锁问题，造成一些性能上的开销</li>
+</ol>
+
+<p><a href="/article/15861494710">更多关于GCD：iOS多线程：GCD (三)</a></p>
+
+<h4 id="3-nsoprationqueue">3. NSOprationQueue</h4>
+<p>GCD是面向底层的C语言的API，NSOpertaionQueue用GCD构建封装的，是GCD的高级抽象。</p>
+
+<ol>
+  <li>GCD执行效率更高，而且由于队列中执行的是由block构成的任务，这是一个轻量级的数据结构，写起来更方便</li>
+  <li>GCD只支持FIFO的队列，而NSOperationQueue可以通过设置最大并发数，设置优先级，添加依赖关系等调整执行顺序</li>
+  <li>NSOperationQueue甚至可以跨队列设置依赖关系，但是GCD只能通过设置串行队列，或者在队列内添加barrier(dispatch_barrier_async)任务，才能控制执行顺序,较为复杂</li>
+  <li>NSOperationQueue因为面向对象，所以支持KVO，可以监测operation是否正在执行（isExecuted）、是否结束（isFinished）、是否取消（isCanceld）</li>
+</ol>
+
+<p><a href="/article/15884027619">更多关于NSOprationQueue：iOS多线程：NSOperation、NSOperationQueue (五)</a></p>
+
+
+  </article>
+</div>
+
+  <div class="prevandnext">
+    	  
+	    <div style="margin:0.25em;">
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15860813363" title="iOS多线程：NSThread (二)" style="color: #6666cc"  target="_blank">iOS多线程：NSThread (二)</a>
+	    </div>
+	  
+  	  
+	    <div style="margin:0.25em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15821713417" title="优惠券设计思路浅析" style="color: #6666cc"  target="_blank">优惠券设计思路浅析</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'gorpeln',
+        admin: ['gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script>  -->
+
+<head>
+    <script type="text/javascript" src="/assets/js/Valine.min.js"></script>
+</head>
+<style>
+#veditor {
+    background-image: url(https://cdn.jsdelivr.net/gh/drew233/cdn/20200409110727.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: vertical
+}
+
+.v .vwrap {
+    border: 1px solid #37374b !important;
+}
+</style>
+
+<body>
+    <div id="vcomments"></div>
+    <script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'Jc31cFDJbalRKtcpsQ9kpnaH-gzGzoHsz',
+        appKey: '6MfHpQqh9MFU43xg4bwjGAJu',
+        placeholder: '无需注册，支持Markdown语法，填写邮箱可以收到回复通知。',
+        avatar: 'monsterid',
+        pageSize: '10',
+        lang: 'zh-cn',
+        recordIP: 'true',
+        serverURLs: '',
+        enableQQ: true,
+        visitor: true,
+        requiredFields: ['nick', 'mail']
+    })
+
+    document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
+    document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
+    </script>
+</body>
+  </div>
+
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+    </div>
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 动态显示网站运行时间 -->
+<script type="text/javascript" language="javascript">
+function setTime() {
+    var create_time = Math.round(new Date(Date.UTC(2015, 08, 23, 12, 0, 0)).getTime() / 1000);
+    var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+    currentTime = secondToDate((timestamp - create_time));
+    currentTimeHtml = '本站已安全运行：' + currentTime[0] + '年' + currentTime[1] + '天' + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4] + '秒';
+    document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+}
+setInterval(setTime, 1000);
+</script>
+<script language=JavaScript>
+function secondToDate(second) {
+    if (!second) {
+        return 0;
+    }
+
+    var time = new Array(0, 0, 0, 0, 0);
+
+    if (second >= 365 * 24 * 3600) {
+        time[0] = parseInt(second / (365 * 24 * 3600));
+        second %= 365 * 24 * 3600;
+    }
+
+    if (second >= 24 * 3600) {
+        time[1] = parseInt(second / (24 * 3600));
+        second %= 24 * 3600;
+    }
+
+    if (second >= 3600) {
+        time[2] = parseInt(second / 3600);
+        second %= 3600;
+    }
+
+    if (second >= 60) {
+        time[3] = parseInt(second / 60);
+        second %= 60;
+    }
+
+    if (second > 0) {
+        time[4] = second;
+    }
+    return time;
+}
+
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
+
+function out(obj) {
+
+}
+</script>
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+<style>
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
+</style>
+</body>
+<script>
+function pushNew(path) {
+    if (path == '/') {
+        window.location.href = path;
+    } else {
+        window.open(path);
+    }
+}
+</script>
+
+<script type="text/javascript">
+  function menuFixed(id,otherId) {
+    var obj = document.getElementById(id);
+    var _getHeight = obj.offsetTop;
+
+    window.onscroll = function () {
+      changePos(id, _getHeight,otherId);
+    }
+  }
+
+  function changePos(id, height,otherId) {
+    var obj = document.getElementById(id);
+    var friendlinkObj = document.getElementById(otherId);
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop < height) {
+      obj.style.position = 'relative';
+      obj.style.width = friendlinkObj.offsetWidth + 'px';
+    } else {
+      obj.style.position = 'fixed';
+      obj.style.width = friendlinkObj.offsetWidth + 'px';
+    }
+  }
+  window.onload = function () {
+    menuFixed('toc','friendlinkNav');
+  }
+</script>
+
+
+<style>
+.articleCount {
+    float: right;
+    color: #ffffff;
+    background: #ddd;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 32px;
+    text-align: center;
+    line-height: 1.4em;
+    height: 1.4em;
+    margin-top: 0.1em;
+}
+.customCatalog{
+    display: block;
+    margin-top: 1em;
+    background: #fff;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    width: 100%;
+    padding-bottom: 7.5%;
+    padding: 1em;
+    position: relative;
+    top: 0;
+    overflow-y:scroll;
+    max-height: calc(100% - 2em);
+}
+
+.element::-webkit-scrollbar { width: 0 !important }
+.element { -ms-overflow-style: none; }
+.element { overflow: -moz-scrollbars-none; }
+
+
+</style>
+
+</html>

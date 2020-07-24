@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>iOS多线程：线程安全 常见锁 (六) | gorpeln的个人博客 - gorpeln</title>
+
+  <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+  <meta name="description" content="一、前言前段时间看了几个开源项目，发现他们保持线程同步的方式各不相同，有@synchronized、NSLock、dispatch_semaphore、NSCondition、pthread_mutex、OSSpinLock。后来网上查了一下，发现他们的实现机制各不相同，性能也各不一样。下面我们先分别介绍每个加锁...">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
+
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="/article/15931534585">
+  <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
+
+  
+</head>
+
+
+
+
+<header class="site-header">
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style type="text/css">
+    html * {
+        
+    }
+
+    .menuNav {
+        margin-top: 100px;
+        position: absolute;
+    }
+
+    .menuNav * {
+        text-decoration: none;
+        font-size: 9pt;
+    }
+
+    .menuNav * a:hover {
+        /*background-color: rgb(0, 0, 0, 0.75);*/
+    }
+
+    .menuNav {
+        list-style: none;
+        display: none;
+        margin-left: -1px;
+    }
+
+    .menuNav li {
+        float: left;
+        border-top: 1px solid #aaa;
+        background-color: rgb(0, 0, 0, 0.75);
+
+    }
+
+    .menuNav li a {
+    color: #fff;
+    padding: 15px 0;
+    display: block;
+    width: 2em;
+    text-align: center;
+    }
+
+    .menuNav li a:focus {
+        -moz-outline-style: none;
+    }
+
+    .menuNav li .sub-nav {
+     position: absolute;
+    top: -110%;
+    left: calc(2em - 30px);
+    list-style: none;
+    /*background-color: rgb(0, 0, 0, 0.6);*/
+    display: none;
+    }
+
+    .menuNav li .sub-nav li {
+        text-align: center;
+        clear: left;
+        width: 140px;
+        height: 35px;
+        line-height: 35px;
+        position: relative;
+    }
+
+    .menuNav li .sub-nav li a {
+        height: 34px;
+        line-height: 34px;
+        width: 138px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    @media (max-width: 678px) {
+        .menuNav {
+            display: block;
+        }
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        $(".menuNav>li").hover(function() {
+            $(this).children('ul').stop(true, true).show(300);
+        }, function() {
+            $(this).children('ul').stop(true, true).hide(300);
+        })
+    })
+    </script>
+            <ul class="menuNav">
+                <li><a href="#">菜<br/>单</a>
+                    <ul class="sub-nav">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/categories">分类</a></li>
+                        <li><a href="/tags">标签</a></li>
+                        <li><a href="/archives">归档</a></li>
+                        <li><a href="/about">关于</a></li>
+                        <li><a href="/works">项目</a></li>
+                        <li><a href="/mysite">导航</a></li>
+                    </ul>
+                </li>
+            </ul>
+</header>
+
+<body>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#toc').toc();
+    });
+    </script>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">101</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">10</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">95</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a target="_blank" href="/feed.xml"><i class="fas fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">博客导航</div>
+                        <ul>
+                            <li onclick="pushNew('/')"><a><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li onclick="pushNew('/categories')"><a><i class="fas fa-th fa-fw"></i>分类</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">10
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">95
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
+                                <span style=" font-size:14px;color: white;padding: 0 8px;" class="articleCount">101
+                                        </span>
+                            </li>
+                            <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li onclick="pushNew('/links')"><a><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li onclick="pushNew('/login')"><a><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">※
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/mysite')"><a><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li onclick="pushNew('/works')"><a><i class="fab fa-git-square fa-fw"></i>项目</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">3
+                                </span>
+                            </li>
+                            <li id="cb-search-btn-two"><a><i class="fas fa-search fa-fw"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">文章分类</div>
+                        <ul>
+                            
+                            <li onclick="pushNew('/categories#个人博客')">
+                                <a name="个人博客" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">个人博客</a>
+                                <a name="个人博客" style="font-size:14px;color: white" class="articleCount">8
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Linux')">
+                                <a name="Linux" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Linux</a>
+                                <a name="Linux" style="font-size:14px;color: white" class="articleCount">1
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#web前端')">
+                                <a name="web前端" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">web前端</a>
+                                <a name="web前端" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#其他')">
+                                <a name="其他" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">其他</a>
+                                <a name="其他" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#iOS')">
+                                <a name="iOS" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">iOS</a>
+                                <a name="iOS" style="font-size:14px;color: white" class="articleCount">31
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#程序人生')">
+                                <a name="程序人生" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">程序人生</a>
+                                <a name="程序人生" style="font-size:14px;color: white" class="articleCount">18
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Software MAC')">
+                                <a name="Software MAC" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Software MAC</a>
+                                <a name="Software MAC" style="font-size:14px;color: white" class="articleCount">11
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#架构和算法')">
+                                <a name="架构和算法" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">架构和算法</a>
+                                <a name="架构和算法" style="font-size:14px;color: white" class="articleCount">7
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Git')">
+                                <a name="Git" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Git</a>
+                                <a name="Git" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#微信小程序')">
+                                <a name="微信小程序" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">微信小程序</a>
+                                <a name="微信小程序" style="font-size:14px;color: white" class="articleCount">10
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="contactNav">
+                        <div class="contactNavTitle">个人档案</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.jpg" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <span class="contact-name">33964471</span>
+                            </a>
+                            <a class="contact-item" href="/" target="_blank">
+                                <img src="/assets/img/social/gmailLogo.png">
+                                <span class="contact-name">gorpeln*163.com(*=>@)</span>
+                            </a>
+                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">gorpeln.blog.csdn.net</span>
+                            </a>
+                            <a class="contact-item" href="/about" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="contact-name">更多...</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlinkNav" id="friendlinkNav">
+                        <div class="friendlinkNavTitle">友情链接</div>
+                        <div class="friend-container">
+                            
+                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                <img src="/assets/img/blogwe.ico">
+                                <span class="friend-name">博客大全</span>
+                            </a>
+                            
+                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                <img src="/assets/img/foreverblog.ico">
+                                <span class="friend-name">十年之约</span>
+                            </a>
+                            
+                            <a class="friend-item" href="/links" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="friend-name">更多...</span>
+                            </a>
+                            
+                        </div>
+                    </div>
+                    <!-- <div id="toc" class="navbar navbar-default customCatalog"></div> -->
+                    <div id="toc" class="customCatalog"></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">iOS多线程：线程安全 常见锁 (六)</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2020-06-26</p>
+	    
+	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
+        	iOS
+		</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		<span class="index-post-tag">
+		
+			<a class="pjaxlink" href="/tags#GCD"  target="_blank">GCD</a>
+		
+			<a class="pjaxlink" href="/tags#多线程"  target="_blank">多线程</a>
+		
+		</span>
+	    
+    </div>
+  </header>
+
+<div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
+转载请注明出处：https://gorpeln.com/article/15931534585
+</div>
+
+
+  <article class="post-content">
+    <h3 id="一前言">一、前言</h3>
+<p>前段时间看了几个开源项目，发现他们保持线程同步的方式各不相同，有<code class="highlighter-rouge">@synchronized</code>、<code class="highlighter-rouge">NSLock</code>、<code class="highlighter-rouge">dispatch_semaphore</code>、<code class="highlighter-rouge">NSCondition</code>、<code class="highlighter-rouge">pthread_mutex</code>、<code class="highlighter-rouge">OSSpinLock</code>。后来网上查了一下，发现他们的实现机制各不相同，性能也各不一样。下面我们先分别介绍每个加锁方式的使用，在使用一个案例来对他们进行性能对比。</p>
+
+<h3 id="二非线程安全">二、非线程安全</h3>
+<p>举例说明：两个火车票销售窗口 共同销售车站总共的50张车票。看代码你最明白。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ * 非线程安全
+ * 初始化火车票数量、卖票窗口(非线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@"------开始放票了---%@",[NSThread currentThread]);  // 打印当前线程
+    
+    self.ticketSurplusCount = 50;
+    
+    // queue1 代表北京火车票售卖窗口
+    dispatch_queue_t queue1 = dispatch_queue_create("com.gorpeln.testQueue1", DISPATCH_QUEUE_SERIAL);
+    // queue2 代表上海火车票售卖窗口
+    dispatch_queue_t queue2 = dispatch_queue_create("com.gorpeln.testQueue2", DISPATCH_QUEUE_SERIAL);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(queue1, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+    
+    dispatch_async(queue2, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+}
+
+/**
+ * 售卖火车票(非线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        
+        if (self.ticketSurplusCount &gt; 0) {  //如果还有票，继续售卖
+            self.ticketSurplusCount--;
+            NSLog(@"%@", [NSString stringWithFormat:@"剩余票数：%d 窗口：%@", self.ticketSurplusCount, [NSThread currentThread]]);
+            [NSThread sleepForTimeInterval:0.2];
+        } else { //如果已卖完，关闭售票窗口
+            NSLog(@"所有火车票均已售完");
+            break;
+        }
+        
+        
+    }
+}
+</code></pre></div></div>
+<p>输出结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------开始放票了---&lt;NSThread: 0x600003b98b00&gt;{number = 1, name = main}
+剩余票数：49 窗口：&lt;NSThread: 0x600003bc6980&gt;{number = 5, name = (null)}
+剩余票数：48 窗口：&lt;NSThread: 0x600003bcc080&gt;{number = 3, name = (null)}
+剩余票数：46 窗口：&lt;NSThread: 0x600003bcc080&gt;{number = 3, name = (null)}
+剩余票数：47 窗口：&lt;NSThread: 0x600003bc6980&gt;{number = 5, name = (null)}
+剩余票数：44 窗口：&lt;NSThread: 0x600003bc6980&gt;{number = 5, name = (null)}
+剩余票数：45 窗口：&lt;NSThread: 0x600003bcc080&gt;{number = 3, name = (null)}
+剩余票数：43 窗口：&lt;NSThread: 0x600003bc6980&gt;{number = 5, name = (null)}
+......
+剩余票数：7 窗口：&lt;NSThread: 0x600003bcc080&gt;{number = 3, name = (null)}
+剩余票数：5 窗口：&lt;NSThread: 0x600003bcc080&gt;{number = 3, name = (null)}
+剩余票数：6 窗口：&lt;NSThread: 0x600003bc6980&gt;{number = 5, name = (null)}
+剩余票数：3 窗口：&lt;NSThread: 0x600003bc6980&gt;{number = 5, name = (null)}
+剩余票数：3 窗口：&lt;NSThread: 0x600003bcc080&gt;{number = 3, name = (null)}
+剩余票数：2 窗口：&lt;NSThread: 0x600003bc6980&gt;{number = 5, name = (null)}
+剩余票数：1 窗口：&lt;NSThread: 0x600003bcc080&gt;{number = 3, name = (null)}
+所有火车票均已售完
+剩余票数：0 窗口：&lt;NSThread: 0x600003bc6980&gt;{number = 5, name = (null)}
+所有火车票均已售完
+</code></pre></div></div>
+
+<p>可以看到在不考虑线程安全，得到票数是错乱的，这样显然不符合我们的需求，所以我们需要考虑线程安全问题。防止两条线程同时对此任务进行编辑，每次只能有一条线程执行此任务。所以就用到了线程加锁</p>
+
+<h3 id="三介绍与使用">三、介绍与使用</h3>
+
+<h4 id="21synchronized互斥锁">2.1、@synchronized互斥锁</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ * 线程安全：使用 @synchronized  加锁
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@"------开始放票了---%@",[NSThread currentThread]);  // 打印当前线程
+    
+    self.ticketSurplusCount = 50;
+    
+    // queue1 代表北京火车票售卖窗口
+    dispatch_queue_t queue1 = dispatch_queue_create("com.gorpeln.testQueue1", DISPATCH_QUEUE_SERIAL);
+    // queue2 代表上海火车票售卖窗口
+    dispatch_queue_t queue2 = dispatch_queue_create("com.gorpeln.testQueue2", DISPATCH_QUEUE_SERIAL);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(queue1, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+    
+    dispatch_async(queue2, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        @synchronized(self) {
+            if (self.ticketSurplusCount &gt; 0) {  //如果还有票，继续售卖
+                self.ticketSurplusCount--;
+                NSLog(@"%@", [NSString stringWithFormat:@"剩余票数：%d 窗口：%@", self.ticketSurplusCount, [NSThread currentThread]]);
+                [NSThread sleepForTimeInterval:0.2];
+            } else { //如果已卖完，关闭售票窗口
+                NSLog(@"所有火车票均已售完");
+                break;
+            }
+        }
+    }
+}
+</code></pre></div></div>
+<p>输出结果：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------开始放票了---&lt;NSThread: 0x60000018a0c0&gt;{number = 1, name = main}
+剩余票数：49 窗口：&lt;NSThread: 0x6000001deec0&gt;{number = 4, name = (null)}
+剩余票数：48 窗口：&lt;NSThread: 0x6000001deec0&gt;{number = 4, name = (null)}
+剩余票数：47 窗口：&lt;NSThread: 0x6000001deec0&gt;{number = 4, name = (null)}
+剩余票数：46 窗口：&lt;NSThread: 0x6000001d4d40&gt;{number = 5, name = (null)}
+剩余票数：45 窗口：&lt;NSThread: 0x6000001d4d40&gt;{number = 5, name = (null)}
+......
+剩余票数：4 窗口：&lt;NSThread: 0x6000001deec0&gt;{number = 4, name = (null)}
+剩余票数：3 窗口：&lt;NSThread: 0x6000001deec0&gt;{number = 4, name = (null)}
+剩余票数：2 窗口：&lt;NSThread: 0x6000001deec0&gt;{number = 4, name = (null)}
+剩余票数：1 窗口：&lt;NSThread: 0x6000001deec0&gt;{number = 4, name = (null)}
+剩余票数：0 窗口：&lt;NSThread: 0x6000001d4d40&gt;{number = 5, name = (null)}
+所有火车票均已售完
+所有火车票均已售完
+</code></pre></div></div>
+<p><code class="highlighter-rouge">@synchronized</code> 指令实现锁的优点就是我们不需要在代码中显式的创建锁对象，便可以实现锁的机制，但作为一种预防措施，<code class="highlighter-rouge">@synchronized</code> 块会隐式的添加一个异常处理例程来保护代码，该处理例程会在异常抛出的时候自动的释放互斥锁。<code class="highlighter-rouge">@synchronized</code> 还有一个好处就是不用担心忘记解锁了。</p>
+
+<h4 id="22dispatch_semaphore">2.2、dispatch_semaphore</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ * 线程安全：使用 semaphore  加锁
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@"------开始放票了---%@",[NSThread currentThread]);  // 打印当前线程
+    
+    semaphoreLock = dispatch_semaphore_create(1);
+
+    self.ticketSurplusCount = 50;
+    
+    // queue1 代表北京火车票售卖窗口
+    dispatch_queue_t queue1 = dispatch_queue_create("com.gorpeln.testQueue1", DISPATCH_QUEUE_SERIAL);
+    // queue2 代表上海火车票售卖窗口
+    dispatch_queue_t queue2 = dispatch_queue_create("com.gorpeln.testQueue2", DISPATCH_QUEUE_SERIAL);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(queue1, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+    
+    dispatch_async(queue2, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        // 相当于加锁
+        dispatch_semaphore_wait(semaphoreLock, DISPATCH_TIME_FOREVER);
+        if (self.ticketSurplusCount &gt; 0) {  //如果还有票，继续售卖
+            self.ticketSurplusCount--;
+            NSLog(@"%@", [NSString stringWithFormat:@"剩余票数：%d 窗口：%@", self.ticketSurplusCount, [NSThread currentThread]]);
+            [NSThread sleepForTimeInterval:0.2];
+        } else { //如果已卖完，关闭售票窗口
+            NSLog(@"所有火车票均已售完");
+            // 相当于解锁
+            dispatch_semaphore_signal(semaphoreLock);
+            break;
+        }
+        // 相当于解锁
+        dispatch_semaphore_signal(semaphoreLock);
+    }
+}
+</code></pre></div></div>
+<p>输出结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------开始放票了---&lt;NSThread: 0x600002c792c0&gt;{number = 1, name = main}
+剩余票数：49 窗口：&lt;NSThread: 0x600002c28d00&gt;{number = 4, name = (null)}
+剩余票数：48 窗口：&lt;NSThread: 0x600002c15100&gt;{number = 6, name = (null)}
+剩余票数：47 窗口：&lt;NSThread: 0x600002c28d00&gt;{number = 4, name = (null)}
+剩余票数：46 窗口：&lt;NSThread: 0x600002c15100&gt;{number = 6, name = (null)}
+剩余票数：45 窗口：&lt;NSThread: 0x600002c28d00&gt;{number = 4, name = (null)}
+剩余票数：44 窗口：&lt;NSThread: 0x600002c15100&gt;{number = 6, name = (null)}
+剩余票数：43 窗口：&lt;NSThread: 0x600002c28d00&gt;{number = 4, name = (null)}
+......
+剩余票数：4 窗口：&lt;NSThread: 0x600002c15100&gt;{number = 6, name = (null)}
+剩余票数：3 窗口：&lt;NSThread: 0x600002c28d00&gt;{number = 4, name = (null)}
+剩余票数：2 窗口：&lt;NSThread: 0x600002c15100&gt;{number = 6, name = (null)}
+剩余票数：1 窗口：&lt;NSThread: 0x600002c28d00&gt;{number = 4, name = (null)}
+剩余票数：0 窗口：&lt;NSThread: 0x600002c15100&gt;{number = 6, name = (null)}
+所有火车票均已售完
+所有火车票均已售完
+</code></pre></div></div>
+
+<p>dispatch_semaphore 是 GCD 用来同步的一种方式，<code class="highlighter-rouge">dispatch_semaphore_create</code>是创建信号量，<code class="highlighter-rouge">dispatch_semaphore_wait</code>是等待信号，<code class="highlighter-rouge">dispatch_semaphore_signal</code>是发送信号。</p>
+
+<p>详细请看 <a href="/article/15861494710">iOS多线程：GCD (三)</a></p>
+
+<h4 id="23nslock对象锁">2.3、NSLock对象锁</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ * 线程安全：使用 NSLock  加锁
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@"------开始放票了---%@",[NSThread currentThread]);  // 打印当前线程
+    
+
+    self.ticketSurplusCount = 50;
+    
+    // queue1 代表北京火车票售卖窗口
+    dispatch_queue_t queue1 = dispatch_queue_create("com.gorpeln.testQueue1", DISPATCH_QUEUE_SERIAL);
+    // queue2 代表上海火车票售卖窗口
+    dispatch_queue_t queue2 = dispatch_queue_create("com.gorpeln.testQueue2", DISPATCH_QUEUE_SERIAL);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(queue1, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+    
+    dispatch_async(queue2, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        // 相当于加锁
+        [_lock lock];
+        if (self.ticketSurplusCount &gt; 0) {  //如果还有票，继续售卖
+            self.ticketSurplusCount--;
+            NSLog(@"%@", [NSString stringWithFormat:@"剩余票数：%d 窗口：%@", self.ticketSurplusCount, [NSThread currentThread]]);
+            [NSThread sleepForTimeInterval:0.2];
+        } else { //如果已卖完，关闭售票窗口
+            NSLog(@"所有火车票均已售完");
+            break;
+        }
+        [_lock unlock];
+    }
+}
+</code></pre></div></div>
+<p>输出结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>------开始放票了---&lt;NSThread: 0x600000608b80&gt;{number = 1, name = main}
+剩余票数：49 窗口：&lt;NSThread: 0x600000651c80&gt;{number = 4, name = (null)}
+剩余票数：48 窗口：&lt;NSThread: 0x60000066dd40&gt;{number = 6, name = (null)}
+剩余票数：47 窗口：&lt;NSThread: 0x60000066dd40&gt;{number = 6, name = (null)}
+剩余票数：46 窗口：&lt;NSThread: 0x600000651c80&gt;{number = 4, name = (null)}
+剩余票数：45 窗口：&lt;NSThread: 0x600000651c80&gt;{number = 4, name = (null)}
+......
+剩余票数：4 窗口：&lt;NSThread: 0x600000651c80&gt;{number = 4, name = (null)}
+剩余票数：2 窗口：&lt;NSThread: 0x60000066dd40&gt;{number = 6, name = (null)}
+剩余票数：3 窗口：&lt;NSThread: 0x600000651c80&gt;{number = 4, name = (null)}
+剩余票数：1 窗口：&lt;NSThread: 0x60000066dd40&gt;{number = 6, name = (null)}
+剩余票数：0 窗口：&lt;NSThread: 0x600000651c80&gt;{number = 4, name = (null)}
+所有火车票均已售完
+所有火车票均已售完
+</code></pre></div></div>
+<p>NSLock是Cocoa提供给我们最基本的锁对象，这也是我们经常所使用的，除<code class="highlighter-rouge">lock</code>和<code class="highlighter-rouge">unlock</code>方法外，NSLock还提供了<code class="highlighter-rouge">tryLock</code>和<code class="highlighter-rouge">lockBeforeDate:</code>两个方法，前一个方法会尝试加锁，如果锁不可用(已经被锁住)，刚并不会阻塞线程，并返回NO。<code class="highlighter-rouge">lockBeforeDate:</code>方法会在所指定Date之前尝试加锁，如果在指定时间之前都不能加锁，则返回NO。</p>
+
+<h4 id="24nsrecursivelock递归锁">2.4、NSRecursiveLock递归锁</h4>
+<p>NSRecursiveLock实际上定义的是一个递归锁，这个锁可以被同一线程多次请求，而不会引起死锁。这主要是用在循环或递归操作中。我们先来看一个示例：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSLock *lock = [[NSLock alloc] init];
+ 
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+ 
+    static void (^RecursiveMethod)(int);
+    RecursiveMethod = ^(int value) {
+        [lock lock];
+        if (value &gt; 0) {
+            NSLog(@"value = %d", value);
+            sleep(2);
+            RecursiveMethod(value - 1);
+        }
+        [lock unlock];
+    };
+ 
+    RecursiveMethod(5);
+});
+</code></pre></div></div>
+<p>这段代码是一个典型的死锁情况。在我们的线程中，RecursiveMethod是递归调用的。所以每次进入这个block时，都会去加一次锁，而从第二次开始，由于锁已经被使用了且没有解锁，所以它需要等待锁被解除，这样就导致了死锁，线程被阻塞住了。调试器中会输出如下信息：</p>
+
+<p>输出结果：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>value = 5
+*** -[NSLock lock]: deadlock ( '(null)')   *** Break on _NSLockError() to debug.
+</code></pre></div></div>
+
+<p>在这种情况下，我们就可以使用NSRecursiveLock。它可以允许同一线程多次加锁，而不会造成死锁。递归锁会跟踪它被lock的次数。每次成功的lock都必须平衡调用unlock操作。只有所有达到这种平衡，锁最后才能被释放，以供其它线程使用。</p>
+
+<p>所以，对上面的代码进行一下改造，</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
+</code></pre></div></div>
+
+<p>这样，程序就能正常运行了，其输出如下所示：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>value = 5
+value = 4
+value = 3
+value = 2
+value = 1
+</code></pre></div></div>
+<h4 id="25nsconditionlock条件锁">2.5、NSConditionLock条件锁</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//初始化锁时，指定一个默认的条件
+NSConditionLock *lock = [[NSConditionLock alloc] initWithCondition:0];
+NSMutableArray *products = [NSMutableArray array];
+    
+NSInteger HAS_DATA = 1; //条件一： 有数据
+NSInteger NO_DATA = 0;  //条件二： 没有数据
+    
+//生产者，加锁与解锁的过程
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    while (1) {
+        [lock lockWhenCondition:NO_DATA];//1. 当满足 【没有数据的条件时】进行加锁
+        [products addObject:[[NSObject alloc] init]];//2. 生产者生成数据
+        NSLog(@"produce a product,总量:%zi",products.count);
+        [lock unlockWithCondition:HAS_DATA];//3. 解锁，并设置新的条件，已经有数据了
+        sleep(1);
+    }
+    
+});
+
+//消费者，加锁与解锁的过程
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    while (1) {
+        NSLog(@"wait for product");
+        [lock lockWhenCondition:HAS_DATA];//1. 当满足 【有数据的条件时】进行加锁
+        [products removeObjectAtIndex:0];//2. 消费者消费数据
+        NSLog(@"custome a product");
+        [lock unlockWithCondition:NO_DATA];//3. 解锁，并设置新的条件，没有数据了
+    }
+    
+});
+</code></pre></div></div>
+<p>输出结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+......
+</code></pre></div></div>
+
+<p>当我们在使用多线程的时候，有时一把只会lock和unlock的锁未必就能完全满足我们的使用。因为普通的锁只能关心锁与不锁，而不在乎用什么钥匙才能开锁，而我们在处理资源共享的时候，多数情况是只有满足一定条件的情况下才能打开这把锁：</p>
+
+<p>在线程1中的加锁使用了lock，所以是不需要条件的，所以顺利的就锁住了，但在unlock的使用了一个整型的条件，它可以开启其它线程中正在等待这把钥匙的临界地，而线程2则需要一把被标识为2的钥匙，所以当线程1循环到最后一次的时候，才最终打开了线程2中的阻塞。但即便如此，NSConditionLock也跟其它的锁一样，是需要lock与unlock对应的，只是lock,lockWhenCondition:与unlock，unlockWithCondition:是可以随意组合的，当然这是与你的需求相关的。</p>
+
+<h4 id="26nscondition">2.6、NSCondition</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSCondition *condition = [[NSCondition alloc] init];
+
+NSMutableArray *products = [NSMutableArray array];
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    while (1) {
+        [condition lock];
+        if ([products count] == 0) {
+            NSLog(@"wait for product");
+            [condition wait];
+        }
+        [products removeObjectAtIndex:0];
+        NSLog(@"custome a product");
+        [condition unlock];
+    }
+
+});
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    while (1) {
+        [condition lock];
+        [products addObject:[[NSObject alloc] init]];
+        NSLog(@"produce a product,总量:%zi",products.count);
+        [condition signal];
+        [condition unlock];
+        sleep(1);
+    }
+
+});
+</code></pre></div></div>
+
+<p>输出结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+wait for product
+......
+</code></pre></div></div>
+
+<p>一种最基本的条件锁。手动控制线程wait和signal。<br />
+<code class="highlighter-rouge">[condition lock];</code>一般用于多线程同时访问、修改同一个数据源，保证在同一时间内数据源只被访问、修改一次，其他线程的命令需要在lock 外等待，只到unlock ，才可访问<br />
+<code class="highlighter-rouge">[condition unlock];</code>与lock 同时使用<br />
+<code class="highlighter-rouge">[condition wait];</code>让当前线程处于等待状态<br />
+<code class="highlighter-rouge">[condition signal];</code>CPU发信号告诉线程不用在等待，可以继续执行</p>
+
+<blockquote>
+  <p><strong>不同点：</strong><br />
+NSCondition条件量，需要一个外部共享变量，来探测条件是否满足<br />
+NSConditionLock条件锁， 不需要，条件锁自带一个探测条件，是否满足</p>
+</blockquote>
+
+<h4 id="27pthread_mutex">2.7、pthread_mutex</h4>
+<p>C 语言下多线程加互斥锁的方式，那来段 C 风格的示例代码，需要 <code class="highlighter-rouge">#import &lt;pthread.h&gt;</code></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>__block pthread_mutex_t theLock;
+pthread_mutex_init(&amp;theLock, NULL);
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        pthread_mutex_lock(&amp;theLock);
+        NSLog(@"需要线程同步的操作1 开始");
+        sleep(3);
+        NSLog(@"需要线程同步的操作1 结束");
+        pthread_mutex_unlock(&amp;theLock);
+    
+});
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        sleep(1);
+        pthread_mutex_lock(&amp;theLock);
+        NSLog(@"需要线程同步的操作2");
+        pthread_mutex_unlock(&amp;theLock);
+    
+});
+</code></pre></div></div>
+
+<p>输出结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>需要线程同步的操作1 开始
+需要线程同步的操作1 结束
+需要线程同步的操作2
+</code></pre></div></div>
+
+<p>1：<code class="highlighter-rouge">pthread_mutex_init(pthread_mutex_t * mutex,const pthread_mutexattr_t attr);</code>
+初始化锁变量mutex。attr为锁属性，NULL值为默认属性。<br />
+2：<code class="highlighter-rouge">pthread_mutex_lock(pthread_mutex_t* mutex);</code>加锁<br />
+3：<code class="highlighter-rouge">pthread_mutex_tylock(pthread_mutex_t* mutex);</code>加锁，但是与2不一样的是当锁已经在使用的时候，返回为EBUSY，而不是挂起等待。<br />
+4：<code class="highlighter-rouge">pthread_mutex_unlock(pthread_mutex_t* mutex);</code>释放锁<br />
+5：<code class="highlighter-rouge">pthread_mutex_destroy(pthread_mutex_t* *mutex);</code>使用完后释放</p>
+
+<h4 id="28pthread_mutexrecursive">2.8、pthread_mutex(recursive)</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>__block pthread_mutex_t theLock;
+    
+pthread_mutexattr_t attr;
+pthread_mutexattr_init(&amp;attr);
+pthread_mutexattr_settype(&amp;attr, PTHREAD_MUTEX_RECURSIVE);
+pthread_mutex_init(&amp;theLock, &amp;attr);
+pthread_mutexattr_destroy(&amp;attr);
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    static void (^RecursiveMethod)(int);
+    
+    RecursiveMethod = ^(int value) {
+        
+        pthread_mutex_lock(&amp;theLock);
+        if (value &gt; 0) {
+            
+            NSLog(@"value = %d", value);
+            sleep(1);
+            RecursiveMethod(value - 1);
+        }
+        pthread_mutex_unlock(&amp;theLock);
+    };
+    
+    RecursiveMethod(5);
+});
+</code></pre></div></div>
+<p>输出结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>value = 5
+value = 4
+value = 3
+value = 2
+value = 1
+</code></pre></div></div>
+
+<p>这是pthread_mutex为了防止在递归的情况下出现死锁而出现的递归锁。作用和NSRecursiveLock递归锁类似。</p>
+
+<p>如果使用<code class="highlighter-rouge">pthread_mutex_init(&amp;theLock, NULL);</code>初始化锁的话，上面的代码会出现死锁现象。如果使用递归锁的形式，则没有问题。</p>
+
+<h4 id="29osspinlock">2.9、OSSpinLock</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//#import &lt;libkern/OSAtomic.h&gt;
+
+__block OSSpinLock theLock = OS_SPINLOCK_INIT;
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    OSSpinLockLock(&amp;theLock);
+    NSLog(@"需要线程同步的操作1 开始");
+    sleep(3);
+    NSLog(@"需要线程同步的操作1 结束");
+    OSSpinLockUnlock(&amp;theLock);
+    
+});
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    OSSpinLockLock(&amp;theLock);
+    sleep(1);
+    NSLog(@"需要线程同步的操作2");
+    OSSpinLockUnlock(&amp;theLock);
+    
+});
+</code></pre></div></div>
+<p>输出结果：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>需要线程同步的操作1 开始
+需要线程同步的操作1 结束
+需要线程同步的操作2
+</code></pre></div></div>
+
+<p>OSSpinLock 是一种自旋锁，也只有加锁，解锁，尝试加锁三个方法。和 NSLock 不同的是 NSLock 请求加锁失败的话，会先轮询，但一秒过后便会使线程进入 waiting 状态，等待唤醒。而 OSSpinLock 会一直轮询，等待时会消耗大量 CPU 资源，不适用于较长时间的任务。</p>
+
+<h3 id="四性能对比">四、性能对比</h3>
+<p><img src="https://img.gorpeln.com/blog_lock_001.png" alt="blog_lock_001" /></p>
+
+  </article>
+</div>
+
+  <div class="prevandnext">
+    	  
+  	  
+	    <div style="margin:0.25em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15884027619" title="iOS多线程：NSOperation、NSOperationQueue (五)" style="color: #6666cc"  target="_blank">iOS多线程：NSOperation、NSOperationQueue (五)</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'gorpeln',
+        admin: ['gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script>  -->
+
+<head>
+    <script type="text/javascript" src="/assets/js/Valine.min.js"></script>
+</head>
+<style>
+#veditor {
+    background-image: url(https://cdn.jsdelivr.net/gh/drew233/cdn/20200409110727.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: vertical
+}
+
+.v .vwrap {
+    border: 1px solid #37374b !important;
+}
+</style>
+
+<body>
+    <div id="vcomments"></div>
+    <script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'Jc31cFDJbalRKtcpsQ9kpnaH-gzGzoHsz',
+        appKey: '6MfHpQqh9MFU43xg4bwjGAJu',
+        placeholder: '无需注册，支持Markdown语法，填写邮箱可以收到回复通知。',
+        avatar: 'monsterid',
+        pageSize: '10',
+        lang: 'zh-cn',
+        recordIP: 'true',
+        serverURLs: '',
+        enableQQ: true,
+        visitor: true,
+        requiredFields: ['nick', 'mail']
+    })
+
+    document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
+    document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
+    </script>
+</body>
+  </div>
+
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+    </div>
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 动态显示网站运行时间 -->
+<script type="text/javascript" language="javascript">
+function setTime() {
+    var create_time = Math.round(new Date(Date.UTC(2015, 08, 23, 12, 0, 0)).getTime() / 1000);
+    var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+    currentTime = secondToDate((timestamp - create_time));
+    currentTimeHtml = '本站已安全运行：' + currentTime[0] + '年' + currentTime[1] + '天' + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4] + '秒';
+    document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+}
+setInterval(setTime, 1000);
+</script>
+<script language=JavaScript>
+function secondToDate(second) {
+    if (!second) {
+        return 0;
+    }
+
+    var time = new Array(0, 0, 0, 0, 0);
+
+    if (second >= 365 * 24 * 3600) {
+        time[0] = parseInt(second / (365 * 24 * 3600));
+        second %= 365 * 24 * 3600;
+    }
+
+    if (second >= 24 * 3600) {
+        time[1] = parseInt(second / (24 * 3600));
+        second %= 24 * 3600;
+    }
+
+    if (second >= 3600) {
+        time[2] = parseInt(second / 3600);
+        second %= 3600;
+    }
+
+    if (second >= 60) {
+        time[3] = parseInt(second / 60);
+        second %= 60;
+    }
+
+    if (second > 0) {
+        time[4] = second;
+    }
+    return time;
+}
+
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
+
+function out(obj) {
+
+}
+</script>
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+<style>
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
+</style>
+</body>
+<script>
+function pushNew(path) {
+    if (path == '/') {
+        window.location.href = path;
+    } else {
+        window.open(path);
+    }
+}
+</script>
+
+<script type="text/javascript">
+  function menuFixed(id,otherId) {
+    var obj = document.getElementById(id);
+    var _getHeight = obj.offsetTop;
+
+    window.onscroll = function () {
+      changePos(id, _getHeight,otherId);
+    }
+  }
+
+  function changePos(id, height,otherId) {
+    var obj = document.getElementById(id);
+    var friendlinkObj = document.getElementById(otherId);
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop < height) {
+      obj.style.position = 'relative';
+      obj.style.width = friendlinkObj.offsetWidth + 'px';
+    } else {
+      obj.style.position = 'fixed';
+      obj.style.width = friendlinkObj.offsetWidth + 'px';
+    }
+  }
+  window.onload = function () {
+    menuFixed('toc','friendlinkNav');
+  }
+</script>
+
+
+<style>
+.articleCount {
+    float: right;
+    color: #ffffff;
+    background: #ddd;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 32px;
+    text-align: center;
+    line-height: 1.4em;
+    height: 1.4em;
+    margin-top: 0.1em;
+}
+.customCatalog{
+    display: block;
+    margin-top: 1em;
+    background: #fff;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    width: 100%;
+    padding-bottom: 7.5%;
+    padding: 1em;
+    position: relative;
+    top: 0;
+    overflow-y:scroll;
+    max-height: calc(100% - 2em);
+}
+
+.element::-webkit-scrollbar { width: 0 !important }
+.element { -ms-overflow-style: none; }
+.element { overflow: -moz-scrollbars-none; }
+
+
+</style>
+
+</html>

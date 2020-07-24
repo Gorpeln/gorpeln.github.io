@@ -6,6 +6,2983 @@
     <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）</description>
     
       <item>
+        <title>iOS多线程：线程安全 常见锁 (六)</title>
+        <link>https://gorpeln.com/article/15931534585</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15931534585</guid>
+        <pubDate>Fri, 26 Jun 2020 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;一前言&quot;&gt;一、前言&lt;/h3&gt;
+&lt;p&gt;前段时间看了几个开源项目，发现他们保持线程同步的方式各不相同，有&lt;code class=&quot;highlighter-rouge&quot;&gt;@synchronized&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;NSLock&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_semaphore&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;NSCondition&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;OSSpinLock&lt;/code&gt;。后来网上查了一下，发现他们的实现机制各不相同，性能也各不一样。下面我们先分别介绍每个加锁方式的使用，在使用一个案例来对他们进行性能对比。&lt;/p&gt;
+
+&lt;h3 id=&quot;二非线程安全&quot;&gt;二、非线程安全&lt;/h3&gt;
+&lt;p&gt;举例说明：两个火车票销售窗口 共同销售车站总共的50张车票。看代码你最明白。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 非线程安全
+ * 初始化火车票数量、卖票窗口(非线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@&quot;------开始放票了---%@&quot;,[NSThread currentThread]);  // 打印当前线程
+    
+    self.ticketSurplusCount = 50;
+    
+    // queue1 代表北京火车票售卖窗口
+    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.gorpeln.testQueue1&quot;, DISPATCH_QUEUE_SERIAL);
+    // queue2 代表上海火车票售卖窗口
+    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.gorpeln.testQueue2&quot;, DISPATCH_QUEUE_SERIAL);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(queue1, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+    
+    dispatch_async(queue2, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+}
+
+/**
+ * 售卖火车票(非线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        
+        if (self.ticketSurplusCount &amp;gt; 0) {  //如果还有票，继续售卖
+            self.ticketSurplusCount--;
+            NSLog(@&quot;%@&quot;, [NSString stringWithFormat:@&quot;剩余票数：%d 窗口：%@&quot;, self.ticketSurplusCount, [NSThread currentThread]]);
+            [NSThread sleepForTimeInterval:0.2];
+        } else { //如果已卖完，关闭售票窗口
+            NSLog(@&quot;所有火车票均已售完&quot;);
+            break;
+        }
+        
+        
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;------开始放票了---&amp;lt;NSThread: 0x600003b98b00&amp;gt;{number = 1, name = main}
+剩余票数：49 窗口：&amp;lt;NSThread: 0x600003bc6980&amp;gt;{number = 5, name = (null)}
+剩余票数：48 窗口：&amp;lt;NSThread: 0x600003bcc080&amp;gt;{number = 3, name = (null)}
+剩余票数：46 窗口：&amp;lt;NSThread: 0x600003bcc080&amp;gt;{number = 3, name = (null)}
+剩余票数：47 窗口：&amp;lt;NSThread: 0x600003bc6980&amp;gt;{number = 5, name = (null)}
+剩余票数：44 窗口：&amp;lt;NSThread: 0x600003bc6980&amp;gt;{number = 5, name = (null)}
+剩余票数：45 窗口：&amp;lt;NSThread: 0x600003bcc080&amp;gt;{number = 3, name = (null)}
+剩余票数：43 窗口：&amp;lt;NSThread: 0x600003bc6980&amp;gt;{number = 5, name = (null)}
+......
+剩余票数：7 窗口：&amp;lt;NSThread: 0x600003bcc080&amp;gt;{number = 3, name = (null)}
+剩余票数：5 窗口：&amp;lt;NSThread: 0x600003bcc080&amp;gt;{number = 3, name = (null)}
+剩余票数：6 窗口：&amp;lt;NSThread: 0x600003bc6980&amp;gt;{number = 5, name = (null)}
+剩余票数：3 窗口：&amp;lt;NSThread: 0x600003bc6980&amp;gt;{number = 5, name = (null)}
+剩余票数：3 窗口：&amp;lt;NSThread: 0x600003bcc080&amp;gt;{number = 3, name = (null)}
+剩余票数：2 窗口：&amp;lt;NSThread: 0x600003bc6980&amp;gt;{number = 5, name = (null)}
+剩余票数：1 窗口：&amp;lt;NSThread: 0x600003bcc080&amp;gt;{number = 3, name = (null)}
+所有火车票均已售完
+剩余票数：0 窗口：&amp;lt;NSThread: 0x600003bc6980&amp;gt;{number = 5, name = (null)}
+所有火车票均已售完
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;可以看到在不考虑线程安全，得到票数是错乱的，这样显然不符合我们的需求，所以我们需要考虑线程安全问题。防止两条线程同时对此任务进行编辑，每次只能有一条线程执行此任务。所以就用到了线程加锁&lt;/p&gt;
+
+&lt;h3 id=&quot;三介绍与使用&quot;&gt;三、介绍与使用&lt;/h3&gt;
+
+&lt;h4 id=&quot;21synchronized互斥锁&quot;&gt;2.1、@synchronized互斥锁&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 线程安全：使用 @synchronized  加锁
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@&quot;------开始放票了---%@&quot;,[NSThread currentThread]);  // 打印当前线程
+    
+    self.ticketSurplusCount = 50;
+    
+    // queue1 代表北京火车票售卖窗口
+    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.gorpeln.testQueue1&quot;, DISPATCH_QUEUE_SERIAL);
+    // queue2 代表上海火车票售卖窗口
+    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.gorpeln.testQueue2&quot;, DISPATCH_QUEUE_SERIAL);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(queue1, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+    
+    dispatch_async(queue2, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        @synchronized(self) {
+            if (self.ticketSurplusCount &amp;gt; 0) {  //如果还有票，继续售卖
+                self.ticketSurplusCount--;
+                NSLog(@&quot;%@&quot;, [NSString stringWithFormat:@&quot;剩余票数：%d 窗口：%@&quot;, self.ticketSurplusCount, [NSThread currentThread]]);
+                [NSThread sleepForTimeInterval:0.2];
+            } else { //如果已卖完，关闭售票窗口
+                NSLog(@&quot;所有火车票均已售完&quot;);
+                break;
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;------开始放票了---&amp;lt;NSThread: 0x60000018a0c0&amp;gt;{number = 1, name = main}
+剩余票数：49 窗口：&amp;lt;NSThread: 0x6000001deec0&amp;gt;{number = 4, name = (null)}
+剩余票数：48 窗口：&amp;lt;NSThread: 0x6000001deec0&amp;gt;{number = 4, name = (null)}
+剩余票数：47 窗口：&amp;lt;NSThread: 0x6000001deec0&amp;gt;{number = 4, name = (null)}
+剩余票数：46 窗口：&amp;lt;NSThread: 0x6000001d4d40&amp;gt;{number = 5, name = (null)}
+剩余票数：45 窗口：&amp;lt;NSThread: 0x6000001d4d40&amp;gt;{number = 5, name = (null)}
+......
+剩余票数：4 窗口：&amp;lt;NSThread: 0x6000001deec0&amp;gt;{number = 4, name = (null)}
+剩余票数：3 窗口：&amp;lt;NSThread: 0x6000001deec0&amp;gt;{number = 4, name = (null)}
+剩余票数：2 窗口：&amp;lt;NSThread: 0x6000001deec0&amp;gt;{number = 4, name = (null)}
+剩余票数：1 窗口：&amp;lt;NSThread: 0x6000001deec0&amp;gt;{number = 4, name = (null)}
+剩余票数：0 窗口：&amp;lt;NSThread: 0x6000001d4d40&amp;gt;{number = 5, name = (null)}
+所有火车票均已售完
+所有火车票均已售完
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;@synchronized&lt;/code&gt; 指令实现锁的优点就是我们不需要在代码中显式的创建锁对象，便可以实现锁的机制，但作为一种预防措施，&lt;code class=&quot;highlighter-rouge&quot;&gt;@synchronized&lt;/code&gt; 块会隐式的添加一个异常处理例程来保护代码，该处理例程会在异常抛出的时候自动的释放互斥锁。&lt;code class=&quot;highlighter-rouge&quot;&gt;@synchronized&lt;/code&gt; 还有一个好处就是不用担心忘记解锁了。&lt;/p&gt;
+
+&lt;h4 id=&quot;22dispatch_semaphore&quot;&gt;2.2、dispatch_semaphore&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 线程安全：使用 semaphore  加锁
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@&quot;------开始放票了---%@&quot;,[NSThread currentThread]);  // 打印当前线程
+    
+    semaphoreLock = dispatch_semaphore_create(1);
+
+    self.ticketSurplusCount = 50;
+    
+    // queue1 代表北京火车票售卖窗口
+    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.gorpeln.testQueue1&quot;, DISPATCH_QUEUE_SERIAL);
+    // queue2 代表上海火车票售卖窗口
+    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.gorpeln.testQueue2&quot;, DISPATCH_QUEUE_SERIAL);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(queue1, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+    
+    dispatch_async(queue2, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        // 相当于加锁
+        dispatch_semaphore_wait(semaphoreLock, DISPATCH_TIME_FOREVER);
+        if (self.ticketSurplusCount &amp;gt; 0) {  //如果还有票，继续售卖
+            self.ticketSurplusCount--;
+            NSLog(@&quot;%@&quot;, [NSString stringWithFormat:@&quot;剩余票数：%d 窗口：%@&quot;, self.ticketSurplusCount, [NSThread currentThread]]);
+            [NSThread sleepForTimeInterval:0.2];
+        } else { //如果已卖完，关闭售票窗口
+            NSLog(@&quot;所有火车票均已售完&quot;);
+            // 相当于解锁
+            dispatch_semaphore_signal(semaphoreLock);
+            break;
+        }
+        // 相当于解锁
+        dispatch_semaphore_signal(semaphoreLock);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;------开始放票了---&amp;lt;NSThread: 0x600002c792c0&amp;gt;{number = 1, name = main}
+剩余票数：49 窗口：&amp;lt;NSThread: 0x600002c28d00&amp;gt;{number = 4, name = (null)}
+剩余票数：48 窗口：&amp;lt;NSThread: 0x600002c15100&amp;gt;{number = 6, name = (null)}
+剩余票数：47 窗口：&amp;lt;NSThread: 0x600002c28d00&amp;gt;{number = 4, name = (null)}
+剩余票数：46 窗口：&amp;lt;NSThread: 0x600002c15100&amp;gt;{number = 6, name = (null)}
+剩余票数：45 窗口：&amp;lt;NSThread: 0x600002c28d00&amp;gt;{number = 4, name = (null)}
+剩余票数：44 窗口：&amp;lt;NSThread: 0x600002c15100&amp;gt;{number = 6, name = (null)}
+剩余票数：43 窗口：&amp;lt;NSThread: 0x600002c28d00&amp;gt;{number = 4, name = (null)}
+......
+剩余票数：4 窗口：&amp;lt;NSThread: 0x600002c15100&amp;gt;{number = 6, name = (null)}
+剩余票数：3 窗口：&amp;lt;NSThread: 0x600002c28d00&amp;gt;{number = 4, name = (null)}
+剩余票数：2 窗口：&amp;lt;NSThread: 0x600002c15100&amp;gt;{number = 6, name = (null)}
+剩余票数：1 窗口：&amp;lt;NSThread: 0x600002c28d00&amp;gt;{number = 4, name = (null)}
+剩余票数：0 窗口：&amp;lt;NSThread: 0x600002c15100&amp;gt;{number = 6, name = (null)}
+所有火车票均已售完
+所有火车票均已售完
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;dispatch_semaphore 是 GCD 用来同步的一种方式，&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_semaphore_create&lt;/code&gt;是创建信号量，&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_semaphore_wait&lt;/code&gt;是等待信号，&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_semaphore_signal&lt;/code&gt;是发送信号。&lt;/p&gt;
+
+&lt;p&gt;详细请看 &lt;a href=&quot;/article/15861494710&quot;&gt;iOS多线程：GCD (三)&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;23nslock对象锁&quot;&gt;2.3、NSLock对象锁&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 线程安全：使用 NSLock  加锁
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@&quot;------开始放票了---%@&quot;,[NSThread currentThread]);  // 打印当前线程
+    
+
+    self.ticketSurplusCount = 50;
+    
+    // queue1 代表北京火车票售卖窗口
+    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.gorpeln.testQueue1&quot;, DISPATCH_QUEUE_SERIAL);
+    // queue2 代表上海火车票售卖窗口
+    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.gorpeln.testQueue2&quot;, DISPATCH_QUEUE_SERIAL);
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(queue1, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+    
+    dispatch_async(queue2, ^{
+        [weakSelf saleTicketNotSafe];
+    });
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        // 相当于加锁
+        [_lock lock];
+        if (self.ticketSurplusCount &amp;gt; 0) {  //如果还有票，继续售卖
+            self.ticketSurplusCount--;
+            NSLog(@&quot;%@&quot;, [NSString stringWithFormat:@&quot;剩余票数：%d 窗口：%@&quot;, self.ticketSurplusCount, [NSThread currentThread]]);
+            [NSThread sleepForTimeInterval:0.2];
+        } else { //如果已卖完，关闭售票窗口
+            NSLog(@&quot;所有火车票均已售完&quot;);
+            break;
+        }
+        [_lock unlock];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;------开始放票了---&amp;lt;NSThread: 0x600000608b80&amp;gt;{number = 1, name = main}
+剩余票数：49 窗口：&amp;lt;NSThread: 0x600000651c80&amp;gt;{number = 4, name = (null)}
+剩余票数：48 窗口：&amp;lt;NSThread: 0x60000066dd40&amp;gt;{number = 6, name = (null)}
+剩余票数：47 窗口：&amp;lt;NSThread: 0x60000066dd40&amp;gt;{number = 6, name = (null)}
+剩余票数：46 窗口：&amp;lt;NSThread: 0x600000651c80&amp;gt;{number = 4, name = (null)}
+剩余票数：45 窗口：&amp;lt;NSThread: 0x600000651c80&amp;gt;{number = 4, name = (null)}
+......
+剩余票数：4 窗口：&amp;lt;NSThread: 0x600000651c80&amp;gt;{number = 4, name = (null)}
+剩余票数：2 窗口：&amp;lt;NSThread: 0x60000066dd40&amp;gt;{number = 6, name = (null)}
+剩余票数：3 窗口：&amp;lt;NSThread: 0x600000651c80&amp;gt;{number = 4, name = (null)}
+剩余票数：1 窗口：&amp;lt;NSThread: 0x60000066dd40&amp;gt;{number = 6, name = (null)}
+剩余票数：0 窗口：&amp;lt;NSThread: 0x600000651c80&amp;gt;{number = 4, name = (null)}
+所有火车票均已售完
+所有火车票均已售完
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;NSLock是Cocoa提供给我们最基本的锁对象，这也是我们经常所使用的，除&lt;code class=&quot;highlighter-rouge&quot;&gt;lock&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;unlock&lt;/code&gt;方法外，NSLock还提供了&lt;code class=&quot;highlighter-rouge&quot;&gt;tryLock&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;lockBeforeDate:&lt;/code&gt;两个方法，前一个方法会尝试加锁，如果锁不可用(已经被锁住)，刚并不会阻塞线程，并返回NO。&lt;code class=&quot;highlighter-rouge&quot;&gt;lockBeforeDate:&lt;/code&gt;方法会在所指定Date之前尝试加锁，如果在指定时间之前都不能加锁，则返回NO。&lt;/p&gt;
+
+&lt;h4 id=&quot;24nsrecursivelock递归锁&quot;&gt;2.4、NSRecursiveLock递归锁&lt;/h4&gt;
+&lt;p&gt;NSRecursiveLock实际上定义的是一个递归锁，这个锁可以被同一线程多次请求，而不会引起死锁。这主要是用在循环或递归操作中。我们先来看一个示例：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSLock *lock = [[NSLock alloc] init];
+ 
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+ 
+    static void (^RecursiveMethod)(int);
+    RecursiveMethod = ^(int value) {
+        [lock lock];
+        if (value &amp;gt; 0) {
+            NSLog(@&quot;value = %d&quot;, value);
+            sleep(2);
+            RecursiveMethod(value - 1);
+        }
+        [lock unlock];
+    };
+ 
+    RecursiveMethod(5);
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;这段代码是一个典型的死锁情况。在我们的线程中，RecursiveMethod是递归调用的。所以每次进入这个block时，都会去加一次锁，而从第二次开始，由于锁已经被使用了且没有解锁，所以它需要等待锁被解除，这样就导致了死锁，线程被阻塞住了。调试器中会输出如下信息：&lt;/p&gt;
+
+&lt;p&gt;输出结果：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;value = 5
+*** -[NSLock lock]: deadlock ( '(null)')   *** Break on _NSLockError() to debug.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在这种情况下，我们就可以使用NSRecursiveLock。它可以允许同一线程多次加锁，而不会造成死锁。递归锁会跟踪它被lock的次数。每次成功的lock都必须平衡调用unlock操作。只有所有达到这种平衡，锁最后才能被释放，以供其它线程使用。&lt;/p&gt;
+
+&lt;p&gt;所以，对上面的代码进行一下改造，&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSRecursiveLock *lock = [[NSRecursiveLock alloc] init];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这样，程序就能正常运行了，其输出如下所示：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;value = 5
+value = 4
+value = 3
+value = 2
+value = 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;25nsconditionlock条件锁&quot;&gt;2.5、NSConditionLock条件锁&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//初始化锁时，指定一个默认的条件
+NSConditionLock *lock = [[NSConditionLock alloc] initWithCondition:0];
+NSMutableArray *products = [NSMutableArray array];
+    
+NSInteger HAS_DATA = 1; //条件一： 有数据
+NSInteger NO_DATA = 0;  //条件二： 没有数据
+    
+//生产者，加锁与解锁的过程
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    while (1) {
+        [lock lockWhenCondition:NO_DATA];//1. 当满足 【没有数据的条件时】进行加锁
+        [products addObject:[[NSObject alloc] init]];//2. 生产者生成数据
+        NSLog(@&quot;produce a product,总量:%zi&quot;,products.count);
+        [lock unlockWithCondition:HAS_DATA];//3. 解锁，并设置新的条件，已经有数据了
+        sleep(1);
+    }
+    
+});
+
+//消费者，加锁与解锁的过程
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    while (1) {
+        NSLog(@&quot;wait for product&quot;);
+        [lock lockWhenCondition:HAS_DATA];//1. 当满足 【有数据的条件时】进行加锁
+        [products removeObjectAtIndex:0];//2. 消费者消费数据
+        NSLog(@&quot;custome a product&quot;);
+        [lock unlockWithCondition:NO_DATA];//3. 解锁，并设置新的条件，没有数据了
+    }
+    
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+......
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;当我们在使用多线程的时候，有时一把只会lock和unlock的锁未必就能完全满足我们的使用。因为普通的锁只能关心锁与不锁，而不在乎用什么钥匙才能开锁，而我们在处理资源共享的时候，多数情况是只有满足一定条件的情况下才能打开这把锁：&lt;/p&gt;
+
+&lt;p&gt;在线程1中的加锁使用了lock，所以是不需要条件的，所以顺利的就锁住了，但在unlock的使用了一个整型的条件，它可以开启其它线程中正在等待这把钥匙的临界地，而线程2则需要一把被标识为2的钥匙，所以当线程1循环到最后一次的时候，才最终打开了线程2中的阻塞。但即便如此，NSConditionLock也跟其它的锁一样，是需要lock与unlock对应的，只是lock,lockWhenCondition:与unlock，unlockWithCondition:是可以随意组合的，当然这是与你的需求相关的。&lt;/p&gt;
+
+&lt;h4 id=&quot;26nscondition&quot;&gt;2.6、NSCondition&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSCondition *condition = [[NSCondition alloc] init];
+
+NSMutableArray *products = [NSMutableArray array];
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    while (1) {
+        [condition lock];
+        if ([products count] == 0) {
+            NSLog(@&quot;wait for product&quot;);
+            [condition wait];
+        }
+        [products removeObjectAtIndex:0];
+        NSLog(@&quot;custome a product&quot;);
+        [condition unlock];
+    }
+
+});
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    while (1) {
+        [condition lock];
+        [products addObject:[[NSObject alloc] init]];
+        NSLog(@&quot;produce a product,总量:%zi&quot;,products.count);
+        [condition signal];
+        [condition unlock];
+        sleep(1);
+    }
+
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+wait for product
+produce a product,总量:1
+custome a product
+wait for product
+......
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;一种最基本的条件锁。手动控制线程wait和signal。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;[condition lock];&lt;/code&gt;一般用于多线程同时访问、修改同一个数据源，保证在同一时间内数据源只被访问、修改一次，其他线程的命令需要在lock 外等待，只到unlock ，才可访问&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;[condition unlock];&lt;/code&gt;与lock 同时使用&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;[condition wait];&lt;/code&gt;让当前线程处于等待状态&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;[condition signal];&lt;/code&gt;CPU发信号告诉线程不用在等待，可以继续执行&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;不同点：&lt;/strong&gt;&lt;br /&gt;
+NSCondition条件量，需要一个外部共享变量，来探测条件是否满足&lt;br /&gt;
+NSConditionLock条件锁， 不需要，条件锁自带一个探测条件，是否满足&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;27pthread_mutex&quot;&gt;2.7、pthread_mutex&lt;/h4&gt;
+&lt;p&gt;C 语言下多线程加互斥锁的方式，那来段 C 风格的示例代码，需要 &lt;code class=&quot;highlighter-rouge&quot;&gt;#import &amp;lt;pthread.h&amp;gt;&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;__block pthread_mutex_t theLock;
+pthread_mutex_init(&amp;amp;theLock, NULL);
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        pthread_mutex_lock(&amp;amp;theLock);
+        NSLog(@&quot;需要线程同步的操作1 开始&quot;);
+        sleep(3);
+        NSLog(@&quot;需要线程同步的操作1 结束&quot;);
+        pthread_mutex_unlock(&amp;amp;theLock);
+    
+});
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        sleep(1);
+        pthread_mutex_lock(&amp;amp;theLock);
+        NSLog(@&quot;需要线程同步的操作2&quot;);
+        pthread_mutex_unlock(&amp;amp;theLock);
+    
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;需要线程同步的操作1 开始
+需要线程同步的操作1 结束
+需要线程同步的操作2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;1：&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex_init(pthread_mutex_t * mutex,const pthread_mutexattr_t attr);&lt;/code&gt;
+初始化锁变量mutex。attr为锁属性，NULL值为默认属性。&lt;br /&gt;
+2：&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex_lock(pthread_mutex_t* mutex);&lt;/code&gt;加锁&lt;br /&gt;
+3：&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex_tylock(pthread_mutex_t* mutex);&lt;/code&gt;加锁，但是与2不一样的是当锁已经在使用的时候，返回为EBUSY，而不是挂起等待。&lt;br /&gt;
+4：&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex_unlock(pthread_mutex_t* mutex);&lt;/code&gt;释放锁&lt;br /&gt;
+5：&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex_destroy(pthread_mutex_t* *mutex);&lt;/code&gt;使用完后释放&lt;/p&gt;
+
+&lt;h4 id=&quot;28pthread_mutexrecursive&quot;&gt;2.8、pthread_mutex(recursive)&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;__block pthread_mutex_t theLock;
+    
+pthread_mutexattr_t attr;
+pthread_mutexattr_init(&amp;amp;attr);
+pthread_mutexattr_settype(&amp;amp;attr, PTHREAD_MUTEX_RECURSIVE);
+pthread_mutex_init(&amp;amp;theLock, &amp;amp;attr);
+pthread_mutexattr_destroy(&amp;amp;attr);
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    static void (^RecursiveMethod)(int);
+    
+    RecursiveMethod = ^(int value) {
+        
+        pthread_mutex_lock(&amp;amp;theLock);
+        if (value &amp;gt; 0) {
+            
+            NSLog(@&quot;value = %d&quot;, value);
+            sleep(1);
+            RecursiveMethod(value - 1);
+        }
+        pthread_mutex_unlock(&amp;amp;theLock);
+    };
+    
+    RecursiveMethod(5);
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;value = 5
+value = 4
+value = 3
+value = 2
+value = 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这是pthread_mutex为了防止在递归的情况下出现死锁而出现的递归锁。作用和NSRecursiveLock递归锁类似。&lt;/p&gt;
+
+&lt;p&gt;如果使用&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex_init(&amp;amp;theLock, NULL);&lt;/code&gt;初始化锁的话，上面的代码会出现死锁现象。如果使用递归锁的形式，则没有问题。&lt;/p&gt;
+
+&lt;h4 id=&quot;29osspinlock&quot;&gt;2.9、OSSpinLock&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//#import &amp;lt;libkern/OSAtomic.h&amp;gt;
+
+__block OSSpinLock theLock = OS_SPINLOCK_INIT;
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    OSSpinLockLock(&amp;amp;theLock);
+    NSLog(@&quot;需要线程同步的操作1 开始&quot;);
+    sleep(3);
+    NSLog(@&quot;需要线程同步的操作1 结束&quot;);
+    OSSpinLockUnlock(&amp;amp;theLock);
+    
+});
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    OSSpinLockLock(&amp;amp;theLock);
+    sleep(1);
+    NSLog(@&quot;需要线程同步的操作2&quot;);
+    OSSpinLockUnlock(&amp;amp;theLock);
+    
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;需要线程同步的操作1 开始
+需要线程同步的操作1 结束
+需要线程同步的操作2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;OSSpinLock 是一种自旋锁，也只有加锁，解锁，尝试加锁三个方法。和 NSLock 不同的是 NSLock 请求加锁失败的话，会先轮询，但一秒过后便会使线程进入 waiting 状态，等待唤醒。而 OSSpinLock 会一直轮询，等待时会消耗大量 CPU 资源，不适用于较长时间的任务。&lt;/p&gt;
+
+&lt;h3 id=&quot;四性能对比&quot;&gt;四、性能对比&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_lock_001.png&quot; alt=&quot;blog_lock_001&quot; /&gt;&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>iOS多线程：NSOperation、NSOperationQueue (五)</title>
+        <link>https://gorpeln.com/article/15884027619</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15884027619</guid>
+        <pubDate>Sat, 02 May 2020 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;1-nsoperationnsoperationqueue-简介&quot;&gt;1. NSOperation、NSOperationQueue 简介&lt;/h3&gt;
+&lt;p&gt;NSOperation、NSOperationQueue 是苹果提供给我们的一套多线程解决方案。实际上 NSOperation、NSOperationQueue 是基于 GCD 更高一层的封装，完全面向对象。但是比 GCD 更简单易用、代码可读性也更高。&lt;/p&gt;
+
+&lt;h5 id=&quot;为什么要使用-nsoperationnsoperationqueue&quot;&gt;为什么要使用 NSOperation、NSOperationQueue？&lt;/h5&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;可添加完成的代码块，在操作完成后执行。&lt;/li&gt;
+  &lt;li&gt;添加操作之间的依赖关系，方便的控制执行顺序。&lt;/li&gt;
+  &lt;li&gt;设定操作执行的优先级。&lt;/li&gt;
+  &lt;li&gt;可以很方便的取消一个操作的执行。&lt;/li&gt;
+  &lt;li&gt;使用 KVO 观察对操作执行状态的更改：isExecuteing、isFinished、isCancelled。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;2-nsoperationnsoperationqueue-操作和操作队列&quot;&gt;2. NSOperation、NSOperationQueue 操作和操作队列&lt;/h3&gt;
+&lt;p&gt;既然是基于 GCD 的更高一层的封装。那么，GCD 中的一些概念同样适用于 NSOperation、NSOperationQueue。在 NSOperation、NSOperationQueue 中也有类似的任务（操作）和队列（操作队列）的概念。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;操作（Operation）：
+    &lt;ul&gt;
+      &lt;li&gt;执行操作的意思，换句话说就是你在线程中执行的那段代码。&lt;/li&gt;
+      &lt;li&gt;在 GCD 中是放在 block 中的。在 NSOperation 中，我们使用 NSOperation 子类 NSInvocationOperation、NSBlockOperation，或者自定义子类来封装操作。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;操作队列（Operation Queues）：
+    &lt;ul&gt;
+      &lt;li&gt;这里的队列指操作队列，即用来存放操作的队列。不同于 GCD 中的调度队列 FIFO（先进先出）的原则。NSOperationQueue 对于添加到队列中的操作，首先进入准备就绪的状态（就绪状态取决于操作之间的依赖关系），然后进入就绪状态的操作的开始执行顺序（非结束执行顺序）由操作之间相对的优先级决定（优先级是操作对象自身的属性）。&lt;/li&gt;
+      &lt;li&gt;操作队列通过设置最大并发操作数（maxConcurrentOperationCount）来控制并发、串行。&lt;/li&gt;
+      &lt;li&gt;NSOperationQueue 为我们提供了两种不同类型的队列：主队列和自定义队列。主队列运行在主线程之上，而自定义队列在后台执行。&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;3-nsoperationnsoperationqueue-使用步骤&quot;&gt;3. NSOperation、NSOperationQueue 使用步骤&lt;/h3&gt;
+&lt;p&gt;NSOperation 需要配合 NSOperationQueue 来实现多线程。因为默认情况下，NSOperation 单独使用时系统同步执行操作，配合 NSOperationQueue 我们能更好的实现异步执行。&lt;/p&gt;
+
+&lt;p&gt;NSOperation 实现多线程的使用步骤分为三步：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;创建操作：先将需要执行的操作封装到一个 NSOperation 对象中。&lt;/li&gt;
+  &lt;li&gt;创建队列：创建 NSOperationQueue 对象。&lt;/li&gt;
+  &lt;li&gt;将操作加入到队列中：将 NSOperation 对象添加到 NSOperationQueue 对象中。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;之后呢，系统就会自动将 NSOperationQueue 中的 NSOperation 取出来，在新线程中执行操作。&lt;/p&gt;
+
+&lt;h3 id=&quot;4-nsoperation-和-nsoperationqueue-基本使用&quot;&gt;4. NSOperation 和 NSOperationQueue 基本使用&lt;/h3&gt;
+&lt;h4 id=&quot;41-创建操作&quot;&gt;4.1 创建操作&lt;/h4&gt;
+&lt;p&gt;NSOperation 是个抽象类，不能用来封装操作。我们只有使用它的子类来封装操作。我们有三种方式来封装操作。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;使用子类 NSInvocationOperation&lt;/li&gt;
+  &lt;li&gt;使用子类 NSBlockOperation&lt;/li&gt;
+  &lt;li&gt;自定义继承自 NSOperation 的子类，通过实现内部相应的方法来封装操作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在不使用 NSOperationQueue，单独使用 NSOperation 的情况下系统同步执行操作，下面我们学习以下操作的三种创建方式。&lt;/p&gt;
+
+&lt;h5 id=&quot;411-使用子类-nsinvocationoperation&quot;&gt;4.1.1 使用子类 NSInvocationOperation&lt;/h5&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 使用子类 NSInvocationOperation
+ */
+- (void)useInvocationOperation {
+
+    // 1.创建 NSInvocationOperation 对象
+    NSInvocationOperation *op = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(task1) object:nil];
+
+    // 2.调用 start 方法开始执行操作
+    [op start];
+}
+
+/**
+ * 任务1
+ */
+- (void)task1 {
+    for (int i = 0; i &amp;lt; 2; i++) {
+        [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+        NSLog(@&quot;1---%@&quot;, [NSThread currentThread]); // 打印当前线程
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x281612e80&amp;gt;{number = 1, name = main}
+1---&amp;lt;NSThread: 0x281612e80&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;可以看到：在没有使用 NSOperationQueue、在主线程中单独使用使用子类 NSInvocationOperation 执行一个操作的情况下，操作是在当前线程执行的，并没有开启新线程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;如果在其他线程中执行操作，则打印结果为其他线程。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 在其他线程使用子类 NSInvocationOperation
+[NSThread detachNewThreadSelector:@selector(useInvocationOperation) toTarget:self withObject:nil];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x28331fe00&amp;gt;{number = 5, name = (null)}
+1---&amp;lt;NSThread: 0x28331fe00&amp;gt;{number = 5, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看到：在其他线程中单独使用子类 NSInvocationOperation，操作是在当前调用的其他线程执行的，并没有开启新线程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h5 id=&quot;412-使用子类-nsblockoperation&quot;&gt;4.1.2 使用子类 NSBlockOperation&lt;/h5&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 使用子类 NSBlockOperation
+ */
+- (void)useBlockOperation {
+
+    // 1.创建 NSBlockOperation 对象
+    NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;1---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+
+    // 2.调用 start 方法开始执行操作
+    [op start];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出结果：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x283c81240&amp;gt;{number = 1, name = main}
+1---&amp;lt;NSThread: 0x283c81240&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看到：在没有使用 NSOperationQueue、在主线程中单独使用 NSBlockOperation 执行一个操作的情况下，操作是在当前线程执行的，并没有开启新线程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;注意&lt;/code&gt;：和上边 NSInvocationOperation 使用一样。因为代码是在主线程中调用的，所以打印结果为主线程。如果在其他线程中执行操作，则打印结果为其他线程。&lt;/p&gt;
+
+&lt;p&gt;但是，NSBlockOperation 还提供了一个方法 &lt;code class=&quot;highlighter-rouge&quot;&gt;addExecutionBlock:&lt;/code&gt;，通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;addExecutionBlock:&lt;/code&gt; 就可以为 NSBlockOperation 添加额外的操作。这些操作（包括 blockOperationWithBlock 中的操作）可以在不同的线程中同时（并发）执行。只有当所有相关的操作已经完成执行时，才视为完成。&lt;/p&gt;
+
+&lt;p&gt;如果添加的操作多的话，&lt;code class=&quot;highlighter-rouge&quot;&gt;blockOperationWithBlock:&lt;/code&gt; 中的操作也可能会在其他线程（非当前线程）中执行，这是由系统决定的，并不是说添加到 &lt;code class=&quot;highlighter-rouge&quot;&gt;blockOperationWithBlock:&lt;/code&gt; 中的操作一定会在当前线程中执行。（可以使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;addExecutionBlock:&lt;/code&gt; 多添加几个操作试试）。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 使用子类 NSBlockOperation
+ * 调用方法 AddExecutionBlock:
+ */
+- (void)useBlockOperationAddExecutionBlock {
+
+    // 1.创建 NSBlockOperation 对象
+    NSBlockOperation *op = [NSBlockOperation blockOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;1---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+
+    // 2.添加额外的操作
+    [op addExecutionBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;2---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [op addExecutionBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;3---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [op addExecutionBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;4---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [op addExecutionBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;5---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [op addExecutionBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;6---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [op addExecutionBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;7---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [op addExecutionBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;8---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+
+    // 3.调用 start 方法开始执行操作
+    [op start];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;3---&amp;lt;NSThread: 0x600001d15fc0&amp;gt;{number = 4, name = (null)}
+1---&amp;lt;NSThread: 0x600001d19980&amp;gt;{number = 3, name = (null)}
+4---&amp;lt;NSThread: 0x600001d46100&amp;gt;{number = 1, name = main}
+2---&amp;lt;NSThread: 0x600001d30000&amp;gt;{number = 6, name = (null)}
+1---&amp;lt;NSThread: 0x600001d19980&amp;gt;{number = 3, name = (null)}
+2---&amp;lt;NSThread: 0x600001d30000&amp;gt;{number = 6, name = (null)}
+3---&amp;lt;NSThread: 0x600001d15fc0&amp;gt;{number = 4, name = (null)}
+4---&amp;lt;NSThread: 0x600001d46100&amp;gt;{number = 1, name = main}
+7---&amp;lt;NSThread: 0x600001d15fc0&amp;gt;{number = 4, name = (null)}
+5---&amp;lt;NSThread: 0x600001d19980&amp;gt;{number = 3, name = (null)}
+6---&amp;lt;NSThread: 0x600001d30000&amp;gt;{number = 6, name = (null)}
+8---&amp;lt;NSThread: 0x600001d46100&amp;gt;{number = 1, name = main}
+6---&amp;lt;NSThread: 0x600001d30000&amp;gt;{number = 6, name = (null)}
+5---&amp;lt;NSThread: 0x600001d19980&amp;gt;{number = 3, name = (null)}
+7---&amp;lt;NSThread: 0x600001d15fc0&amp;gt;{number = 4, name = (null)}
+8---&amp;lt;NSThread: 0x600001d46100&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看出：使用子类 NSBlockOperation，并调用方法 &lt;code class=&quot;highlighter-rouge&quot;&gt;AddExecutionBlock:&lt;/code&gt; 的情况下，&lt;code class=&quot;highlighter-rouge&quot;&gt;blockOperationWithBlock:&lt;/code&gt;方法中的操作 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;addExecutionBlock:&lt;/code&gt; 中的操作是在不同的线程中并发执行的。而且，这次执行结果中 &lt;code class=&quot;highlighter-rouge&quot;&gt;blockOperationWithBlock:&lt;/code&gt;方法中的操作也不是在当前线程（主线程）中执行的。从而印证了&lt;code class=&quot;highlighter-rouge&quot;&gt;blockOperationWithBlock:&lt;/code&gt; 中的操作也可能会在其他线程（非当前线程）中执行。&lt;/p&gt;
+
+  &lt;p&gt;一般情况下，如果一个 NSBlockOperation 对象封装了多个操作。NSBlockOperation 是否开启新线程，取决于操作的个数。如果添加的操作的个数多，就会自动开启新线程。当然开启的线程数是由系统来决定的。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h5 id=&quot;413-使用自定义继承自-nsoperation-的子类&quot;&gt;4.1.3 使用自定义继承自 NSOperation 的子类&lt;/h5&gt;
+
+&lt;p&gt;如果使用子类 NSInvocationOperation、NSBlockOperation 不能满足日常需求，我们可以使用自定义继承自 NSOperation 的子类。可以通过重写 &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; 或者 &lt;code class=&quot;highlighter-rouge&quot;&gt;start&lt;/code&gt; 方法 来定义自己的 NSOperation 对象。重写main方法比较简单，我们不需要管理操作的状态属性 &lt;code class=&quot;highlighter-rouge&quot;&gt;isExecuting&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;isFinished&lt;/code&gt;。当 &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; 执行完返回的时候，这个操作就结束了。&lt;/p&gt;
+
+&lt;p&gt;先定义一个继承自 NSOperation 的子类，重写&lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt;方法。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// GPOperation.h 文件
+#import &amp;lt;Foundation/Foundation.h&amp;gt;
+
+@interface GPOperation : NSOperation
+
+@end
+
+// GPOperation.m 文件
+#import &quot;GPOperation.h&quot;
+
+@implementation GPOperation
+
+- (void)main {
+    if (!self.isCancelled) {
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2];
+            NSLog(@&quot;1---%@&quot;, [NSThread currentThread]);
+        }
+    }
+}
+
+@end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;然后使用的时候导入头文件GPOperation.h。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 使用自定义继承自 NSOperation 的子类
+ */
+- (void)useCustomOperation {
+    // 1.创建 GPOperation 对象
+    GPOperation *op = [[GPOperation alloc] init];
+    // 2.调用 start 方法开始执行操作
+    [op start];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x600002914000&amp;gt;{number = 1, name = main}
+1---&amp;lt;NSThread: 0x600002914000&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看出：在没有使用 NSOperationQueue、在主线程单独使用自定义继承自 NSOperation 的子类的情况下，是在主线程执行操作，并没有开启新线程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;42-创建队列&quot;&gt;4.2 创建队列&lt;/h4&gt;
+&lt;p&gt;NSOperationQueue 一共有两种队列：主队列、自定义队列。其中自定义队列同时包含了串行、并发功能。下边是主队列、自定义队列的基本创建方法和特点。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;主队列&lt;/code&gt;:凡是添加到主队列中的操作，都会放到主线程中执行（注：不包括操作使用addExecutionBlock:添加的额外操作，额外操作可能在其他线程执行）。
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 主队列获取方法
+NSOperationQueue *queue = [NSOperationQueue mainQueue];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;自定义队列（非主队列）&lt;/code&gt;:添加到这种队列中的操作，就会自动放到子线程中执行。同时包含了：串行、并发功能。
+    &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 自定义队列创建方法
+NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;43-将操作加入到队列中&quot;&gt;4.3 将操作加入到队列中&lt;/h4&gt;
+&lt;p&gt;上边我们说到 NSOperation 需要配合 NSOperationQueue 来实现多线程。&lt;/p&gt;
+
+&lt;p&gt;那么我们需要将创建好的操作加入到队列中去。总共有两种方法：&lt;/p&gt;
+
+&lt;p&gt;1.&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)addOperation:(NSOperation *)op;&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;需要先创建操作，再将创建好的操作加入到创建好的队列中去。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 使用 addOperation: 将操作加入到操作队列中
+ */
+- (void)addOperationToQueue {
+
+    // 1.创建队列
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+
+    // 2.创建操作
+    // 使用 NSInvocationOperation 创建操作1
+    NSInvocationOperation *op1 = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(task1) object:nil];
+
+    // 使用 NSInvocationOperation 创建操作2
+    NSInvocationOperation *op2 = [[NSInvocationOperation alloc] initWithTarget:self selector:@selector(task2) object:nil];
+
+    // 使用 NSBlockOperation 创建操作3
+    NSBlockOperation *op3 = [NSBlockOperation blockOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;3---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [op3 addExecutionBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;4---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+
+    // 3.使用 addOperation: 添加所有操作到队列中
+    [queue addOperation:op1]; // [op1 start]
+    [queue addOperation:op2]; // [op2 start]
+    [queue addOperation:op3]; // [op3 start]
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;3---&amp;lt;NSThread: 0x600003750b00&amp;gt;{number = 6, name = (null)}
+2---&amp;lt;NSThread: 0x6000037254c0&amp;gt;{number = 4, name = (null)}
+1---&amp;lt;NSThread: 0x6000037120c0&amp;gt;{number = 8, name = (null)}
+4---&amp;lt;NSThread: 0x600003752bc0&amp;gt;{number = 5, name = (null)}
+3---&amp;lt;NSThread: 0x600003750b00&amp;gt;{number = 6, name = (null)}
+2---&amp;lt;NSThread: 0x6000037254c0&amp;gt;{number = 4, name = (null)}
+1---&amp;lt;NSThread: 0x6000037120c0&amp;gt;{number = 8, name = (null)}
+4---&amp;lt;NSThread: 0x600003752bc0&amp;gt;{number = 5, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;可以看出：使用 NSOperation 子类创建操作，并使用 addOperation: 将操作加入到操作队列后能够开启新线程，进行并发执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;2.&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)addOperationWithBlock:(void (^)(void))block;&lt;/code&gt; &lt;br /&gt;
+无需先创建操作，在 block 中添加操作，直接将包含操作的 block 加入到队列中。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 使用 addOperationWithBlock: 将操作加入到操作队列中
+ */
+
+- (void)addOperationWithBlockToQueue {
+    // 1.创建队列
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+
+    // 2.使用 addOperationWithBlock: 添加操作到队列中
+    [queue addOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;1---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [queue addOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;2---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [queue addOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;3---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x600002e1bd80&amp;gt;{number = 8, name = (null)}
+2---&amp;lt;NSThread: 0x600002e28d00&amp;gt;{number = 4, name = (null)}
+3---&amp;lt;NSThread: 0x600002e24a40&amp;gt;{number = 6, name = (null)}
+1---&amp;lt;NSThread: 0x600002e1bd80&amp;gt;{number = 8, name = (null)}
+3---&amp;lt;NSThread: 0x600002e24a40&amp;gt;{number = 6, name = (null)}
+2---&amp;lt;NSThread: 0x600002e28d00&amp;gt;{number = 4, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;可以看出：使用 addOperationWithBlock: 将操作加入到操作队列后能够开启新线程，进行并发执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;5-nsoperationqueue-控制串行执行并发执行&quot;&gt;5. NSOperationQueue 控制串行执行、并发执行&lt;/h3&gt;
+&lt;p&gt;之前我们说过，NSOperationQueue 创建的自定义队列同时具有串行、并发功能，上边我们演示了并发功能，那么他的串行功能是如何实现的？&lt;/p&gt;
+
+&lt;p&gt;这里有个关键属性 &lt;code class=&quot;highlighter-rouge&quot;&gt;maxConcurrentOperationCount&lt;/code&gt;，叫做&lt;strong&gt;最大并发操作数&lt;/strong&gt;。用来控制一个特定队列中可以有多少个操作同时参与并发执行。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;注意&lt;/code&gt;：这里 &lt;code class=&quot;highlighter-rouge&quot;&gt;maxConcurrentOperationCount&lt;/code&gt; 控制的不是并发线程的数量，而是一个队列中同时能并发执行的最大操作数。而且一个操作也并非只能在一个线程中运行。 &lt;br /&gt;
+  &lt;br /&gt;
+&lt;strong&gt;最大并发操作数&lt;/strong&gt;：&lt;code class=&quot;highlighter-rouge&quot;&gt;maxConcurrentOperationCount&lt;/code&gt;&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;maxConcurrentOperationCount&lt;/code&gt; 默认情况下为-1，表示不进行限制，可进行并发执行。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;maxConcurrentOperationCount&lt;/code&gt; 为1时，队列为串行队列。只能串行执行。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;maxConcurrentOperationCount&lt;/code&gt; 大于1时，队列为并发队列。操作并发执行，当然这个值不应超过系统  限制，即使自己设置一个很大的值，系统也会自动调整为 min{自己设定的值，系统设定的默认最大值}。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 设置 MaxConcurrentOperationCount（最大并发操作数）
+ */
+- (void)setMaxConcurrentOperationCount {
+
+    // 1.创建队列
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+
+    // 2.设置最大并发操作数
+    queue.maxConcurrentOperationCount = 1; // 串行队列
+// queue.maxConcurrentOperationCount = 2; // 并发队列
+// queue.maxConcurrentOperationCount = 8; // 并发队列
+
+    // 3.添加操作
+    [queue addOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;1---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [queue addOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;2---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [queue addOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;3---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    [queue addOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;4---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;最大并发操作数为1 输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x600003adabc0&amp;gt;{number = 5, name = (null)}
+1---&amp;lt;NSThread: 0x600003adabc0&amp;gt;{number = 5, name = (null)}
+2---&amp;lt;NSThread: 0x600003adabc0&amp;gt;{number = 5, name = (null)}
+2---&amp;lt;NSThread: 0x600003adabc0&amp;gt;{number = 5, name = (null)}
+3---&amp;lt;NSThread: 0x600003af8bc0&amp;gt;{number = 6, name = (null)}
+3---&amp;lt;NSThread: 0x600003af8bc0&amp;gt;{number = 6, name = (null)}
+4---&amp;lt;NSThread: 0x600003adabc0&amp;gt;{number = 5, name = (null)}
+4---&amp;lt;NSThread: 0x600003adabc0&amp;gt;{number = 5, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;最大并发操作数为2 输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x60000396dec0&amp;gt;{number = 5, name = (null)}
+2---&amp;lt;NSThread: 0x600003962500&amp;gt;{number = 4, name = (null)}
+1---&amp;lt;NSThread: 0x60000396dec0&amp;gt;{number = 5, name = (null)}
+2---&amp;lt;NSThread: 0x600003962500&amp;gt;{number = 4, name = (null)}
+3---&amp;lt;NSThread: 0x60000396dec0&amp;gt;{number = 5, name = (null)}
+4---&amp;lt;NSThread: 0x600003962500&amp;gt;{number = 4, name = (null)}
+4---&amp;lt;NSThread: 0x600003962500&amp;gt;{number = 4, name = (null)}
+3---&amp;lt;NSThread: 0x60000396dec0&amp;gt;{number = 5, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;可以看出：当最大并发操作数为1时，操作是按顺序串行执行的，并且一个操作完成之后，下一个操作才开始执行。当最大操作并发数为2时，操作是并发执行的，可以同时执行两个操作。而开启线程数量是由系统决定的，不需要我们来管理。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;6-nsoperation-操作依赖&quot;&gt;6. NSOperation 操作依赖&lt;/h3&gt;
+&lt;p&gt;NSOperation、NSOperationQueue 最吸引人的地方是它能添加操作之间的依赖关系。通过操作依赖，我们可以很方便的控制操作之间的执行先后顺序。NSOperation 提供了3个接口供我们管理和查看依赖。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)addDependency:(NSOperation *)op;&lt;/code&gt; 添加依赖，使当前操作依赖于操作 op 的完成。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)removeDependency:(NSOperation *)op;&lt;/code&gt; 移除依赖，取消当前操作对操作 op 的依赖。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;@property (readonly, copy) NSArray&amp;lt;NSOperation *&amp;gt; *dependencies;&lt;/code&gt; 在当前操作开始执行之前完成执行的所有操作对象数组。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;当然，我们经常用到的还是添加依赖操作。现在考虑这样的需求，比如说有 A、B 两个操作，其中 A 执行完操作，B 才能执行操作。&lt;/p&gt;
+
+&lt;p&gt;如果使用依赖来处理的话，那么就需要让操作 B 依赖于操作 A。具体代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 操作依赖
+ * 使用方法：addDependency:
+ */
+- (void)addDependency {
+
+    // 1.创建队列
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+
+    // 2.创建操作
+    NSBlockOperation *op1 = [NSBlockOperation blockOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;1---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+    NSBlockOperation *op2 = [NSBlockOperation blockOperationWithBlock:^{
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+            NSLog(@&quot;2---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+    }];
+
+    // 3.添加依赖
+    [op2 addDependency:op1]; // 让op2 依赖于 op1，则先执行op1，在执行op2
+
+    // 4.添加操作到队列中
+    [queue addOperation:op1];
+    [queue addOperation:op2];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x6000023a0480&amp;gt;{number = 6, name = (null)}
+1---&amp;lt;NSThread: 0x6000023a0480&amp;gt;{number = 6, name = (null)}
+2---&amp;lt;NSThread: 0x60000239fcc0&amp;gt;{number = 3, name = (null)}
+2---&amp;lt;NSThread: 0x60000239fcc0&amp;gt;{number = 3, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看到：通过添加操作依赖，无论运行几次，其结果都是 op1 先执行，op2 后执行。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;7-nsoperation-优先级&quot;&gt;7. NSOperation 优先级&lt;/h3&gt;
+&lt;p&gt;NSOperation 提供了&lt;code class=&quot;highlighter-rouge&quot;&gt;queuePriority&lt;/code&gt;（优先级）属性，&lt;code class=&quot;highlighter-rouge&quot;&gt;queuePriority&lt;/code&gt;属性适用于同一操作队列中的操作，不适用于不同操作队列中的操作。默认情况下，所有新创建的操作对象优先级都是&lt;code class=&quot;highlighter-rouge&quot;&gt;NSOperationQueuePriorityNormal&lt;/code&gt;。但是我们可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;setQueuePriority:&lt;/code&gt;方法来改变当前操作在同一队列中的执行优先级。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 优先级的取值
+typedef NS_ENUM(NSInteger, NSOperationQueuePriority) {
+    NSOperationQueuePriorityVeryLow = -8L,
+    NSOperationQueuePriorityLow = -4L,
+    NSOperationQueuePriorityNormal = 0,
+    NSOperationQueuePriorityHigh = 4,
+    NSOperationQueuePriorityVeryHigh = 8
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;上边我们说过：对于添加到队列中的操作，首先进入准备就绪的状态（就绪状态取决于操作之间的依赖关系），然后进入就绪状态的操作的&lt;strong&gt;开始执行顺序&lt;/strong&gt;（非结束执行顺序）由操作之间相对的优先级决定（优先级是操作对象自身的属性）。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;那么，什么样的操作才是进入就绪状态的操作呢？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;当一个操作的所有依赖都已经完成时，操作对象通常会进入准备就绪状态，等待执行。&lt;/p&gt;
+
+&lt;p&gt;举个例子，现在有4个优先级都是 &lt;code class=&quot;highlighter-rouge&quot;&gt;NSOperationQueuePriorityNormal&lt;/code&gt;（默认级别）的操作：op1，op2，op3，op4。其中 op3 依赖于 op2，op2 依赖于 op1，即 op3 -&amp;gt; op2 -&amp;gt; op1。现在将这4个操作添加到队列中并发执行。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;因为 op1 和 op4 都没有需要依赖的操作，所以在 op1，op4 执行之前，就是处于准备就绪状态的操作。&lt;/li&gt;
+  &lt;li&gt;而 op3 和 op2 都有依赖的操作（op3 依赖于 op2，op2 依赖于 op1），所以 op3 和 op2 都不是准备就绪状态下的操作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;理解了进入就绪状态的操作，那么我们就理解了&lt;code class=&quot;highlighter-rouge&quot;&gt;queuePriority&lt;/code&gt;属性的作用对象。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;queuePriority&lt;/code&gt; 属性决定了进入&lt;strong&gt;准备就绪状态&lt;/strong&gt;下的操作之间的开始执行顺序。并且，优先级不能取代依赖关系。&lt;/li&gt;
+  &lt;li&gt;如果一个队列中既包含高优先级操作，又包含低优先级操作，并且两个操作都已经准备就绪，那么队列先执行高优先级操作。比如上例中，如果 op1 和 op4 是不同优先级的操作，那么就会先执行优先级高的操作。&lt;/li&gt;
+  &lt;li&gt;如果，一个队列中既包含了准备就绪状态的操作，又包含了未准备就绪的操作，未准备就绪的操作优先级比准备就绪的操作优先级高。那么，虽然准备就绪的操作优先级低，也会优先执行。优先级不能取代依赖关系。如果要控制操作间的启动顺序，则必须使用依赖关系。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;8-nsoperationnsoperationqueue-线程间的通信&quot;&gt;8. NSOperation、NSOperationQueue 线程间的通信&lt;/h3&gt;
+&lt;p&gt;开发过程中，我们一般在主线程里边进行 UI 刷新，例如：点击、滚动、拖拽等事件。我们通常把一些耗时的操作放在其他线程，比如说图片下载、文件上传等耗时操作。而当我们有时候在其他线程完成了耗时操作时，需要回到主线程，那么就用到了线程之间的通讯。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 线程间通信
+ */
+- (void)communication {
+
+    // 1.创建队列
+    NSOperationQueue *queue = [[NSOperationQueue alloc]init];
+
+    // 2.添加操作
+    [queue addOperationWithBlock:^{
+        // 异步进行耗时操作
+        for (int i = 0; i &amp;lt; 2; i++) {
+            [NSThread sleepForTimeInterval:3]; // 模拟耗时操作
+            NSLog(@&quot;1---%@&quot;, [NSThread currentThread]); // 打印当前线程
+        }
+
+        // 回到主线程
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            // 进行一些 UI 刷新等操作
+            for (int i = 0; i &amp;lt; 2; i++) {
+                [NSThread sleepForTimeInterval:2]; // 模拟耗时操作
+                NSLog(@&quot;2---%@&quot;, [NSThread currentThread]); // 打印当前线程
+            }
+        }];
+    }];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1---&amp;lt;NSThread: 0x60000071a900&amp;gt;{number = 4, name = (null)}
+1---&amp;lt;NSThread: 0x60000071a900&amp;gt;{number = 4, name = (null)}
+2---&amp;lt;NSThread: 0x6000007464c0&amp;gt;{number = 1, name = main}
+2---&amp;lt;NSThread: 0x6000007464c0&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看到：通过线程间的通信，先在其他线程中执行操作，等操作执行完了之后再回到主线程执行主线程的相应操作。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;9-nsoperationnsoperationqueue-线程同步和线程安全&quot;&gt;9. NSOperation、NSOperationQueue 线程同步和线程安全&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;线程安全&lt;/code&gt;：如果你的代码所在的进程中有多个线程在同时运行，而这些线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量的值也和预期的是一样的，就是线程安全的。
+若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作（更改变量），一般都需要考虑线程同步，否则的话就可能影响线程安全。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;线程同步&lt;/code&gt;：可理解为线程 A 和 线程 B 一块配合，A 执行到一定程度时要依靠线程 B 的某个结果，于是停下来，示意 B 运行；B 依言执行，再将结果给 A；A 再继续操作。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;举个简单例子就是：两个人在一起聊天。两个人不能同时说话，避免听不清(操作冲突)。等一个人说完(一个线程结束操作)，另一个再说(另一个线程再开始操作)。&lt;/p&gt;
+
+&lt;p&gt;下面，我们模拟火车票售卖的方式，实现 NSOperation 线程安全和解决线程同步问题。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;场景&lt;/code&gt;：总共有50张火车票，有两个售卖火车票的窗口，一个是北京火车票售卖窗口，另一个是上海火车票售卖窗口。两个窗口同时售卖火车票，卖完为止。&lt;/p&gt;
+
+&lt;h4 id=&quot;91-nsoperationnsoperationqueue-非线程安全&quot;&gt;9.1 NSOperation、NSOperationQueue 非线程安全&lt;/h4&gt;
+&lt;p&gt;先来看看不考虑线程安全的代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 非线程安全：不使用 NSLock
+ * 初始化火车票数量、卖票窗口(非线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    NSLog(@&quot;currentThread---%@&quot;,[NSThread currentThread]); // 打印当前线程
+
+    self.ticketSurplusCount = 50;
+
+    // 1.创建 queue1,queue1 代表北京火车票售卖窗口
+    NSOperationQueue *queue1 = [[NSOperationQueue alloc] init];
+    queue1.maxConcurrentOperationCount = 1;
+
+    // 2.创建 queue2,queue2 代表上海火车票售卖窗口
+    NSOperationQueue *queue2 = [[NSOperationQueue alloc] init];
+    queue2.maxConcurrentOperationCount = 1;
+
+    // 3.创建卖票操作 op1
+    NSBlockOperation *op1 = [NSBlockOperation blockOperationWithBlock:^{
+        [self saleTicketNotSafe];
+    }];
+
+    // 4.创建卖票操作 op2
+    NSBlockOperation *op2 = [NSBlockOperation blockOperationWithBlock:^{
+        [self saleTicketNotSafe];
+    }];
+
+    // 5.添加操作，开始卖票
+    [queue1 addOperation:op1];
+    [queue2 addOperation:op2];
+}
+
+/**
+ * 售卖火车票(非线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+
+        if (self.ticketSurplusCount &amp;gt; 0) {
+            //如果还有票，继续售卖
+            self.ticketSurplusCount--;
+            NSLog(@&quot;%@&quot;, [NSString stringWithFormat:@&quot;剩余票数:%d 窗口:%@&quot;, self.ticketSurplusCount, [NSThread currentThread]]);
+            [NSThread sleepForTimeInterval:0.2];
+        } else {
+            NSLog(@&quot;所有火车票均已售完&quot;);
+            break;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;剩余票数:48 窗口:&amp;lt;NSThread: 0x600003138ec0&amp;gt;{number = 6, name = (null)}
+剩余票数:49 窗口:&amp;lt;NSThread: 0x600003103240&amp;gt;{number = 5, name = (null)}
+剩余票数:47 窗口:&amp;lt;NSThread: 0x600003103240&amp;gt;{number = 5, name = (null)}
+剩余票数:46 窗口:&amp;lt;NSThread: 0x600003138ec0&amp;gt;{number = 6, name = (null)}
+剩余票数:44 窗口:&amp;lt;NSThread: 0x600003138ec0&amp;gt;{number = 6, name = (null)}
+......
+剩余票数:8 窗口:&amp;lt;NSThread: 0x600003138ec0&amp;gt;{number = 6, name = (null)}
+剩余票数:6 窗口:&amp;lt;NSThread: 0x600003103240&amp;gt;{number = 5, name = (null)}
+剩余票数:6 窗口:&amp;lt;NSThread: 0x600003138ec0&amp;gt;{number = 6, name = (null)}
+剩余票数:4 窗口:&amp;lt;NSThread: 0x600003138ec0&amp;gt;{number = 6, name = (null)}
+剩余票数:5 窗口:&amp;lt;NSThread: 0x600003103240&amp;gt;{number = 5, name = (null)}
+剩余票数:3 窗口:&amp;lt;NSThread: 0x600003138ec0&amp;gt;{number = 6, name = (null)}
+剩余票数:3 窗口:&amp;lt;NSThread: 0x600003103240&amp;gt;{number = 5, name = (null)}
+剩余票数:1 窗口:&amp;lt;NSThread: 0x600003103240&amp;gt;{number = 5, name = (null)}
+剩余票数:2 窗口:&amp;lt;NSThread: 0x600003138ec0&amp;gt;{number = 6, name = (null)}
+所有火车票均已售完
+剩余票数:0 窗口:&amp;lt;NSThread: 0x600003103240&amp;gt;{number = 5, name = (null)}
+所有火车票均已售完
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看到：在不考虑线程安全，不使用 NSLock 情况下，得到票数是错乱的，这样显然不符合我们的需求，所以我们需要考虑线程安全问题。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;92-nsoperationnsoperationqueue-线程安全&quot;&gt;9.2 NSOperation、NSOperationQueue 线程安全&lt;/h4&gt;
+&lt;p&gt;线程安全解决方案：可以给线程加锁，在一个线程执行该操作的时候，不允许其他线程进行操作。iOS 实现线程加锁有很多种方式。&lt;code class=&quot;highlighter-rouge&quot;&gt;@synchronized&lt;/code&gt;、 &lt;code class=&quot;highlighter-rouge&quot;&gt;NSLock&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;NSRecursiveLock&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;NSCondition&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;NSConditionLock&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_semaphore&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;OSSpinLock&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;atomic(property) set/get&lt;/code&gt;等等各种方式。这里我们使用 NSLock 对象来解决线程同步问题。NSLock 对象可以通过进入锁时调用 lock 方法，解锁时调用 unlock 方法来保证线程安全。&lt;/p&gt;
+
+&lt;p&gt;考虑线程安全的代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 线程安全：使用 NSLock 加锁
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+
+- (void)initTicketStatusSave {
+    NSLog(@&quot;currentThread---%@&quot;,[NSThread currentThread]); // 打印当前线程
+
+    self.ticketSurplusCount = 50;
+
+    self.lock = [[NSLock alloc] init];  // 初始化 NSLock 对象
+
+    // 1.创建 queue1,queue1 代表北京火车票售卖窗口
+    NSOperationQueue *queue1 = [[NSOperationQueue alloc] init];
+    queue1.maxConcurrentOperationCount = 1;
+
+    // 2.创建 queue2,queue2 代表上海火车票售卖窗口
+    NSOperationQueue *queue2 = [[NSOperationQueue alloc] init];
+    queue2.maxConcurrentOperationCount = 1;
+
+    // 3.创建卖票操作 op1
+    NSBlockOperation *op1 = [NSBlockOperation blockOperationWithBlock:^{
+        [self saleTicketSafe];
+    }];
+
+    // 4.创建卖票操作 op2
+    NSBlockOperation *op2 = [NSBlockOperation blockOperationWithBlock:^{
+        [self saleTicketSafe];
+    }];
+
+    // 5.添加操作，开始卖票
+    [queue1 addOperation:op1];
+    [queue2 addOperation:op2];
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketSafe {
+    while (1) {
+
+        // 加锁
+        [self.lock lock];
+
+        if (self.ticketSurplusCount &amp;gt; 0) {
+            //如果还有票，继续售卖
+            self.ticketSurplusCount--;
+            NSLog(@&quot;%@&quot;, [NSString stringWithFormat:@&quot;剩余票数:%d 窗口:%@&quot;, self.ticketSurplusCount, [NSThread currentThread]]);
+            [NSThread sleepForTimeInterval:0.2];
+        }else{
+            NSLog(@&quot;所有火车票均已售完&quot;);
+            break;
+        }
+        // 解锁
+        [self.lock unlock];
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;剩余票数:49 窗口:&amp;lt;NSThread: 0x600003b919c0&amp;gt;{number = 4, name = (null)}
+剩余票数:48 窗口:&amp;lt;NSThread: 0x600003b919c0&amp;gt;{number = 4, name = (null)}
+剩余票数:47 窗口:&amp;lt;NSThread: 0x600003b919c0&amp;gt;{number = 4, name = (null)}
+剩余票数:46 窗口:&amp;lt;NSThread: 0x600003b919c0&amp;gt;{number = 4, name = (null)}
+剩余票数:45 窗口:&amp;lt;NSThread: 0x600003b919c0&amp;gt;{number = 4, name = (null)}
+剩余票数:44 窗口:&amp;lt;NSThread: 0x600003b919c0&amp;gt;{number = 4, name = (null)}
+剩余票数:43 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+剩余票数:42 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+......
+剩余票数:7 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+剩余票数:6 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+剩余票数:5 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+剩余票数:4 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+剩余票数:3 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+剩余票数:2 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+剩余票数:1 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+剩余票数:0 窗口:&amp;lt;NSThread: 0x600003b97f00&amp;gt;{number = 6, name = (null)}
+所有火车票均已售完
+所有火车票均已售完
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看出：在考虑了线程安全，使用 NSLock 加锁、解锁机制的情况下，得到的票数是正确的，没有出现混乱的情况。我们也就解决了多个线程同步的问题。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;10-nsoperationnsoperationqueue-常用属性和方法归纳&quot;&gt;10. NSOperation、NSOperationQueue 常用属性和方法归纳&lt;/h3&gt;
+&lt;h4 id=&quot;101-nsoperation-常用属性和方法&quot;&gt;10.1 NSOperation 常用属性和方法&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;取消操作方法&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)cancel;&lt;/code&gt; 可取消操作，实质是标记 isCancelled 状态。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;判断操作状态方法&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (BOOL)isFinished;&lt;/code&gt; 判断操作是否已经结束。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (BOOL)isCancelled;&lt;/code&gt; 判断操作是否已经标记为取消。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (BOOL)isExecuting;&lt;/code&gt; 判断操作是否正在在运行。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (BOOL)isReady;&lt;/code&gt; 判断操作是否处于准备就绪状态，这个值和操作的依赖关系相关。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;操作同步&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)setCompletionBlock:(void (^)(void))block;&lt;/code&gt; completionBlock 会在当前操作执行完毕时执行 completionBlock。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)addDependency:(NSOperation *)op;&lt;/code&gt; 添加依赖，使当前操作依赖于操作 op 的完成。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)removeDependency:(NSOperation *)op;&lt;/code&gt; 移除依赖，取消当前操作对操作 op 的依赖。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;@property (readonly, copy) NSArray&amp;lt;NSOperation *&amp;gt; *dependencies;&lt;/code&gt; 在当前操作开始执行之前完成执行的所有操作对象数组。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;102-nsoperationqueue-常用属性和方法&quot;&gt;10.2 NSOperationQueue 常用属性和方法&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;取消/暂停/恢复操作 &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)cancelAllOperations;&lt;/code&gt; 可以取消队列的所有操作。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (BOOL)isSuspended;&lt;/code&gt; 判断队列是否处于暂停状态。 YES 为暂停状态，NO 为恢复状态。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)setSuspended:(BOOL)b;&lt;/code&gt; 可设置操作的暂停和恢复，YES 代表暂停队列，NO 代表恢复队列。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;操作同步&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)waitUntilAllOperationsAreFinished;&lt;/code&gt; 阻塞当前线程，直到队列中的操作全部执行完毕。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;添加/获取操作&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (void)addOperations:(NSArray *)ops waitUntilFinished:(BOOL)wait;&lt;/code&gt; 向队列中添加操作数组，wait 标志是否阻塞当前线程直到所有操作结束&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (NSArray *)operations;&lt;/code&gt; 当前在队列中的操作数组（某个操作执行结束后会自动从这个数组清除）。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;- (NSUInteger)operationCount;&lt;/code&gt; 当前队列中的操作数。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;获取队列 &lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;+ (id)currentQueue;&lt;/code&gt; 获取当前队列，如果当前线程不是在 NSOperationQueue 上运行则返回 nil。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;+ (id)mainQueue;&lt;/code&gt; 获取主队列。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;注意：&lt;/code&gt;&lt;br /&gt;
+这里的暂停和取消（包括操作的取消和队列的取消）并不代表可以将当前的操作立即取消，而是当当前的操作执行完毕之后不再执行新的操作。  &lt;br /&gt;
+暂停和取消的区别就在于：暂停操作之后还可以恢复操作，继续向下执行；而取消操作之后，所有的操作就清空了，无法再接着执行剩下的操作。&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>iOS多线程：GCD的实际使用 (四)</title>
+        <link>https://gorpeln.com/article/15862323579</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15862323579</guid>
+        <pubDate>Tue, 07 Apr 2020 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;1dispatch_async&quot;&gt;1、dispatch_async&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+dispatch_async(globalQueue, ^{
+    // 一个异步的任务，例如网络请求，耗时的文件操作等等
+    ...
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // UI刷新
+        ...
+    });
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;应用场景&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;这种用法非常常见，比如开启一个异步的网络请求，待数据返回后返回主队列刷新UI；又比如请求图片，待图片返回刷新UI等等。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;2dispatch_after&quot;&gt;2、dispatch_after&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_queue_t queue= dispatch_get_main_queue();
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), queue, ^{
+    // 在queue里面延迟执行的一段代码
+    ...
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;应用场景&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;这为我们提供了一个简单的延迟执行的方式，比如在view加载结束延迟执行一个动画等等。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;3dispatch_once&quot;&gt;3、dispatch_once&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;static dispatch_once_t onceToken;
+dispatch_once(&amp;amp;onceToken, ^{
+    // 只执行一次的任务
+    ...
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;应用场景&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;可以使用其创建一个单例，也可以做一些其他只执行一次的代码。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;4dispatch_group&quot;&gt;4、dispatch_group&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+dispatch_group_t group = dispatch_group_create();
+
+dispatch_group_async(group, queue, ^{
+    // 异步任务1
+});
+
+dispatch_group_async(group, queue, ^{
+    // 异步任务2
+});
+
+// 等待group中多个异步任务执行完毕，做一些事情，介绍两种方式
+
+// 方式1（不好，会卡住当前线程）
+dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+...
+
+// 方式2（比较好）
+dispatch_group_notify(group, mainQueue, ^{
+    // 任务完成后，在主队列中做一些操作
+    ...
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;应用场景&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;适用于自己维护的一些异步任务的同步问题；比如 多张图片拼接成一张图片&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;5dispatch_barrier_async&quot;&gt;5、dispatch_barrier_async&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// dispatch_barrier_async的作用可以用一个词概括－－承上启下，它保证此前的任务都先于自己执行，此后的任务也迟于自己执行。本例中，任务4会在任务1、2、3都执行完之后执行，而任务5、6会等待任务4执行完后执行。
+
+dispatch_queue_t queue = dispatch_queue_create(&quot;queue&quot;, DISPATCH_QUEUE_CONCURRENT);
+dispatch_async(queue, ^{
+    // 任务1
+    ...
+});
+dispatch_async(queue, ^{
+    // 任务2
+    ...
+});
+dispatch_async(queue, ^{
+    // 任务3
+    ...
+});
+dispatch_barrier_async(queue, ^{
+    // 任务4
+    ...
+});
+dispatch_async(queue, ^{
+    // 任务5
+    ...
+});
+dispatch_async(queue, ^{
+    // 任务6
+    ...
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;应用场景&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;和dispatch_group类似，dispatch_barrier也是异步任务间的一种同步方式，可以在比如文件的读写操作时使用，保证读操作的准确性。&lt;br /&gt;
+另外，有一点需要注意，dispatch_barrier_sync和dispatch_barrier_async只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟dispatch_(a)sync效果一样。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;6dispatch_apply&quot;&gt;6、dispatch_apply&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// for循环做一些事情，输出0123456789
+for (int i = 0; i &amp;lt; 10; i ++) {
+    NSLog(@&quot;%d&quot;, i);
+}
+
+// dispatch_apply替换（当且仅当处理顺序对处理结果无影响环境），输出顺序不定，比如1098673452
+dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+/*! dispatch_apply函数说明
+*
+*  @brief  dispatch_apply函数是dispatch_sync函数和Dispatch Group的关联API
+*         该函数按指定的次数将指定的Block追加到指定的Dispatch Queue中,并等到全部的处理执行结束
+*
+*  @param 10    指定重复次数  指定10次
+*  @param queue 追加对象的Dispatch Queue
+*  @param index 带有参数的Block, index的作用是为了按执行的顺序区分各个Block
+*
+*/
+dispatch_apply(10, queue, ^(size_t index) {
+    NSLog(@&quot;%zu&quot;, index);
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;应用场景&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;那么，dispatch_apply有什么用呢，因为dispatch_apply并行的运行机制，效率一般快于for循环的类串行机制（在for一次循环中的处理任务很多时差距比较大）。比如这可以用来拉取网络数据后提前算出各个控件的大小，防止绘制时计算，提高表单滑动流畅性，如果用for循环，耗时较多，并且每个表单的数据没有依赖关系，所以用dispatch_apply比较好。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;7dispatch_suspend和dispatch_resume&quot;&gt;7、dispatch_suspend和dispatch_resume&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_queue_t queue = dispatch_get_main_queue();
+dispatch_suspend(queue); //暂停队列queue
+dispatch_resume(queue);  //恢复队列queue
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;应用场景
+这两个函数不会影响到队列中已经执行的任务，队列暂停后，已经添加到队列中但还没有执行的任务不会执行，直到队列被恢复。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>iOS多线程：GCD (三)</title>
+        <link>https://gorpeln.com/article/15861494710</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15861494710</guid>
+        <pubDate>Mon, 06 Apr 2020 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;什么是CGD呢？以下摘自苹果的官方说明。&lt;/p&gt;
+
+&lt;p&gt;  Grand Central Dispatch (GCD) 是异步执行任务的技术之一。应用程序中记述的线程管理用的代码是在系统级中实现的。开发者只需要定义想要执行的任务并追加到适当的Dispatch Queue中，GCD就能生成必要的线程并执行任务。&lt;br /&gt;
+  也就是说，GCD用我们难以置信的非常简洁的方法，实现了极为复杂的多线程编程。本文将罗列GCD的API及其用法实例来帮助大家了解GCD。&lt;/p&gt;
+
+&lt;h3 id=&quot;1-gcd的队列和任务&quot;&gt;1、 GCD的队列和任务&lt;/h3&gt;
+&lt;p&gt;GCD中有两个核心的概念：&lt;code class=&quot;highlighter-rouge&quot;&gt;任务&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;队列&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;11-任务-dispatch-block&quot;&gt;1.1 任务 (Dispatch Block)&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;任务&lt;/strong&gt;： 就是你想让系统执行的操作，GCD中通常是放在dispatch_block_t中的代码。任务分为&lt;strong&gt;同步执行(sync)&lt;/strong&gt;和&lt;strong&gt;异步执行(async)&lt;/strong&gt;两种执行方式。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;同步执行(sync)&lt;/code&gt; : 任务被同步添加到指定的队列中，在该任务执行结束前会一直等待。不具备开启线程的能力，只能在当前线程中同步执行任务。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;异步执行(async)&lt;/code&gt; : 任务被异步添加到指定队列中，不会等待该任务执行。具备开启线程的能力，可在新线程中执行任务。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;注: 异步执行虽然具有开启新线程的能力，但只有该任务追加到并发队列才会开启新线程。&lt;/p&gt;
+
+&lt;h4 id=&quot;12-队列-dispatch-queue&quot;&gt;1.2 队列 (Dispatch Queue)&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;队列 (Dispatch Queue)&lt;/strong&gt; : 是执行任务的的等待队列。开发者通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async&lt;/code&gt;或&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_sync&lt;/code&gt;函数等API，在&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_block_t&lt;/code&gt;中记述想要执行的任务并将其追加到Dispatch Queue中。Dispatch Queue按照追加的顺序（先进先出FIFO，First-In-First-Out）执行任务。队列分为 &lt;strong&gt;串行队列(Serial Dispatch Queue)&lt;/strong&gt; 和 &lt;strong&gt;并发队列(Concurrent Dispatch Queue)&lt;/strong&gt; 。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;串行队列(Serial Dispatch Queue) : 只开启一条新的线程，追加到该队列中的任务会依次按顺序执行。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;并发队列(Concurrent Dispatch Queue) : 会开辟多条新的线程，追加到该队列中的任务会并行执行。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;注:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;并发队列虽然有开启多条新线程的能力，但是只有在异步执行任务时才会开启新线程。&lt;/li&gt;
+  &lt;li&gt;并发队列开启的新线程个数并不等同于任务个数，取决于队列的任务数、CPU核数、以及CPU负荷等当前系统状态。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;2gcd任务的创建队列的获取和创建&quot;&gt;2、GCD任务的创建、队列的获取和创建&lt;/h3&gt;
+&lt;h4 id=&quot;21-创建同步及异步任务&quot;&gt;2.1 创建同步及异步任务&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_async(queue, ^{
+    //创建异步任务
+});
+dispatch_sync(queue, ^{
+    //创建同步任务
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;或者这样创建：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_block_t block = ^{
+     //任务
+};
+dispatch_async(queue, block); //异步执行
+dispatch_sync(queue, block);  //同步执行
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;22-获取系统主队列&quot;&gt;2.2 获取系统主队列&lt;/h4&gt;
+&lt;p&gt;主队列为特殊的串行队列，只有一个线程，即为主线程。主线程用于界面UI更新、用户事件交互等操作。所以比较耗时的操作(如查询数据库，数据请求等)都不应放在主线程中执行，会造成页面卡顿，影响用户体验。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_queue_t queue = dispatch_get_main_queue();
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;23-获取全局并发队列&quot;&gt;2.3 获取全局并发队列&lt;/h4&gt;
+&lt;p&gt;系统为我们提供了四个全局的并发队列，我们可以直接获取，用来执行任务。&lt;/p&gt;
+
+&lt;p&gt;CPU执行任务处理时按照队列的优先级来分配资源，决定任务执行的先后顺序。但是苹果通过XUN内核用于Global Dispatch Queue 的线程并不能保证实时性 (Why? I don’t know.)，因此执行优先级只是大致的判断。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//第一个参数为队列优先级，第二个参数没用到，传0就行。
+dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;全局并发队列的优先级：
+
+DISPATCH_QUEUE_PRIORITY_HIGH //高优先级
+DISPATCH_QUEUE_PRIORITY_DEFAULT //默认优先级
+DISPATCH_QUEUE_PRIORITY_LOW //低优先级
+DISPATCH_QUEUE_PRIORITY_BACKGROUND //后台级
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;24-创建-串行队列serial-dispatch-queue&quot;&gt;2.4 创建 串行队列(Serial Dispatch Queue)&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//1.第一个参数为队列名称，推荐使用工程ID这种逆序命名方式，便于管理和调试。
+//2.第二个参数传NULL或DISPATCH_QUEUE_SERIAL，表示串行队列。
+dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;, DISPATCH_QUEUE_SERIAL);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h4 id=&quot;25-创建-并发队列concurrent-dispatch-queue&quot;&gt;2.5 创建 并发队列(Concurrent Dispatch Queue)&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//1.第一个参数为队列名称，推荐使用工程ID这种逆序命名方式，便于管理和调试。
+//2.第二个参数传DISPATCH_QUEUE_CONCURRENT，表示并发队列。
+
+dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;,DISPATCH_QUEUE_CONCURRENT);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;3-不同队列及任务的不同执行方式对比&quot;&gt;3、 不同队列及任务的不同执行方式对比&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002.png&quot; alt=&quot;blog_gcd_002&quot; /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;由上我们可以看出：要想并发执行某些任务，只有使用 〖并发队列 + 异步执行〗这种组合方式。这也是我们开发中最常用的组合方式。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;31-串行队列--同步执行&quot;&gt;3.1 串行队列 + 同步执行&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)serialAndSync {
+    NSLog(@&quot;begin ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+
+    dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;, DISPATCH_QUEUE_SERIAL);
+    dispatch_block_t block1 = ^{
+        sleep(2);
+        NSLog(@&quot;1     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block2 = ^{
+        sleep(1);
+        NSLog(@&quot;2     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block3 = ^{
+        NSLog(@&quot;3     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_sync(queue, block1);
+    dispatch_sync(queue, block2);
+    dispatch_sync(queue, block3);
+    NSLog(@&quot;end   ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+1     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+2     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+3     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;结论:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;1.所有任务都在主线程中执行(【串行+同步】不会开启新线程)。&lt;br /&gt;
+2.所有任务按照追加顺序依次执行。&lt;br /&gt;
+3.任务执行在begin和end之间，同步执行任务会阻塞主线程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;32-串行队列--异步执行&quot;&gt;3.2 串行队列 + 异步执行&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)serialAndAsync {
+    NSLog(@&quot;begin ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+
+    dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;, DISPATCH_QUEUE_SERIAL);
+    
+    dispatch_block_t block1 = ^{
+        sleep(2);
+        NSLog(@&quot;1     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block2 = ^{
+        sleep(1);
+        NSLog(@&quot;2     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block3 = ^{
+        NSLog(@&quot;3     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_async(queue, block1);
+    dispatch_async(queue, block2);
+    dispatch_async(queue, block3);
+
+    NSLog(@&quot;end   ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0078800&amp;gt;{number = 1, name = main}
+end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0078800&amp;gt;{number = 1, name = main}
+1     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c0073200&amp;gt;{number = 3, name = (null)}
+2     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c0073200&amp;gt;{number = 3, name = (null)}
+3     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c0073200&amp;gt;{number = 3, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;结论:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;1.【串行+异步】只开启一条新线程，所有任务按照追加顺序依次执行。&lt;br /&gt;
+2.任务执行在end之后，异步执行任务不会阻塞主线程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;33-并发队列--同步执行&quot;&gt;3.3 并发队列 + 同步执行&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)concurrentAndSync {
+    NSLog(@&quot;begin ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    
+    dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;, DISPATCH_QUEUE_CONCURRENT);
+    
+    dispatch_block_t block1 = ^{
+        sleep(2);
+        NSLog(@&quot;1     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block2 = ^{
+        sleep(1);
+        NSLog(@&quot;2     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block3 = ^{
+        NSLog(@&quot;3     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_sync(queue, block1);
+    dispatch_sync(queue, block2);
+    dispatch_sync(queue, block3);
+    NSLog(@&quot;end   ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+1     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+2     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+3     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;结论:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;1.所有任务都在主线程中执行(同步执行不会开启新线程)。&lt;br /&gt;
+2.所有任务按照追加顺序依次执行。&lt;br /&gt;
+3.任务执行在begin和end之间，同步执行任务会阻塞主线程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;34-并发队列--异步执行&quot;&gt;3.4 并发队列 + 异步执行&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)concurrentAndAsync {
+    NSLog(@&quot;begin ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    
+    dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;, DISPATCH_QUEUE_CONCURRENT);
+    dispatch_block_t block1 = ^{
+        sleep(2);
+        NSLog(@&quot;1     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block2 = ^{
+        sleep(1);
+        NSLog(@&quot;2     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    
+    dispatch_block_t block3 = ^{
+        NSLog(@&quot;3     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_async(queue, block1);
+    dispatch_async(queue, block2);
+    dispatch_async(queue, block3);
+    NSLog(@&quot;end   ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0263e00&amp;gt;{number = 1, name = main}
+end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0263e00&amp;gt;{number = 1, name = main}
+3     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4269fc0&amp;gt;{number = 3, name = (null)}
+2     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c007f140&amp;gt;{number = 4, name = (null)}
+1     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c807e740&amp;gt;{number = 5, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;结论:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;1.任务执行在end之后 (不在主线程中执行，开启多条新线程执行)。不会阻塞主线程&lt;br /&gt;
+2.所有任务并发执行，不会等待。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;35-主队列--同步执行&quot;&gt;3.5 主队列 + 同步执行&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)mainAndSync {
+    NSLog(@&quot;begin ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    
+    dispatch_queue_t queue = dispatch_get_main_queue();
+    
+    dispatch_block_t block1 = ^{
+        sleep(2);
+        NSLog(@&quot;1     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block2 = ^{
+        sleep(1);
+        NSLog(@&quot;2     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block3 = ^{
+        NSLog(@&quot;3     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_sync(queue, block1);
+    dispatch_sync(queue, block2);
+    dispatch_sync(queue, block3);
+    NSLog(@&quot;end   ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0263e00&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;结论:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;发生死锁，任务不会执行。由于主队列为串行队列，主线程在执行mainAndSync 函数，而 mainAndSync 在等待主线程执行结束，就造成了互相等待，均不会执行。(开发中要极力避免这种情况)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;36-主队列--异步执行&quot;&gt;3.6 主队列 + 异步执行&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)mainAndAsync {
+    NSLog(@&quot;begin ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    
+    dispatch_queue_t queue = dispatch_get_main_queue();
+    
+    dispatch_block_t block1 = ^{
+        sleep(2);
+        NSLog(@&quot;1     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block2 = ^{
+        sleep(1);
+        NSLog(@&quot;2     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_block_t block3 = ^{
+        NSLog(@&quot;3     ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    };
+    dispatch_async(queue, block1);
+    dispatch_async(queue, block2);
+    dispatch_async(queue, block3);
+    NSLog(@&quot;end   ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;输出结果:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4076040&amp;gt;{number = 1, name = main}
+end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4076040&amp;gt;{number = 1, name = main}
+1     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4076040&amp;gt;{number = 1, name = main}
+2     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4076040&amp;gt;{number = 1, name = main}
+3     ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4076040&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;结论:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;1.由于主队列为串行队列(不会开启新线程)，所有任务都在主线程中执行。&lt;br /&gt;
+2.任务在end之后执行，主队列中开启异步任务，不会开启新线程，会降低异步任务的优先级，在CPU空闲时才会执行该任务。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;4-gcd中的-dispatch_set_target_queue-的用法及作用&quot;&gt;4. GCD中的 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_set_target_queue&lt;/code&gt; 的用法及作用&lt;/h3&gt;
+&lt;h4 id=&quot;41-更改dispatch-queue-的执行优先级&quot;&gt;4.1 更改Dispatch Queue 的执行优先级&lt;/h4&gt;
+&lt;p&gt;通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_queue_create&lt;/code&gt; 函数生成的GCD队列，不管是 Serial Dispatch Queue 还是 Concurrent Dispatch Queue，其优先级都为系统默认优先级，若想改变创建队列的优先级，则可以使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_set_target_queue&lt;/code&gt; 函数。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 第一个参数为需要更改优先级的queue, 第二个参数为参照队列，
+// 将参照队列的优先级设为目标队列的优先级  
+  
+dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;,DISPATCH_QUEUE_SERIAL);
+    
+dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+    
+dispatch_set_target_queue(queue, globalQueue);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;42-设置多个-dispatch-queue-的层级&quot;&gt;4.2 设置多个 Dispatch Queue 的层级&lt;/h4&gt;
+&lt;p&gt;由上我们知道，通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_queue_create&lt;/code&gt; 函数创建的 &lt;strong&gt;Serial Dispatch Queue&lt;/strong&gt; 任务执行是同步的，同时只能执行一个任务，虽然GCD队列受到系统资源的限制，但通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_queue_create&lt;/code&gt; 函数可以生成任意多个 &lt;strong&gt;Dispatch Queue&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;当生成多个 &lt;strong&gt;Serial Dispatch Queue&lt;/strong&gt;时，各个 &lt;strong&gt;Serial Dispatch Queue&lt;/strong&gt;将并行执行。&lt;/p&gt;
+
+&lt;p&gt;如下代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)setTargetQueue {
+    
+    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.example.gcd.queue1&quot;, DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.example.gcd.queue2&quot;, DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_t queue3 = dispatch_queue_create(&quot;com.example.gcd.queue3&quot;, DISPATCH_QUEUE_SERIAL);
+        
+    dispatch_async(queue1, ^{
+        NSLog(@&quot;1 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+        sleep(3);
+        NSLog(@&quot;2 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    
+    dispatch_async(queue2, ^{
+        NSLog(@&quot;3 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+        sleep(2);
+        NSLog(@&quot;4 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+     });
+    
+    dispatch_async(queue3, ^{
+        NSLog(@&quot;5 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+        sleep(1);
+        NSLog(@&quot;6 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;执行结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;3 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0066180&amp;gt;{number = 5, name = (null)}
+5 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4468e80&amp;gt;{number = 4, name = (null)}
+1 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0066700&amp;gt;{number = 3, name = (null)}
+6 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4468e80&amp;gt;{number = 4, name = (null)}
+4 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0066180&amp;gt;{number = 5, name = (null)}
+2 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0066700&amp;gt;{number = 3, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;多次运行发现: 其中1、3、5的输出顺序不固定，多个任务并发执行。&lt;/p&gt;
+
+&lt;p&gt;假如此时我想让多个同步队列中的任务还是依次同步执行，或者让多个并发队列中的任务同步执行，我该怎么办呢？对，使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_set_target_queue&lt;/code&gt; ，将三个队列指定到同一串行目标队列上，此时多个队列任务就会同步执行，不再是并发执行了。&lt;/p&gt;
+
+&lt;p&gt;如下代码:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)setTargetQueue {
+    
+    dispatch_queue_t queue1 = dispatch_queue_create(&quot;com.example.gcd.queue1&quot;, DISPATCH_QUEUE_CONCURRENT);
+    dispatch_queue_t queue2 = dispatch_queue_create(&quot;com.example.gcd.queue2&quot;, DISPATCH_QUEUE_CONCURRENT);
+    dispatch_queue_t queue3 = dispatch_queue_create(&quot;com.example.gcd.queue3&quot;, DISPATCH_QUEUE_CONCURRENT);
+    
+    dispatch_queue_t targetQueue = dispatch_queue_create(&quot;com.example.gcd.targetQueue&quot;, DISPATCH_QUEUE_SERIAL);
+
+    //指定到同一串行队列
+    dispatch_set_target_queue(queue1, targetQueue);
+    dispatch_set_target_queue(queue2, targetQueue);
+    dispatch_set_target_queue(queue3, targetQueue);
+    
+    dispatch_async(queue1, ^{
+        NSLog(@&quot;1 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+        sleep(3);
+        NSLog(@&quot;2 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+
+    dispatch_async(queue2, ^{
+        NSLog(@&quot;3 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+        sleep(2);
+        NSLog(@&quot;4 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+
+    dispatch_async(queue3, ^{
+        NSLog(@&quot;5 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+        sleep(1);
+        NSLog(@&quot;6 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;执行结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d02602c0&amp;gt;{number = 3, name = (null)}
+2 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d02602c0&amp;gt;{number = 3, name = (null)}
+3 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d02602c0&amp;gt;{number = 3, name = (null)}
+4 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d02602c0&amp;gt;{number = 3, name = (null)}
+5 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d02602c0&amp;gt;{number = 3, name = (null)}
+6 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d02602c0&amp;gt;{number = 3, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在必须将不可并行执行的多个任务追加到多个 Serial Dispatch Queue 中时，可使用 dispatch_set_target_queue函数，防止任务并发执行。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;注: 
+一旦生成 Serial Dispatch Queue 并追加任务处理，系统对于一个 Serial Dispatch Queue 
+就会生成一条线程。假如生成 1000个 Serial Dispatch Queue ，那么就生成了 1000 条线程。
+此时会大量消耗内存，大幅度降低系统的响应性能。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;5-gcd时间-dispatch_time_t&quot;&gt;5. GCD时间: &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_time_t&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_time_t&lt;/code&gt; 为GCD的时间类，用于获取距离某个目标时间间隔的时间&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;计算相对时间：
+
+dispatch_time_t time = dispatch_time(&amp;lt;#dispatch_time_t when#&amp;gt;, &amp;lt;#int64_t delta#&amp;gt;)
+  
+//第一个参数为某个目标时间，常用 DISPATCH_TIME_NOW,表示现在时间。
+//第二个参数表示具体的时间长度，不能直接传 int或者float，需 (int64_t)3* NSEC_PER_SEC 这种形式。
+  
+注: delta单位是纳秒！
+   
+NSEC_PER_SEC  1000000000ull  每秒有1000000000纳秒
+NSEC_PER_MSEC 1000000ull     每毫秒有1000000纳秒
+USEC_PER_SEC  1000000ull     每秒有1000000微秒
+NSEC_PER_USEC 1000ull        每微秒有1000纳秒
+  
+&quot;ull&quot;是C语言的数值字面量，是显示表明类型时使用的字符串（表示“unsigned long long”）。
+  
+例如 dispatch_time(DISPATCH_TIME_NOW, 3*NSEC_PER_SEC) 表示距离当前时间 3秒后的时间。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;计算绝对时间:
+
+dispatch_time_t time =dispatch_walltime(&amp;lt;#const struct timespec * _Nullable when#&amp;gt;, &amp;lt;#int64_t delta#&amp;gt;)
+      
+/* 第一个参数是一个 timespec 的结构体, 计算的是一个绝对的时间点,比如 2016年10月10日8点30分30秒, 
+如果你不需要自某一个特定的时刻开始,可以传 NUll,表示自动获取当前时区的当前时间作为开始时刻，
+第二个参数同上。*/
+  
+例如 dispatch_walltime(NULL, 3*NSEC_PER_SEC)表示距离当前时间 3秒后的时间。
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;struct timespec 类型的时间可以通过NSDate对象生成:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 通过指定日期获取一个 dispatch_time_t 对象
+- (dispatch_time_t)getDispatchTimeByDate:(NSDate *)date {
+    NSTimeInterval interval;
+    double second, subsecond;
+    struct timespec time;
+    dispatch_time_t milestone = 0;
+    
+    interval = [date timeIntervalSince1970];
+    subsecond = modf(interval, &amp;amp;second);
+    time.tv_sec = second;
+    time.tv_nsec = dispatch_walltime(&amp;amp;time, 0);
+    return milestone;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;6-gcd延时操作-dispatch_after&quot;&gt;6. GCD延时操作: &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_after&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;我们可能经常会有这样的需求，想在3秒后执行某项操作，可能不限于3秒，总之，这种想在指定时间后执行操作的情况，可用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_after&lt;/code&gt; 来实现。&lt;/p&gt;
+
+&lt;p&gt;例如:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//第一个参数是 dispatch_time_t 的值(详见5)。
+//第二个参数是执行的 Dispatch Queue 。
+//第三个参数是要追加的操作。
+  
+dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, 3*NSEC_PER_SEC);
+    
+dispatch_after(time, dispatch_get_main_queue(), ^{
+    NSLog(@&quot;Three seconds later...&quot;);
+});
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;注: dispatch_after 函数并不是在指定的时间过后执行操作，而只是在指定时间后追加操作到 Dispatch Queue 中。&lt;/p&gt;
+
+  &lt;p&gt;因为 Mian Dispatch Queue 在主线程的RunLoop 中执行，假如主线程的刷新频率为 60 帧，则追加的操作最快在3秒后执行，最慢则在 3 + 1/60 秒后执行，并且假如在Mian Dispatch Queue 中有大量操作要执行或者主线程本身有延迟的话，这个时间会更长。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;7-dispatch-group&quot;&gt;7. Dispatch Group&lt;/h3&gt;
+&lt;h4 id=&quot;71-dispatch_group_notify&quot;&gt;7.1 dispatch_group_notify&lt;/h4&gt;
+&lt;p&gt;假如在追加到 &lt;strong&gt;Dispatch Queue&lt;/strong&gt; 中的多个操作全部结束后想要执行某项操作，假如只使用一个 &lt;strong&gt;Serial Dispatch Queue&lt;/strong&gt;时，只需将结束操作追加到所有任务的最后即可实现。但是在使用 &lt;strong&gt;Concurrent Dispatch Queue&lt;/strong&gt;或同时使用多个 &lt;strong&gt;Dispatch Queue&lt;/strong&gt;时，实现起来就比较复杂了。&lt;/p&gt;
+
+&lt;p&gt;这时我们就可以使用 Dispatch Group 。下面我们来看一段代码:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dispatchGroup {
+    NSLog(@&quot;begin  ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    
+    dispatch_group_t group = dispatch_group_create();
+    
+    dispatch_group_async(group, queue, ^{
+        NSLog(@&quot;Task 1 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_group_async(group, queue, ^{
+        NSLog(@&quot;Task 2 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_group_async(group, queue, ^{
+        NSLog(@&quot;Task 3 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_group_notify(group, queue, ^{
+        NSLog(@&quot;Done!  ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    NSLog(@&quot;end    ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;执行结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin  ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d006f940&amp;gt;{number = 1, name = main}
+end    ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d006f940&amp;gt;{number = 1, name = main}
+Task 2 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0473700&amp;gt;{number = 3, name = (null)}
+Task 3 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c806cd00&amp;gt;{number = 4, name = (null)}
+Task 1 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c406c740&amp;gt;{number = 5, name = (null)}
+Done!  ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c806cd00&amp;gt;{number = 4, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;因为Global Dispatch Queue 为 Concurrent Dispatch Queue ，多个线程并发执行任务，所以任务执行顺序不定，但是执行结果 Done 一定是最后执行的。无论使用的是什么类型的 Dispatch Queue，Dispatch Group 都可以监测到这些任务执行的结束。&lt;/p&gt;
+
+  &lt;p&gt;通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_create()&lt;/code&gt; 函数生成 Dispatch Group .&lt;/p&gt;
+
+  &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_async&lt;/code&gt;与 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_async&lt;/code&gt; 相同，都是追加 Block操作到指定 Dispatch Queue中。不同的是 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_async&lt;/code&gt; 多了一个 Group 参数。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;72-dispatch_group_wait&quot;&gt;7.2 dispatch_group_wait&lt;/h4&gt;
+&lt;p&gt;如上情况我们也可以使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt; 函数去实现，如下代码:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dispatchGroup {
+    NSLog(@&quot;begin  ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    
+    dispatch_group_t group = dispatch_group_create();
+    
+    dispatch_group_async(group, queue, ^{
+        sleep(3);
+        NSLog(@&quot;Task 1 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_group_async(group, queue, ^{
+        sleep(1);
+        NSLog(@&quot;Task 2 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_group_async(group, queue, ^{
+        NSLog(@&quot;Task 3 ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    NSLog(@&quot;Done!  ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    
+    NSLog(@&quot;end    ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;执行结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin  ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4262fc0&amp;gt;{number = 1, name = main}
+Task 3 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d026f040&amp;gt;{number = 3, name = (null)}
+Task 2 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c007ff40&amp;gt;{number = 4, name = (null)}
+Task 1 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1cc07fe80&amp;gt;{number = 5, name = (null)}
+Done!  ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4262fc0&amp;gt;{number = 1, name = main}
+end    ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4262fc0&amp;gt;{number = 1, name = main}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;从结果我们可以看出 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt; 一样可以达到我们想要的结果。但是不同之处也非常明显，&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt; 会阻塞当前线程。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;另外 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt; 函数可以指定等待的时间，传入 DISPATCH_TIME_FOREVER 则表示永远等待，直到所有任务执行结束。且该函数还有 long 型的返回值，返回0则表示所有任务都执行结束。&lt;/p&gt;
+
+&lt;p&gt;如我们修改代码如下:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;long result = dispatch_group_wait(group, dispatch_time(DISPATCH_TIME_NOW, 2*NSEC_PER_SEC));
+if (result == 0) {
+    //所有任务都执行结束
+    NSLog(@&quot;Done!  ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}else {
+    //有任务尚未结束
+     NSLog(@&quot;Not Done!  ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;执行结果为:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin  ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0264f40&amp;gt;{number = 1, name = main}
+Task 3 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d066e980&amp;gt;{number = 3, name = (null)}
+Task 2 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1cc07f9c0&amp;gt;{number = 4, name = (null)}
+Not Done!  ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0264f40&amp;gt;{number = 1, name = main}
+end    ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0264f40&amp;gt;{number = 1, name = main}
+Task 1 ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1c807fc80&amp;gt;{number = 5, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;由上我们可以看出 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_notify&lt;/code&gt; 与 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait&lt;/code&gt; 两个函数的异同之处。在开发过程中可根据具体情况选择使用。&lt;/p&gt;
+
+&lt;h4 id=&quot;73-dispatch_group_enter-和-dispatch_group_leave&quot;&gt;7.3 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_enter&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_leave&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;这两个函数配对使用，表示 Dispatch Group 开启任务和结束任务。这两种通知可以在多线程间自由穿梭，不局限于特定的某个线程。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_enter&lt;/code&gt;: 通知group，下面的任务马上要放到group中执行了。&lt;br /&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_leave&lt;/code&gt;: 通知group，任务完成了，该任务要从group中移除了。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;猜测&lt;/strong&gt;： 可能 Dispatch Group 内部有着一个类似引用计数的存在，调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_enter&lt;/code&gt; 会加一，调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_leave&lt;/code&gt;会减一，当该值为0时，则调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_notify&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_group_wait &lt;/code&gt;函数。&lt;/p&gt;
+
+&lt;p&gt;当我们异步开启一个任务，并不指定特定的队列及线程时，可使用这两个函数去通知 Dispatch Group 任务的开启和结束。&lt;/p&gt;
+
+&lt;p&gt;如下代码:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dispatchGroup {
+    NSLog(@&quot;begin  ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_group_t group = dispatch_group_create();
+
+    [self downloadImaegWithUrl:@&quot;http://pic10.photophoto.cn/20090224/0036036802407491_b.jpg&quot; InGroup:group];
+    [self downloadImaegWithUrl:@&quot;http://pic25.photophoto.cn/20121220/0036036800277861_b.jpg&quot; InGroup:group];
+    [self downloadImaegWithUrl:@&quot;http://img.taopic.com/uploads/allimg/140806/235020-140P60H10661.jpg&quot; InGroup:group];
+
+    dispatch_group_notify(group, queue, ^{
+        NSLog(@&quot;Done!  ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    NSLog(@&quot;end    ==== &amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+}
+
+//利用 SDWebImage异步下载图片
+- (void)downloadImaegWithUrl:(NSString *)url InGroup:(dispatch_group_t)group{
+    dispatch_group_enter(group);//开启任务
+    [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:url] options:(SDWebImageDownloaderContinueInBackground) progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+        NSLog(@&quot;下载完成! ====&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+        dispatch_group_leave(group);//结束任务
+    }];
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;执行结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;begin  ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d406ee00&amp;gt;{number = 1, name = main}
+end    ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d406ee00&amp;gt;{number = 1, name = main}
+下载完成! ====&amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d406ee00&amp;gt;{number = 1, name = main}
+下载完成! ====&amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d406ee00&amp;gt;{number = 1, name = main}
+下载完成! ====&amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d406ee00&amp;gt;{number = 1, name = main}
+Done!  ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1cc069cc0&amp;gt;{number = 3, name = (null)}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;8-gcd栅栏-dispatch_barrier_sync&quot;&gt;8. GCD栅栏 （dispatch_barrier_sync）&lt;/h3&gt;
+&lt;p&gt;当我们在访问数据库或者文件时，使用 &lt;strong&gt;Serial Dispatch Queue&lt;/strong&gt; 可避免数据竞争导致程序异常的问题(多个写入操作不可并行执行)。但是这样的话，程序的执行效率就比较低。&lt;/p&gt;
+
+&lt;p&gt;为了高效率的进行访问，我们使用 &lt;strong&gt;Concurrent Dispatch Queue&lt;/strong&gt;，并使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_sync&lt;/code&gt;函数解决数据竞争问题。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_sync&lt;/code&gt;俗称&lt;strong&gt;栅栏&lt;/strong&gt;，顾名思义，即可以将某些操作隔绝开来，互不影响。&lt;/p&gt;
+
+&lt;p&gt;假如我想在4次读取操作中间加入2次写入操作， 如下代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dispatchBarrier {
+    
+    dispatch_queue_t queue = dispatch_queue_create(&quot;com.gcd.example&quot;, DISPATCH_QUEUE_CONCURRENT);
+    dispatch_async(queue, ^{
+        NSLog(@&quot;reading1 ===&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_async(queue, ^{
+        NSLog(@&quot;reading2 ===&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_async(queue, ^{
+        //写入操作
+        NSLog(@&quot;writing1 ===&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_async(queue, ^{
+        //写入操作
+        NSLog(@&quot;writing2 ===&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_async(queue, ^{
+        NSLog(@&quot;reading3 ===&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+    dispatch_async(queue, ^{
+        NSLog(@&quot;reading4 ===&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+    });
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;由 &lt;strong&gt;Concurrent Dispatch Queue&lt;/strong&gt; 的性质我们可知，4次读取和2次写入均会并发执行，先后顺序不定，这样必然会导致数据竞争，出现异常。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;修改代码&lt;/strong&gt;: 我们只需将写入操作替换成 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_sync&lt;/code&gt; 函数即可解决该问题。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_barrier_sync(queue, ^{
+    //写入操作
+    NSLog(@&quot;writing1 ===&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+});
+dispatch_barrier_sync(queue, ^{
+    //写入操作
+    NSLog(@&quot;writing2 ===&amp;gt;&amp;gt;: %@&quot;,[NSThread currentThread]);
+ });
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_barrier_sync&lt;/code&gt; 函数会等待追加到 Dispatch Queue 上的并行任务全部执行结束之后，再将指定的操作追加到 Dispatch Queue 中。该指定的操作执行完毕后，Dispatch Queue 才会恢复正常操作。开始处理其他任务。&lt;/p&gt;
+
+&lt;p&gt;因此修改后的代码执行顺序为 reading1和reading2并发执行在前，之后为 writing1 和 writing2 串行执行，最后 reading3和reading4并发执行。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_003.png&quot; alt=&quot;blog_gcd_003&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;9-gcd信号量-dispatch_semaphore_t&quot;&gt;9. GCD信号量 （dispatch_semaphore_t）&lt;/h3&gt;
+&lt;p&gt;信号量(dispatch_semaphore_t)可以理解为有信号通过，无信号则等待。具体的我们慢慢来分析。&lt;/p&gt;
+
+&lt;p&gt;与信号量有关的主要有三个函数:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_semaphore_create(&amp;lt;#long value#&amp;gt;)
+//创建一个信号量，传入一个long型的信号值.
+//传入信号值为大于或者等于0的值，否则将返回 NULL.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_semaphore_wait(&amp;lt;#dispatch_semaphore_t  _Nonnull dsema#&amp;gt;, &amp;lt;#dispatch_time_t timeout#&amp;gt;)
+//与 dispatch_group_wait(详见7.2)类似，会阻塞当前线程，并有返回值.
+//当当前信号量等于0时，持续等待.
+//当当前信号量大于0时，执行返回，并将当前信号量减一.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_semaphore_signal(&amp;lt;#dispatch_semaphore_t  _Nonnull dsema#&amp;gt;)
+//该函数会将当前信号量加一.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;我理解的信号量主要有三个作用:&lt;strong&gt;线程同步&lt;/strong&gt;、&lt;strong&gt;线程锁&lt;/strong&gt;、&lt;strong&gt;控制并发数&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;91-线程同步&quot;&gt;9.1 线程同步&lt;/h4&gt;
+&lt;p&gt;先看代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;__block int count = 0;
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    count = 10;
+});
+NSLog(@&quot;%d&quot;,count);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;由异步并发执行我们可知，此时输出的count值为 0。假如我想让主线程保持与任务异步线程一致，输出 count 值为10，我该怎么做呢？&lt;/p&gt;
+
+&lt;p&gt;修改代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_semaphore_t semphore = dispatch_semaphore_create(0);
+    __block int count = 0;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    count = 10;
+    dispatch_semaphore_signal(semphore);
+});
+dispatch_semaphore_wait(semphore, DISPATCH_TIME_FOREVER);
+NSLog(@&quot;%d&quot;,count);
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;分析&lt;/strong&gt;:&lt;br /&gt;
+我们初始化了一个值为0信号量，执行 dispatch_semaphore_wait 函数时发现信号量为0，则会等待信号，执行完 count = 10 后，通过 dispatch_semaphore_signal 函数获得一个信号量，此时 dispatch_semaphore_wait 监测到信号量大于0，则执行返回，线程继续执行，输出 count 为10。这就保证了线程间的同步了。&lt;/p&gt;
+
+&lt;h4 id=&quot;92-线程锁&quot;&gt;9.2 线程锁&lt;/h4&gt;
+&lt;p&gt;假如我想异步并发执行1000次任务，给同一块内存区间赋值，会发生什么情况呢?&lt;br /&gt;
+先看代码:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;NSMutableArray *temArr = @[].mutableCopy;
+    for (int i = 0; i &amp;lt; 1000; i++) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [temArr addObject:[NSString stringWithFormat:@&quot;%d&quot;,i]];
+        });
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行会发现程序异常崩溃的概率相当高，这是因为我们异步并发的操作同一内存导致数据错乱引起的异常。&lt;/p&gt;
+
+&lt;p&gt;使用线程锁修改代码：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dispatch_semaphore_t semphore = dispatch_semaphore_create(0);
+NSMutableArray *temArr = @[].mutableCopy;
+for (int i = 0; i &amp;lt; 1000; i++) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        //等待信号
+        dispatch_semaphore_wait(semphore, DISPATCH_TIME_FOREVER);
+        //到这里，信号量会减一
+        [temArr addObject:[NSString stringWithFormat:@&quot;%d&quot;,i]];
+        dispatch_semaphore_signal(semphore);
+        //信号量加一
+    });
+}
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;通过这种方法，保证了同一时间只有一个操作去改变内存。当然在实际操作中我们不会这样去for循环使用，通常是设置一个全局的 dispatch_semaphore_t 对象，将需要加锁的操作放在，dispatch_semaphore_wait 和 dispatch_semaphore_signal 函数中间。保证唯一性。&lt;/p&gt;
+
+&lt;p&gt;例如：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;@property (nonatomic, copy) NSString *name;
+@property (nonatomic, strong) dispatch_semaphore_t semaphore;
+
+self.semaphore = dispatch_semaphore_create(1);
+
+- (void)setName:(NSString *)name {
+    dispatch_semaphore_wait(self.semaphore, DISPATCH_TIME_FOREVER);
+    _name = name;
+    dispatch_semaphore_signal(self.semaphore);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;93-控制并发数&quot;&gt;9.3 控制并发数&lt;/h4&gt;
+&lt;p&gt;当我们在处理大量线程时，怎么来进行并发控制呢，假如我有1000个任务要执行，但是同时执行的并发数我想控制在10个，该怎么做呢？以前我们使用NSOperationQueue可以控制并发数，在GCD中怎么简单快速的控制并发呢？那就是使用 dispatch_semaphore_t.&lt;/p&gt;
+
+&lt;p&gt;先看代码:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dispatchSemaphore {
+
+    dispatch_group_t group = dispatch_group_create();
+    
+    dispatch_semaphore_t semphore = dispatch_semaphore_create(10);
+    
+    for (int i = 0; i &amp;lt; 100; i++) {
+        dispatch_semaphore_wait(semphore, DISPATCH_TIME_FOREVER);
+        
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSLog(@&quot;%d ===&amp;gt;&amp;gt;: %@&quot;,i,[NSThread currentThread]);
+            sleep(2);
+            dispatch_semaphore_signal(semphore);
+        });
+    }
+    dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+    NSLog(@&quot;end&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;首先我们创建了一个值为10的信号量，每次循环会减少一个信号量，执行结束会增加一个信号量，当执行操作为10个时，此时信号量为0，dispatch_semaphore_wait 函数将会等待，如此则保证了最多同时有10个任务在执行。由此看出，通过 dispatch_semaphore_t 来控制并发数简单快速又实用。&lt;/p&gt;
+
+&lt;h3 id=&quot;10-dispatch_suspend--dispatch_resume&quot;&gt;10. dispatch_suspend / dispatch_resume&lt;/h3&gt;
+&lt;p&gt;当追加大量的处理任务到 Dispatch Queue 时，有时候希望不执行某些已经追加的任务，在这种情况下，只需要挂起 Dispatch Queue即可，当可以执行时再恢复。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_suspend&lt;/code&gt; : 挂起指定的 Dispatch Queue。可理解为暂停执行。&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_resume&lt;/code&gt; : 恢复指定的 Dispatch Queue。可理解为继续执行。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;值得注意的是，dispatch_suspend 对于正在执行的任务是没有影响的，挂起后，只有 Dispatch Queue 中尚未执行的任务停止执行。而恢复则使得这些任务能够继续执行。&lt;/p&gt;
+
+&lt;h3 id=&quot;11-gcd快速遍历-dispatch_apply&quot;&gt;11. GCD快速遍历 （dispatch_apply）&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_apply&lt;/code&gt; 函数是dispatch_sync函数和 Dispatch Group的关联API。该函数按指定次数将指定的 Block 追加到指定的 Dispatch Queue中，并等待全部处理执行结束。&lt;/p&gt;
+
+&lt;p&gt;如下代码:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dispatchApply {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    
+    dispatch_apply(10, queue, ^(size_t index) {
+        NSLog(@&quot;%zu&quot;,index);
+    });
+    NSLog(@&quot;end&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;执行结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;0
+2
+4
+3
+5
+6
+7
+8
+9
+1
+end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;因为在 Global Dispatch Queue 中执行操作，10个任务并发执行，但是最后的end一定在最后的位置上。因为 dispatch_apply 会等待全部任务执行结束。&lt;/p&gt;
+
+&lt;p&gt;另外，由于dispatch_apply 函数与 dispatch_sync函数一样，会等待任务结束，阻塞当前线程，因此推荐在 dispatch_async 函数中异步执行 dispatch_apply 函数。&lt;/p&gt;
+
+&lt;p&gt;例如:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)dispatchApply {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    //异步执行
+    dispatch_async(queue, ^{
+        dispatch_apply(10, queue, ^(size_t index) {
+            NSLog(@&quot;%zu&quot;,index);
+        });
+        
+        //等待处理结束
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //主线程回调，刷新UI
+            NSLog(@&quot;end&quot;);
+        });
+    });
+    NSLog(@&quot;main&quot;);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;12-gcd单例-dispatch_once&quot;&gt;12. GCD单例 (dispatch_once)&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_once&lt;/code&gt;函数是保证在应用程序执行中只执行一次指定处理的API。&lt;/p&gt;
+
+&lt;p&gt;下面这种经常出现的用来进行初始化的代码可通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_once&lt;/code&gt; 函数来简化。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;static int count = 0;
+    if (count == 0) {
+        //在这里初始化
+        count = 100;
+    }
+使用 dispatch_once 函数：
+
+static int count = 0;
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;amp;onceToken, ^{
+        //在这里初始化
+        count = 100;
+    });
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;代码看起来并没有太大的变化。但是通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_once&lt;/code&gt; 函数，该代码即使在复杂的多线程环境下执行，也可保证百分之百安全。之前的代码在大多数情况下也是安全的。但是在多核CPU中，读取数据时，有可能会多次执行初始化处理。而用 &lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_once&lt;/code&gt; 函数就不必担心这样的问题。这就是所说的单例模式，在生成单例对象时使用。&lt;/p&gt;
+
+&lt;h3 id=&quot;13-gcd的实际使用&quot;&gt;13. GCD的实际使用&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;/article/15862323579&quot;&gt;多线程使用总结 GCD的实际使用 (四)&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_001.png&quot; alt=&quot;blog_gcd_001&quot; /&gt;&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
+        <title>iOS多线程：NSThread (二)</title>
+        <link>https://gorpeln.com/article/15860813363</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15860813363</guid>
+        <pubDate>Sun, 05 Apr 2020 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;NSThread 是苹果官方提供的，简单易用，可以直接操作线程对象。不过也需要需要程序员自己管理线程的生命周期(主要是创建)，我们在开发的过程中偶尔使用 NSThread。比如我们会经常调用[NSThread currentThread]来显示当前的进程信息。&lt;/p&gt;
+
+&lt;h3 id=&quot;1-创建启动线程&quot;&gt;1. 创建、启动线程&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;先创建线程，再启动线程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 1. 创建线程
+NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];
+// 2. 启动线程
+[thread start];    // 线程一启动，就会在线程thread中执行self的run方法
+
+// 新线程调用方法，里边为需要执行的任务
+- (void)run {
+     NSLog(@&quot;%@&quot;, [NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;创建线程后自动启动线程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 1. 创建线程后自动启动线程
+[NSThread detachNewThreadSelector:@selector(run) toTarget:self withObject:nil];
+
+// 新线程调用方法，里边为需要执行的任务
+- (void)run {
+     NSLog(@&quot;%@&quot;, [NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;隐式创建并启动线程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 1. 隐式创建并启动线程
+[self performSelectorInBackground:@selector(run) withObject:nil];
+
+// 新线程调用方法，里边为需要执行的任务
+- (void)run {
+     NSLog(@&quot;%@&quot;, [NSThread currentThread]);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;2-线程相关用法&quot;&gt;2. 线程相关用法&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 获得主线程
++ (NSThread *)mainThread;    
+
+// 判断是否为主线程(对象方法)
+- (BOOL)isMainThread;
+
+// 判断是否为主线程(类方法)
++ (BOOL)isMainThread;    
+
+// 获得当前线程
+NSThread *current = [NSThread currentThread];
+
+// 线程的名字——setter方法
+- (void)setName:(NSString *)n;    
+
+// 线程的名字——getter方法
+- (NSString *)name;  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;3-线程状态控制方法&quot;&gt;3. 线程状态控制方法&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;启动线程方法&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)start;
+// 线程进入就绪状态 -&amp;gt; 运行状态。当线程任务执行完毕，自动进入死亡状态
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;阻塞（暂停）线程方法&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (void)sleepUntilDate:(NSDate *)date;
++ (void)sleepForTimeInterval:(NSTimeInterval)ti;
+// 线程进入阻塞状态
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;强制停止线程&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;+ (void)exit;
+// 线程进入死亡状态
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;4-线程之间的通信&quot;&gt;4. 线程之间的通信&lt;/h3&gt;
+&lt;p&gt;在开发中，我们经常会在子线程进行耗时操作，操作结束后再回到主线程去刷新 UI。这就涉及到了子线程和主线程之间的通信。我们先来了解一下官方关于 NSThread 的线程间通信的方法。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 在主线程上执行操作
+- (void)performSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait;
+- (void)performSelectorOnMainThread:(SEL)aSelector withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray&amp;lt;NSString *&amp;gt; *)array;
+  // equivalent to the first method with kCFRunLoopCommonModes
+
+// 在指定线程上执行操作
+- (void)performSelector:(SEL)aSelector onThread:(NSThread *)thr withObject:(id)arg waitUntilDone:(BOOL)wait modes:(NSArray *)array NS_AVAILABLE(10_5, 2_0);
+- (void)performSelector:(SEL)aSelector onThread:(NSThread *)thr withObject:(id)arg waitUntilDone:(BOOL)wait NS_AVAILABLE(10_5, 2_0);
+
+// 在当前线程上执行操作，调用 NSObject 的 performSelector:相关方法
+- (id)performSelector:(SEL)aSelector;
+- (id)performSelector:(SEL)aSelector withObject:(id)object;
+- (id)performSelector:(SEL)aSelector withObject:(id)object1 withObject:(id)object2;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;下面通过一个经典的下载图片 DEMO 来展示线程之间的通信。具体步骤如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;开启一个子线程，在子线程中下载图片。&lt;/li&gt;
+  &lt;li&gt;回到主线程刷新 UI，将图片展示在 UIImageView 中。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;DEMO 代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 创建一个线程下载图片
+ */
+- (void)downloadImageOnSubThread {
+    // 在创建的子线程中调用downloadImage下载图片
+    [NSThread detachNewThreadSelector:@selector(downloadImage) toTarget:self withObject:nil];
+}
+
+/**
+ * 下载图片，下载完之后回到主线程进行 UI 刷新
+ */
+- (void)downloadImage {
+    NSLog(@&quot;current thread -- %@&quot;, [NSThread currentThread]);
+    
+    // 1. 获取图片 imageUrl
+    NSURL *imageUrl = [NSURL URLWithString:@&quot;https://img.gorpeln.com/blog_logo_shiguangben.png&quot;];
+    
+    // 2. 从 imageUrl 中读取数据(下载图片) -- 耗时操作
+    NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
+    // 通过二进制 data 创建 image
+    UIImage *image = [UIImage imageWithData:imageData];
+    
+    // 3. 回到主线程进行图片赋值和界面刷新
+    [self performSelectorOnMainThread:@selector(refreshOnMainThread:) withObject:image waitUntilDone:YES];
+}
+
+/**
+ * 回到主线程进行图片赋值和界面刷新
+ */
+- (void)refreshOnMainThread:(UIImage *)image {
+    NSLog(@&quot;current thread -- %@&quot;, [NSThread currentThread]);
+    
+    // 赋值图片到imageview
+    self.imageView.image = image;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;h3 id=&quot;5-nsthread-线程安全和线程同步&quot;&gt;5. NSThread 线程安全和线程同步&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;线程安全&lt;/strong&gt;：如果你的代码所在的进程中有多个线程在同时运行，而这些线程可能会同时运行这段代码。如果每次运行结果和单线程运行的结果是一样的，而且其他的变量的值也和预期的是一样的，就是线程安全的。&lt;/p&gt;
+
+&lt;p&gt;若每个线程中对全局变量、静态变量只有读操作，而无写操作，一般来说，这个全局变量是线程安全的；若有多个线程同时执行写操作（更改变量），一般都需要考虑线程同步，否则的话就可能影响线程安全。&lt;br /&gt;
+  &lt;br /&gt;
+&lt;strong&gt;线程同步&lt;/strong&gt;：可理解为线程 A 和 线程 B 一块配合，A 执行到一定程度时要依靠线程 B 的某个结果，于是停下来，示意 B 运行；B 依言执行，再将结果给 A；A 再继续操作。&lt;/p&gt;
+
+&lt;p&gt;举个简单例子就是：两个人在一起聊天。两个人不能同时说话，避免听不清(操作冲突)。等一个人说完(一个线程结束操作)，另一个再说(另一个线程再开始操作)。&lt;/p&gt;
+
+&lt;p&gt;下面，我们模拟火车票售卖的方式，实现 NSThread 线程安全和解决线程同步问题。&lt;/p&gt;
+
+&lt;p&gt;场景：总共有50张火车票，有两个售卖火车票的窗口，一个是北京火车票售卖窗口，另一个是上海火车票售卖窗口。两个窗口同时售卖火车票，卖完为止。&lt;/p&gt;
+
+&lt;h4 id=&quot;251-nsthread-非线程安全&quot;&gt;2.5.1 NSThread 非线程安全&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 初始化火车票数量、卖票窗口(非线程安全)、并开始卖票
+ */
+- (void)initTicketStatusNotSave {
+    // 1. 设置剩余火车票为 50
+    self.ticketSurplusCount = 50;
+    
+    // 2. 设置北京火车票售卖窗口的线程
+    self.ticketSaleWindow1 = [[NSThread alloc]initWithTarget:self selector:@selector(saleTicketNotSafe) object:nil];
+    self.ticketSaleWindow1.name = @&quot;北京火车票售票窗口&quot;;
+    
+    // 3. 设置上海火车票售卖窗口的线程
+    self.ticketSaleWindow2 = [[NSThread alloc]initWithTarget:self selector:@selector(saleTicketNotSafe) object:nil];
+    self.ticketSaleWindow2.name = @&quot;上海火车票售票窗口&quot;;
+    
+    // 4. 开始售卖火车票
+    [self.ticketSaleWindow1 start];
+    [self.ticketSaleWindow2 start];
+
+}
+
+/**
+ * 售卖火车票(非线程安全)
+ */
+- (void)saleTicketNotSafe {
+    while (1) {
+        //如果还有票，继续售卖
+        if (self.ticketSurplusCount &amp;gt; 0) {
+            self.ticketSurplusCount --;
+            NSLog(@&quot;%@&quot;, [NSString stringWithFormat:@&quot;剩余票数：%ld 窗口：%@&quot;, self.ticketSurplusCount, [NSThread currentThread].name]);
+            [NSThread sleepForTimeInterval:0.2];
+        }
+        //如果已卖完，关闭售票窗口
+        else {
+            NSLog(@&quot;所有火车票均已售完&quot;);
+            break;
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;运行结果：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;剩余票数：48 窗口：上海火车票售票窗口
+剩余票数：49 窗口：北京火车票售票窗口
+剩余票数：47 窗口：上海火车票售票窗口
+剩余票数：46 窗口：北京火车票售票窗口
+剩余票数：45 窗口：上海火车票售票窗口
+......
+剩余票数：3 窗口：北京火车票售票窗口
+剩余票数：1 窗口：北京火车票售票窗口
+剩余票数：1 窗口：上海火车票售票窗口
+剩余票数：0 窗口：北京火车票售票窗口
+所有火车票均已售完
+所有火车票均已售完
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看到在不考虑线程安全的情况下，得到票数是错乱的，这样显然不符合我们的需求，所以我们需要考虑线程安全问题。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h4 id=&quot;252-nsthread-线程安全&quot;&gt;2.5.2 NSThread 线程安全&lt;/h4&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ * 初始化火车票数量、卖票窗口(线程安全)、并开始卖票
+ */
+- (void)initTicketStatusSave {
+    // 1. 设置剩余火车票为 50
+    self.ticketSurplusCount = 50;
+    
+    // 2. 设置北京火车票售卖窗口的线程
+    self.ticketSaleWindow1 = [[NSThread alloc]initWithTarget:self selector:@selector(saleTicketSafe) object:nil];
+    self.ticketSaleWindow1.name = @&quot;北京火车票售票窗口&quot;;
+    
+    // 3. 设置上海火车票售卖窗口的线程
+    self.ticketSaleWindow2 = [[NSThread alloc]initWithTarget:self selector:@selector(saleTicketSafe) object:nil];
+    self.ticketSaleWindow2.name = @&quot;上海火车票售票窗口&quot;;
+    
+    // 4. 开始售卖火车票
+    [self.ticketSaleWindow1 start];
+    [self.ticketSaleWindow2 start];
+    
+}
+
+/**
+ * 售卖火车票(线程安全)
+ */
+- (void)saleTicketSafe {
+    while (1) {
+        // 互斥锁
+        @synchronized (self) {
+            //如果还有票，继续售卖
+            if (self.ticketSurplusCount &amp;gt; 0) {
+                self.ticketSurplusCount --;
+                NSLog(@&quot;%@&quot;, [NSString stringWithFormat:@&quot;剩余票数：%ld 窗口：%@&quot;, self.ticketSurplusCount, [NSThread currentThread].name]);
+                [NSThread sleepForTimeInterval:0.2];
+            }
+            //如果已卖完，关闭售票窗口
+            else {
+                NSLog(@&quot;所有火车票均已售完&quot;);
+                break;
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;运行结果:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;剩余票数：49 窗口：上海火车票售票窗口
+剩余票数：48 窗口：上海火车票售票窗口
+剩余票数：47 窗口：北京火车票售票窗口
+剩余票数：46 窗口：北京火车票售票窗口
+剩余票数：45 窗口：北京火车票售票窗口
+剩余票数：44 窗口：北京火车票售票窗口
+剩余票数：43 窗口：上海火车票售票窗口
+......
+剩余票数：5 窗口：上海火车票售票窗口
+剩余票数：4 窗口：上海火车票售票窗口
+剩余票数：3 窗口：上海火车票售票窗口
+剩余票数：2 窗口：上海火车票售票窗口
+剩余票数：1 窗口：上海火车票售票窗口
+剩余票数：0 窗口：上海火车票售票窗口
+所有火车票均已售完
+所有火车票均已售完
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;可以看出，在考虑了线程安全的情况下，加锁之后，得到的票数是正确的，没有出现混乱的情况。我们也就解决了多个线程同步的问题。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;26-线程的状态转换&quot;&gt;2.6 线程的状态转换&lt;/h3&gt;
+&lt;p&gt;当我们新建一条线程&lt;code class=&quot;highlighter-rouge&quot;&gt;NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];&lt;/code&gt;，在内存中的表现为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ thread_001.png&quot; alt=&quot;blog_ thread_001&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;当调用&lt;code class=&quot;highlighter-rouge&quot;&gt;[thread start];&lt;/code&gt;后，系统把线程对象放入可调度线程池中，线程对象进入就绪状态，如下图所示。&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ thread_002.png&quot; alt=&quot;blog_ thread_002&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;当然，可调度线程池中，会有其他的线程对象，如下图所示。在这里我们只关心左边的线程对象。
+&lt;img src=&quot;https://img.gorpeln.com/blog_ thread_003.png&quot; alt=&quot;blog_ thread_003&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;下边我们来看看当前线程的状态转换:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;如果CPU现在调度当前线程对象，则当前线程对象进入运行状态，如果CPU调度其他线程对象，则当前线程对象回到就绪状态。&lt;/li&gt;
+  &lt;li&gt;如果CPU在运行当前线程对象的时候调用了sleep方法\等待同步锁，则当前线程对象就进入了阻塞状态，等到sleep到时\得到同步锁，则回到就绪状态。&lt;/li&gt;
+  &lt;li&gt;如果CPU在运行当前线程对象的时候线程任务执行完毕\异常强制退出，则当前线程对象进入死亡状态。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ thread_004.png&quot; alt=&quot;blog_ thread_004&quot; /&gt;&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
+        <title>iOS多线程：基础 (一)</title>
+        <link>https://gorpeln.com/article/15854795957</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15854795957</guid>
+        <pubDate>Sun, 29 Mar 2020 00:00:00 +0800</pubDate>
+        <description>&lt;h3 id=&quot;一-进程&quot;&gt;一、 进程：&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;进程是一个具有一定独立功能的程序关于某次数据集合的一次运行活动，它是操作系统分配资源的基本单元。&lt;/li&gt;
+  &lt;li&gt;进程是指在系统中正在运行的一个应用程序，就是一段程序的执行过程，我们可以理解为手机上的一个app。&lt;/li&gt;
+  &lt;li&gt;每个进程之间是独立的，每个进程均运行在其专用且受保护的内存空间内，拥有独立运行所需的全部资源。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;二-线程&quot;&gt;二、 线程&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;程序执行流的最小单元，线程是进程中的一个实体.&lt;/li&gt;
+  &lt;li&gt;一个进程要想执行任务，必须至少有一条线程。应用程序启动的时候，系统会默认开启一条线程，也就是主线程。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;三-进程和线程的关系&quot;&gt;三、 进程和线程的关系&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;线程是进程的执行单元，进程的所有任务都在线程中执行。&lt;/li&gt;
+  &lt;li&gt;线程是 CPU 分配资源和调度的最小单位。&lt;/li&gt;
+  &lt;li&gt;一个程序可以对应多个进程(多进程)，一个进程中可有多个线程，但至少要有一条线程。&lt;/li&gt;
+  &lt;li&gt;同一个进程内的线程共享进程资源。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;四-多进程&quot;&gt;四、 多进程&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;进程是程序在计算机上的一次执行活动。当你运行一个程序，你就启动了一个进程。显然，程序是死的(静态的)，进程是活的(动态的)。&lt;/li&gt;
+  &lt;li&gt;进程可以分为系统进程和用户进程。凡是用于完成操作系统的各种功能的进程就是系统进程，它们就是处于运行状态下的操作系统本身;所有由用户启动的进程都是用户进程。进程是操作系统进行资源分配的单位。&lt;/li&gt;
+  &lt;li&gt;进程又被细化为线程，也就是一个进程下有多个能独立运行的更小的单位。在同一个时间里，同一个计算机系统中如果允许两个或两个以上的进程处于运行状态，这便是多进程。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;五-多线程&quot;&gt;五、 多线程&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;同一时间，CPU只能处理1条线程，只有1条线程在执行。多线程并发执行，其实是CPU快速地在多条线程之间调度（切换）。如果CPU调度线程的时间足够快，就造成了多线程并发执行的假象&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果线程非常非常多，CPU会在N多线程之间调度，消耗大量的CPU资源，每条线程被调度执行的频次会降低（线程的执行效率降低）&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;多线程的优点:
+    &lt;ul&gt;
+      &lt;li&gt;能适当提高程序的执行效率&lt;/li&gt;
+      &lt;li&gt;能适当提高资源利用率（CPU、内存利用率）&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;多线程的缺点:
+    &lt;ul&gt;
+      &lt;li&gt;开启线程需要占用一定的内存空间（默认情况下，主线程占用1M，子线程占用512KB），如果开启大量的线程，会占用大量的内存空间，降低程序的性能&lt;/li&gt;
+      &lt;li&gt;线程越多，CPU在调度线程上的开销就越大&lt;/li&gt;
+      &lt;li&gt;程序设计更加复杂：比如线程之间的通信、多线程的数据共享&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;六任务&quot;&gt;六、任务&lt;/h3&gt;
+&lt;p&gt;就是执行操作的意思，也就是在线程中执行的那段代码。在 GCD 中是放在 block 中的。执行任务有两种方式：&lt;code class=&quot;highlighter-rouge&quot;&gt;同步执行（sync）&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;异步执行（async）&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;同步(Sync)：同步添加任务到指定的队列中，在添加的任务执行结束之前，会一直等待，直到队列里面的任务完成之后再继续执行，即会阻塞线程。只能在当前线程中执行任务(是当前线程，不一定是主线程)，不具备开启新线程的能力。&lt;/li&gt;
+  &lt;li&gt;异步(Async)：线程会立即返回，无需等待就会继续执行下面的任务，不阻塞当前线程。可以在新的线程中执行任务，具备开启新线程的能力(并不一定开启新线程)。如果不是添加到主队列上，异步会在子线程中执行任务&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;七队列&quot;&gt;七、队列&lt;/h3&gt;
+&lt;p&gt;队列（Dispatch Queue）：这里的队列指执行任务的等待队列，即用来存放任务的队列。队列是一种特殊的线性表，采用 FIFO（先进先出）的原则，即新任务总是被插入到队列的末尾，而读取任务的时候总是从队列的头部开始读取。每读取一个任务，则从队列中释放一个任务。&lt;br /&gt;
+在 GCD 中有两种队列：&lt;code class=&quot;highlighter-rouge&quot;&gt;串行队列&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;并发队列&lt;/code&gt;。两者都符合 FIFO（先进先出）的原则。两者的主要区别是：执行顺序不同，以及开启线程数不同。&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;串行队列（Serial Dispatch Queue）：&lt;br /&gt;
+同一时间内，队列中只能执行一个任务，只有当前的任务执行完成之后，才能执行下一个任务。（只开启一个线程，一个任务执行完毕后，再执行下一个任务）。主队列是主线程上的一个串行队列,是系统自动为我们创建的&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;并发队列（Concurrent Dispatch Queue）：&lt;br /&gt;
+同时允许多个任务并发执行。（可以开启多个线程，并且同时执行任务）。并发队列的并发功能只有在异步（dispatch_async）函数下才有效
+&lt;img src=&quot;https://img.gorpeln.com/blog_ multithreading_001.png&quot; alt=&quot;blog_ multithreading_001&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;八ios中的多线程&quot;&gt;八、iOS中的多线程&lt;/h3&gt;
+&lt;p&gt;主要有三种：&lt;code class=&quot;highlighter-rouge&quot;&gt;NSThread&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;NSoperationQueue&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;GCD&lt;/code&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;1-nsthread轻量级别的多线程技术&quot;&gt;1. NSThread：轻量级别的多线程技术&lt;/h4&gt;
+&lt;p&gt;是我们自己手动开辟的子线程，如果使用的是初始化方式就需要我们自己启动，如果使用的是构造器方式它就会自动启动。只要是我们手动开辟的线程，都需要我们自己管理该线程，不只是启动，还有该线程使用完毕后的资源回收&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(testThread:) object:@&quot;我是参数&quot;];
+// 当使用初始化方法出来的主线程需要start启动
+[thread start];
+// 可以为开辟的子线程起名字
+thread.name = @&quot;NSThread线程&quot;;
+// 调整Thread的权限 线程权限的范围值为0 ~ 1 。越大权限越高，先执行的概率就会越高，由于是概率，所以并不能很准确的的实现我们想要的执行顺序，默认值是0.5
+thread.threadPriority = 1;
+// 取消当前已经启动的线程
+[thread cancel];
+// 通过遍历构造器开辟子线程
+[NSThread detachNewThreadSelector:@selector(testThread:) toTarget:self withObject:@&quot;构造器方式&quot;];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;performSelector…只要是NSObject的子类或者对象都可以通过调用方法进入子线程和主线程，其实这些方法所开辟的子线程也是NSThread的另一种体现方式。&lt;br /&gt;
+在编译阶段并不会去检查方法是否有效存在，如果不存在只会给出警告&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//在当前线程。延迟1s执行。响应了OC语言的动态性:延迟到运行时才绑定方法
+[self performSelector:@selector(aaa) withObject:nil afterDelay:1];
+// 回到主线程。waitUntilDone:是否将该回调方法执行完在执行后面的代码，如果为YES:就必须等回调方法执行完成之后才能执行后面的代码，说白了就是阻塞当前的线程；如果是NO：就是不等回调方法结束，不会阻塞当前线程
+[self performSelectorOnMainThread:@selector(aaa) withObject:nil waitUntilDone:YES];
+//开辟子线程
+[self performSelectorInBackground:@selector(aaa) withObject:nil];
+//在指定线程执行
+[self performSelector:@selector(aaa) onThread:[NSThread currentThread] withObject:nil waitUntilDone:YES]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;需要注意的是：如果是带afterDelay的延时函数，会在内部创建一个 NSTimer，然后添加到当前线程的Runloop中。也就是如果当前线程没有开启runloop，该方法会失效。在子线程中，需要启动runloop(注意调用顺序)&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[self performSelector:@selector(aaa) withObject:nil afterDelay:1];
+[[NSRunLoop currentRunLoop] run];
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;而performSelector:withObject:只是一个单纯的消息发送，和时间没有一点关系。所以不需要添加到子线程的Runloop中也能执行&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;/article/15860813363&quot;&gt;更多关于NSThread：iOS多线程：NSThread (二)&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;2-gcd&quot;&gt;2. GCD&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;实际项目开发中，很多时候只是会用到异步操作，不会有特别复杂的线程关系管理，所以苹果推崇的且优化完善、运行快速的GCD是首选&lt;/li&gt;
+  &lt;li&gt;如果考虑异步操作之间的事务性，顺序行，依赖关系，比如多线程并发下载，GCD需要自己写更多的代码来实现，而NSOperationQueue已经内建了这些支持&lt;/li&gt;
+  &lt;li&gt;不论是GCD还是NSOperationQueue，我们接触的都是任务和队列，都没有直接接触到线程，事实上线程管理也的确不需要我们操心，系统对于线程的创建，调度管理和释放都做得很好。而NSThread需要我们自己去管理线程的生命周期，还要考虑线程同步、加锁问题，造成一些性能上的开销&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&quot;/article/15861494710&quot;&gt;更多关于GCD：iOS多线程：GCD (三)&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;3-nsoprationqueue&quot;&gt;3. NSOprationQueue&lt;/h4&gt;
+&lt;p&gt;GCD是面向底层的C语言的API，NSOpertaionQueue用GCD构建封装的，是GCD的高级抽象。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;GCD执行效率更高，而且由于队列中执行的是由block构成的任务，这是一个轻量级的数据结构，写起来更方便&lt;/li&gt;
+  &lt;li&gt;GCD只支持FIFO的队列，而NSOperationQueue可以通过设置最大并发数，设置优先级，添加依赖关系等调整执行顺序&lt;/li&gt;
+  &lt;li&gt;NSOperationQueue甚至可以跨队列设置依赖关系，但是GCD只能通过设置串行队列，或者在队列内添加barrier(dispatch_barrier_async)任务，才能控制执行顺序,较为复杂&lt;/li&gt;
+  &lt;li&gt;NSOperationQueue因为面向对象，所以支持KVO，可以监测operation是否正在执行（isExecuted）、是否结束（isFinished）、是否取消（isCanceld）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;a href=&quot;/article/15884027619&quot;&gt;更多关于NSOprationQueue：iOS多线程：NSOperation、NSOperationQueue (五)&lt;/a&gt;&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
         <title>优惠券设计思路浅析</title>
         <link>https://gorpeln.com/article/15821713417</link>
         <guid isPermaLink="true">https://gorpeln.com/article/15821713417</guid>
@@ -3698,1028 +6675,6 @@ wx.navigateBack();
 &lt;ul&gt;
   &lt;li&gt;建议在列表页的onLoad函数中，将数据请求单独放在一个函数中进行调用，比如这里的loadData，这样在create页面就能只刷新数据，而onLoad中可能存在的，比如获取用户id等操作，则不会重复再次执行&lt;/li&gt;
 &lt;/ul&gt;
-</description>
-      </item>
-    
-      <item>
-        <title>七牛云上传图片 - 客户端</title>
-        <link>https://gorpeln.com/article/15662012632</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15662012632</guid>
-        <pubDate>Mon, 19 Aug 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;　　最近做了七牛云存储的有关内容，涉及到与后台交互获取验证的token，这个token是用作验证使用的，官方建议使用后台生成后，客户端再获取使用。但客户端也能独自生成具体生成方法如下：
-　　
-　　
-　　&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#import &amp;lt;QiniuSDK.h&amp;gt;
-#import &quot;QN_GTM_Base64.h&quot;
-#import &amp;lt;CommonCrypto/CommonHMAC.h&amp;gt;
-
-#define kQiniuScope @&quot;&quot;
-#define kQiniuAccessKey @&quot;&quot;
-#define kQiniuSecretKey @&quot;&quot;
-#define kQiniuLiveTime 1  //有效时间
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-(void)createToken {
-    if (!kQiniuScope.length || !kQiniuAccessKey.length || !kQiniuSecretKey.length) {
-        return;
-    }
-    // 将上传策略中的scrop和deadline序列化成json格式
-    NSMutableDictionary *authInfo = [NSMutableDictionary dictionary];
-    [authInfo setObject:kQiniuScope forKey:@&quot;scope&quot;];
-    [authInfo
-     setObject:[NSNumber numberWithLong:[[NSDate date] timeIntervalSince1970] + kQiniuLiveTime * 24 * 3600]
-     forKey:@&quot;deadline&quot;];
-    
-    NSData *jsonData =
-    [NSJSONSerialization dataWithJSONObject:authInfo options:NSJSONWritingPrettyPrinted error:nil];
-    
-    // 对json序列化后的上传策略进行URL安全的base64编码
-    NSString *encodedString = [self urlSafeBase64Encode:jsonData];
-    
-    // 用secretKey对编码后的上传策略进行HMAC-SHA1加密，并且做安全的base64编码，得到encoded_signed
-    NSString *encodedSignedString = [self HMACSHA1:kQiniuSecretKey text:encodedString];
-    
-    // 将accessKey、encodedSignedString和encodedString拼接，中间用：分开，就是上传的token
-    NSString *token =
-    [NSString stringWithFormat:@&quot;%@:%@:%@&quot;, kQiniuAccessKey, encodedSignedString, encodedString];
-    
-    self.qiniuToken = token;
-}
-  
-// 将进行URL安全的base64编码
-- (NSString *)urlSafeBase64Encode:(NSData *)text {
-    NSString *base64 =
-    [[NSString alloc] initWithData:[QN_GTM_Base64 encodeData:text] encoding:NSUTF8StringEncoding];
-    base64 = [base64 stringByReplacingOccurrencesOfString:@&quot;+&quot; withString:@&quot;-&quot;];
-    base64 = [base64 stringByReplacingOccurrencesOfString:@&quot;/&quot; withString:@&quot;_&quot;];
-    return base64;
-}
-  
-// 对上传策略中进行HMAC-SHA1加密
-- (NSString *)HMACSHA1:(NSString *)key text:(NSString *)text {
-    const char *cKey = [key cStringUsingEncoding:NSUTF8StringEncoding];
-    const char *cData = [text cStringUsingEncoding:NSUTF8StringEncoding];
-    
-    char cHMAC[CC_SHA1_DIGEST_LENGTH];
-    
-    CCHmac(kCCHmacAlgSHA1, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
-    
-    NSData *HMAC = [[NSData alloc] initWithBytes:cHMAC length:CC_SHA1_DIGEST_LENGTH];
-    NSString *hash = [self urlSafeBase64Encode:HMAC];
-    return hash;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h5 id=&quot;上面涉及到三个参数&quot;&gt;上面涉及到三个参数&lt;/h5&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_qiniuupload_001.png&quot; alt=&quot;blog_qiniuupload_001&quot; /&gt;
-&lt;img src=&quot;https://img.gorpeln.com/blog_qiniuupload_002.png&quot; alt=&quot;blog_qiniuupload_002&quot; /&gt;&lt;/p&gt;
-
-&lt;h5 id=&quot;这样拿到了token直接上传图片就可以了&quot;&gt;这样拿到了token，直接上传图片就可以了&lt;/h5&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;- (void)uploadImageToQNFilePath:(NSString *)filePath {
-    QNUploadManager *upManager = [[QNUploadManager alloc] init];
-    QNUploadOption *uploadOption = [[QNUploadOption alloc] initWithMime:nil progressHandler:^(NSString *key, float percent) {}
-                                                                 params:nil
-                                                               checkCrc:NO
-                                                     cancellationSignal:nil];
-    [upManager putFile:filePath key:nil token:self.qiniuToken complete:^(QNResponseInfo *info, NSString *key, NSDictionary *resp) {
-        [self.uploadImageArray addObject:resp[@&quot;key&quot;]];
-        NSLog(@&quot;do something&quot;);
-    } option:uploadOption];
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-</description>
-      </item>
-    
-      <item>
-        <title>文章置顶功能的实现 - Jekyll x Liquid</title>
-        <link>https://gorpeln.com/article/15632033519</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15632033519</guid>
-        <pubDate>Mon, 15 Jul 2019 00:00:00 +0800</pubDate>
-        <description>&lt;h3 id=&quot;基础版&quot;&gt;基础版&lt;/h3&gt;
-&lt;p&gt;其实很简单, 从post的header里面进行参数设置&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;layout: post
-title: Jekyll x Liquid: 文章置顶功能的实现
-category: 个人博客
-tags: [个人博客,Jekyll,文章置顶,gorpeln]
-description: 
-top: true
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;然后liquid进行判断&lt;code class=&quot;highlighter-rouge&quot;&gt;(*号换成%)&lt;/code&gt;&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* for post in site.posts *}
-    {* if post.top != true *}
-        {* continue *}
-    {* endif *}
-    &amp;lt;div&amp;gt;置顶文章细节&amp;lt;/div&amp;gt;
-{* endfor *}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* for post in site.posts *}
-    {* if post.top == true *}
-        {* continue *}
-    {* endif *}
-    &amp;lt;div&amp;gt;普通文章细节&amp;lt;/div&amp;gt;
-{* endfor *}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;当然这个可以进行多种扩展, 比如只输出特定类别的文章等等，这里就是个只输出带有gorpeln这个tag的post&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* for post in site.posts *}
-
-    {* assign isGorpeln = 0 *}
-
-    {* for tag in post.tags *}
-        {* if tag == gorpeln *}
-           {* assign isGorpeln = 1 *}
-        {* endif *}
-    {* endfor *}
-
-    {* if isGorpeln == 0 *}
-      {* continue *}
-    {* endif *}
-
-{* endfor *}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h3 id=&quot;升级版&quot;&gt;升级版&lt;/h3&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;(*号换成%)&lt;/code&gt;&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{* comment *} 置顶文章列表开始 {* endcomment *}
-{* for post in site.posts *}
-{* if post.top *}
-{* if paginator.page == 1 *}
-{* comment *} 文章列表代码开始 {* endcomment *}
-&amp;lt;!-- 在这里写文章列表代码 --&amp;gt;
-{* comment *} 文章列表代码结束 {* endcomment *}
-{* endif *}
-{* endif *}
-{* endfor *}
-{* comment *} 置顶文章列表结束 {* endcomment *}
-  
-  
-{* comment *} 普通文章列表开始 {* endcomment *}
-{* for post in paginator.posts *}
-{* if post.top *}
-{* else *}
-{* comment *} 文章列表代码开始 {* endcomment *}
-&amp;lt;!-- 在这里写文章列表代码 --&amp;gt;
-{* comment *} 文章列表代码结束 {* endcomment *}
-{* endif *}
-{* endfor *}
-{* comment *} 普通文章列表结束 {* endcomment *}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-</description>
-      </item>
-    
-      <item>
-        <title>扩展篇 ：开发框架及前景</title>
-        <link>https://gorpeln.com/article/15623480718</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15623480718</guid>
-        <pubDate>Sat, 06 Jul 2019 00:00:00 +0800</pubDate>
-        <description>&lt;h2 id=&quot;一小程序开源开发框架介绍&quot;&gt;一、小程序开源开发框架介绍&lt;/h2&gt;
-
-&lt;h3 id=&quot;1wepy&quot;&gt;1、WePY&lt;/h3&gt;
-
-&lt;p&gt;微信小程序问世没多久，大家发现用原生小程序语法开发，开发体验和效率真的不尽如人意。WePY 此时横空出世，彼时 WePY 的目的，是让小程序开发更贴近传统 H5 框架开发，支持引入 npm 包，支持组件化开发和 ES Next 新特性。&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;开发模式：更符合现有 MVVM 框架的开发模式，类 Vue，节省上手成本&lt;/li&gt;
-  &lt;li&gt;组件化开发：支持组件嵌套、循环、组建通信等&lt;/li&gt;
-  &lt;li&gt;npm 包管理：处理了 npm 包依赖问题&lt;/li&gt;
-  &lt;li&gt;ES Next：语法更现代，提升开发体验&lt;/li&gt;
-  &lt;li&gt;细节优化：setData 性能优化（脏检测）、事件传参、编译器支持、Mixin&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;正是由于 WePY 解决了原生微信小程序的开发痛点，到目前为止，WePY 也是小程序上层框架中使用方最多的。很多开发者都是基于 WePY 开发微信小程序的，微信官方后续的一些性能优化和特性支持也有 WePY 的影子。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.npmjs.com/package/wepy-cli&quot;&gt;wepy-cli&lt;/a&gt; 的周下载量月度平均都维持在 1000 以上，远远领先于同类 cli 工具，star 数 12k+，也正如官网所说，是最受欢迎的小程序框架。使用 WePY 框架的接入，更是达到了上千家。&lt;/p&gt;
-
-&lt;h3 id=&quot;2mpvue&quot;&gt;2、mpvue&lt;/h3&gt;
-
-&lt;p&gt;随着小程序接入量的猛增，业界也在不断地对小程序开发体验进行尝试。2018 年 3 月，美团点评发布了一个名叫 mpvue 的小程序框架。mpvue 是一套定位于开发小程序的前端开发框架，其核心目标是提高开发效率，增强开发体验。&lt;/p&gt;
-
-&lt;p&gt;mpvue 是基于 Vue 的 Runtime（Vue Runtime 除了我们知道的 Web 平台之外，还有 Weex），相比 WePY，mpvue 的语法更接近 Vue 语法，对于有 Vue 基础的童鞋，可以无缝切换到小程序的开发，省下了学习小程序语法的时间。&lt;/p&gt;
-
-&lt;h3 id=&quot;3taro&quot;&gt;3、Taro&lt;/h3&gt;
-
-&lt;p&gt;Taro 是 2018 年 6 月，由京东凹凸实验室出品的一款号称多端统一的框架。这里的端，指的是 Web、App（React Native、Weex）、小程序。Taro 主打「一次编写，多端运行」，是继 WePY 和 mpvue 之后，在多平台上做到了更彻底的一款框架。&lt;/p&gt;
-
-&lt;h3 id=&quot;4小程序开发框架总结&quot;&gt;4、小程序开发框架总结&lt;/h3&gt;
-
-&lt;p&gt;微信小程序诞生之初，定位是简单的逻辑视图层框架，所以不带有数据流管理。经常看到一些小程序开发者，通过手工引入 Redux，去做数据流管理。上面的三款框架，都是支持数据流管理的。它们总体的特性与不同，可以参见下面的表格。&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;特性&lt;/th&gt;
-      &lt;th&gt;语法规范&lt;/th&gt;
-      &lt;th&gt;模板系统&lt;/th&gt;
-      &lt;th&gt;组件化&lt;/th&gt;
-      &lt;th&gt;样式规范&lt;/th&gt;
-      &lt;th&gt;多端复用&lt;/th&gt;
-      &lt;th&gt;自动构建&lt;/th&gt;
-      &lt;th&gt;上手成本&lt;/th&gt;
-      &lt;th&gt;数据流管理&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;微信小程序&lt;/td&gt;
-      &lt;td&gt;小程序规范&lt;/td&gt;
-      &lt;td&gt;字符串模板&lt;/td&gt;
-      &lt;td&gt;不太 OK 的小程序组件化&lt;/td&gt;
-      &lt;td&gt;WXSS&lt;/td&gt;
-      &lt;td&gt;无&lt;/td&gt;
-      &lt;td&gt;无&lt;/td&gt;
-      &lt;td&gt;全新学习&lt;/td&gt;
-      &lt;td&gt;不支持&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;mpvue&lt;/td&gt;
-      &lt;td&gt;Vue.js 规范&lt;/td&gt;
-      &lt;td&gt;字符串模板&lt;/td&gt;
-      &lt;td&gt;Vue.js 组件化规范&lt;/td&gt;
-      &lt;td&gt;Sass、Less、PostCSS&lt;/td&gt;
-      &lt;td&gt;复用 H5&lt;/td&gt;
-      &lt;td&gt;webpack 构建&lt;/td&gt;
-      &lt;td&gt;熟悉 Vue.js&lt;/td&gt;
-      &lt;td&gt;Vuex&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;WePY&lt;/td&gt;
-      &lt;td&gt;类 Vue.js 规范&lt;/td&gt;
-      &lt;td&gt;字符串模板&lt;/td&gt;
-      &lt;td&gt;自定义组件化规范&lt;/td&gt;
-      &lt;td&gt;Sass、Less、Stylus&lt;/td&gt;
-      &lt;td&gt;复用 H5&lt;/td&gt;
-      &lt;td&gt;内建构建系统&lt;/td&gt;
-      &lt;td&gt;熟悉 Vue.js&lt;/td&gt;
-      &lt;td&gt;Redux&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Taro&lt;/td&gt;
-      &lt;td&gt;React 规范&lt;/td&gt;
-      &lt;td&gt;JSX&lt;/td&gt;
-      &lt;td&gt;React 组件化规范&lt;/td&gt;
-      &lt;td&gt;Sass、Less、PostCSS&lt;/td&gt;
-      &lt;td&gt;复用 H5 &amp;amp; 通过 RN 支持移动端&lt;/td&gt;
-      &lt;td&gt;内建构建系统 + webpack&lt;/td&gt;
-      &lt;td&gt;熟悉 React&lt;/td&gt;
-      &lt;td&gt;Redux&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;最后补充一句：任何解决方案都是在其特定使用场景下诞生的，并没有「放之四海而皆准」的方案。虽然引入新方案有时是为了解决语法、开发成本之类的问题，但可能同时又产生新的坑，因此如果是新手要做复杂的小程序项目，建议使用小程序自带的解决方案；如果是某个解决方案的熟手，可以考虑在大型小程序项目中选择自己顺手的解决方案。&lt;/p&gt;
-
-&lt;h2 id=&quot;二小程序前景分析&quot;&gt;二、小程序前景分析&lt;/h2&gt;
-
-&lt;p&gt;微信小程序其实已经抓住了一个用户痛点：我们安装的 N 多 App，其实一周甚至一个月都不会打开一次，这类 App 适合做成小程序，做到真正的「用完即走」。当然微信本身不可能只是这么「肤浅」，小程序实际是微信生态的重要一环，商家服务在小程序内可以完成闭环体验，小程序为其提供更好的用户体验。另外，现在制作 App 的成本越来越低，而 App 中的内容又更加封闭，不好做索引，微信这类超级 App 会变成导流工具，大家看重的是微信的入口，而最终目的是脱离微信，将用户导流到自己的 App 内。微信小程序也可以打破这个局面，将用户留在微信。&lt;/p&gt;
-
-&lt;p&gt;下面说下微信的技术前景。微信小程序是一套近乎完美的 Hybrid 解决方案，从开发流程到生态建设，小程序开发者都做了设计和布局，但是小程序只是微信的小程序（某些 App 自己的小程序，比如百度智能小程序、支付宝小程序），这些解决方案是围绕一个 App 而设计的，相对于 PWA（渐进式 Web 应用）这类标准的推进，封闭的解决方案必然会受到挑战。笔者认为，随着标准的成熟、浏览器的跟进、硬件和网络的提升，行业标准的解决方案才是未来方向。而且小程序这个封闭的解决方案，运行在更大的封闭系统内，本身就具有争议性，小程序发展肯定会受限于苹果公司 iOS 审核规定，未来小程序和苹果 iOS 审核之间会有不小的冲突，比如苹果公司会严格限制小程序和小游戏的分发，不允许微信内给小程序和小游戏开放更大的入口；微信的虚拟支付也是苹果公司的重点打击对象。&lt;/p&gt;
-
-</description>
-      </item>
-    
-      <item>
-        <title>实战篇 ：电商小程序云开发实战</title>
-        <link>https://gorpeln.com/article/15618778699</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15618778699</guid>
-        <pubDate>Sun, 30 Jun 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;小程序名称：gorpeln（已上线）&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;在线预约&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_wxmini_qrcode.jpg&quot; alt=&quot;blog_wxmini_qrcode&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-
-&lt;p&gt;演示视频：&lt;a href=&quot;http://demo.gorpeln.com/blog_wxmini_video.mp4&quot;&gt;视频链接&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;小程序端主要包括：（开发中…）&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;首页&lt;/li&gt;
-  &lt;li&gt;分类&lt;/li&gt;
-  &lt;li&gt;购物车（收藏）&lt;/li&gt;
-  &lt;li&gt;我的&lt;/li&gt;
-  &lt;li&gt;商品详情页&lt;/li&gt;
-  &lt;li&gt;活动详情页&lt;/li&gt;
-  &lt;li&gt;订单详情页&lt;/li&gt;
-  &lt;li&gt;订单列表&lt;/li&gt;
-  &lt;li&gt;地址列表&lt;/li&gt;
-  &lt;li&gt;添加地址&lt;/li&gt;
-  &lt;li&gt;修改地址&lt;/li&gt;
-  &lt;li&gt;购买&lt;/li&gt;
-  &lt;li&gt;支付&lt;/li&gt;
-  &lt;li&gt;优惠券专区&lt;/li&gt;
-  &lt;li&gt;邀请有礼&lt;/li&gt;
-  &lt;li&gt;海报&lt;/li&gt;
-  &lt;li&gt;排序&lt;/li&gt;
-  &lt;li&gt;客服&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;br /&gt;
-&lt;br /&gt;&lt;/p&gt;
-
-&lt;hr /&gt;
-
-&lt;p&gt;后端：（开发中…）&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;轮播图上传、下线&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-      </item>
-    
-      <item>
-        <title>基础篇 3：小程序架构及其实现机制</title>
-        <link>https://gorpeln.com/article/15612663893</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15612663893</guid>
-        <pubDate>Sun, 23 Jun 2019 00:00:00 +0800</pubDate>
-        <description>&lt;h2 id=&quot;一小程序-vs-html5&quot;&gt;一、小程序 VS HTML5&lt;/h2&gt;
-
-&lt;p&gt;小程序并不是 HTML5 应用，而是更偏向于传统的 CS 架构，它是基于&lt;strong&gt;数据驱动&lt;/strong&gt;的模式，一切皆组件（视图组件）。下面是小程序与普通 Web App 的对比。&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;普通 HTML5 都是执行在浏览器的宿主环境，浏览器提供 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;document&lt;/code&gt; 等 BOM 对象，但小程序没有 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;document&lt;/code&gt;，它更像是一个类似 Node.js 的宿主环境；因此在小程序内不能使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;document.querySelector&lt;/code&gt; 这类 DOM 选择器，也不支持 &lt;code class=&quot;highlighter-rouge&quot;&gt;XMLHttpRequest&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;location&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;localStorage&lt;/code&gt; 等这些浏览器提供的 API，只能使用小程序自己实现的 API&lt;/li&gt;
-  &lt;li&gt;小程序并非是直接通过 URL 访问的，而是通过信道服务进行通信和会话管理，所以它不支持 Cookie 存储，同时访问资源使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.request&lt;/code&gt; 则不存在跨域的问题&lt;/li&gt;
-  &lt;li&gt;小程序在 JavaScript 的模块化上支持 CommonJS，通过 require 加载，跟 Node.js 类似&lt;/li&gt;
-  &lt;li&gt;小程序的页面样式完全继承了 CSS 的语法，但是在选择器上面会少一些，布局支持 flex 布局&lt;/li&gt;
-  &lt;li&gt;小程序的整体框架采用面向状态编程方式，状态管理从 API 来看采用类似 Redux 的设计方式；单向数据绑定方式，当 View 在 Action 操作后，只能通过 Action 的业务处理来更新 View&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;页面组件模块上，WXML 提供了一整套的「自定义 UI 组件标签」，有些组件实际是 HTML5 实现的，有些组件为了解决权限、性能和适配等问题实际是 Native 实现的（如 map、input、canvas、video）。&lt;/p&gt;
-
-&lt;h2 id=&quot;二小程序架构解密&quot;&gt;二、小程序架构解密&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_001.jpg&quot; alt=&quot;blog_wxmini_3_001&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;小程序架构如上图所示，分为视图层和逻辑层，视图层是在 WebView 内渲染，逻辑层则有 JavaScriptCore 来渲染；其中视图层可以多个（考虑到整体性能，最多可以 5 个），逻辑层则全局只有一个（实际通过开启 X5 内核另起一个 JavascriptCore 线程）。&lt;/p&gt;
-
-&lt;p&gt;在小程序内，视图层负责页面渲染，逻辑层负责逻辑处理、全局状态管理、请求和接口调用。逻辑层在小程序中称为 &lt;code class=&quot;highlighter-rouge&quot;&gt;APP Service&lt;/code&gt;，视图层称为 &lt;code class=&quot;highlighter-rouge&quot;&gt;View&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;逻辑层和视图层通过微信的 &lt;code class=&quot;highlighter-rouge&quot;&gt;JSBridge&lt;/code&gt; 来实现通信的，逻辑层数据变化通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;JSBridge&lt;/code&gt; 通知视图层，触发视图层更新；当视图层触发事件，则继续通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;JSBridge&lt;/code&gt; 将事件通知到逻辑层做处理，如此交互进行。&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;JSBridge&lt;/code&gt; 在三个环境（开发者工具、iOS 和 Android）中实现机制不同，在调用 Native 能力时主要使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;invokeHandler&lt;/code&gt;：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;开发者工具：通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;window.postMessage&lt;/code&gt; 来封装&lt;/li&gt;
-  &lt;li&gt;iOS：通过 WKWebview 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;window.webkit.messageHandlers.invokeHandler.postMessage&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Android：通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;WeixinJSCore.invokeHandler&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在消息分发的时候，则使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;publishHandler&lt;/code&gt;：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;开发者工具：通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;addEventListener('message')&lt;/code&gt; 来监听消息，然后处理分发&lt;/li&gt;
-  &lt;li&gt;iOS：使用 WKWebview 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;window.webkit.messageHandlers.publishHandler.postMessage&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;Android：通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;WeixinJSCore.publishHandler&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;其中，Android 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;WeixinJSCore&lt;/code&gt; 是 X5 内核暴露出来的对象，其作为 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt; 对象的一个属性，提供一些供 JavaScript 调用的能力。&lt;/p&gt;
-
-&lt;p&gt;这部分可以在开发者工具或者 X5 内核 debug 模式下，找到 &lt;code class=&quot;highlighter-rouge&quot;&gt;WAService.js&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;WeixinJSBridge 提供的方法有 &lt;code class=&quot;highlighter-rouge&quot;&gt;invoke&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;publish&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;subscribe&lt;/code&gt; 等，&lt;code class=&quot;highlighter-rouge&quot;&gt;invoke&lt;/code&gt; 就是关键的调用 Native 端能力的方法，&lt;code class=&quot;highlighter-rouge&quot;&gt;publish&lt;/code&gt; 是消息分发的方法。注意下图的 &lt;code class=&quot;highlighter-rouge&quot;&gt;invoke&lt;/code&gt; 实际是来自&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;publish&lt;/code&gt; 来自 &lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;e&lt;/code&gt; 为 &lt;code class=&quot;highlighter-rouge&quot;&gt;window&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_002.jpg&quot; alt=&quot;blog_wxmini_3_002&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;y&lt;/code&gt; 的实现最后调用了&lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt;，&lt;code class=&quot;highlighter-rouge&quot;&gt;w&lt;/code&gt; 的实现最后调用了&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_003.jpg&quot; alt=&quot;blog_wxmini_3_003&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;继续查找&lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt; 的实现，发现 &lt;code class=&quot;highlighter-rouge&quot;&gt;g&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;_&lt;/code&gt; 最后都调用了 &lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;f&lt;/code&gt; 的方法（显现了关键字&lt;code class=&quot;highlighter-rouge&quot;&gt;invokeHandler&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;publishHandler&lt;/code&gt;）。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_004.jpg&quot; alt=&quot;blog_wxmini_3_004&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;继续查找，发现 &lt;code class=&quot;highlighter-rouge&quot;&gt;d&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;f&lt;/code&gt; 分别是来自 &lt;code class=&quot;highlighter-rouge&quot;&gt;window.webkit&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;window.WeixinJSCore&lt;/code&gt;。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_005.jpg&quot; alt=&quot;blog_wxmini_3_005&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;因为在一个小程序中可以打开多个视图层（webview），要保证发送的消息准确送到每个具体的 webview 中，需要通过每个 webview 唯一标识 &lt;code class=&quot;highlighter-rouge&quot;&gt;webviewId&lt;/code&gt; 来实现。发送消息时，携带 &lt;code class=&quot;highlighter-rouge&quot;&gt;webviewId&lt;/code&gt;，然后逻辑层处理完对应的逻辑，如果需要通知或者执行对应 webview 的代码，则可以通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;webviewId&lt;/code&gt; 找到对应的 webview，下发通知。&lt;/p&gt;
-
-&lt;h2 id=&quot;三小程序生命周期&quot;&gt;三、小程序生命周期&lt;/h2&gt;
-
-&lt;p&gt;小程序生命周期包括应用的生命周期（逻辑层 App Service）和页面的生命周期（视图层 View），两者支持的事件不同，详见官方文档中的这张配图。&lt;/p&gt;
-
-&lt;p&gt;!&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_006.jpg&quot; alt=&quot;blog_wxmini_3_006&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;掌握了上面小程序实现原理的内容，再来看小程序的生命周期就很好理解了。&lt;/p&gt;
-
-&lt;p&gt;小程序启动时，会同时启动两个线程，一个负责页面渲染的 WebView（实际不止一个，后面讲解），一个负责逻辑的 JavaScriptCore。逻辑层初始化后会将初始化数据（app.js 中的 global data）通过 JSBridge 传递给渲染层进行渲染，渲染层 WebView 页面渲染完之后又会跟逻辑层通信。&lt;/p&gt;
-
-&lt;p&gt;理解了小程序架构和启动流程，小程序整个生命周期的流程只需要对着上面的流程图就可以很容易理解。&lt;/p&gt;
-
-&lt;h2 id=&quot;四小程序为什么感觉快&quot;&gt;四、小程序为什么感觉快&lt;/h2&gt;
-
-&lt;p&gt;小程序在体验上不仅仅页面流畅，而且点击之后，页面跳转也会比普通的 HTML5 要快很多，这是因为小程序的视图层做了预加载处理。下图是通过 X5 内核开启 inspect 版本之后，在 Chrome 中看到的手机 WebView 的页面情况。小程序选择今日头条，打开了两个页面（热点新闻列表和某条新闻详情），但实际在 Chrome 中看到的 WebView 页面总是比真实打开的页面要多一个，这个多出来的隐藏 WebView 就是提前初始化预热的，方便打开下一个小程序页面来使用，这样就节省了 WebView 初始化的时间，从而大幅提升了跳页效率。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_007.jpg&quot; alt=&quot;blog_wxmini_3_007&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;五小程序-wxml-是怎么转成-html-的&quot;&gt;五、小程序 WXML 是怎么转成 HTML 的&lt;/h2&gt;
-
-&lt;p&gt;小程序的视图层最终是渲染在一个 webview 中的，通过下图就可以看到我们在 WXML 中写的 &lt;code class=&quot;highlighter-rouge&quot;&gt;view&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;icon&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;text&lt;/code&gt; 等标签最终会转换成 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx-*&lt;/code&gt; 等标签。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_008.jpg&quot; alt=&quot;blog_wxmini_3_008&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;那么 WXML 到 HTML 的过程发生了什么呢？&lt;/p&gt;
-
-&lt;p&gt;首先，WXML 写完之后经过编译工具 &lt;code class=&quot;highlighter-rouge&quot;&gt;wcc&lt;/code&gt; 转成可执行的 JS，下面的命令可以将某个页面转为 JS：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wcc -d index.wxml -o index.js
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;TIPS：&lt;/strong&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;wcc&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;wcsc&lt;/code&gt; 是小程序的 WXML 和 WXSS 的编译工具，是二进制文件，在 macOS 中可以在&lt;code class=&quot;highlighter-rouge&quot;&gt;/Applications/wechatwebdevtools.app/Contents/Resources/package.nw/js/vendor/&lt;/code&gt; 路径中找到（应用 → 右键微信开发者工具 → 查看包文件）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_009.jpg&quot; alt=&quot;blog_wxmini_3_009&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这个 JS 里面有个重要的函数是 &lt;code class=&quot;highlighter-rouge&quot;&gt;$gwx&lt;/code&gt;：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_010.jpg&quot; alt=&quot;blog_wxmini_3_010&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这个 JS 主要接收一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;path&lt;/code&gt; 将 &lt;code class=&quot;highlighter-rouge&quot;&gt;path&lt;/code&gt; 的页面转换成一个 Virtual DOM：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_011.jpg&quot; alt=&quot;blog_wxmini_3_011&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在这个 VDOM 结构里面就会找到以&lt;code class=&quot;highlighter-rouge&quot;&gt;wx-*&lt;/code&gt; 开头的 tag，有了这个 VDOM 结构，就可以使用对应的 tag 创建 HTML 片段了。&lt;/p&gt;
-
-&lt;p&gt;整个流程梳理如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_3_012.jpg&quot; alt=&quot;blog_wxmini_3_012&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;六小结&quot;&gt;六、小结&lt;/h2&gt;
-
-&lt;p&gt;本节重点介绍了小程序和普通的 HTML5 有什么区别，从小程序底层机制上来说明小程序是如何最终展现在 WebView 界面上的。本节涉及较多的源码和反编译技巧，对于初学者来说只需要了解微信小程序由逻辑层和视图层两个不同的线程进行交互而形成，而视图层是通过将 WXML 转换成 JS，最终由 JS 生成 HTML 片段放在 WebView 中显示的。&lt;/p&gt;
-</description>
-      </item>
-    
-      <item>
-        <title>基础篇 2：小程序·云开发基础知识</title>
-        <link>https://gorpeln.com/article/15611722666</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15611722666</guid>
-        <pubDate>Sat, 22 Jun 2019 00:00:00 +0800</pubDate>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html&quot;&gt;小程序·云开发&lt;/a&gt;&lt;/strong&gt; 是微信团队联合腾讯云团队推出的一套小程序开发解决方案。小程序·云开发为开发者提供完整的云端流程，弱化后端和运维概念，开发者无需购买和管理底层计算资源，包括服务器、数据库、静态存储，只需使用平台提供的简易 API 进行核心业务等开发，实现快速上线和迭代，把握业务发展的黄金时期。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;简单来说，小程序开发中用到的服务器、数据库和静态资源管理，都可以托管到「小程序·云开发」上，小程序开发者只需要关注业务功能实现，而不需要关心服务器运维等带来的问题。小程序开发主要用到的是前端技术，后端开发和服务运维对于前端开发者来说有一定的门槛，而小程序·云开发的出现就是解决这个问题的。&lt;/p&gt;
-
-&lt;h2 id=&quot;一小程序云开发特点&quot;&gt;一、小程序·云开发特点&lt;/h2&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;提供完整后端服务解决方案，包括数据库、静态资源管理和云函数（功能服务）&lt;/li&gt;
-  &lt;li&gt;背靠腾讯云大平台，腾讯云丰富的 API 和功能都可以简单调用&lt;/li&gt;
-  &lt;li&gt;对于普通开发者，&lt;strong&gt;完全免费&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;对于高级服务型小程序，提供更强服务支持、计费弹性、不使用不计费的特点&lt;/li&gt;
-  &lt;li&gt;无服务器搭建，无域名配置，直接调用 API 使用&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;对于我们普通开发者来说，小程序·云开发是个不错的练手平台。下面详细介绍下小程序·云开发提供的功能。&lt;/p&gt;
-
-&lt;p&gt;小程序·云开发提供数据库、云函数和静态存储三大功能，还有小程序的用户管理功能，在用户管理界面可以轻松掌握小程序的授权用户情况。目前云开发的这些功能已经深度整合到「微信开发者工具」中，可以在顶部点击「云开发」进入。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_003.png&quot; alt=&quot;blog_wxmini_2_003&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;二申请小程序云开发&quot;&gt;二、申请小程序·云开发&lt;/h2&gt;
-
-&lt;h3 id=&quot;1小程序云开发的开通&quot;&gt;1.小程序·云开发的开通&lt;/h3&gt;
-
-&lt;p&gt;如果还没有开通小程序·云开发账号，首次点击「云开发」会出现下面的界面，该界面主要是云开发的介绍和申请入口。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_001.jpg&quot; alt=&quot;blog_wxmini_2_001&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;点击蓝色的「创建资源环境」按钮进入新建环境界面。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_002.jpg&quot; alt=&quot;blog_wxmini_2_002&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;第二步出现选择套餐信息，现在公测阶段只有一个免费套餐选项，将来应该会有更多套餐选择。填写上「环境名称」点击确认之后，会使用小程序开发账号在腾讯云开通一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;fake account&lt;/code&gt;。到此小程序·云开发就开通了！&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;TIPS&lt;/strong&gt;：目前一个小程序账号可以免费开通两个云开发账号，免费版本的限制应该也要注意：&lt;/p&gt;
-
-  &lt;ul&gt;
-    &lt;li&gt;数据库存储空间：2GB&lt;/li&gt;
-    &lt;li&gt;文件存储空间：5GB&lt;/li&gt;
-    &lt;li&gt;文件存储外网下行流量：5GB/月&lt;/li&gt;
-    &lt;li&gt;云函数数量：20&lt;/li&gt;
-    &lt;li&gt;云函数资源使用量：10万GBs/月&lt;/li&gt;
-    &lt;li&gt;API调用次数：3万次/天&lt;/li&gt;
-  &lt;/ul&gt;
-
-  &lt;p&gt;&lt;strong&gt;这些对于我们做普通的小程序开发练习已经足够了！&lt;/strong&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h3 id=&quot;2小程序云开发在小程序中的调用&quot;&gt;2.小程序·云开发在小程序中的调用&lt;/h3&gt;
-
-&lt;p&gt;小程序·云开发可以在小程序中直接通过调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.*&lt;/code&gt; 的方式进行调用，在调用云开发 API 之前，需要先调用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.init&lt;/code&gt; 对云开发进行初始化：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wx.cloud.init({
-  env: 'tianqi-xxx'
-})
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;初始化时，需要传入 &lt;code class=&quot;highlighter-rouge&quot;&gt;env&lt;/code&gt; 参数，该参数为创建小程序·云开发时的&lt;code class=&quot;highlighter-rouge&quot;&gt;环境 ID&lt;/code&gt;，可以在「云开发」页面右上角「当前环境」下拉菜单中找到：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_004.jpg&quot; alt=&quot;blog_wxmini_2_004&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;下面详细介绍下小程序·云开发的三大功能。&lt;/p&gt;
-
-&lt;h2 id=&quot;三数据库&quot;&gt;三、数据库&lt;/h2&gt;
-
-&lt;p&gt;小程序·云开发的数据库是一种 NoSQL 云端数据库，数据以 JSON 格式存储，在底层支持弹性可扩展、自动容灾、监控管理，所以开发者不需要关注数据库的运维。从提供的文档和接口来看，云开发的数据库应该是由 MongoDB 实现的。&lt;/p&gt;
-
-&lt;p&gt;每个数据库是由多个集合（collection，类比关系型数据库中表的概念）组成，集合有多个 JSON 文档（行）组成，NoSQL 的特点是没有固定的字段，所以整个集合可以看成一个大的 JSON 数组，一个集合在数据库中的存储格式如下：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[
-  {
-    &quot;_id&quot;: 1,
-    &quot;_openid&quot;: &quot;ax123CVadb&quot;,
-    &quot;name&quot;: &quot;Alice&quot;,
-    &quot;city&quot;: &quot;Guangzhou&quot;
-  },
-  {
-    &quot;_id&quot;: 2,
-    &quot;_openid&quot;: &quot;xj372nJdfa&quot;,
-    &quot;name&quot;: &quot;Bob&quot;,
-    &quot;city&quot;: &quot;Shenzhen&quot;
-  }
-]
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;需要说明的是，文档中的 &lt;code class=&quot;highlighter-rouge&quot;&gt;_id&lt;/code&gt; 是唯一的，开发者可以插入数据的时候自定义，另外 &lt;code class=&quot;highlighter-rouge&quot;&gt;_openid&lt;/code&gt; 是增加文档默认创建的，代表当前小程序用户的唯一标示，后面实战部分笔者会重点介绍小程序的用户授权相关的内容。&lt;/p&gt;
-
-&lt;h3 id=&quot;1快速入门&quot;&gt;1.快速入门&lt;/h3&gt;
-
-&lt;p&gt;详细介绍可以见小程序·云开发的使用文档，这里笔者整理出常用的 API 使用方法：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 初始化
-wx.cloud.init({
-  env: 'tianqi-xxx'
-})
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 获取数据库实例
-const db = wx.cloud.database()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 增
-db.collection('集合名称').add({
-  data: {} // 插入的数据
-}).then(res =&amp;gt; {
-  // 可以通过 res._id 获取创建的记录的 id
-  console.log(res._id)
-})
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 删
-db.collection('集合名称').doc('文档 ID').remove().then(res =&amp;gt; {
-  console.log('removed')
-})
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 改
-db.collection('集合名称').doc('文档 ID').update({
-  data: {
-    title: '我的第 1 篇文章', // 只更新 title 字段，其他不更新
-  }
-}).then(res =&amp;gt; {
-  // 可以通过 res._id 获取创建的记录的 id
-  console.log(res._id)
-})
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 查
-db.collection('集合名称').doc('文档 ID').get().then(res =&amp;gt; {
-  // 打印结果，res.data 即为记录的数据
-  console.log(res)
-})
-const _ = db.command // 取指令
-db.collection('集合名称').where({
-  // 查找条件
-  category: 'computer',
-  properties: {
-    memory: _.gt(8), // 表示大于 8
-  }
-})
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;小程序·云开发的数据库查询命令是可以使用查询筛选指令的，使用查询筛选指令可以缩小查询范围，找到查询条件的文档。&lt;/p&gt;
-
-&lt;p&gt;以下指令挂载在 &lt;code class=&quot;highlighter-rouge&quot;&gt;db.command&lt;/code&gt; 下&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;类型&lt;/th&gt;
-      &lt;th&gt;接口&lt;/th&gt;
-      &lt;th&gt;说明&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;比较运算&lt;/td&gt;
-      &lt;td&gt;eq&lt;/td&gt;
-      &lt;td&gt;字段 ==&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;neq&lt;/td&gt;
-      &lt;td&gt;字段 !=&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;gt&lt;/td&gt;
-      &lt;td&gt;字段 &amp;gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;gte&lt;/td&gt;
-      &lt;td&gt;字段 &amp;gt;=&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;lt&lt;/td&gt;
-      &lt;td&gt;字段 &amp;lt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;lte&lt;/td&gt;
-      &lt;td&gt;字段 &amp;lt;=&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;in&lt;/td&gt;
-      &lt;td&gt;字段值在数组里&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;nin&lt;/td&gt;
-      &lt;td&gt;字段值不在数组里&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;逻辑运算&lt;/td&gt;
-      &lt;td&gt;and&lt;/td&gt;
-      &lt;td&gt;表示需同时满足指定的所有条件&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;or&lt;/td&gt;
-      &lt;td&gt;表示需同时满足指定条件中的至少一个&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;举例说明：在 &lt;code class=&quot;highlighter-rouge&quot;&gt;diary&lt;/code&gt; 集合中找出 &lt;code class=&quot;highlighter-rouge&quot;&gt;openid&lt;/code&gt; 某个值并且创建时间（&lt;code class=&quot;highlighter-rouge&quot;&gt;tsModified&lt;/code&gt;）在 &lt;code class=&quot;highlighter-rouge&quot;&gt;start&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;end&lt;/code&gt; 之间的文档。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;db
-  .collection('diary')
-  .where({
-    openid,
-    tsModified: _.gte(start).and(_.lt(end))
-  })
-  .get()
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;2数据库的索引&quot;&gt;2.数据库的索引&lt;/h3&gt;
-
-&lt;p&gt;增加合适的索引可以提升文档的查找效率，比如根据时间、用户 ID 查找，可以将时间和用户 ID 字段设置为索引项，笔者在使用的时候发现：&lt;strong&gt;在小程序·云开发管理后台并不能对某个字段增加唯一索引。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;3自带权限管理&quot;&gt;3.自带权限管理&lt;/h3&gt;
-
-&lt;p&gt;在研发中，经常会针对不同的用户设置不同的数据库权限，例如：某条记录是用户 A 创建的，则只有用户 A 可以删除或者更新，其他用户只有查看的权限，这样的需求很常见，实际开发起来却非常费劲，往往要写不少权限判断的代码，小程序·云开发的数据库支持「权限管理」功能，可以针对这类需求对不同的集合进行统一处理，大大降低开发的门槛！&lt;/p&gt;
-
-&lt;p&gt;集合的操作权限包括以下四种：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;所有用户可读，仅创建者及管理员可写&lt;/li&gt;
-  &lt;li&gt;仅创建者及管理员可读写&lt;/li&gt;
-  &lt;li&gt;所有用户可读，仅管理员可写&lt;/li&gt;
-  &lt;li&gt;仅管理员可读写&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;可以在「云开发 -&amp;gt; 数据库 -&amp;gt; 选择某个集合 -&amp;gt; 权限设置」页面进行设置。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_005.jpg&quot; alt=&quot;blog_wxmini_2_005&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;四文件存储&quot;&gt;四、文件存储&lt;/h2&gt;
-
-&lt;p&gt;小程序·云开发的文件存储功能是专为存储和提供用户生成的内容（如图片或视频）的开发者打造的。开发者可使用腾讯云的 SDK 来存储图片、音频、视频或其他由用户生成的内容。在小程序内，则可以通过云开发的 API 直接上传、下载和管理存储。&lt;/p&gt;
-
-&lt;p&gt;公共使用的静态资源，可以通过「云开发 -&amp;gt; 存储」界面直接上传和管理，上传之后，就可以在界面内找到资源的 CDN 地址。&lt;/p&gt;
-
-&lt;p&gt;而对于小程序内需要上传和管理的则通过下面几个 API 来实现：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 上传，上传后会返回资源的 ID
-wx.cloud.uploadFile
-// 下载
-wx.cloud.downloadFile
-// 根据资源 ID 获取资源访问地址
-wx.cloud.getTempFileURL
-// 根据资源 ID 列表删除某资源
-wx.cloud.removeFile
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;跟数据库权限管理一样，如果需要用户自己上传的内容自己可以管理，那么需要设置存储的操作权限，在「云开发 -&amp;gt; 存储」下可以设置全局的存储操作权限。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_006.jpg&quot; alt=&quot;blog_wxmini_2_006&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;五云函数&quot;&gt;五、云函数&lt;/h2&gt;
-
-&lt;p&gt;云函数是腾讯云提供的一套函数计算解决方案，我们可以将每个功能 API 做成单个可执行的函数，然后放到腾讯云上去托管，每个云函数是相互独立可执行的。代码编写完成后放到云端，不执行不调用不收费，执行调用按照调用次数和 CPU 等计算资源的占用情况收费。有了云函数，开发者无须搭建和购买服务器，只需要将写好的云函数代码上传部署到腾讯云，即可以在小程序内通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.callFunction&lt;/code&gt; 的方法进行调用。&lt;/p&gt;
-
-&lt;h3 id=&quot;1创建云函数&quot;&gt;1.创建云函数&lt;/h3&gt;
-
-&lt;p&gt;创建云函数有两种方式，一种是直接在小程序开发者工具中进行操作：&lt;/p&gt;
-
-&lt;p&gt;进入「云开发 -&amp;gt; 云函数 -&amp;gt; 添加」创建：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_008.jpg&quot; alt=&quot;blog_wxmini_2_008&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;另外一种是直接在小程序开发者工具中上传，在上传之前需要配置小程序的 &lt;code class=&quot;highlighter-rouge&quot;&gt;project.config.json&lt;/code&gt;，指明哪个路径为云函数目录：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{
-  &quot;cloudfunctionRoot&quot;: &quot;./cloud-functions/&quot;
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;配置完成后，在小程序开发者工具的编辑器中展开 &lt;code class=&quot;highlighter-rouge&quot;&gt;cloud-functions&lt;/code&gt; 文件夹，选择对应的云函数文件夹，右键选择「上传并部署」即可：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_007.png&quot; alt=&quot;blog_wxmini_2_007&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;2写个简单云函数&quot;&gt;2.写个简单云函数&lt;/h3&gt;
-
-&lt;p&gt;小程序·云开发的云函数是执行在 Node.js 8.9.0 版本下的，云函数必须在 index.js 有 &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; 方法为入口，例如下面的代码：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 命名为 test 的函数内容 index.js
-exports.main = async (event, context) =&amp;gt; {
-  let {a, b} = event
-  return new Promise((resolve, reject) =&amp;gt; {
-    resolve({result: parseInt(a) + parseInt(b)})
-  })
-}
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;除了上面 Promise 的写法，还可以用回调的方式：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 命名为 test 的函数内容 index.js
-// 回调方式 callback
-exports.main = async (event, context, callback) =&amp;gt; {
-  let {a, b} = event
-  callback(null, {result: parseInt(a) + parseInt(b)})
-}
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;TIPS:&lt;/p&gt;
-
-  &lt;ol&gt;
-    &lt;li&gt;云函数如果不存在 &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; 的方法，上传部署的时候会报错！&lt;/li&gt;
-    &lt;li&gt;云函数回调方式写法遵循「错误优先」原则（Error-First Callback）。&lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;云函数接受两个 JSON 格式的参数 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt;，两者分别代表：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt;：平台将 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 入参传递给执行方法，通过此 &lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 入参对象，代码将与触发函数的事件（event）交互，&lt;code class=&quot;highlighter-rouge&quot;&gt;event&lt;/code&gt; 可以获取 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.callFunction&lt;/code&gt; 调用的参数 &lt;code class=&quot;highlighter-rouge&quot;&gt;data&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt;：平台将 &lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt; 入参传递给执行方法，通过此 &lt;code class=&quot;highlighter-rouge&quot;&gt;context&lt;/code&gt; 入参对象，代码将能了解到运行环境及当前请求的相关内容&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;TIPS： 开发者可以在云函数内获取到每次调用的上下文（appId、openId 等），无需维护复杂的鉴权机制，即可获取天然可信任的用户登录态（openId），这俩值可以从&lt;code class=&quot;highlighter-rouge&quot;&gt;event.userInfo&lt;/code&gt;中读取。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;上面 &lt;code class=&quot;highlighter-rouge&quot;&gt;test&lt;/code&gt; 的函数上传到腾讯云之后，我们在小程序的 JS 代码中可以使用下面的方法进行调用：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wx.cloud.callFunction({
-  name: 'test',
-  data: {
-    a: 1,
-    b: 2
-  }
-}).then(r=&amp;gt;{
-  // 因为 main 的方法实际是个 promisify 的返回，所以可以直接使用 then/catch
-  console.log(r)
-}).catch(e=&amp;gt;{
-  console.log(e)
-})
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;3云函数的依赖管理&quot;&gt;3.云函数的依赖管理&lt;/h3&gt;
-
-&lt;p&gt;在云函数中，可以像正常的 Node.js 一样，使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt; 和 &lt;code class=&quot;highlighter-rouge&quot;&gt;node_modules&lt;/code&gt; 来对依赖进行管理，在开发完代码之后，需要将 &lt;code class=&quot;highlighter-rouge&quot;&gt;node_modules&lt;/code&gt; 文件夹一起上传到云端去。下面笔者将带着大家做一个什么值得买的简单抓取的云函数，讲解函数编写、npm 模块使用、云函数本地测试整个流程。&lt;/p&gt;
-
-&lt;p&gt;先说下，笔者要实现的功能：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;根据传入的分类参数，获取什么值得买对应分类的最新文章内容&lt;/li&gt;
-  &lt;li&gt;提取出文章列表的 title、image、mall，即文章名称、文章的配图和优惠所属的网站&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;首先在 cloud-functions 文件夹（该文件夹是我们创建的云函数文件夹），创建一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;smzdm&lt;/code&gt; 的云函数，目录结构如下：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cloud-functions
-├── smzdm
-│   ├── index.js
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;然后进入 &lt;code class=&quot;highlighter-rouge&quot;&gt;smzdm&lt;/code&gt; 目录，执行 &lt;code class=&quot;highlighter-rouge&quot;&gt;npm init&lt;/code&gt;，按照提示填写内容以后，会在该目录下生成 &lt;code class=&quot;highlighter-rouge&quot;&gt;package.json&lt;/code&gt; 文件，接下来需要安装抓取「什么值得买」手机站点的两个 npm 模块：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.npmjs.com/package/request&quot;&gt;request&lt;/a&gt;：用于做数据请求，抓取站点的 HTML 内容&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.npmjs.com/package/cheerio&quot;&gt;cheerio&lt;/a&gt;：用于将 HTML 结构数据转为类似 jQuery 的对象，可以通过 CSS 选择器对 HTML 的内容进行提取&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;安装命令如下：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# 进入 smzdm 目录，执行
-npm install --save request cheerio
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;安装之后的目录结构如下：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cloud-functions
-├── smzdm
-│   ├── node_modules
-│   ├── index.js
-│   └── package.json
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;然后我们开始编写 index.js 内容，第一步引入模块，编写 &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt; 方法：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 引入 requst 和 cheerio
-const request = require('request')
-const cheerio = require('cheerio')
-exports.main = async (event = {}) =&amp;gt; {
-  // 获取具体什么值得买网站分类
-  let category = event.category || 'diannaoshuma'
-  return new Promise((resolve, reject) =&amp;gt; {
-
-  })
-}
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;第二步，开始编写具体的逻辑，即使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;request.get&lt;/code&gt; 先获取 HTML 内容，然后使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;cheerio&lt;/code&gt; 将 HTML 内容进行结构化，经过使用 Chrome 查看器查看，发现最新文章都包含在一个 &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt; 为 &lt;code class=&quot;highlighter-rouge&quot;&gt;card-group-list&lt;/code&gt; 的 div 下，然后找到 &lt;code class=&quot;highlighter-rouge&quot;&gt;zm-card-title&lt;/code&gt; 等每个文章的标题、图片和商城信息，将结果放到一个数组，最后 &lt;code class=&quot;highlighter-rouge&quot;&gt;resolve&lt;/code&gt; 输出：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const request = require('request')
-const cheerio = require('cheerio')
-exports.main = async (event = {}) =&amp;gt; {
-  let category = event.category || 'diannaoshuma'
-  return new Promise((resolve, reject) =&amp;gt; {
-    request.get(`https://m.smzdm.com/fenlei/${category}/`, (e, req, body) =&amp;gt; {
-      if (!e &amp;amp;&amp;amp; req.statusCode === 200) {
-        const $ = cheerio.load(body)
-        const result = []
-        $('.card-group-list').each((i, v) =&amp;gt; {
-          let $v = $(v)
-          let title = $v.find('.zm-card-title').text().trim()
-          let image = $v.find('.zm-card-media img').attr('src')
-          let mall = $v.find('.card-mall').text().trim()
-          result.push({
-            title,
-            image,
-            mall
-          })
-        })
-        resolve(result)
-      }
-    })
-  })
-}
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;这样就完成了一个带有依赖模块的云函数编写，上传到腾讯云部署之后，在小程序中使用：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;wx.cloud.callFunction({
-  name: 'smzdm',
-  data: {
-    category: 'diannaoshuma'
-  }
-}).then(r=&amp;gt;{console.log(r)})
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;4云函数的调试&quot;&gt;4.云函数的调试&lt;/h3&gt;
-
-&lt;p&gt;云函数有一个很不方便的地方，就是测试起来相对来说比较麻烦，我们不能每次都上传到云端，通过 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.cloud.callFunction&lt;/code&gt; 的方式进行调用，下面介绍几种测试的方法。&lt;/p&gt;
-
-&lt;h4 id=&quot;1线下函数自己使用-node-来测试&quot;&gt;(1)线下：函数自己使用 Node 来测试&lt;/h4&gt;
-
-&lt;p&gt;这种方法就是在 index.js 的最后，增加一个测试方法，比如：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const request = require('request')
-const cheerio = require('cheerio')
-const main = (exports.main = async (event = {}) =&amp;gt; {
-  let category = event.category || 'diannaoshuma'
-  return new Promise((resolve, reject) =&amp;gt; {
-    request.get(`https://m.smzdm.com/fenlei/${category}/`, (e, req, body) =&amp;gt; {
-      if (!e &amp;amp;&amp;amp; req.statusCode === 200) {
-        const $ = cheerio.load(body)
-        const result = []
-        $('.card-group-list').each((i, v) =&amp;gt; {
-          let $v = $(v)
-          let title = $v.find('.zm-card-title').text().trim()
-          let image = $v.find('.zm-card-media img').attr('src')
-          let label = $v.find('.card-label').text().trim()
-          let mall = $v.find('.card-mall').text().trim()
-          result.push({
-            title,
-            image,
-            label,
-            mall
-          })
-        })
-        resolve(result)
-      }
-    })
-  })
-})
-main({category: 'diannaoshuma'}).then(r=&amp;gt;{console.log(r)})
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;然后使用 Node.js 直接运行该文件：&lt;code class=&quot;highlighter-rouge&quot;&gt;node index.js&lt;/code&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;2线上使用开发者工具&quot;&gt;(2)线上：使用开发者工具&lt;/h4&gt;
-
-&lt;p&gt;在小程序开发者工具的云开发控制台内有测试的工具，进入路径为：「云开发 -&amp;gt; 云函数列表 -&amp;gt; 点击具体云函数 -&amp;gt; 右上角测试」。&lt;/p&gt;
-
-&lt;p&gt;对于测试的参数，还可以保存下来模板，方便以后使用。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/2019-06-24-blog_wxmini_2_009.jpg&quot; alt=&quot;blog_wxmini_2_009&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;5云函数的-mock-server&quot;&gt;5.云函数的 mock server&lt;/h3&gt;
-
-&lt;p&gt;上文提到的测试方法，都是将小程序的研发流程完全割裂开来，不能完整地测试小程序的代码，只能要么测试云函数要么测试小程序，那么测试小程序的代码就需要上线云函数，实际还是一种效率不高的做法。这里笔者介绍一种本地 mock server 的方式来开启云函数的测试，这种方式可以打通小程序开发的整个流程。具体做法分两步：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;将云函数作为一个接受请求参数的 server 来访问&lt;/li&gt;
-  &lt;li&gt;使用 &lt;code class=&quot;highlighter-rouge&quot;&gt;wx.request&lt;/code&gt; 构造请求拿到云函数的处理结果，然后跑通整个研发流程&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;笔者在 mock server 选型上，选择使用 &lt;a href=&quot;https://www.expressjs.com/&quot;&gt;Express&lt;/a&gt; 自建 mock server 的方式。&lt;/p&gt;
-
-&lt;p&gt;首先，启动一个 Express server：&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const express = require('express')
-const app = express()
-
-app.listen(3000, () =&amp;gt; {
-  console.log(`开发服务器启动成功：http://127.0.0.1:3000`)
-})
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;nodemon index.js&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;然后将云函数引入进程序中来，作为一个路由 handler 来接受http url 的参数，处理请求之后，将返回的处理结果通过 Express 的 &lt;code class=&quot;highlighter-rouge&quot;&gt;res.json&lt;/code&gt;输出。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;const test = require('./cloud-functions/test/').main
-
-app.get('/api/test', (req, res, next) =&amp;gt; {
-  // 将 req.query 传入
-  test(req.query).then(res.json.bind(res)).catch((e) =&amp;gt; {
-    console.error(e)
-    next(e)
-  })
-  // next()
-})
-
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;这样访问 &lt;code class=&quot;highlighter-rouge&quot;&gt;http://127.0.0.1:3000/api/test?a=1&amp;amp;b=2&lt;/code&gt; 就会输出结果了。到这里笔者就将 mock server 搭建完毕了。&lt;/p&gt;
-
-&lt;h2 id=&quot;六小结&quot;&gt;六、小结&lt;/h2&gt;
-
-&lt;p&gt;本节重点介绍了腾讯新推出的小程序云开发的基础知识，云开发由 NoSQL 数据库、文件存储和云函数三个云产品组成，其中数据库和文件存储都可以单独设置用户权限，这样极大地降低了 UGC（用户产生内容）类小程序的开发门槛。&lt;/p&gt;
-
-&lt;p&gt;云函数是小程序·云开发中一个很重要的产品，本节介绍了云函数的基本用法和注意事项，同时针对小程序云函数的开发测试比较困难的情况，提出了 mock server 的解决方式。&lt;/p&gt;
-
 </description>
       </item>
     

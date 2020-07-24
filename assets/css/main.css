@@ -661,6 +661,11 @@ li.article a:hover,li.article a:focus{
     font-size: 14px;
     margin-left: 0.5em;
     line-height: 30px;
+      display: inline-block;
+  white-space: nowrap; 
+  width: 100%; 
+  overflow: hidden;
+  text-overflow:ellipsis;
 }
 
 .contact-item img {

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>iOS多线程：GCD的实际使用 (四) | gorpeln的个人博客 - gorpeln</title>
+
+  <meta name="keywords" content="gorpeln,Gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+  <meta name="description" content="1、dispatch_async">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
+
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="/article/15862323579">
+  <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
+
+  
+</head>
+
+
+
+
+<header class="site-header">
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style type="text/css">
+    html * {
+        
+    }
+
+    .menuNav {
+        margin-top: 100px;
+        position: absolute;
+    }
+
+    .menuNav * {
+        text-decoration: none;
+        font-size: 9pt;
+    }
+
+    .menuNav * a:hover {
+        /*background-color: rgb(0, 0, 0, 0.75);*/
+    }
+
+    .menuNav {
+        list-style: none;
+        display: none;
+        margin-left: -1px;
+    }
+
+    .menuNav li {
+        float: left;
+        border-top: 1px solid #aaa;
+        background-color: rgb(0, 0, 0, 0.75);
+
+    }
+
+    .menuNav li a {
+    color: #fff;
+    padding: 15px 0;
+    display: block;
+    width: 2em;
+    text-align: center;
+    }
+
+    .menuNav li a:focus {
+        -moz-outline-style: none;
+    }
+
+    .menuNav li .sub-nav {
+     position: absolute;
+    top: -110%;
+    left: calc(2em - 30px);
+    list-style: none;
+    /*background-color: rgb(0, 0, 0, 0.6);*/
+    display: none;
+    }
+
+    .menuNav li .sub-nav li {
+        text-align: center;
+        clear: left;
+        width: 140px;
+        height: 35px;
+        line-height: 35px;
+        position: relative;
+    }
+
+    .menuNav li .sub-nav li a {
+        height: 34px;
+        line-height: 34px;
+        width: 138px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    @media (max-width: 678px) {
+        .menuNav {
+            display: block;
+        }
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        $(".menuNav>li").hover(function() {
+            $(this).children('ul').stop(true, true).show(300);
+        }, function() {
+            $(this).children('ul').stop(true, true).hide(300);
+        })
+    })
+    </script>
+            <ul class="menuNav">
+                <li><a href="#">菜<br/>单</a>
+                    <ul class="sub-nav">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/categories">分类</a></li>
+                        <li><a href="/tags">标签</a></li>
+                        <li><a href="/archives">归档</a></li>
+                        <li><a href="/about">关于</a></li>
+                        <li><a href="/works">项目</a></li>
+                        <li><a href="/mysite">导航</a></li>
+                    </ul>
+                </li>
+            </ul>
+</header>
+
+<body>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#toc').toc();
+    });
+    </script>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">101</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">10</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">95</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a target="_blank" href="/feed.xml"><i class="fas fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">博客导航</div>
+                        <ul>
+                            <li onclick="pushNew('/')"><a><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li onclick="pushNew('/categories')"><a><i class="fas fa-th fa-fw"></i>分类</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">10
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">95
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
+                                <span style=" font-size:14px;color: white;padding: 0 8px;" class="articleCount">101
+                                        </span>
+                            </li>
+                            <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li onclick="pushNew('/links')"><a><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li onclick="pushNew('/login')"><a><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">※
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/mysite')"><a><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li onclick="pushNew('/works')"><a><i class="fab fa-git-square fa-fw"></i>项目</a>
+                                <span style="font-size:14px;color: white;padding: 0 8px;" class="articleCount">3
+                                </span>
+                            </li>
+                            <li id="cb-search-btn-two"><a><i class="fas fa-search fa-fw"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">文章分类</div>
+                        <ul>
+                            
+                            <li onclick="pushNew('/categories#个人博客')">
+                                <a name="个人博客" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">个人博客</a>
+                                <a name="个人博客" style="font-size:14px;color: white" class="articleCount">8
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Linux')">
+                                <a name="Linux" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Linux</a>
+                                <a name="Linux" style="font-size:14px;color: white" class="articleCount">1
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#web前端')">
+                                <a name="web前端" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">web前端</a>
+                                <a name="web前端" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#其他')">
+                                <a name="其他" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">其他</a>
+                                <a name="其他" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#iOS')">
+                                <a name="iOS" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">iOS</a>
+                                <a name="iOS" style="font-size:14px;color: white" class="articleCount">31
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#程序人生')">
+                                <a name="程序人生" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">程序人生</a>
+                                <a name="程序人生" style="font-size:14px;color: white" class="articleCount">18
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Software MAC')">
+                                <a name="Software MAC" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Software MAC</a>
+                                <a name="Software MAC" style="font-size:14px;color: white" class="articleCount">11
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#架构和算法')">
+                                <a name="架构和算法" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">架构和算法</a>
+                                <a name="架构和算法" style="font-size:14px;color: white" class="articleCount">7
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Git')">
+                                <a name="Git" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">Git</a>
+                                <a name="Git" style="font-size:14px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#微信小程序')">
+                                <a name="微信小程序" style="display: inline-block;white-space: nowrap;width: 70%;overflow: hidden;text-overflow: ellipsis;">微信小程序</a>
+                                <a name="微信小程序" style="font-size:14px;color: white" class="articleCount">10
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="contactNav">
+                        <div class="contactNavTitle">个人档案</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.jpg" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <span class="contact-name">33964471</span>
+                            </a>
+                            <a class="contact-item" href="/" target="_blank">
+                                <img src="/assets/img/social/gmailLogo.png">
+                                <span class="contact-name">gorpeln*163.com(*=>@)</span>
+                            </a>
+                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">gorpeln.blog.csdn.net</span>
+                            </a>
+                            <a class="contact-item" href="/about" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="contact-name">更多...</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlinkNav" id="friendlinkNav">
+                        <div class="friendlinkNavTitle">友情链接</div>
+                        <div class="friend-container">
+                            
+                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                <img src="/assets/img/blogwe.ico">
+                                <span class="friend-name">博客大全</span>
+                            </a>
+                            
+                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                <img src="/assets/img/foreverblog.ico">
+                                <span class="friend-name">十年之约</span>
+                            </a>
+                            
+                            <a class="friend-item" href="/links" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="friend-name">更多...</span>
+                            </a>
+                            
+                        </div>
+                    </div>
+                    <!-- <div id="toc" class="navbar navbar-default customCatalog"></div> -->
+                    <div id="toc" class="customCatalog"></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">iOS多线程：GCD的实际使用 (四)</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2020-04-07</p>
+	    
+	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
+        	iOS
+		</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		<span class="index-post-tag">
+		
+			<a class="pjaxlink" href="/tags#GCD"  target="_blank">GCD</a>
+		
+			<a class="pjaxlink" href="/tags#多线程"  target="_blank">多线程</a>
+		
+		</span>
+	    
+    </div>
+  </header>
+
+<div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
+转载请注明出处：https://gorpeln.com/article/15862323579
+</div>
+
+
+  <article class="post-content">
+    <h3 id="1dispatch_async">1、dispatch_async</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+dispatch_async(globalQueue, ^{
+    // 一个异步的任务，例如网络请求，耗时的文件操作等等
+    ...
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // UI刷新
+        ...
+    });
+});
+</code></pre></div></div>
+
+<p>应用场景</p>
+<blockquote>
+  <p>这种用法非常常见，比如开启一个异步的网络请求，待数据返回后返回主队列刷新UI；又比如请求图片，待图片返回刷新UI等等。</p>
+</blockquote>
+
+<h3 id="2dispatch_after">2、dispatch_after</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispatch_queue_t queue= dispatch_get_main_queue();
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0 * NSEC_PER_SEC)), queue, ^{
+    // 在queue里面延迟执行的一段代码
+    ...
+});
+</code></pre></div></div>
+<p>应用场景</p>
+<blockquote>
+  <p>这为我们提供了一个简单的延迟执行的方式，比如在view加载结束延迟执行一个动画等等。</p>
+</blockquote>
+
+<h3 id="3dispatch_once">3、dispatch_once</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>static dispatch_once_t onceToken;
+dispatch_once(&amp;onceToken, ^{
+    // 只执行一次的任务
+    ...
+});
+</code></pre></div></div>
+<p>应用场景</p>
+<blockquote>
+  <p>可以使用其创建一个单例，也可以做一些其他只执行一次的代码。</p>
+</blockquote>
+
+<h3 id="4dispatch_group">4、dispatch_group</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+dispatch_group_t group = dispatch_group_create();
+
+dispatch_group_async(group, queue, ^{
+    // 异步任务1
+});
+
+dispatch_group_async(group, queue, ^{
+    // 异步任务2
+});
+
+// 等待group中多个异步任务执行完毕，做一些事情，介绍两种方式
+
+// 方式1（不好，会卡住当前线程）
+dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+...
+
+// 方式2（比较好）
+dispatch_group_notify(group, mainQueue, ^{
+    // 任务完成后，在主队列中做一些操作
+    ...
+});
+</code></pre></div></div>
+<p>应用场景</p>
+<blockquote>
+  <p>适用于自己维护的一些异步任务的同步问题；比如 多张图片拼接成一张图片</p>
+</blockquote>
+
+<h3 id="5dispatch_barrier_async">5、dispatch_barrier_async</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// dispatch_barrier_async的作用可以用一个词概括－－承上启下，它保证此前的任务都先于自己执行，此后的任务也迟于自己执行。本例中，任务4会在任务1、2、3都执行完之后执行，而任务5、6会等待任务4执行完后执行。
+
+dispatch_queue_t queue = dispatch_queue_create("queue", DISPATCH_QUEUE_CONCURRENT);
+dispatch_async(queue, ^{
+    // 任务1
+    ...
+});
+dispatch_async(queue, ^{
+    // 任务2
+    ...
+});
+dispatch_async(queue, ^{
+    // 任务3
+    ...
+});
+dispatch_barrier_async(queue, ^{
+    // 任务4
+    ...
+});
+dispatch_async(queue, ^{
+    // 任务5
+    ...
+});
+dispatch_async(queue, ^{
+    // 任务6
+    ...
+});
+</code></pre></div></div>
+
+<p>应用场景</p>
+<blockquote>
+  <p>和dispatch_group类似，dispatch_barrier也是异步任务间的一种同步方式，可以在比如文件的读写操作时使用，保证读操作的准确性。<br />
+另外，有一点需要注意，dispatch_barrier_sync和dispatch_barrier_async只在自己创建的并发队列上有效，在全局(Global)并发队列、串行队列上，效果跟dispatch_(a)sync效果一样。</p>
+</blockquote>
+
+<h3 id="6dispatch_apply">6、dispatch_apply</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// for循环做一些事情，输出0123456789
+for (int i = 0; i &lt; 10; i ++) {
+    NSLog(@"%d", i);
+}
+
+// dispatch_apply替换（当且仅当处理顺序对处理结果无影响环境），输出顺序不定，比如1098673452
+dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+/*! dispatch_apply函数说明
+*
+*  @brief  dispatch_apply函数是dispatch_sync函数和Dispatch Group的关联API
+*         该函数按指定的次数将指定的Block追加到指定的Dispatch Queue中,并等到全部的处理执行结束
+*
+*  @param 10    指定重复次数  指定10次
+*  @param queue 追加对象的Dispatch Queue
+*  @param index 带有参数的Block, index的作用是为了按执行的顺序区分各个Block
+*
+*/
+dispatch_apply(10, queue, ^(size_t index) {
+    NSLog(@"%zu", index);
+});
+</code></pre></div></div>
+
+<p>应用场景</p>
+<blockquote>
+  <p>那么，dispatch_apply有什么用呢，因为dispatch_apply并行的运行机制，效率一般快于for循环的类串行机制（在for一次循环中的处理任务很多时差距比较大）。比如这可以用来拉取网络数据后提前算出各个控件的大小，防止绘制时计算，提高表单滑动流畅性，如果用for循环，耗时较多，并且每个表单的数据没有依赖关系，所以用dispatch_apply比较好。</p>
+</blockquote>
+
+<h3 id="7dispatch_suspend和dispatch_resume">7、dispatch_suspend和dispatch_resume</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispatch_queue_t queue = dispatch_get_main_queue();
+dispatch_suspend(queue); //暂停队列queue
+dispatch_resume(queue);  //恢复队列queue
+</code></pre></div></div>
+
+<blockquote>
+  <p>应用场景
+这两个函数不会影响到队列中已经执行的任务，队列暂停后，已经添加到队列中但还没有执行的任务不会执行，直到队列被恢复。</p>
+</blockquote>
+
+
+  </article>
+</div>
+
+  <div class="prevandnext">
+    	  
+	    <div style="margin:0.25em;">
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15884027619" title="iOS多线程：NSOperation、NSOperationQueue (五)" style="color: #6666cc"  target="_blank">iOS多线程：NSOperation、NSOperationQueue (五)</a>
+	    </div>
+	  
+  	  
+	    <div style="margin:0.25em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15861494710" title="iOS多线程：GCD (三)" style="color: #6666cc"  target="_blank">iOS多线程：GCD (三)</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'gorpeln',
+        admin: ['gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script>  -->
+
+<head>
+    <script type="text/javascript" src="/assets/js/Valine.min.js"></script>
+</head>
+<style>
+#veditor {
+    background-image: url(https://cdn.jsdelivr.net/gh/drew233/cdn/20200409110727.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: vertical
+}
+
+.v .vwrap {
+    border: 1px solid #37374b !important;
+}
+</style>
+
+<body>
+    <div id="vcomments"></div>
+    <script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'Jc31cFDJbalRKtcpsQ9kpnaH-gzGzoHsz',
+        appKey: '6MfHpQqh9MFU43xg4bwjGAJu',
+        placeholder: '无需注册，支持Markdown语法，填写邮箱可以收到回复通知。',
+        avatar: 'monsterid',
+        pageSize: '10',
+        lang: 'zh-cn',
+        recordIP: 'true',
+        serverURLs: '',
+        enableQQ: true,
+        visitor: true,
+        requiredFields: ['nick', 'mail']
+    })
+
+    document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
+    document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
+    </script>
+</body>
+  </div>
+
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+    </div>
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 动态显示网站运行时间 -->
+<script type="text/javascript" language="javascript">
+function setTime() {
+    var create_time = Math.round(new Date(Date.UTC(2015, 08, 23, 12, 0, 0)).getTime() / 1000);
+    var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
+    currentTime = secondToDate((timestamp - create_time));
+    currentTimeHtml = '本站已安全运行：' + currentTime[0] + '年' + currentTime[1] + '天' + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4] + '秒';
+    document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+}
+setInterval(setTime, 1000);
+</script>
+<script language=JavaScript>
+function secondToDate(second) {
+    if (!second) {
+        return 0;
+    }
+
+    var time = new Array(0, 0, 0, 0, 0);
+
+    if (second >= 365 * 24 * 3600) {
+        time[0] = parseInt(second / (365 * 24 * 3600));
+        second %= 365 * 24 * 3600;
+    }
+
+    if (second >= 24 * 3600) {
+        time[1] = parseInt(second / (24 * 3600));
+        second %= 24 * 3600;
+    }
+
+    if (second >= 3600) {
+        time[2] = parseInt(second / 3600);
+        second %= 3600;
+    }
+
+    if (second >= 60) {
+        time[3] = parseInt(second / 60);
+        second %= 60;
+    }
+
+    if (second > 0) {
+        time[4] = second;
+    }
+    return time;
+}
+
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
+
+function out(obj) {
+
+}
+</script>
+
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+<style>
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
+</style>
+</body>
+<script>
+function pushNew(path) {
+    if (path == '/') {
+        window.location.href = path;
+    } else {
+        window.open(path);
+    }
+}
+</script>
+
+<script type="text/javascript">
+  function menuFixed(id,otherId) {
+    var obj = document.getElementById(id);
+    var _getHeight = obj.offsetTop;
+
+    window.onscroll = function () {
+      changePos(id, _getHeight,otherId);
+    }
+  }
+
+  function changePos(id, height,otherId) {
+    var obj = document.getElementById(id);
+    var friendlinkObj = document.getElementById(otherId);
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop < height) {
+      obj.style.position = 'relative';
+      obj.style.width = friendlinkObj.offsetWidth + 'px';
+    } else {
+      obj.style.position = 'fixed';
+      obj.style.width = friendlinkObj.offsetWidth + 'px';
+    }
+  }
+  window.onload = function () {
+    menuFixed('toc','friendlinkNav');
+  }
+</script>
+
+
+<style>
+.articleCount {
+    float: right;
+    color: #ffffff;
+    background: #ddd;
+    padding: 0 8px;
+    border-radius: 6px;
+    font-size: 14px;
+    width: 32px;
+    text-align: center;
+    line-height: 1.4em;
+    height: 1.4em;
+    margin-top: 0.1em;
+}
+.customCatalog{
+    display: block;
+    margin-top: 1em;
+    background: #fff;
+    -moz-border-radius: 7px;
+    -webkit-border-radius: 7px;
+    width: 100%;
+    padding-bottom: 7.5%;
+    padding: 1em;
+    position: relative;
+    top: 0;
+    overflow-y:scroll;
+    max-height: calc(100% - 2em);
+}
+
+.element::-webkit-scrollbar { width: 0 !important }
+.element { -ms-overflow-style: none; }
+.element { overflow: -moz-scrollbars-none; }
+
+
+</style>
+
+</html>
