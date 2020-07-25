@@ -39,6 +39,7 @@ figure {
 }
 .task-list{
     list-style: none;
+    margin-left: 0;
 }
 
 /**
@@ -739,6 +740,7 @@ h6 {
 a {
     color: #2a7ae2;
     text-decoration: none;
+    word-break: break-all;
 }
 
 a:hover, a:focus {
@@ -1866,6 +1868,7 @@ div.gavatar a:hover {
 .post-content {
     line-height: 1.8em;
     letter-spacing: 1px;
+
 }
 
 div.contentAbstract img {
@@ -1922,6 +1925,7 @@ div.contentAbstract img {
     color: #000;
     /*text-indent:2em;*/
     margin: 0.5em 0.2em;
+    word-break:break-all;
 }
 
 .post-content h1,

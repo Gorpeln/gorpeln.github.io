@@ -1499,7 +1499,7 @@ abbr[title], abbr[data-original-title] {
 blockquote {
   padding: 10px 20px;
   margin: 0 0 20px;
-  font-size: 17.5px;
+  font-size: 15px;
   border-left: 5px solid #eee;
 }
 
@@ -1559,7 +1559,7 @@ code {
   background-color: #f9f2f4;
   border-radius: 4px;
   /*display: block;*/
-  white-space: nowrap; 
+  /*white-space: nowrap; */
   /*width: 100%; */
   overflow: hidden;
   text-overflow:ellipsis;
@@ -2744,9 +2744,10 @@ input[type="search"] {
 }
 
 input[type="radio"], input[type="checkbox"] {
-  margin: 4px 0 0;
+  margin: 4px 8px 0 0;
   margin-top: 1px \9;
   line-height: normal;
+
 }
 
 input[type="file"] {

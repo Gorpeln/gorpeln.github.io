@@ -374,7 +374,7 @@
   <li>操作队列（Operation Queues）：
     <ul>
       <li>这里的队列指操作队列，即用来存放操作的队列。不同于 GCD 中的调度队列 FIFO（先进先出）的原则。NSOperationQueue 对于添加到队列中的操作，首先进入准备就绪的状态（就绪状态取决于操作之间的依赖关系），然后进入就绪状态的操作的开始执行顺序（非结束执行顺序）由操作之间相对的优先级决定（优先级是操作对象自身的属性）。</li>
-      <li>操作队列通过设置最大并发操作数（maxConcurrentOperationCount）来控制并发、串行。</li>
+      <li>操作队列通过设置最大并发操作数<code class="highlighter-rouge">maxConcurrentOperationCount</code>来控制并发、串行。</li>
       <li>NSOperationQueue 为我们提供了两种不同类型的队列：主队列和自定义队列。主队列运行在主线程之上，而自定义队列在后台执行。</li>
     </ul>
   </li>
@@ -1199,13 +1199,13 @@ typedef NS_ENUM(NSInteger, NSOperationQueuePriority) {
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15931534585" title="iOS多线程：线程安全 常见锁 (六)" style="color: #6666cc"  target="_blank">iOS多线程：线程安全 常见锁 (六)</a>
+	    <div style="margin:0.25em;font-size: 0.9em;">
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15931534585" title="iOS多线程：线程安全 常见锁 (六)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：线程安全 常见锁 (六)</a>
 	    </div>
 	  
   	  
-	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15862323579" title="iOS多线程：GCD的实际使用 (四)" style="color: #6666cc"  target="_blank">iOS多线程：GCD的实际使用 (四)</a>
+	    <div style="margin:0.25em;font-size: 0.9em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15862323579" title="iOS多线程：GCD的实际使用 (四)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：GCD的实际使用 (四)</a>
 	    </div>
 	  
 	 

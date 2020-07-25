@@ -378,67 +378,17 @@
 
 <p>微信小程序诞生之初，定位是简单的逻辑视图层框架，所以不带有数据流管理。经常看到一些小程序开发者，通过手工引入 Redux，去做数据流管理。上面的三款框架，都是支持数据流管理的。它们总体的特性与不同，可以参见下面的表格。</p>
 
-<table>
-  <thead>
-    <tr>
-      <th>特性</th>
-      <th>语法规范</th>
-      <th>模板系统</th>
-      <th>组件化</th>
-      <th>样式规范</th>
-      <th>多端复用</th>
-      <th>自动构建</th>
-      <th>上手成本</th>
-      <th>数据流管理</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>微信小程序</td>
-      <td>小程序规范</td>
-      <td>字符串模板</td>
-      <td>不太 OK 的小程序组件化</td>
-      <td>WXSS</td>
-      <td>无</td>
-      <td>无</td>
-      <td>全新学习</td>
-      <td>不支持</td>
-    </tr>
-    <tr>
-      <td>mpvue</td>
-      <td>Vue.js 规范</td>
-      <td>字符串模板</td>
-      <td>Vue.js 组件化规范</td>
-      <td>Sass、Less、PostCSS</td>
-      <td>复用 H5</td>
-      <td>webpack 构建</td>
-      <td>熟悉 Vue.js</td>
-      <td>Vuex</td>
-    </tr>
-    <tr>
-      <td>WePY</td>
-      <td>类 Vue.js 规范</td>
-      <td>字符串模板</td>
-      <td>自定义组件化规范</td>
-      <td>Sass、Less、Stylus</td>
-      <td>复用 H5</td>
-      <td>内建构建系统</td>
-      <td>熟悉 Vue.js</td>
-      <td>Redux</td>
-    </tr>
-    <tr>
-      <td>Taro</td>
-      <td>React 规范</td>
-      <td>JSX</td>
-      <td>React 组件化规范</td>
-      <td>Sass、Less、PostCSS</td>
-      <td>复用 H5 &amp; 通过 RN 支持移动端</td>
-      <td>内建构建系统 + webpack</td>
-      <td>熟悉 React</td>
-      <td>Redux</td>
-    </tr>
-  </tbody>
-</table>
+<p><img src="https://img.gorpeln.com/blog_15623480718.png" alt="blog_15623480718" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>副本文件 -- 不用看，不用看↓
+| 特性 | 语法规范 | 模板系统 | 组件化 |样式规范 | 多端复用 | 自动构建|上手成本 | 数据流管理|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 微信小程序 |小程序规范  |字符串模板  |不太 OK 的小程序组件化 |WXSS |无 |无|全新学习|不支持|
+| mpvue | Vue.js 规范 |字符串模板  | Vue.js 组件化规范|Sass、Less、PostCSS |复用 H5 |webpack 构建|熟悉 Vue.js|Vuex|
+| WePY | 类 Vue.js 规范 | 字符串模板 |自定义组件化规范 | Sass、Less、Stylus| 复用 H5|内建构建系统|熟悉 Vue.js|Redux|
+|Taro  | React 规范 | JSX |React 组件化规范 |Sass、Less、PostCSS |复用 H5 &amp; 通过 RN 支持移动端 |内建构建系统 + webpack|熟悉 React|Redux|
+副本文件 -- 不用看，不用看↑
+</code></pre></div></div>
 
 <p>最后补充一句：任何解决方案都是在其特定使用场景下诞生的，并没有「放之四海而皆准」的方案。虽然引入新方案有时是为了解决语法、开发成本之类的问题，但可能同时又产生新的坑，因此如果是新手要做复杂的小程序项目，建议使用小程序自带的解决方案；如果是某个解决方案的熟手，可以考虑在大型小程序项目中选择自己顺手的解决方案。</p>
 
@@ -454,13 +404,13 @@
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15632033519" title="文章置顶功能的实现 - Jekyll x Liquid" style="color: #6666cc"  target="_blank">文章置顶功能的实现 - Jekyll x Liquid</a>
+	    <div style="margin:0.25em;font-size: 0.9em;">
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15632033519" title="文章置顶功能的实现 - Jekyll x Liquid" style="color: #6666cc;font-size: 0.9em;"  target="_blank">文章置顶功能的实现 - Jekyll x Liquid</a>
 	    </div>
 	  
   	  
-	    <div style="margin:0.25em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15618778699" title="实战篇 ：电商小程序云开发实战" style="color: #6666cc"  target="_blank">实战篇 ：电商小程序云开发实战</a>
+	    <div style="margin:0.25em;font-size: 0.9em;">
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15618778699" title="实战篇 ：电商小程序云开发实战" style="color: #6666cc;font-size: 0.9em;"  target="_blank">实战篇 ：电商小程序云开发实战</a>
 	    </div>
 	  
 	 
