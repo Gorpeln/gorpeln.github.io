@@ -2100,6 +2100,7 @@ pre code {
 
   .col-md-9 {
     width: 75%;
+    padding-right: 2.5%;
   }
 
   .col-md-8 {
@@ -2124,6 +2125,7 @@ pre code {
 
   .col-md-3 {
     width: 25%;
+    padding-left: 3%;
   }
 
   .col-md-2 {
@@ -2311,6 +2313,7 @@ pre code {
 
   .col-lg-9 {
     width: 75%;
+    padding-right: 5%;
   }
 
   .col-lg-8 {
@@ -2335,6 +2338,7 @@ pre code {
 
   .col-lg-3 {
     width: 25%;
+    padding-left: 6%;
   }
 
   .col-lg-2 {

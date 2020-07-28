@@ -2,11 +2,18 @@ $(document).ready(function() {
 
     $(function() {
         $(window).scroll(function() {
+
             if ($(window).scrollTop() > 150) {
                 $("#backtotop").addClass("showme");
+                $("#qrcodeBtn").addClass("qrcodeMoveTop");
+                $("#qrcode").addClass("qrcodeMoveTop");
             } else {
                 $("#backtotop").removeClass("showme");
+                $("#qrcodeBtn").removeClass("qrcodeMoveTop");
+                $("#qrcode").removeClass("qrcodeMoveTop");
             }
+
+            console.log(qrcodeBtn.style.bottom);
         });
 
         $("#backtotop").click(function() {

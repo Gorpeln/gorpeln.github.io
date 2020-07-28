@@ -3,7 +3,7 @@
   <channel>
     <title>gorpeln的个人博客 - gorpeln</title>
     <link>https://gorpeln.com</link>
-    <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）</description>
+    <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！</description>
     
       <item>
         <title>iOS多线程：线程安全 常见锁 (六)</title>
@@ -3088,6 +3088,68 @@ thread.threadPriority = 1;
       </item>
     
       <item>
+        <title>背诵全文三</title>
+        <link>https://gorpeln.com/article/3</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/3</guid>
+        <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;类&lt;/code&gt;由两个部分组成：&lt;em&gt;.h和&lt;/em&gt;.m文件组成。
+*.m文件中 implemention部分是类的实现部分，内部包含类中的各种信息，包括各种实例方法或类方法。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;实例变量&lt;/code&gt;(instance variable)：由类定义的实例话的变量（不包括基本数据类型，如int,double,float）。&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;成员变量&lt;/code&gt;(Member variable):代码中的变量，包含实例变量和基本变量类型，无需与外界接触。
+成员变量默认是protected，一般情况下，非子类对象无法访问.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;属性&lt;/code&gt;(property):编译器自动将变量的set和get方法的合成，可用点语法读取，可作为变量使用，可与外界接触。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;实例变量+基本数据类型变量=成员变量&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;拥有相同属性和行为的对象都可以抽象为一个&lt;code class=&quot;highlighter-rouge&quot;&gt;类&lt;/code&gt;，类的设计只关注三个东西：&lt;code class=&quot;highlighter-rouge&quot;&gt;类名&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;属性&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;方法&lt;/code&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;对象方法&lt;/code&gt;都以-号开头，&lt;code class=&quot;highlighter-rouge&quot;&gt;类方法&lt;/code&gt;都以+号开头
+对象是类的一个实例，是一个具体的事物。&lt;/p&gt;
+
+&lt;p&gt;1）类的声明：&lt;/p&gt;
+
+&lt;p&gt;这里声明了一个Person类，这个类拥有一个@public修饰的属性（成员变量），以及一个对象方法put。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+@interface Person : NSObject
+{
+	@public
+	int _age;
+}
+-(void)input;
+@end
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;2）类的实现：类的实现可以理解为类中的方法的实现&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#import &quot;Person.h&quot;
+@implemention Person
+-(void)input{
+NSLog(@&quot;这是第一个程序！&quot;);
+}
+@end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;3）类的调用：在主函数首先创建了一个Person类型的对象（先调用alloc分配存储空间，后调用init方法初始化为0），并定义了一个Person类型的指针指向创建的这个对象，之后初始化对象成员变量_age的值为20，然后调用了对象的put方法，打印输出。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;#import &amp;lt;Foundation/Foundation.h&amp;gt;
+#import &quot;Person.h&quot;
+int main(int argc, char * argv[]) {
+    Person *C = [[Person alloc]init];
+    C -&amp;gt; _age = 20;
+    [C put];
+    NSLog(@&quot;运行了&quot;);
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+      </item>
+    
+      <item>
         <title>背诵全文二</title>
         <link>https://gorpeln.com/article/2</link>
         <guid isPermaLink="true">https://gorpeln.com/article/2</guid>
@@ -4260,6 +4322,38 @@ category
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;分类运用场景举例：  
+问题1：  
+  
+项目中已经有上百个页面了，如果一个一个的加，浪费时间不说，以后增加了新页面，还需要添加方法。
+  
+解决方法：  
+  
+我们可以发现页面都继承了UIViewController，想要在每个页面都执行的代码，可以写在这些页面的父类中。我们可以把代码写在UIViewController中；出现问题2。  
+    
+问题2： 
+  
+UIViewController是官方类，我们只能调用期接口，并不能修改他的实现。
+  
+解决方法：使用分类（category）。
+  
+问题3：
+  
+本类是系统的类，这里是UIViewController，我们可以使用分类扩展他的方法，也可以重写他的方法，可是我需要在调用的地方加头文件，所有子类都写头文件和直接在子类写方法没有什么区别，怎么样可以使得不写头文件，子类就能调用我们写的代码呢？
+  
+回答：
+  
+我们可以进行方法交换（这样可以不必在调用的地方增加头文件），从而使得在实现的时候调用重写的方法。
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1.分类不能添加属性的实质原因：  
+  
+我们知道在一个类中用@property声明属性，编译器会自动帮我们生成_成员变量和setter/getter，但分类的指针结构体中，根本没有属性列表。所以在分类中用@property声明属性，既无法生成_成员变量也无法生成setter/getter。 因此结论是：我们可以用@property声明属性，编译和运行都会通过，只要不使用程序也不会崩溃。但如果调用了_成员变量和setter/getter方法，报错就在所难免了。
+  
+2.报错的根本原因是使用了系统没有生成的setter/getter方法，我们可以手动添加setter/getter来避免崩溃，完成调用，如uiview扩展。  
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;23、我们说的OC是动态运行时语言是什么意思？&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;答：主要是将数据类型的确定由编译时，推迟到了运行时。简单来说, 运行时机制使我们直到运行时才去决定一个对象的类别,以及调用该类别对象指定方法。
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -4320,7 +4414,7 @@ KVC 和 KVO 的 keyPath 可以是属性、实例变量、成员变量。
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;按照执行顺序排列：
 1、alloc：创建对象，分配空间  
 2、init (initWithNibName)：初始化对象，初始化数据  
-3、loadView：从nib载入视图 ，通常这一步不需要去干涉。在系统调用view且检测到控制器  的view为nil时调用，没有使用nib则自动创建一个空白view。  
+3、loadView：每次访问UIViewController的view(比如controller.view、self.view)而且view为nil，loadView方法就会被调用。  
 4、viewDidLoad：载入完成，可以进行自定义数据以及动态创建其他控件  
 5、viewWillAppear：视图将出现在屏幕之前，马上这个视图就会被展现在屏幕上了  
 6、viewDidAppear：视图已在屏幕上渲染完成  
@@ -5662,7 +5756,19 @@ Graphics Hardware|&lt;br /&gt;
         <link>https://gorpeln.com/article/15776115840</link>
         <guid isPermaLink="true">https://gorpeln.com/article/15776115840</guid>
         <pubDate>Sun, 29 Dec 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;趁年轻，做自己想做的！ - gorpeln&lt;/p&gt;
+        <description>&lt;p&gt;趁年轻，做自己想做的！ - gorpeln　　&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;时光本&lt;/strong&gt;是一款专注效率与记录的笔记工具。可以帮助你整理各种信息，包括&lt;code class=&quot;highlighter-rouge&quot;&gt;便签&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;清单&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;图片&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;纪念日&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;地址&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;链接&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;银行卡&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;名片&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;待办&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;日程&lt;/code&gt;等。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;高效记录&lt;/strong&gt;    &lt;br /&gt;
+提供便签、清单、图片、纪念日、地址、链接、银行卡、名片等多种类型&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;专注效率&lt;/strong&gt;   &lt;br /&gt;
+提供笔记紧急程度、分类，帮助你更好的归纳整理，提高效率&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;安全可靠&lt;/strong&gt;  &lt;br /&gt;
+为保证数据安全，所有数据均采用本地存储，把数据归还给用户&lt;/p&gt;
+
 </description>
       </item>
     
@@ -6642,34 +6748,6 @@ password: 123456
     })();  
 &lt;/script&gt;
 
-</description>
-      </item>
-    
-      <item>
-        <title>返回并刷新上一个页面</title>
-        <link>https://gorpeln.com/article/15664680297</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15664680297</guid>
-        <pubDate>Thu, 22 Aug 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;由于项目中经常碰到创建、删除后返回列表的场景，因此需要在返回后，页面及时反馈出操作后的结果列表，而不是旧数据列表&lt;/p&gt;
-
-&lt;h4 id=&quot;如何获取当前页面栈&quot;&gt;如何获取当前页面栈&lt;/h4&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var pages = getCurrentPages();  
-var beforePage = pages[pages.length - 2];  
-var currentPage = pages[pages.length - 1];  
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;然后你就可以通过对象直接操作当前页面，比如调用函数。&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;var pages = getCurrentPages();
-var beforePage = pages[pages.length - 2];
-beforePage.loadData();
-wx.navigateBack();
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;建议在列表页的onLoad函数中，将数据请求单独放在一个函数中进行调用，比如这里的loadData，这样在create页面就能只刷新数据，而onLoad中可能存在的，比如获取用户id等操作，则不会重复再次执行&lt;/li&gt;
-&lt;/ul&gt;
 </description>
       </item>
     

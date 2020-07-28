@@ -2,7 +2,7 @@
 (function($){
   $.fn.toc = function(options) {
     var defaults = {
-      noBackToTopLinks: false,
+      noBackToTopLinks: true,
       title: '',
       minimumHeaders: 3,
       headers: 'h1, h2, h3, h4, h5, h6',
@@ -23,7 +23,7 @@
 
     function createLink (header) {
       var innerText = (header.textContent === undefined) ? header.innerText : header.textContent;
-      return "<a" + " style='display: inline-block;white-space: nowrap;width: 100%;overflow: hidden;text-overflow: ellipsis;list-style: none;color:#6666cc;'" + "href='#" + fixedEncodeURIComponent(header.id) + "'>" + innerText + "</a>";
+      return "<a" + " style='display: inline-block;white-space: nowrap;width: 100%;overflow: hidden;text-overflow: ellipsis;list-style: none;color:#37374b;'" + "href='#" + fixedEncodeURIComponent(header.id) + "'>" + innerText + "</a>";
     }
 
     var headers = $(settings.headers).filter(function() {
