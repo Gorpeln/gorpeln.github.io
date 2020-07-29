@@ -1017,7 +1017,7 @@ blockquote> :last-child {
 #backtotop .bttbg {
      width: 40px;
     height: 40px;
-    background: rgb(0,0,0,0.3) url(/assets/img/top_button.png) no-repeat center center;
+    background: rgba(0,0,0,0.3) url(/assets/img/top_button.png) no-repeat center center;
     background-size: 60%;
     border-radius: 10px;
 
@@ -1033,7 +1033,7 @@ blockquote> :last-child {
 .qrcode {
     width: 40px;
     height: 40px;
-    background: rgb(0,0,0,0.3) url(/assets/img/blog_qrcode.png) no-repeat center center;
+    background: rgba(0,0,0,0.3) url(/assets/img/blog_qrcode.png) no-repeat center center;
     background-size: 60%;
     position: fixed;
     bottom: 80px;
