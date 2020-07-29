@@ -2525,7 +2525,7 @@ pre code {
   }
 
   .col-lg-9 {
-    width: calc(100% - 24em);
+    width: calc(90% - 24em);
     padding-right: 6%;
   }
 
@@ -2552,6 +2552,7 @@ pre code {
   .col-lg-3 {
     width: 24em;
     padding-left: 6%;
+    margin-left: 5%;
   }
 
   .col-lg-2 {
