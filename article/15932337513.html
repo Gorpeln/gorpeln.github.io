@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>iOS9 HTTP 不能正常使用的解决办法（数据无法加载） | gorpeln的个人博客 - gorpeln</title>
+  <title>开发环境、测试环境、预发布环境、生产环境的区别 | gorpeln的个人博客 - gorpeln</title>
 
-  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,Bug调试" />
-  <meta name="description" content="输出错误信息：  The resource could not be loaded because the App Transport Security policy requires the use of a secure connection.">
+  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,测试环境" />
+  <meta name="description" content="一个软件产品从开发到用户使用都涉及哪些环境？开发环境、测试环境、回归环境、预发布环境、生产环境。">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/14457584631">
+  <link rel="canonical" href="/article/15932337513">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 
   
@@ -322,9 +322,9 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">iOS9 HTTP 不能正常使用的解决办法（数据无法加载）</h1>
+    <h1 class="post-title">开发环境、测试环境、预发布环境、生产环境的区别</h1>
     <div class="info">
-	    <p class="post-meta">时间：2015-10-25</p>
+	    <p class="post-meta">时间：2020-06-27</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
@@ -333,7 +333,7 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#Bug调试"  target="_blank">Bug调试</a>
+			<a class="pjaxlink" href="/tags#测试环境"  target="_blank">测试环境</a>
 		
 		</span>
 	    
@@ -341,40 +341,56 @@
   </header>
 
 <div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/14457584631
+转载请注明出处：https://gorpeln.com/article/15932337513
 </div>
 
 
   <article class="post-content">
-    <h3 id="输出错误信息">输出错误信息：</h3>
-<blockquote>
-  <p>The resource could not be loaded because the App Transport Security policy requires the use of a secure connection.</p>
-</blockquote>
+    <p>一个软件产品从开发到用户使用都涉及哪些环境？
+开发环境、测试环境、回归环境、预发布环境、生产环境。</p>
 
-<h3 id="原因">原因：</h3>
-<blockquote>
-  <p>iOS9引入了新特性App Transport Security (ATS)。</p>
+<h3 id="1开发环境">1、开发环境</h3>
+<p>顾名思义，开发同学开发时使用的环境，每位开发同学在自己的dev分支上干活，提测前或者开发到一定程度，各位同学会合并代码，进行联调。</p>
 
-  <p>新特性要求App内访问的网络必须使用HTTPS协议。
-但是现在公司的项目使用的是HTTP协议，使用私有加密方式保证数据安全。现在也不能马上改成HTTPS协议传输。</p>
-</blockquote>
+<h3 id="2测试环境">2、测试环境</h3>
+<p>也就是我们测试同学干活的环境啦，一般会由测试同学自己来部署，然后在此环境进行测试。bug修复后，需要发版更新测试环境来回归bug。</p>
 
-<h3 id="解决办法">解决办法：</h3>
+<h3 id="3回归环境">3、回归环境</h3>
+<p>回归bug的环境，其实就是我们的测试环境，在测试环境上测试、回归验证bug。</p>
+
+<h3 id="4预发布环境">4、预发布环境</h3>
+<p>首先，我们要弄清楚软件的发布流程:</p>
+<ul>
+  <li>功能发布是直接通过代码打包的形式发布还是通过获取git分支代码的方式发布，如果是通过打包的形式发布，那可以不用预发布环境，因为测试和线上用的都是同一个代码包；</li>
+  <li>如果用的是直接发布git仓库的代码，那么就必须要增加预发布环境了；</li>
+</ul>
+
+<p>先了解代码分支的作用：</p>
+<ul>
+  <li>Dev：开发分支，开发人员开发和自测的代码分支</li>
+  <li>Test：测试分支，开发人员开发完转测功能合并代码的分支</li>
+  <li>release：预发布分支：测试环境测试通过后，开发人员将代码合并的分支，测试通过后，运营会将此分支代码发布到线上环境；</li>
+  <li>master：上线通过后，把这个迭代功能的代码合并的分支，新开发功能再从master分支上拉代码进行新的开发；</li>
+</ul>
+
+<p>预发布环境的<code class="highlighter-rouge">作用</code>：</p>
 <ol>
-  <li>在Info.plist中添加NSAppTransportSecurity类型Dictionary。</li>
-  <li>在NSAppTransportSecurity下添加NSAllowsArbitraryLoads类型Boolean,值设为YES</li>
+  <li>预发布环境是正式发布前最后一次测试。因为在少数情况下即使预发布通过了，都不能保证正式生产环境可以100%不出问题；</li>
+  <li>预发布环境的配置，数据库等都是跟线上一样；有些公司的预发布环境数据库是连接线上环境，有些公司预发布环境是单独的数据库；</li>
+  <li>如果不设预发布环境，如果开发合并代码有问题，会直接将问题发布到线上，增加维护的成本；</li>
 </ol>
 
-<h3 id="修改截图">修改截图：</h3>
-<blockquote>
-  <p>按照上面提到的方式添加信息，正确的修改会看到下图这个样子，注意类型NSAppTransportSecurity为Dictionary，NSAllowsArbitraryLoads为Boolean，复制粘贴的时候，不要多了空格，segment fault 页面上直接复制，经常会多一个出空格！</p>
-</blockquote>
+<p>预发布环境和生产环境<code class="highlighter-rouge">区别</code>：</p>
+<ol>
+  <li>预发环境中新功能为最新代码，其他功能代码和生产环境一致。</li>
+  <li>预发环境和生产环境的访问域名不同。</li>
+</ol>
 
-<p><img src="https://img.gorpeln.com/blog_20151025001.png" alt="blog_20151025001" /></p>
+<h3 id="5生产环境">5、生产环境</h3>
+<p>即线上环境，用户使用的环境。由特定人员来维护，一般人没有权限去修改。</p>
 
-<blockquote>
-  <p>注意⚠️，单元测试下面也有一个Info.plist，修改那个文件是没有作用的！</p>
-</blockquote>
+<p>另外，还有个灰度发布，发生在预发布环境之后，生产环境之前。
+生产环境一般会部署在多台机器上，以防某台机器出现故障，这样其他机器可以继续运行，不影响用户使用。灰度发布会发布到其中的几台机器上，验证新功能是否正常。如果失败，只需回滚这几台机器即可。</p>
 
 
   </article>
@@ -382,13 +398,9 @@
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;font-size: 0.9em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/14669248561" title="为什么不应该加班？" style="color: #6666cc;font-size: 0.9em;"  target="_blank">为什么不应该加班？</a>
-	    </div>
-	  
   	  
 	    <div style="margin:0.25em;font-size: 0.9em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/14439563950" title="You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">You must rebuild it with bitcode enabled (Xcode setting ENABLE_BITCODE)</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15931534585" title="iOS多线程：线程安全 常见锁 (六)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：线程安全 常见锁 (六)</a>
 	    </div>
 	  
 	 
@@ -461,7 +473,7 @@
         </div>
     </div>
     <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
-        <div class="qrcode" id="qrcodeBtn" onclick="createQrcode('/article/14457584631')"></div>
+        <div class="qrcode" id="qrcodeBtn" onclick="createQrcode('/article/15932337513')"></div>
         <div class="qrcodeImg" id="qrcode"></div>
         <div id="backtotop">
             <a href="#">

@@ -6,6 +6,60 @@
     <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！</description>
     
       <item>
+        <title>开发环境、测试环境、预发布环境、生产环境的区别</title>
+        <link>https://gorpeln.com/article/15932337513</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15932337513</guid>
+        <pubDate>Sat, 27 Jun 2020 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;一个软件产品从开发到用户使用都涉及哪些环境？
+开发环境、测试环境、回归环境、预发布环境、生产环境。&lt;/p&gt;
+
+&lt;h3 id=&quot;1开发环境&quot;&gt;1、开发环境&lt;/h3&gt;
+&lt;p&gt;顾名思义，开发同学开发时使用的环境，每位开发同学在自己的dev分支上干活，提测前或者开发到一定程度，各位同学会合并代码，进行联调。&lt;/p&gt;
+
+&lt;h3 id=&quot;2测试环境&quot;&gt;2、测试环境&lt;/h3&gt;
+&lt;p&gt;也就是我们测试同学干活的环境啦，一般会由测试同学自己来部署，然后在此环境进行测试。bug修复后，需要发版更新测试环境来回归bug。&lt;/p&gt;
+
+&lt;h3 id=&quot;3回归环境&quot;&gt;3、回归环境&lt;/h3&gt;
+&lt;p&gt;回归bug的环境，其实就是我们的测试环境，在测试环境上测试、回归验证bug。&lt;/p&gt;
+
+&lt;h3 id=&quot;4预发布环境&quot;&gt;4、预发布环境&lt;/h3&gt;
+&lt;p&gt;首先，我们要弄清楚软件的发布流程:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;功能发布是直接通过代码打包的形式发布还是通过获取git分支代码的方式发布，如果是通过打包的形式发布，那可以不用预发布环境，因为测试和线上用的都是同一个代码包；&lt;/li&gt;
+  &lt;li&gt;如果用的是直接发布git仓库的代码，那么就必须要增加预发布环境了；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;先了解代码分支的作用：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Dev：开发分支，开发人员开发和自测的代码分支&lt;/li&gt;
+  &lt;li&gt;Test：测试分支，开发人员开发完转测功能合并代码的分支&lt;/li&gt;
+  &lt;li&gt;release：预发布分支：测试环境测试通过后，开发人员将代码合并的分支，测试通过后，运营会将此分支代码发布到线上环境；&lt;/li&gt;
+  &lt;li&gt;master：上线通过后，把这个迭代功能的代码合并的分支，新开发功能再从master分支上拉代码进行新的开发；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;预发布环境的&lt;code class=&quot;highlighter-rouge&quot;&gt;作用&lt;/code&gt;：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;预发布环境是正式发布前最后一次测试。因为在少数情况下即使预发布通过了，都不能保证正式生产环境可以100%不出问题；&lt;/li&gt;
+  &lt;li&gt;预发布环境的配置，数据库等都是跟线上一样；有些公司的预发布环境数据库是连接线上环境，有些公司预发布环境是单独的数据库；&lt;/li&gt;
+  &lt;li&gt;如果不设预发布环境，如果开发合并代码有问题，会直接将问题发布到线上，增加维护的成本；&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;预发布环境和生产环境&lt;code class=&quot;highlighter-rouge&quot;&gt;区别&lt;/code&gt;：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;预发环境中新功能为最新代码，其他功能代码和生产环境一致。&lt;/li&gt;
+  &lt;li&gt;预发环境和生产环境的访问域名不同。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;5生产环境&quot;&gt;5、生产环境&lt;/h3&gt;
+&lt;p&gt;即线上环境，用户使用的环境。由特定人员来维护，一般人没有权限去修改。&lt;/p&gt;
+
+&lt;p&gt;另外，还有个灰度发布，发生在预发布环境之后，生产环境之前。
+生产环境一般会部署在多台机器上，以防某台机器出现故障，这样其他机器可以继续运行，不影响用户使用。灰度发布会发布到其中的几台机器上，验证新功能是否正常。如果失败，只需回滚这几台机器即可。&lt;/p&gt;
+
+</description>
+      </item>
+    
+      <item>
         <title>iOS多线程：线程安全 常见锁 (六)</title>
         <link>https://gorpeln.com/article/15931534585</link>
         <guid isPermaLink="true">https://gorpeln.com/article/15931534585</guid>
@@ -6677,76 +6731,6 @@ Graphics Hardware|&lt;br /&gt;
     }
 };
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-</description>
-      </item>
-    
-      <item>
-        <title>Jekyll 简单加密 (pwd=123456)</title>
-        <link>https://gorpeln.com/article/15692409843</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15692409843</guid>
-        <pubDate>Mon, 23 Sep 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;加密文章&lt;/p&gt;
-&lt;html&gt;
-&lt;body&gt;
-    &lt;div&gt;
-        &lt;ul&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-        &lt;/ul&gt;
-        &lt;ul&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-            &lt;li&gt;
-            &lt;/li&gt;
-        &lt;/ul&gt;
-    &lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-
-&lt;p&gt;这个加密安全性太低，不过可以封掉一部分读者。只需要查看一下NetWork，就可以看到对应页面的全部URL，之后有时间我再看看文本内容加密。&lt;/p&gt;
-
-&lt;p&gt;其实很简单, 从post的header里面进行参数设置&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;layout: post
-title: Jekyll 简单加密 (pwd=123456)
-category: 个人博客
-tags: [个人博客,Jekyll,加密]
-password: 123456
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;然后，添加script&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script&amp;gt;
-    (function(){
-        if('123456'){
-            if (prompt('请输入密码') !== '123456'){
-                alert('密码错误');
-                window.close();
-            }
-        }
-    })();  
-&amp;lt;/script&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;script&gt;
-    (function(){
-        if('123456'){
-            if (prompt('请输入密码') !== '123456'){
-                alert('密码错误');
-                window.close();
-                window.history.go(-1);
-				history.back(-1);
-            }
-        }
-    })();  
-&lt;/script&gt;
 
 </description>
       </item>

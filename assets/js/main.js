@@ -13,7 +13,6 @@ $(document).ready(function() {
                 $("#qrcode").removeClass("qrcodeMoveTop");
             }
 
-            console.log(qrcodeBtn.style.bottom);
         });
 
         $("#backtotop").click(function() {
