@@ -6,6 +6,24 @@
     <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！</description>
     
       <item>
+        <title>如果打开iCloud同步 - 时光本</title>
+        <link>https://gorpeln.com/article/15942881574</link>
+        <guid isPermaLink="true">https://gorpeln.com/article/15942881574</guid>
+        <pubDate>Thu, 09 Jul 2020 00:00:00 +0800</pubDate>
+        <description>&lt;p&gt;打开系统设置 - 登录 iPhone - iCloud - iCloud云盘。&lt;/p&gt;
+
+&lt;h4 id=&quot;1第一步-登录-iphone&quot;&gt;1、第一步 登录 iPhone&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_icloud_step_01.png&quot; alt=&quot;blog_icloud_step_01&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;2第二步-icloud&quot;&gt;2、第二步 iCloud&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_icloud_step_02.png&quot; alt=&quot;blog_icloud_step_02&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;3第三步-icloud云盘&quot;&gt;3、第三步 iCloud云盘&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_icloud_step_03.png&quot; alt=&quot;blog_icloud_step_03&quot; /&gt;&lt;/p&gt;
+</description>
+      </item>
+    
+      <item>
         <title>开发环境、测试环境、预发布环境、生产环境的区别</title>
         <link>https://gorpeln.com/article/15932337513</link>
         <guid isPermaLink="true">https://gorpeln.com/article/15932337513</guid>
@@ -6704,34 +6722,6 @@ Graphics Hardware|&lt;br /&gt;
 }
 &lt;/style&gt;
 &lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;&lt;/main&gt;&lt;/body&gt;&lt;/html&gt;
-</description>
-      </item>
-    
-      <item>
-        <title>锚点跳转距离顶部指定距离</title>
-        <link>https://gorpeln.com/article/15700906142</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15700906142</guid>
-        <pubDate>Thu, 03 Oct 2019 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;html&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;a href=&quot;#maodian&quot;&amp;gt;点这里跳&amp;lt;/a&amp;gt;
-&amp;lt;div id=&quot;maodian&quot;&amp;gt;跳到这里&amp;lt;/div&amp;gt; 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;js+jquery&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;window.onhashchange=function(){
-    var target = $(location.hash);
-    if(target.length==1){
-        var top = target.offset().top-120;// 距离顶部120像素
-        if(top &amp;gt; 0){
-            $('html,body').animate({scrollTop: top}, 1000);//带jq动画的跳转
-           //$('html,body').css({scrollTop: top}) //不带jq动画的跳转
-        }
-    }
-};
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
 </description>
       </item>
     

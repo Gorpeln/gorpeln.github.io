@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>push,pop到任意控制器(一) | gorpeln的个人博客 - gorpeln</title>
+  <title>如果打开iCloud同步 - 时光本 | gorpeln的个人博客 - gorpeln</title>
 
-  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,push,pop,代码段" />
-  <meta name="description" content="主题思想：如A、B、C、D 四个视图控制器想要在 A push B 后， B 在push 到 D ，然后从 D pop 到 C ,再从 C pop 的A">
+  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,iCloud,时光本" />
+  <meta name="description" content="打开系统设置 - 登录 iPhone - iCloud - iCloud云盘。">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/14776665877">
+  <link rel="canonical" href="/article/15942881574">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 
   
@@ -322,9 +322,9 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">push,pop到任意控制器(一)</h1>
+    <h1 class="post-title">如果打开iCloud同步 - 时光本</h1>
     <div class="info">
-	    <p class="post-meta">时间：2016-10-28</p>
+	    <p class="post-meta">时间：2020-07-09</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
 		<a class="item-date" style="color:#6666cc;" href="/categories#iOS" target="_blank">
@@ -333,11 +333,9 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#push"  target="_blank">push</a>
+			<a class="pjaxlink" href="/tags#iCloud"  target="_blank">iCloud</a>
 		
-			<a class="pjaxlink" href="/tags#pop"  target="_blank">pop</a>
-		
-			<a class="pjaxlink" href="/tags#代码段"  target="_blank">代码段</a>
+			<a class="pjaxlink" href="/tags#时光本"  target="_blank">时光本</a>
 		
 		</span>
 	    
@@ -345,99 +343,30 @@
   </header>
 
 <div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/14776665877
+转载请注明出处：https://gorpeln.com/article/15942881574
 </div>
 
 
   <article class="post-content">
-    <p>主题思想：如A、B、C、D 四个视图控制器
-想要在 A push B 后， B 在push 到 D ，然后从 D pop 到 C ,再从 C pop 的A</p>
+    <p>打开系统设置 - 登录 iPhone - iCloud - iCloud云盘。</p>
 
-<hr />
-<p>解决方法如下：</p>
+<h4 id="1第一步-登录-iphone">1、第一步 登录 iPhone</h4>
+<p><img src="https://img.gorpeln.com/blog_icloud_step_01.png" alt="blog_icloud_step_01" /></p>
 
-<p>假如此时在 A 控制器下，想要到 push 到 B， 可以这样写</p>
+<h4 id="2第二步-icloud">2、第二步 iCloud</h4>
+<p><img src="https://img.gorpeln.com/blog_icloud_step_02.png" alt="blog_icloud_step_02" /></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController: B :YES];  
-</code></pre></div></div>
-
-<p>这时 self.navigationController.viewControllers 中按顺序含有 [A，B]</p>
-
-<p>此时已经到 B 控制器下了， 接下来是 push 到 D, 可以这样写</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController: D :YES];  
-</code></pre></div></div>
-
-<p>这时 self.navigationController.viewControllers 中按顺序含有 [A，B，D]</p>
-
-<p>如何想从 D pop 到 C, 看数组[A，B，D] 中压根就没有C 该如何pop 到C呢？</p>
-
-<p>这时就需要对这个数组进行修改，将C 加入进去</p>
-
-<p>于是 你会如下写：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController.viewControllers addObject:C];  
-</code></pre></div></div>
-
-<p>发现报错，这是因为self.navigationController.viewControllers 是不可变数组，没办法了，我们只好转换一下了：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSMutableArray*tempMarr =[NSMutableArray arrayWithArray:self.navigationController.viewControllers];  
-[tempMarr insertObject:C atIndex:tempMarr.count- 2];  
-</code></pre></div></div>
-
-<p>这时候 tempMarr 是这样的 [A，B，C，D], 可是 要想 从 C pop 到 A ,数组中就不能有 B
-就需要 将tempMarr 变成 [A，C，D] ：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[tempMarr removeObjectAtIndex:2];  
-</code></pre></div></div>
-
-<p>但是你会发现，这时的self.navigationController.viewControllers 依然是 [A，B，D]， 不用急，不用怕。navigationController 有这样一个方法, 可以搞定，如下：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController setViewControllers:tempMarr animated:YES];  
-</code></pre></div></div>
-
-<p>你可能会说，这不是直接把 B 替换 成 C 吗</p>
-
-<p>看上去是这样，可是跳转的时机，时机，时机重要的事情说三遍，还有视图的切换，切换，切换</p>
-
-<p>此时还在 B 控制器中，这些处理过程都是在 B 中处理的 ， 也必须是 B 执行了 push 到 D 方法后，也就是说</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[self.navigationController pushViewController:D animated:YES];  
-</code></pre></div></div>
-
-<p>之后 进行的 数组处理；</p>
-
-<p>附加代码：
-在B 控制器中处理：</p>
-
-<pre><code class="language-Objective-C">
--(void)pushTest {  
-    [self.navigationController pushViewController:D animated:YES];  
-    NSMutableArray*tempMarr =[NSMutableArray arrayWithArray:self.navigationController.viewControllers];  
-    [tempMarr insertObject:C atIndex:tempMarr.count- 2];  
-    [tempMarr removeObject:self]; //此时 的self 就是指 B ,因为在 B 中呢  
-    [self.navigationController setViewControllers:tempMarr animated:YES];  
-}  
-
-</code></pre>
-
-<p><strong>适用场景：</strong></p>
-
-<p>适合在如商品的详情页面上有商品的推荐，点击商品推荐仍是商品详情页面，如果不断push地话会很影响性能，该方法可以简单快捷的避免该问题。</p>
-
+<h4 id="3第三步-icloud云盘">3、第三步 iCloud云盘</h4>
+<p><img src="https://img.gorpeln.com/blog_icloud_step_03.png" alt="blog_icloud_step_03" /></p>
 
   </article>
 </div>
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;font-size: 0.9em;">
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/14861973259" title="字符串的删除替换" style="color: #6666cc;font-size: 0.9em;"  target="_blank">字符串的删除替换</a>
-	    </div>
-	  
   	  
 	    <div style="margin:0.25em;font-size: 0.9em;">
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/14743559444" title="设置任意某个角为圆角" style="color: #6666cc;font-size: 0.9em;"  target="_blank">设置任意某个角为圆角</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15932337513" title="开发环境、测试环境、预发布环境、生产环境的区别" style="color: #6666cc;font-size: 0.9em;"  target="_blank">开发环境、测试环境、预发布环境、生产环境的区别</a>
 	    </div>
 	  
 	 
@@ -510,7 +439,7 @@
         </div>
     </div>
     <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
-        <div class="qrcode" id="qrcodeBtn" onclick="createQrcode('/article/14776665877')"></div>
+        <div class="qrcode" id="qrcodeBtn" onclick="createQrcode('/article/15942881574')"></div>
         <div class="qrcodeImg" id="qrcode"></div>
         <div id="backtotop">
             <a href="#">
