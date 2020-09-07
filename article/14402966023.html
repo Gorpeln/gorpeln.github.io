@@ -157,7 +157,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">104</span>
+                                    <span class="site-state-item-count">107</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -190,7 +190,7 @@
                                 </span>
                             </li>
                             <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
-                                <span class="articleCount">104
+                                <span class="articleCount">107
                                         </span>
                             </li>
                             <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
@@ -237,13 +237,13 @@
                             
                             <li onclick="pushNew('/categories#iOS')" class="categoryList">
                                 <a name="iOS" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">iOS</a>
-                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">33
+                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">35
                                 </a>
                             </li>
                             
                             <li onclick="pushNew('/categories#程序人生')" class="categoryList">
                                 <a name="程序人生" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">程序人生</a>
-                                <a name="程序人生" style="font-size:13px;color: white" class="articleCount">18
+                                <a name="程序人生" style="font-size:13px;color: white" class="articleCount">19
                                 </a>
                             </li>
                             
@@ -756,7 +756,6 @@ GFM中可以显示的展示diff效果。使用绿色表示新增，红色表示�
 <script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
 <script type="text/javascript" src="/assets/js/main.js"></script>
 <script type="text/javascript" src="/assets/js/toc.js"></script>
-
 <!-- search -->
 <div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
       opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
@@ -770,49 +769,45 @@ GFM中可以显示的展示diff效果。使用绿色表示新增，红色表示�
 <script src="/search/js/cb-search.js"></script>
 <!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
 <!-- 动态显示网站运行时间 -->
-<script type="text/javascript" language="javascript">
-function setTime() {
-    var create_time = Math.round(new Date(Date.UTC(2015, 08, 23, 12, 0, 0)).getTime() / 1000);
-    var timestamp = Math.round((new Date().getTime() + 8 * 60 * 60 * 1000) / 1000);
-    currentTime = secondToDate((timestamp - create_time));
-    currentTimeHtml = '本站已安全运行：' + currentTime[0] + '年' + currentTime[1] + '天' + currentTime[2] + '时' + currentTime[3] + '分' + currentTime[4] + '秒';
-    document.getElementById("htmer_time").innerHTML = currentTimeHtml;
+<script language=javascript>
+function siteTime() {
+    window.setTimeout("siteTime()", 1000);
+    var seconds = 1000
+    var minutes = seconds * 60
+    var hours = minutes * 60
+    var days = hours * 24
+    var years = days * 365
+    var today = new Date()
+    var todayYear = today.getFullYear()
+    var todayMonth = today.getMonth() + 1
+    var todayDate = today.getDate()
+    var todayHour = today.getHours()
+    var todayMinute = today.getMinutes()
+    var todaySecond = today.getSeconds()
+    /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+    year - 作为date对象的年份，为4位年份值
+    month - 0-11之间的整数，做为date对象的月份 0为1月
+    day - 1-31之间的整数，做为date对象的天数
+    hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+    minutes - 0-59之间的整数，做为date对象的分钟数
+    seconds - 0-59之间的整数，做为date对象的秒数
+    microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+    var t1 = Date.UTC(2015, 8, 23, 0, 0, 0)
+    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond)
+    var diff = t2 - t1
+    var diffYears = Math.floor(diff / years)
+    var diffDays = Math.floor((diff / days) - diffYears * 365)
+    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours)
+    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes)
+    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds)
+    document.getElementById("htmer_time").innerHTML = " 本站已安全运行：" + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 时 " + diffMinutes + " 分 " + diffSeconds + " 秒";
+    console.log(todayMonth);
+
 }
-setInterval(setTime, 1000);
+siteTime();
 </script>
+
 <script language=JavaScript>
-function secondToDate(second) {
-    if (!second) {
-        return 0;
-    }
-
-    var time = new Array(0, 0, 0, 0, 0);
-
-    if (second >= 365 * 24 * 3600) {
-        time[0] = parseInt(second / (365 * 24 * 3600));
-        second %= 365 * 24 * 3600;
-    }
-
-    if (second >= 24 * 3600) {
-        time[1] = parseInt(second / (24 * 3600));
-        second %= 24 * 3600;
-    }
-
-    if (second >= 3600) {
-        time[2] = parseInt(second / 3600);
-        second %= 3600;
-    }
-
-    if (second >= 60) {
-        time[3] = parseInt(second / 60);
-        second %= 60;
-    }
-
-    if (second > 0) {
-        time[4] = second;
-    }
-    return time;
-}
 
 function over(obj) {
     obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
@@ -822,7 +817,6 @@ function out(obj) {
 
 }
 </script>
-
 <!-- 百度统计 -->
 <script>
 var _hmt = _hmt || [];

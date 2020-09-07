@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>小圆点 - gorpeln</title>
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+    <meta name="keywords" content="Gorpeln,gorpeln,gorpeln的个人博客,gpchen,风未止,风未止的个人博客,个人博客,iOS,GorpelnChen,gorpeln.com" />
+    <meta name="description" content="一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！（梦想还是要有的，万一哪天实现了呢！）">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./dot_files/normalize.css">
+    <link rel="stylesheet" href="./dot_files/style.css" media="screen" type="text/css">
+    <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+</head>
+
+<body class="body--ready">
+    <center>
+        <font color="#333" size="4">
+            <font face="微软雅黑">输入任意字符观看动态效果</font>
+        </font>
+    </center>
+    <canvas class="canvas" width="1366" height="625"></canvas>
+    <div class="help">?</div>
+    <div class="ui">
+        <input class="ui-input" type="text">
+        <span class="ui-return">↵</span>
+    </div>
+    <div class="overlay">
+        <div class="tabs">
+            <div class="tabs-labels"><span class="tabs-label tabs-label--active">命令</span><span class="tabs-label">信息</span><span class="tabs-label">分享</span></div>
+            <div class="tabs-panels">
+                <ul class="tabs-panel commands tabs-panel--active">
+                    <li class="commands-item"><span class="commands-item-title">文本</span><span class="commands-item-info" data-demo="Hello :)">输入任何内容</span><span class="commands-item-action">例如</span></li>
+                    <li class="commands-item"><span class="commands-item-title">倒计时</span><span class="commands-item-info" data-demo="#countdown 10">#countdown<span class="commands-item-mode">数字</span></span><span class="commands-item-action">例如</span></li>
+                    <li class="commands-item"><span class="commands-item-title">时间</span><span class="commands-item-info" data-demo="#time">#time</span><span class="commands-item-action">例如</span></li>
+                    <li class="commands-item"><span class="commands-item-title">矩形</span><span class="commands-item-info" data-demo="#rectangle 30x15">#rectangle<span class="commands-item-mode">宽 x 高</span></span><span class="commands-item-action">例如</span></li>
+                    <li class="commands-item"><span class="commands-item-title">圆</span><span class="commands-item-info" data-demo="#circle 25">#circle<span class="commands-item-mode">直径</span></span><span class="commands-item-action">例如</span></li>
+                    <li class="commands-item commands-item--gap"><span class="commands-item-title">动画</span><span class="commands-item-info" data-demo="The time is|#time|#countdown 3|#icon thumbs-up"><span class="commands-item-mode">命令1</span>&nbsp;|<span class="commands-item-mode">命令2</span></span><span class="commands-item-action">例如</span></li>
+                </ul>
+                <div class="tabs-panel ui-details">
+                    <div class="ui-details-content">
+                        <h1>这是我拷贝别人的一个黑科技</h1>
+                        <p>
+                            你可以输入任意字符观看动态效果<br>
+                            返回<a href="https://gorpeln.com" target="_blank">首页</a>
+                            或者查看我的<a href="https://gorpeln.com" target="_blank" rel="noopener">个人主页</a><br>
+                        </p>
+                        <br>
+                    </div>
+                </div>
+                <div class="tabs-panel ui-share">
+                    <div class="ui-share-content">
+                        <h1>分享</h1>
+                        <p>简单的添加 <em>?a=</em> 文字命令到当前网址。 例如:</p>
+                        <p>
+                            <a href="https://gorpeln.com/projects/dot/?a=Hello" target="_blank">https://gorpeln.com/projects/dot/?a=Hello</a><br>
+                            <a href="https://gorpeln.com/projects/dot/?a=Hello|#countdown 3" target="_blank">https://gorpeln.com//projects/dot/?a=Hello|#countdown 3</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./dot_files/index.js"></script>
+</body>
+
+</html>
