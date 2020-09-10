@@ -227,7 +227,7 @@ div.page-tag {
     text-decoration: none;
     color: #333333;
     float: left;
-    margin: 0 1em 1em 0;
+    margin: 0.5em;
     padding: 4px 10px;
     border: 1px solid #d9d9d9;
     /*border-radius: 14px;*/
@@ -273,15 +273,45 @@ div.page-tag {
 }
 
 h1.tag-name {
-    font-size: 1.75em;
+    font-size: 1.5em;
     font-weight: normal;
     padding-bottom: 0.25em;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 0.25em;
+    margin-bottom: 1em;
     margin-top: 0.5em;
     font-family: "heiti SC";
 }
+.tag-name::after {
+    transition: all .35s;
+    content: "";
+    position: absolute;
+    background: linear-gradient(#6E6E96 30%, #6E6E96 70%);
+    width: 1.25em;
+    left: 0;
+    box-shadow: 0 2px 2px rgba(102, 102, 204, .4);
+    height: 2px;
+    bottom: -8px;
+}
 
+.tag-name::before {
+    content: "";
+    width: 100%;
+    border-bottom: 1px solid #eee;
+    bottom: -7px;
+    position: absolute
+}
+
+.tag-name {
+    position: relative;
+    font-size: 1.55em;
+}
+
+.tag-name:hover::after {
+    width: 3em
+}
+.tag-ul{
+    margin-bottom: 2.2em;
+    margin-top: 1.1em;
+}
 /*
 li.article {
   padding-left : 2em;
@@ -445,16 +475,27 @@ li.article a:hover,li.article a:focus{
  * 
  */
 .home {
-    margin: 0 0 2em 0;
+    margin: 0 0 1em 0;
     padding: 2em 3em;
     background: white;
     min-height: 50em;
-    border-radius: 4px;
+    border-radius: 10px;
+}
+
+.homeTwo {
+    border-radius: 10px;
+    padding: 2em 3em;
+    background: white;
+    font-size: 0.9em;
+    margin-bottom: 1em;
 }
 
 @media (max-width: 992px) {
     .home {
         padding: 1em 1.5em;
+    }
+    .home {
+        homeTwo: 1em 1.5em;
     }
 }
 
@@ -1912,7 +1953,7 @@ div.contentAbstract img {
 
 .post-header {
     margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    margin-bottom: 2em;
     border-left: 6px solid;
     margin-left: -3em;
     padding-left: calc(3em - 6px);
@@ -2095,18 +2136,33 @@ margin: 0.5em;
 
 /*上一篇和下一篇*/
 .prevandnext {
-    margin-bottom: 2em;
-    margin-top: 2em;
-    border-radius: 7px;
+    margin-top: 1em;
+    border-radius: 10px;
     padding: 1em 3em;
     background: white;
+    font-size: 0.9em;
+
+}
+
+.copyright {
+    margin-top: 1em;
+    border-radius: 10px;
+    padding: 1em 3em;
+    background: white;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.copyright a{
+    color: #6666cc;
+    font-size: 0.9em;
 }
 
 /*评论*/
 .livere {
     margin-bottom: 2em;
-    margin-top: 2em;
-    border-radius: 7px;
+    margin-top: 1em;
+    border-radius: 10px;
     padding: 1em 3em;
     background: white;
 }

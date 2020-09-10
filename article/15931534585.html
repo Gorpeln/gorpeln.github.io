@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>iOS多线程：线程安全 常见锁 (六) | gorpeln的个人博客 - gorpeln</title>
 
-  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,GCD,多线程" />
+  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,GCD,多线程,常见锁,synchronized,互斥锁,dispatch_semaphore,NSLock,对象锁,NSRecursiveLock,递归锁,NSConditionLock,条件锁,NSCondition,pthread_mutex,OSSpinLock" />
   <meta name="description" content="一、前言前段时间看了几个开源项目，发现他们保持线程同步的方式各不相同，有@synchronized、NSLock、dispatch_semaphore、NSCondition、pthread_mutex、OSSpinLock。后来网上查了一下，发现他们的实现机制各不相同，性能也各不一样。下面我们先分别介绍每个加锁...">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
@@ -169,7 +169,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">100</span>
+                                    <span class="site-state-item-count">443</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -186,7 +186,7 @@
                                 </span>
                             </li>
                             <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
-                                <span class="articleCount">100
+                                <span class="articleCount">443
                                 </span>
                             </li>
                             <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
@@ -237,7 +237,7 @@
                             
                             <li onclick="pushNew('/categories#iOS')" class="categoryList">
                                 <a name="iOS" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">iOS</a>
-                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">35
+                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">34
                                 </a>
                             </li>
                             
@@ -255,7 +255,7 @@
                             
                             <li onclick="pushNew('/categories#架构和算法')" class="categoryList">
                                 <a name="架构和算法" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">架构和算法</a>
-                                <a name="架构和算法" style="font-size:13px;color: white" class="articleCount">7
+                                <a name="架构和算法" style="font-size:13px;color: white" class="articleCount">8
                                 </a>
                             </li>
                             
@@ -331,21 +331,64 @@
         	iOS
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#GCD"  target="_blank">GCD</a>
+		    
+			
+				<a class="pjaxlink" href="/tags#GCD"  target="_blank">GCD</a>
+	    	
 		
-			<a class="pjaxlink" href="/tags#多线程"  target="_blank">多线程</a>
+		    
+			
+				<a class="pjaxlink" href="/tags#多线程"  target="_blank">多线程</a>
+	    	
+		
+		    
+			
+				<a class="pjaxlink" href="/tags#常见锁"  target="_blank">常见锁</a>
+	    	
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
 		
 		</span>
 	    
     </div>
   </header>
-
-<div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/15931534585
-</div>
-
 
   <article class="post-content">
     <h3 id="一前言">一、前言</h3>
@@ -896,16 +939,22 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 <p><img src="https://img.gorpeln.com/blog_lock_001.png" alt="blog_lock_001" /></p>
 
   </article>
+
+</div>
+
+  <div class="copyright">
+  	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
+	<div>本文链接：<a href="https://gorpeln.com/article/15931534585">https://gorpeln.com/article/15931534585</a></div>
 </div>
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;font-size: 0.9em;">
+	    <div>
 	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15932337513" title="开发环境、测试环境、预发布环境、生产环境的区别" style="color: #6666cc;font-size: 0.9em;"  target="_blank">开发环境、测试环境、预发布环境、生产环境的区别</a>
 	    </div>
 	  
   	  
-	    <div style="margin:0.25em;font-size: 0.9em;">
+	    <div>
 	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15884027619" title="iOS多线程：NSOperation、NSOperationQueue (五)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：NSOperation、NSOperationQueue (五)</a>
 	    </div>
 	  

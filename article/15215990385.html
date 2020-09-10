@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>扫码登录实现原理 | gorpeln的个人博客 - gorpeln</title>
 
-  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,扫码,登录" />
+  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,扫码,登录,二维码,token,redis,网页登录" />
   <meta name="description" content="1、需求介绍">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
@@ -169,7 +169,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">100</span>
+                                    <span class="site-state-item-count">443</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -186,7 +186,7 @@
                                 </span>
                             </li>
                             <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
-                                <span class="articleCount">100
+                                <span class="articleCount">443
                                 </span>
                             </li>
                             <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
@@ -237,7 +237,7 @@
                             
                             <li onclick="pushNew('/categories#iOS')" class="categoryList">
                                 <a name="iOS" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">iOS</a>
-                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">35
+                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">34
                                 </a>
                             </li>
                             
@@ -255,7 +255,7 @@
                             
                             <li onclick="pushNew('/categories#架构和算法')" class="categoryList">
                                 <a name="架构和算法" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">架构和算法</a>
-                                <a name="架构和算法" style="font-size:13px;color: white" class="articleCount">7
+                                <a name="架构和算法" style="font-size:13px;color: white" class="articleCount">8
                                 </a>
                             </li>
                             
@@ -331,21 +331,37 @@
         	架构和算法
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		
 		<span class="index-post-tag">
 		
-			<a class="pjaxlink" href="/tags#扫码"  target="_blank">扫码</a>
+		    
+			
+				<a class="pjaxlink" href="/tags#扫码"  target="_blank">扫码</a>
+	    	
 		
-			<a class="pjaxlink" href="/tags#登录"  target="_blank">登录</a>
+		    
+			
+				<a class="pjaxlink" href="/tags#登录"  target="_blank">登录</a>
+	    	
+		
+		    
+			
+				<a class="pjaxlink" href="/tags#二维码"  target="_blank">二维码</a>
+	    	
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
 		
 		</span>
 	    
     </div>
   </header>
-
-<div style="font-size: 8px;width:100%;margin-bottom: 2em;color: #828282;">
-转载请注明出处：https://gorpeln.com/article/15215990385
-</div>
-
 
   <article class="post-content">
     <h4 id="1需求介绍">1、需求介绍</h4>
@@ -380,16 +396,22 @@
 <p><img src="https://img.gorpeln.com/blog_login_002.jpg" alt="blog_login_002" /></p>
 
   </article>
+
+</div>
+
+  <div class="copyright">
+  	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
+	<div>本文链接：<a href="https://gorpeln.com/article/15215990385">https://gorpeln.com/article/15215990385</a></div>
 </div>
 
   <div class="prevandnext">
     	  
-	    <div style="margin:0.25em;font-size: 0.9em;">
+	    <div>
 	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15226027614" title="架构师说" style="color: #6666cc;font-size: 0.9em;"  target="_blank">架构师说</a>
 	    </div>
 	  
   	  
-	    <div style="margin:0.25em;font-size: 0.9em;">
+	    <div>
 	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15209452183" title="UITextView 的使用" style="color: #6666cc;font-size: 0.9em;"  target="_blank">UITextView 的使用</a>
 	    </div>
 	  
