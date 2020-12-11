@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>iOS内存泄漏动态分析：leaks的使用 | gorpeln的个人博客 - gorpeln</title>
+
+  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本" />
+  <meta name="description" content="​1.堆和栈的区别?```OC语言是C语言的超集。C语言的内存模型分为5个区：栈区、堆区、静态区、常量区、代码区。每个区存储的内容如下：">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
+
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="/article/7">
+  <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
+
+  
+</head>
+
+
+
+
+<header class="site-header">
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style type="text/css">
+    html * {
+        
+    }
+
+    .menuNav {
+        margin-top: 100px;
+        position: absolute;
+    }
+
+    .menuNav * {
+        text-decoration: none;
+        font-size: 9pt;
+    }
+
+    .menuNav * a:hover {
+        /*background-color: rgba(0, 0, 0, 0.75);*/
+    }
+
+    .menuNav {
+        list-style: none;
+        display: none;
+        margin-left: -1px;
+    }
+
+    .menuNav li {
+        float: left;
+        border-top: 1px solid #aaa;
+        background-color: rgba(0, 0, 0, 0.75);
+
+    }
+
+    .menuNav li a {
+    color: #fff;
+    padding: 15px 0;
+    display: block;
+    width: 2em;
+    text-align: center;
+    }
+
+    .menuNav li a:focus {
+        -moz-outline-style: none;
+    }
+
+    .menuNav li .sub-nav {
+     position: absolute;
+    top: -110%;
+    left: calc(2em - 30px);
+    list-style: none;
+    /*background-color: rgba(0, 0, 0, 0.6);*/
+    display: none;
+    }
+
+    .menuNav li .sub-nav li {
+        text-align: center;
+        clear: left;
+        width: 140px;
+        height: 35px;
+        line-height: 35px;
+        position: relative;
+    }
+
+    .menuNav li .sub-nav li a {
+        height: 34px;
+        line-height: 34px;
+        width: 138px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    @media (max-width: 678px) {
+        .menuNav {
+            display: block;
+        }
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        $(".menuNav>li").hover(function() {
+            $(this).children('ul').stop(true, true).show(300);
+        }, function() {
+            $(this).children('ul').stop(true, true).hide(300);
+        })
+    })
+    </script>
+            <ul class="menuNav">
+                <li><a href="#">菜<br/>单</a>
+                    <ul class="sub-nav">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/categories">分类</a></li>
+                        <li><a href="/tags">标签</a></li>
+                        <li><a href="/archives">归档</a></li>
+                        <li><a href="/about">关于</a></li>
+                        <li><a href="/works">项目</a></li>
+                        <li><a href="/mysite">导航</a></li>
+                    </ul>
+                </li>
+            </ul>
+</header>
+
+<body>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#toc').toc();
+    });
+    </script>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">113</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">10</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">454</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a target="_blank" href="/feed.xml"><i class="fas fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">博客导航</div>
+                        <ul>
+                            <li onclick="pushNew('/')"><a><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li onclick="pushNew('/categories')"><a><i class="fas fa-th fa-fw"></i>分类</a>
+                                <span class="articleCount">10
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
+                                <span class="articleCount">454
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
+                                <span class="articleCount">113
+                                        </span>
+                            </li>
+                            <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li onclick="pushNew('/links')"><a><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li onclick="pushNew('/login')"><a><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
+                                <span class="articleCount">※
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/mysite')"><a><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li onclick="pushNew('/works')"><a><i class="fab fa-git-square fa-fw"></i>项目</a>
+                                <span class="articleCount">3
+                                </span>
+                            </li>
+                            <li id="cb-search-btn-two"><a><i class="fas fa-search fa-fw"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">文章分类</div>
+                        <ul>
+                            
+                            <li onclick="pushNew('/categories#个人博客')" class="categoryList">
+                                <a name="个人博客" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">个人博客</a>
+                                <a name="个人博客" style="font-size:13px;color: white" class="articleCount">8
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Linux')" class="categoryList">
+                                <a name="Linux" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">Linux</a>
+                                <a name="Linux" style="font-size:13px;color: white" class="articleCount">1
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#web前端')" class="categoryList">
+                                <a name="web前端" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">web前端</a>
+                                <a name="web前端" style="font-size:13px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#其他')" class="categoryList">
+                                <a name="其他" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">其他</a>
+                                <a name="其他" style="font-size:13px;color: white" class="articleCount">11
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#iOS')" class="categoryList">
+                                <a name="iOS" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">iOS</a>
+                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">35
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#程序人生')" class="categoryList">
+                                <a name="程序人生" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">程序人生</a>
+                                <a name="程序人生" style="font-size:13px;color: white" class="articleCount">19
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Software MAC')" class="categoryList">
+                                <a name="Software MAC" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">Software MAC</a>
+                                <a name="Software MAC" style="font-size:13px;color: white" class="articleCount">11
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#架构和算法')" class="categoryList">
+                                <a name="架构和算法" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">架构和算法</a>
+                                <a name="架构和算法" style="font-size:13px;color: white" class="articleCount">8
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Git')" class="categoryList">
+                                <a name="Git" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">Git</a>
+                                <a name="Git" style="font-size:13px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#微信小程序')" class="categoryList">
+                                <a name="微信小程序" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">微信小程序</a>
+                                <a name="微信小程序" style="font-size:13px;color: white" class="articleCount">10
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="contactNav">
+                        <div class="contactNavTitle">个人档案</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.jpg" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <span class="contact-name">33964471</span>
+                            </a>
+                            <a class="contact-item" href="/" target="_blank">
+                                <img src="/assets/img/social/gmailLogo.png">
+                                <span class="contact-name">gorpeln*163.com(*=>@)</span>
+                            </a>
+                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">gorpeln.blog.csdn.net</span>
+                            </a>
+                            <a class="contact-item" href="/about" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="contact-name">更多...</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlinkNav" id="friendlinkNav">
+                        <div class="friendlinkNavTitle">友情链接</div>
+                        <div class="friend-container">
+                            
+                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                <img src="/assets/img/blogwe.ico">
+                                <span class="friend-name">博客大全</span>
+                            </a>
+                            
+                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                <img src="/assets/img/foreverblog.ico">
+                                <span class="friend-name">十年之约</span>
+                            </a>
+                            
+                            <a class="friend-item" href="/links" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="friend-name">更多...</span>
+                            </a>
+                            
+                        </div>
+                    </div>
+                    <!-- <div id="toc" class="navbar navbar-default customCatalog"></div> -->
+                    <div id="toc" class="customCatalog"></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2" onclick="hiddenQRCode()">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">iOS内存泄漏动态分析：leaks的使用</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2020-02-02</p>
+	    
+    </div>
+  </header>
+
+  <article class="post-content">
+    <p>​</p>
+
+<p>1.堆和栈的区别?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>OC语言是C语言的超集。C语言的内存模型分为5个区：栈区、堆区、静态区、常量区、代码区。每个区存储的内容如下：
+
+1、堆区：就是通过new、malloc、realloc分配的内存块，编译器不会负责它们的释放工作，需要用程序区释放。分配方式类似于数据结构中的链表。在iOS开发中所说的“内存泄漏”说的就是堆区的内存。
+
+2、栈区：存放函数的参数值、局部变量等，由编译器自动分配和释放，通常在函数执行完后就释放了，其操作方式类似于数据结构中的栈。栈内存分配运算内置于CPU的指令集，效率很高，但是分配的内存量有限，比如iOS中栈区的大小是2M。
+
+3、静态区：全局变量和静态变量（在iOS中就是用static修饰的局部变量或者是全局全局变量）的存储是放在一块的，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。程序结束后，由系统释放。
+4、常量区：常量存储在这里，不允许修改。
+5、代码区：存放函数体的二进制代码。
+
+堆和栈的区别：
+
+1.1、堆空间的内存是动态分配的(一般程序员分配释放)，一般存放对象，并且需要手动释放内存。当然了,iOS引入了ARC（自动引用计数）之后，就不就不需要用代码管理对象的内存了。
+
+1.2、栈空间的内存是由系统自动分配，一般存放局部变量。比如对象的地址等值，不需要程序员对这块内存进行管理，比如，函数中的局部变量的作用范围（生命周期）就是在调完这个函数之后就结束了。
+
+2、堆空间比较大,栈空间比较小。
+3、堆空间一般存放对象本身，block的copy等。栈空间中一般存储基本数据类型，对象的地址。
+4、堆（数据结构）：堆可以被看成是一棵树，如：堆排序。栈（数据结构）：一种先进后出的数据结构。
+</code></pre></div></div>
+
+<p>2.什么是程序、进程、线程？ 说一下进程和线程的关系以及区别?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.1 程序(Application)：
+由源代码生成的可执行应用。（例如:QQ 微信）
+
+1.2 进程：
+进程: 是指在操作系统(OS)中正在运行的一个应用程序(一般一个App就一个进程)。程序并不能单独运行，只有将程序装载到内存中，系统为它分配资源才能运行。
+所以一个正在运行的程序可以看做一个进程。（例如: 正在运行的QQ就是一个进程）
+
+1.3 线程：
+线程: 程序(进程)中独立运行的代码段。（例如: 接收QQ消息的代码）
+线程是进程的基本执行单元,一个进程的所有任务(操作)都是在线程中执行
+进程要想执行任务,必须至少有一条线程(程序启动会默认开始一条线程,这条线程被称为主线程(UI线程))
+
+大概说一下:
+每个进程之间是独立的,每个进程都运行在其专用的且受保护的内存中(每个进程拥有独立运行所需的全部资源)。
+一个程序至少包含一个进程(一般一个App就一个进程)，一个进程至少包含一个线程,一个进程中的所有线程共享当前进程所拥有的资源。
+进程有独立的地址空间，一个进程崩溃后，在保护模式的影响下不会对其他进程产生影响。而线程只是一个进程中的不同执行路径，线程有自己的堆栈和局部变量，线程之间没有单独的地址空间。
+
+
+进程与线程的区别:
+1.同一进程内的线程共享本进程的资源(如内存,I/O,CPU等),但进程之间的资源是独立的。
+2.一个进程崩溃后,在保护模式下不会对其他进程产生影响,但是一个线程崩溃整个进程都死掉。所以多进程要比多线程健壮。
+3.进程切换时,消耗的资源大,效率低。所以频繁的切换时,使用线程要高于进程。
+4.每个进程都有一个运行的入口,顺序执行。但是线程不能独立执行,必须依存在进程中,由应用程序提供多个线程操作。
+5.线程是处理器调度(执行任务)的基本单元,但是进程不是。
+</code></pre></div></div>
+
+<p>3.进程的状态有哪些？</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.新建
+2.就绪 : 线程对象加入线程池中等待 CPU 调度
+3.运行 : CPU负责调度线程中线程的执行, 线程执行完成前, 状态可能在就绪和运行之间来回切换
+4.阻塞 : 满足某个预定条件, 使用休眠或锁, 阻塞线程执行
+5.死亡 : 线程执行完毕, 或者内部中止执行线程对象
+</code></pre></div></div>
+
+<p>4.什么是线程安全？分别有哪些锁？</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>线程安全: 多个线程同时访问一块资源, 容易引发数据错乱和数据安全。
+
+1.互斥锁(加锁): 新线程访问时, 发现其他线程正在执行锁定的代码, 新线程会进入休眠
+   1.1 NSLock
+   1.2 pthread_mutex
+   1.3 @synchronized
+2.自旋锁: 忙等的锁, 新线程会用死循环的方式, 一直等待锁定的代码执行完成, 数据量少的时候用
+3.条件锁: 不满足就休眠, 资源分配到了, 条件锁打开, 进程继续运行, 例如：NSConditionLock
+4.读写锁: 用于解决多线程对公共资源读写问题。 读操作可以并发重入, 写操作是互斥的
+5.信号量: 
+</code></pre></div></div>
+
+<p>5.iOS开启多线程的方法有哪些？</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.pthread  2.NSThread  3.GCD  4.NSOperation
+</code></pre></div></div>
+
+<p>6.简单的说一下NSThread的使用 具体使用详情</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.NSThread是基于Objective-C的,更加面向对象。
+2.它可以通过三种方法开启子线程,分别是: initWithTarget:  detachNewThreadSelector:(detachNewThreadWithBlock: 至少iOS10系统) 和 performSelectorInBackground: 。 其中 initWithTarget: 需要调用 start() 方法才能开启子线程。
+3.NSThread可以通过类方法 currentThread() 获取当前线程,通过类方法 mainThread()获得主线程，还可以退出线程(exit)和睡眠线程(sleepForTimeInterval)。
+4.在实际开发中一般很少用其开始子线程,常用的也就[NSThread currentThread];(获取当前线程)和[NSThread sleepForTimeInterval:3.0];(睡眠线程)
+</code></pre></div></div>
+
+<p>7.简单的说一下GCD的使用 具体使用详情</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.GCD是基于C语言的,更加偏向于底层。
+2.使用GCD就两个步骤:
+   2.1 创建一个队列（串行队列或并发队列）
+   2.2 将任务追加到队列中，系统就会根据任务类型执行任务（同步执行或异步执行）
+3.队列的创建和获取
+   3.1 队列可以通过 dispatch_queue_create 来创建，通过设置第二个参数用来识别是串行队列还是并发队列(串行队列: DISPATCH_QUEUE_SERIAL; 并发队列: DISPATCH_QUEUE_CONCURRENT),
+   3.2 队列也可以通过 dispatch_get_global_queue 获取全局的并发队列 和 dispatch_get_main_queue 获取特殊的串行队列(主队列)。
+4.任务都是放在Block中执行的，执行任务分为同步和异步,同步是:dispatch_sync(queue, ^{}); 异步是:dispatch_async(queue, ^{});异步(async)具备开启子线程的能力，但是在主队列中不会开启子线程。同步(sync)不具备开启子线程的能力，在主队列中会造成死锁(线程相互等待)
+5.组合使用情况如下： 
+   5.1 同步(sync)  + 并发队列 (没有开启子线程,串行执行任务,在主线程)
+   5.2 同步(sync)  + 串行队列 (没有开启子线程,串行执行任务,在主线程)
+   5.3 同步(sync)  + 主线程   (造成死锁,主线程和同步任务相互等待)
+   5.4 异步(async) + 并发队列 (有开启子线程 ,并发执行任务,在子线程)
+   5.5 异步(async) + 串行队列 (只开启一条子线程,串行执行任务)
+   5.6 异步(async) + 主线程   (没有开启子线程,串行执行任务,在主线程)
+6.GCD的其他函数(方法)的使用
+   6.1 栅栏函数：dispatch_barrier_sync (同步) 和 dispatch_barrier_async (异步)
+   6.2 延时执行函数：dispatch_after  一定是将任务追加到主队列中(主线程)
+   6.3 一次性函数：dispatch_once
+   6.4 队列组函数： dispatch_group_async  通过: dispatch_group_notify 监听
+   6.5 暂停当前线程函数: dispatch_group_wait
+</code></pre></div></div>
+
+<p>8.简单的说一下NSOperation的使用 具体使用详情</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.NSOperation是基于GCD更高一层的封装，完全面向对象。
+2.NSOperation的使用三个步骤: 
+   2.1 创建操作：先将需要执行的操作封装到 NSOperation 的子类中。
+   2.2 创建队列：创建 NSOperationQueue 对象。
+   2.3 将操作加入到队列中：将 NSOperation 子类添加到 NSOperationQueue(队列) 对象中。
+3.创建操作。在不使用NSOperationQueue的情况下，单独使用 NSOperation 的子类封装操作, 不会开启子线程(同步执行操作)。
+   3.1 NSOperation的子类有 NSInvocationOperation  NSBlockOperation 和自定义继承自NSOperation(通过实现方法(main)来封装操作)。
+4.创建队列。NSOperationQueue 一共有两种队列：主队列、自定义队列。其中自定义队列同时包含了串行、并发功能。
+   4.1 通过 [NSOperationQueue mainQueue]; 获取主队列
+   4.2 通过 [[NSOperationQueue alloc] init]; 创建自定义队列（非主队列,包含了串行、并发功能）。
+5.将操作加入到队列中。NSOperation 需要配合 NSOperationQueue 来实现多线程，我们需要将创建好的操作加入到队列中去。总共有两种方法：
+   5.1 通过 addOperation: 添加操作到队列中 [queueObj addOperation:operationObj];
+   5.2 通过 addOperationWithBlock: 直接创建操作 [queueObj addOperationWithBlock:^{}];
+6.NSOperationQueue 创建的自定义队列同时具有串行、并发功能。通过设置属性 maxConcurrentOperationCount (最大并发操作数) 的个数 决定队列类型，默认情况下为 -1，表示不进行限制，可进行并发执行；为 1 时，队列为串行队列。只能串行执行；大于 1 时，队列为并发队列。
+7.NSOperation其他操作
+  7.1 操作之间添加依赖 addDependency:
+  7.2 操作完成时回调  completionBlock = ^{};
+  7.3 取消队列的所有操作 cancelAllOperations
+  7.4 判断队列是否处于暂停状态  isSuspended
+  7.5 向队列中添加操作数组 addOperations
+  7.6 可取消操作 cancel (实质是标记 isCancelled 状态)
+  7.7 判断操作状态 isFinished(操作是否已经完成)  isCancelled(操作是否已经取消) isExecuting(操作是否正在运行)  isReady(操作是否处于准备就绪状态)
+</code></pre></div></div>
+
+<p>9.NSThread GCD 和 NSOperation 之间的优缺点</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.NSThread
+   优点：比其他两种更加轻量级,使用简单。
+   缺点：线程之间的通信比较麻烦(最大缺点)。需要自己管理线程的生命周期([thread cancel];取消子线程)、线程同步、加锁、睡眠以及唤醒等。
+
+2.GCD 
+   优点：性能最高效(更接近底层)。不需要管理线程的生命周期，数据同步的事情。
+   缺点: 基于C语言实现，不好理解。添加异步操作之间的事务性，顺序性和依赖关系 需要写更多的代码来实现。
+     
+3.Operation:
+   优点：是对GCD的封装，更加面向对象。也是不需要管理线程的生命周期，数据同步的事情。
+        可以使用自定义继承 NSOperation 的类,重写 main 方法,在其里面添加操作(任务)。
+        可以更好的添加操作之间依赖和查看操作的状态，还可以设置操作的优先级和更好的取消正在执行中的操作。
+   缺点：开启操作一般需要用到 NSOperation的两个子类 NSInvocationOperation 和 NSBlockOperation
+        开启的操作需要添加到 NSOperationQueue 中才开启子线程。
+</code></pre></div></div>
+
+<p>10.iOS 代码加锁的几种方式</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.@synchronized(self)
+2.NSConditionLock
+3.NSCondition
+4.NSLock
+5.dispatch_semaphore_t (GCD中的函数)
+6.OSSpinLock
+
+这几种锁都可以带来原子性,性能的损耗从上至下依次更小。
+</code></pre></div></div>
+<p>1、使用 @synchronized(self) 给代码加锁</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@interface ViewController ()
+
+@property (nonatomic,assign) NSInteger ticketNumber;
+
+@end
+  
+#pragma mark -使用GCD创建线程
+-(void)startGCDAction{
+    
+    self.ticketNumber=50;  // 50张票
+    
+    // 1.创建并发队列
+    dispatch_queue_t queueObj=dispatch_queue_create("nameValue",DISPATCH_QUEUE_CONCURRENT);
+    
+    // 2.开启多条异步线程
+    for (NSInteger i=1; i&lt;=5; i++) {
+        dispatch_async(queueObj, ^{
+            NSLog(@"做任务(%zi),当前线程:%@",i,[NSThread currentThread]);
+            [self startSaleTicket]; // 开始卖票
+        });
+    }
+}
+
+// 通过@synchronized()加锁
+-(void)startSaleTicket{
+    do {
+        [NSThread sleepForTimeInterval:0.3];
+        // 下面是加锁的代码内容
+        @synchronized (self) {
+            if (self.ticketNumber&lt;=0) break;
+            NSLog(@"余票是: %zi 当前线程是: %@",self.ticketNumber,[NSThread currentThread]);
+            self.ticketNumber-=1;
+        }
+        
+    }
+    while (self.ticketNumber);
+}
+
+最终运行结果:
+
+2019-08-12 14:15:58.189393+0800 TestModel[87804:13566450] 做任务(2),当前线程:&lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:15:58.189548+0800 TestModel[87804:13566452] 做任务(1),当前线程:&lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:15:58.189868+0800 TestModel[87804:13566451] 做任务(3),当前线程:&lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:15:58.189917+0800 TestModel[87804:13566453] 做任务(4),当前线程:&lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:15:58.190395+0800 TestModel[87804:13566459] 做任务(5),当前线程:&lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:15:58.490183+0800 TestModel[87804:13566450] 余票是: 50 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:15:58.490588+0800 TestModel[87804:13566452] 余票是: 49 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:15:58.495170+0800 TestModel[87804:13566451] 余票是: 48 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:15:58.495440+0800 TestModel[87804:13566453] 余票是: 47 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:15:58.495664+0800 TestModel[87804:13566459] 余票是: 46 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:15:58.795679+0800 TestModel[87804:13566450] 余票是: 45 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:15:58.796089+0800 TestModel[87804:13566452] 余票是: 44 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:15:58.800381+0800 TestModel[87804:13566451] 余票是: 43 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:15:58.800643+0800 TestModel[87804:13566453] 余票是: 42 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:15:58.801037+0800 TestModel[87804:13566459] 余票是: 41 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:15:59.097379+0800 TestModel[87804:13566450] 余票是: 40 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:15:59.098778+0800 TestModel[87804:13566452] 余票是: 39 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:15:59.104982+0800 TestModel[87804:13566451] 余票是: 38 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:15:59.105416+0800 TestModel[87804:13566453] 余票是: 37 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:15:59.105727+0800 TestModel[87804:13566459] 余票是: 36 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:15:59.401558+0800 TestModel[87804:13566450] 余票是: 35 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:15:59.404078+0800 TestModel[87804:13566452] 余票是: 34 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:15:59.406779+0800 TestModel[87804:13566451] 余票是: 33 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:15:59.407160+0800 TestModel[87804:13566453] 余票是: 32 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:15:59.407764+0800 TestModel[87804:13566459] 余票是: 31 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:15:59.706818+0800 TestModel[87804:13566450] 余票是: 30 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:15:59.707735+0800 TestModel[87804:13566451] 余票是: 29 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:15:59.709405+0800 TestModel[87804:13566452] 余票是: 28 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:15:59.712616+0800 TestModel[87804:13566453] 余票是: 27 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:15:59.713001+0800 TestModel[87804:13566459] 余票是: 26 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:16:00.016941+0800 TestModel[87804:13566450] 余票是: 25 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:16:00.017259+0800 TestModel[87804:13566451] 余票是: 24 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:16:00.017491+0800 TestModel[87804:13566452] 余票是: 23 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:16:00.018511+0800 TestModel[87804:13566453] 余票是: 22 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:16:00.018640+0800 TestModel[87804:13566459] 余票是: 21 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:16:00.317675+0800 TestModel[87804:13566450] 余票是: 20 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:16:00.318162+0800 TestModel[87804:13566451] 余票是: 19 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:16:00.322806+0800 TestModel[87804:13566452] 余票是: 18 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:16:00.323192+0800 TestModel[87804:13566453] 余票是: 17 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:16:00.323446+0800 TestModel[87804:13566459] 余票是: 16 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:16:00.623299+0800 TestModel[87804:13566450] 余票是: 15 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:16:00.623643+0800 TestModel[87804:13566451] 余票是: 14 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:16:00.628154+0800 TestModel[87804:13566452] 余票是: 13 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:16:00.628523+0800 TestModel[87804:13566453] 余票是: 12 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:16:00.628825+0800 TestModel[87804:13566459] 余票是: 11 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:16:00.928590+0800 TestModel[87804:13566450] 余票是: 10 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:16:00.928799+0800 TestModel[87804:13566451] 余票是: 9 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:16:00.933344+0800 TestModel[87804:13566452] 余票是: 8 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:16:00.933492+0800 TestModel[87804:13566459] 余票是: 7 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+2019-08-12 14:16:00.933836+0800 TestModel[87804:13566453] 余票是: 6 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:16:01.231961+0800 TestModel[87804:13566450] 余票是: 5 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
+2019-08-12 14:16:01.232049+0800 TestModel[87804:13566451] 余票是: 4 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
+2019-08-12 14:16:01.233846+0800 TestModel[87804:13566452] 余票是: 3 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
+2019-08-12 14:16:01.234564+0800 TestModel[87804:13566453] 余票是: 2 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
+2019-08-12 14:16:01.238114+0800 TestModel[87804:13566459] 余票是: 1 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
+</code></pre></div></div>
+<p>2、使用 NSLock 给代码加锁</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@interface ViewController ()
+
+@property (nonatomic,strong) NSLock *addLock;
+
+@end
+
+-(NSLock *)addLock{
+    if (_addLock == nil ) {
+        _addLock = [[NSLock alloc]init];
+    }
+    return _addLock;
+}
+ 
+#pragma mark -使用GCD创建线程
+-(void)startGCDAction{
+    
+    self.ticketNumber=50;  // 50张票
+    
+    // 1.创建并发队列
+    dispatch_queue_t queueObj=dispatch_queue_create("nameValue",DISPATCH_QUEUE_CONCURRENT);
+    
+    // 2.开启多条异步线程
+    for (NSInteger i=1; i&lt;=5; i++) {
+        dispatch_async(queueObj, ^{
+            NSLog(@"做任务(%zi),当前线程:%@",i,[NSThread currentThread]);
+            [self startSaleTicket]; // 开始卖票
+        });
+    }
+}
+
+// 通过 NSLock 加锁
+-(void)startSaleTicket{
+
+    do {
+        
+        [NSThread sleepForTimeInterval:0.3];
+        
+        [self.addLock lock];   // 加锁
+        if (self.ticketNumber&lt;=0) break;
+        NSLog(@"余票是: %zi 当前线程是: %@",self.ticketNumber,[NSThread currentThread]);
+        self.ticketNumber-=1;
+        [self.addLock unlock]; // 解锁
+    }
+    while (self.ticketNumber);
+
+}
+
+最终运行结果:
+
+2019-08-12 14:31:28.968327+0800 TestModel[87809:13567989] 做任务(2),当前线程:&lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:28.968620+0800 TestModel[87809:13567988] 做任务(1),当前线程:&lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:28.969657+0800 TestModel[87809:13567986] 做任务(3),当前线程:&lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:28.969713+0800 TestModel[87809:13567987] 做任务(4),当前线程:&lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:28.970159+0800 TestModel[87809:13567992] 做任务(5),当前线程:&lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:29.273489+0800 TestModel[87809:13567989] 余票是: 50 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:29.273594+0800 TestModel[87809:13567988] 余票是: 49 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:29.273889+0800 TestModel[87809:13567992] 余票是: 48 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:29.273965+0800 TestModel[87809:13567987] 余票是: 47 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:29.274026+0800 TestModel[87809:13567986] 余票是: 46 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:29.577287+0800 TestModel[87809:13567989] 余票是: 45 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:29.577437+0800 TestModel[87809:13567988] 余票是: 44 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:29.577606+0800 TestModel[87809:13567992] 余票是: 43 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:29.577718+0800 TestModel[87809:13567987] 余票是: 42 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:29.577993+0800 TestModel[87809:13567986] 余票是: 41 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:29.882881+0800 TestModel[87809:13567989] 余票是: 40 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:29.883291+0800 TestModel[87809:13567988] 余票是: 39 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:29.883545+0800 TestModel[87809:13567987] 余票是: 38 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:29.883949+0800 TestModel[87809:13567986] 余票是: 37 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:29.884300+0800 TestModel[87809:13567992] 余票是: 36 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:30.188301+0800 TestModel[87809:13567989] 余票是: 35 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:30.188728+0800 TestModel[87809:13567988] 余票是: 34 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:30.189026+0800 TestModel[87809:13567987] 余票是: 33 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:30.189603+0800 TestModel[87809:13567986] 余票是: 32 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:30.190006+0800 TestModel[87809:13567992] 余票是: 31 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:30.489850+0800 TestModel[87809:13567988] 余票是: 30 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:30.490175+0800 TestModel[87809:13567987] 余票是: 29 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:30.493747+0800 TestModel[87809:13567989] 余票是: 28 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:30.494048+0800 TestModel[87809:13567986] 余票是: 27 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:30.494877+0800 TestModel[87809:13567992] 余票是: 26 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:30.795292+0800 TestModel[87809:13567988] 余票是: 25 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:30.795687+0800 TestModel[87809:13567987] 余票是: 24 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:30.795958+0800 TestModel[87809:13567989] 余票是: 23 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:30.796489+0800 TestModel[87809:13567986] 余票是: 22 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:30.800184+0800 TestModel[87809:13567992] 余票是: 21 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:31.099967+0800 TestModel[87809:13567986] 余票是: 20 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:31.100050+0800 TestModel[87809:13567988] 余票是: 19 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:31.100090+0800 TestModel[87809:13567987] 余票是: 18 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:31.100198+0800 TestModel[87809:13567989] 余票是: 17 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:31.102069+0800 TestModel[87809:13567992] 余票是: 16 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:31.405114+0800 TestModel[87809:13567986] 余票是: 15 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:31.405197+0800 TestModel[87809:13567988] 余票是: 14 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:31.405238+0800 TestModel[87809:13567987] 余票是: 13 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:31.405293+0800 TestModel[87809:13567989] 余票是: 12 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:31.407180+0800 TestModel[87809:13567992] 余票是: 11 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:31.705607+0800 TestModel[87809:13567986] 余票是: 10 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:31.705747+0800 TestModel[87809:13567988] 余票是: 9 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:31.705857+0800 TestModel[87809:13567987] 余票是: 8 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:31.705953+0800 TestModel[87809:13567989] 余票是: 7 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:31.707719+0800 TestModel[87809:13567992] 余票是: 6 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+2019-08-12 14:31:32.007136+0800 TestModel[87809:13567986] 余票是: 5 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
+2019-08-12 14:31:32.007306+0800 TestModel[87809:13567988] 余票是: 4 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
+2019-08-12 14:31:32.007378+0800 TestModel[87809:13567987] 余票是: 3 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
+2019-08-12 14:31:32.007499+0800 TestModel[87809:13567989] 余票是: 2 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
+2019-08-12 14:31:32.012931+0800 TestModel[87809:13567992] 余票是: 1 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
+</code></pre></div></div>
+
+<p>11.说一下你对Runtime的认识 具体认识</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>题外话：计算机唯一能识别的语言是机器语言，高级编程语言不能被直接识别，需要先编译为汇编语言，再由汇编语言编译为机器语言才能被计算机识别。而 Objective-C语言不能被直接编译为汇编语言，它必须先编译为C语言，然后再编译为汇编语言，最后再由汇编语言编译为机器语言才能被计算机识别。 从OC到C语言的过渡就是由runtime来实现的。我们使用OC进行面向对象开发，但是C语言更多的是面向过程开发，这就需要将面向对象的类转变为面向过程的结构体。
+
+1.Runtime 是iOS中的一个运行时系统，是苹果用C语言和汇编语言编写的一套底层纯C语言API。
+2.Runtime正是 Objective-C这门动态语言的核心(数据类型的确定由编译时推迟到运行时)。从OC到C语言的过渡就是由Runtime来实现的。
+3.OC代码最终都会被编译器转化为运行时代码，通过消息机制决定函数调用方式(objc_msgSend)。
+4.OC类、对象和方法等都会被Runtime转化成C语言中的结构体。
+5.在Runtime中，id 是一个指向 objc_object 结构体的指针；class 是一个指向 objc_class 结构体的指针
+6.SEL 是一个指向 objc_selector 结构体的指针； Ivar 是一个指向 objc_ivar 的结构体的指针
+7.Method 是一个指向 objc_method 的结构体的指针；IMP 是一个函数指针
+</code></pre></div></div>
+
+<p>12.说一下Runtime的使用情景 具体使用</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.动态方法交换  (method_exchangeImplementations)
+2.给分类添加属性 (objc_setAssociatedObject 和 objc_getAssociatedObject)
+3.获取类的详细信息
+   3.1 属性列表(class_copyPropertyList)
+   3.2 获取成员变量(class_copyIvarList)
+   3.3 获取所有方法(class_copyMethodList)
+   3.4 获取当前遵循的所有协议(class_copyProtocolList)
+4.解决同一方法高频率调用的效率问题
+5.方法动态解析与消息转发
+   5.1 动态添加方法
+   5.2 解决方法无响应崩溃问题
+6.动态操作属性
+  6.1 动态修改属性变量
+  6.2 实现 NSCoding 的自动归档和解档
+  6.3 实现字典与模型的转换
+</code></pre></div></div>
+
+
+  </article>
+
+</div>
+
+  <div class="copyright">
+  	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
+	<div>本文链接：<a href="https://gorpeln.com/article/7">https://gorpeln.com/article/7</a></div>
+</div>
+
+  <div class="prevandnext">
+    	  
+	    <div>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/8" title="iOS内存泄漏动态分析：leaks的使用" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS内存泄漏动态分析：leaks的使用</a>
+	    </div>
+	  
+  	  
+	    <div>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/6" title="iOS内存泄漏动态分析：leaks的使用" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS内存泄漏动态分析：leaks的使用</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'gorpeln',
+        admin: ['gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script>  -->
+
+<head>
+    <script type="text/javascript" src="/assets/js/Valine.min.js"></script>
+</head>
+<style>
+#veditor {
+    background-image: url(https://cdn.jsdelivr.net/gh/drew233/cdn/20200409110727.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: vertical
+}
+
+.v .vwrap {
+    border: 1px solid #37374b !important;
+}
+</style>
+
+<body>
+    <div id="vcomments"></div>
+    <script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'Jc31cFDJbalRKtcpsQ9kpnaH-gzGzoHsz',
+        appKey: '6MfHpQqh9MFU43xg4bwjGAJu',
+        placeholder: '无需注册，支持Markdown语法，填写邮箱可以收到回复通知。',
+        avatar: 'monsterid',
+        pageSize: '10',
+        lang: 'zh-cn',
+        recordIP: 'true',
+        serverURLs: '',
+        enableQQ: true,
+        visitor: true,
+        requiredFields: ['nick', 'mail']
+    })
+
+    document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
+    document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
+    </script>
+</body>
+  </div>
+
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+        <div class="qrcode" id="qrcodeBtn" onclick="createQrcode('/article/7')"></div>
+        <div class="qrcodeImg" id="qrcode"></div>
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2020 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+    </div>
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 动态显示网站运行时间 -->
+<script language=javascript>
+function siteTime() {
+    window.setTimeout("siteTime()", 1000);
+    var seconds = 1000
+    var minutes = seconds * 60
+    var hours = minutes * 60
+    var days = hours * 24
+    var years = days * 365
+    var today = new Date()
+    var todayYear = today.getFullYear()
+    var todayMonth = today.getMonth() + 1
+    var todayDate = today.getDate()
+    var todayHour = today.getHours()
+    var todayMinute = today.getMinutes()
+    var todaySecond = today.getSeconds()
+    /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+    year - 作为date对象的年份，为4位年份值
+    month - 0-11之间的整数，做为date对象的月份 0为1月
+    day - 1-31之间的整数，做为date对象的天数
+    hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+    minutes - 0-59之间的整数，做为date对象的分钟数
+    seconds - 0-59之间的整数，做为date对象的秒数
+    microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+    var t1 = Date.UTC(2015, 8, 23, 0, 0, 0)
+    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond)
+    var diff = t2 - t1
+    var diffYears = Math.floor(diff / years)
+    var diffDays = Math.floor((diff / days) - diffYears * 365)
+    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours)
+    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes)
+    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds)
+    document.getElementById("htmer_time").innerHTML = " 本站已安全运行：" + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 时 " + diffMinutes + " 分 " + diffSeconds + " 秒";
+    console.log(todayMonth);
+
+}
+siteTime();
+</script>
+
+<script language=JavaScript>
+
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
+
+function out(obj) {
+
+}
+</script>
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+<style>
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
+</style>
+</body>
+<script>
+function pushNew(path) {
+    if (path == '/') {
+        window.location.href = path;
+    } else {
+        window.open(path);
+    }
+}
+</script>
+<script type="text/javascript">
+function menuFixed(id, otherId) {
+    var obj = document.getElementById(id);
+    var _getHeight = obj.offsetTop;
+
+    window.onscroll = function() {
+        changePos(id, _getHeight, otherId);
+    }
+}
+
+function changePos(id, height, otherId) {
+    var obj = document.getElementById(id);
+    var friendlinkObj = document.getElementById(otherId);
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop < height) {
+        obj.style.position = 'relative';
+        obj.style.width = friendlinkObj.offsetWidth + 'px';
+    } else {
+        obj.style.position = 'fixed';
+        obj.style.width = friendlinkObj.offsetWidth + 'px';
+    }
+}
+window.onload = function() {
+    menuFixed('toc', 'friendlinkNav');
+}
+</script>
+<script type="text/javascript" src="/assets/js/qrcode.js"></script>
+<script>
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+    width : 180,
+    height : 180
+});
+
+
+function createQrcode(url) {
+    console.log('生成我二维码' + url);
+
+        qrcode.makeCode('https://gorpeln.com' + url);
+
+    var qrcodeImg = document.getElementById('qrcode');
+    if (qrcodeImg.style.display == 'block') {
+        qrcodeImg.style.display = 'none';
+        qrcode.clear();
+    } else {
+        qrcodeImg.style.display = 'block';
+    }
+
+
+}
+
+function hiddenQRCode() {
+    var qrcodeImg = document.getElementById('qrcode');
+    if (qrcodeImg.style.display == 'block') {
+        qrcodeImg.style.display = 'none';
+        qrcode.clear();
+    }
+}
+</script>
+<style>
+.articleCount {
+    color: #ffffff;
+    background: #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    width: 32px;
+    text-align: center;
+    line-height: 1.5em;
+    height: 1.5em;
+    margin-left: 10px;
+}
+
+.customCatalog {
+    display: block;
+    margin-top: 1em;
+    background: #fff;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    width: 100%;
+    padding-bottom: 7.5%;
+    padding: 1em;
+    position: relative;
+    top: 0;
+    overflow-y: scroll;
+    max-height: calc(100% - 2em);
+}
+
+.element::-webkit-scrollbar {
+    width: 0 !important
+}
+
+.element {
+    -ms-overflow-style: none;
+}
+
+.element {
+    overflow: -moz-scrollbars-none;
+}
+.categoryList{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+
+</html>

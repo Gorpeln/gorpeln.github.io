@@ -157,7 +157,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">107</span>
+                                    <span class="site-state-item-count">113</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -169,7 +169,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">443</span>
+                                    <span class="site-state-item-count">454</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -186,11 +186,11 @@
                                 </span>
                             </li>
                             <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
-                                <span class="articleCount">443
+                                <span class="articleCount">454
                                 </span>
                             </li>
                             <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
-                                <span class="articleCount">107
+                                <span class="articleCount">113
                                         </span>
                             </li>
                             <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
@@ -231,13 +231,13 @@
                             
                             <li onclick="pushNew('/categories#其他')" class="categoryList">
                                 <a name="其他" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">其他</a>
-                                <a name="其他" style="font-size:13px;color: white" class="articleCount">6
+                                <a name="其他" style="font-size:13px;color: white" class="articleCount">11
                                 </a>
                             </li>
                             
                             <li onclick="pushNew('/categories#iOS')" class="categoryList">
                                 <a name="iOS" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">iOS</a>
-                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">34
+                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">35
                                 </a>
                             </li>
                             
@@ -376,11 +376,17 @@ bounds 指的是：该view在本身坐标系统中的位置(X,Y)和(W,H)大小�
 3.内存管理语义: assign、weak、strong 和 copy
 4.方法名:getter=&lt;name&gt; 和 setter=&lt;name&gt;
 5.不常用的：nonnull,null_resettable,nullable
-
+  
 各个属性关键字的作用:
-1.nonatomic: 非原子操作,编译器生成的setter和getter方法都不会加锁,禁止多线程，提高性能。atomic: 原子操作,自动加锁(创建lock),锁定变量,确保多线程安全。虽然系统默认是atomic, 但是实际开发中一般使用nonatomic，效率高。
-2.readwrite: 可读可写,会 getter方法 和 setter方法。readonly: 只读,只会生成getter方法，不会生成setter方法，不希望属性在类外改变。
-3.assign: 是赋值特性,用于基本数据类型(Bool Int Float Double Struct (结构体) )。weak：弱引用, 一般用于 delegate 和 block 等引用类型。strong: 强引用，对象不易释放掉。copy: 表示拷贝特性,setter方法将传入对象复制一份，生成不可变对象。
+1.nonatomic: 非原子操作,编译器生成的setter和getter方法都不会加锁,禁止多线程，提高性能。  
+atomic: 原子操作,自动加锁(创建lock),锁定变量,确保多线程安全。虽然系统默认是atomic, 但是实际开发中一般使用nonatomic，效率高。
+2.readwrite: 可读可写,会生成 getter方法 和 setter方法。默认关键字  readonly: 只读,只会生成getter方法，不会生成setter方法，不希望属性在类外改变。
+3.assign: 是赋值特性,用于基本数据类型，如果用来修饰对象属性 , 那么当对象被销毁后指针是不会指向 nil 的 . 所以会出现野指针错误 ( 与weak的区别 )默认关键字     
+weak：弱引用, 表明该属性定义了一种非拥有关系，在属性所指的对象销毁时，属性值自动清空（nil）。  
+strong: 强引用，setter方法将传入参数先保留，再赋值，传入retaincount会+1。  
+copy: 表示拷贝特性,setter方法将传入对象复制一份，生成不可变对象。
+setter=&lt;name&gt;和getter=&lt;name&gt;一般用在特殊的情境下,当需要定义一个 init 开头的属性，但默认生成的 setter 与 getter 方法也会以 init 开头，而编译器会把所有以 init 开头的方法当成初始化方法，而初始化方法只能返回 self 类型，因此编译器会报错。
+
 </code></pre></div></div>
 
 <p>6.weak 和 assign 有什么不同？什么情况下使用 weak 关键字？</p>
@@ -444,17 +450,46 @@ weak 表明该属性定义了一种“非拥有关系”。在属性所指的对
 如果是NSMutableArray类型的属性，最好用strong修饰，用copy修饰的话，返回的数组是不可变的，一旦对其进行增删改操作就会崩溃
 </code></pre></div></div>
 
-<p>12.如何让自己的类用 copy 修饰符？如何重写带 copy 关键字的 setter？</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>若想令自己所写的对象具有拷贝功能，则需实现 NSCopying 协议。如果自定义的对象分为可变版本与不可变版本，那么就要同时实现 NSCopying 与 NSMutableCopying 协议。
-具体步骤：
-
-    1.需声明该类遵从 NSCopying 协议
-    
-    2.实现 NSCopying 协议的方法。
-    // 该协议只有一个方法: 
+<p>12.如何让自己的类用 copy 修饰符？如何重写带 copy 关键字的 setter？<br />
+1）、让自己的类可以使用copy修饰符的步骤：</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a)、让自己的类遵循NSCopying协议
+b)、实现NSCopying协议中必须实现的代理方法：
     - (id)copyWithZone:(NSZone *)zone;
-  
-    // 注意：使用 copy 修饰符，调用的是copy方法，其实真正需要实现的是 “copyWithZone”方法。
+</code></pre></div></div>
+<p>示例代码：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import &lt;Foundation/Foundation.h&gt;
+
+@interface Person : NSObject &lt;NSCopying, NSMutableCopying&gt;
+
+@property (nonatomic, copy) NSString *name;
+
+@end
+
+
+#import "Person.h"
+
+@implementation Person
+
+- (id)copyWithZone:(NSZone *)zone {
+    Person *person = [Person allocWithZone:zone];
+    person.name = self.name;
+    return person;
+}
+
+- (id)mutableCopyWithZone:(NSZone *)zone {
+    Person *person = [Person allocWithZone:zone];
+    person.name = self.name;
+    return person;
+}
+
+@end
+</code></pre></div></div>
+<p>2）、如何重写带copy关键字的setter:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)setName:(NSString *)name {
+    _name = [name copy];
+}
 </code></pre></div></div>
 
 <p>13.@synthesize 和 @dynamic 分别有什么作用？</p>
@@ -477,6 +512,9 @@ weak 表明该属性定义了一种“非拥有关系”。在属性所指的对
 1.自动内存计数ARC：由Xcode自动在App编译阶段，在代码中添加内存管理代码。
 2.手动内存计数MRC：遵循内存谁申请、谁释放；谁添加，谁释放的原则。
 3.内存释放池Release Pool：把需要释放的内存统一放在一个池子中，当池子被抽干后(drain)，池子中所有的内存空间也被自动释放掉。内存池的释放操作分为自动和手动。自动释放受runloop机制影响。
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ARC下，系统会帮助我们释放该对象所包含的实例变量，但是有些对象还是需要们自己去释放的（比如Core Foundation框架下的一些对象），另外通知中观察者的移除，代理置空，停止timer等
 </code></pre></div></div>
 
 <p>17.Category（类别）、 Extension（扩展）和继承的区别</p>
@@ -528,6 +566,10 @@ Notification: 一对多的反向传值和通知，需要提前注册通知，只
 2.在block内部如果调用了延时函数还使用弱指针会取不到该指针，因为已经被销毁了，需要在block内部再将弱指针重新强引用一下。
     __strong typeof(self) strongSelf = weakSelf;
 3.如果需要在block内部改变外部栈区变量的话，需要在用 __block 修饰外部变量。
+没有通过__block修饰则是将值传进去，而通过__block修饰之后是将变量的内存地址传进去，这样就可以修改变量的值。
+  
+  block是把变量的内存传进去了，修改的只是传进去的那一部分的值，原来的值没有改变，而是用__block修饰之后，是将变量的内存地址传过去了，这样就可以修改变量的值了
+
 </code></pre></div></div>
 
 <p>23.BAD_ACCESS在什么情况下出现？</p>
@@ -538,6 +580,7 @@ Notification: 一对多的反向传值和通知，需要提前注册通知，只
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.通过KVC获取和修改。
 2.通过runtime访问并修改私有属性。
 </code></pre></div></div>
+<p>参照：<a href="/article/15515973239">如何访问并修改一个类的私有属性？</a></p>
 
 <p>25.一个objc对象的isa的指针指向什么？有什么作用？</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>指向他的类对象，可以找到对象上的方法。
@@ -560,13 +603,6 @@ Notification: 一对多的反向传值和通知，需要提前注册通知，只
 9.最后程序变成活跃状态(BecomeActive),Runloop 时刻监听各种事件的发生
 </code></pre></div></div>
 
-<p>28.View的加载顺序</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.initWithCoder（如果没有storyboard就会调用initWithFrame，这里两种方法视为一种）
-2.awakeFromNib
-3.layoutSubviews
-4.drawRect
-</code></pre></div></div>
-
 <p>29.ViewController生命周期</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>按照执行顺序排列：
 1.initWithCoder：通过nib文件初始化时触发。
@@ -587,36 +623,11 @@ Notification: 一对多的反向传值和通知，需要提前注册通知，只
 </code></pre></div></div>
 
 <p>31.如何优化App的性能</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>一.入门级
-1.用ARC管理内存 (避免忘记释放内存所造成内存泄露)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.用ARC管理内存 (避免忘记释放内存所造成内存泄露)
 2.正确的使用重用标识符 reuseIdentifier (给TableViewCell CollectionViewCell HeaderFooterView等添加重用标志)
-3.尽量把view设置为完全不透明
-4.避免庞大的XIB
-5.不要阻塞主线程(耗时操作放在异步中执行,再回到主线程)
-6.在ImageView中直接设置图片大小(运行中缩放图片是很耗费资源的,尤其是嵌套在UIScrollView中的情况下)
-7.选择正确的Collection
-8.打开gzip压缩
-
-二.中级
-1.重用和延迟加载(懒加载)View
-2.重要数据使用Cache(缓存)
-3.权衡渲染方法
-4.处理内存警告
-5.重用大开销的对象
-6.使用Sprite Sheets
-7.避免反复处理数据
-8.选择正确的数据格式(一般用JSON,因为解析JSON会比XML更快一些，JSON也通常更小更便于传输)
-9.正确地设定Background Images
-10.减少使用Web特性
-11.设定Shadow Path
-12.优化你的TableView
-13.选择正确的数据存储选项
-
-三.高级
-1.加速启动时间
-2.使用Autorelease Pool
-3.选择是否缓存图片
-4.尽量避免日期格式转换
+3.避免庞大的XIB
+4.不要阻塞主线程(耗时操作放在异步中执行,再回到主线程)
+5.重用和延迟加载(懒加载)View
 </code></pre></div></div>
 
 <p>32.如何优化UITableView</p>
@@ -683,6 +694,8 @@ for (int i = 0; i &lt; 1000000; i++) {
           NSLog(@"%@", string);
       }
   }
+5.没有移除通知的观察者
+6.多个对象相互强引用
 </code></pre></div></div>
 
 <p>35.iOS中常用的数据存储方式有哪些？</p>
@@ -797,407 +810,17 @@ TestModel[87850:13575604] One: 1  Two: 0
 </code></pre></div></div>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>4.最后总结
 
-isKindOfClass 和 isSubclassOfClass 的作用是: 用来判断是否是某个类 或其 子类 的实例。
-isMemberOfClass的作用是: 用来判断是否是某个类的实例(要完全匹配)。 
-39.respondsToSelector 和 conformsToProtocol 的区别
-
-respondsToSelector : 用来判断是否有以某个名字命名的方法 
-conformsToProtocol : 用来判断对象是否实现了指定协议类的方法  
+isKindOfClass 和 isSubclassOfClass 的作用是: 用来判断是否是某个类 或其 子类 的实例。  
+isMemberOfClass的作用是: 用来判断是否是某个类的实例(要完全匹配)。   
+</code></pre></div></div>
+<p>39.respondsToSelector 和 conformsToProtocol 的区别</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>respondsToSelector : 用来判断是否有以某个名字命名的方法   
+conformsToProtocol : 用来判断对象是否实现了指定协议类的方法 
 </code></pre></div></div>
 
 <hr />
 <hr />
 
-<p>1.堆和栈的区别?</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>OC语言是C语言的超集。C语言的内存模型分为5个区：栈区、堆区、静态区、常量区、代码区。每个区存储的内容如下：
-
-1、堆区：就是通过new、malloc、realloc分配的内存块，编译器不会负责它们的释放工作，需要用程序区释放。分配方式类似于数据结构中的链表。在iOS开发中所说的“内存泄漏”说的就是堆区的内存。
-
-2、栈区：存放函数的参数值、局部变量等，由编译器自动分配和释放，通常在函数执行完后就释放了，其操作方式类似于数据结构中的栈。栈内存分配运算内置于CPU的指令集，效率很高，但是分配的内存量有限，比如iOS中栈区的大小是2M。
-
-3、静态区：全局变量和静态变量（在iOS中就是用static修饰的局部变量或者是全局全局变量）的存储是放在一块的，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。程序结束后，由系统释放。
-4、常量区：常量存储在这里，不允许修改。
-5、代码区：存放函数体的二进制代码。
-
-堆和栈的区别：
-
-1.1、堆空间的内存是动态分配的(一般程序员分配释放)，一般存放对象，并且需要手动释放内存。当然了,iOS引入了ARC（自动引用计数）之后，就不就不需要用代码管理对象的内存了。
-
-1.2、栈空间的内存是由系统自动分配，一般存放局部变量。比如对象的地址等值，不需要程序员对这块内存进行管理，比如，函数中的局部变量的作用范围（生命周期）就是在调完这个函数之后就结束了。
-
-2、堆空间比较大,栈空间比较小。
-3、堆空间一般存放对象本身，block的copy等。栈空间中一般存储基本数据类型，对象的地址。
-4、堆（数据结构）：堆可以被看成是一棵树，如：堆排序。栈（数据结构）：一种先进后出的数据结构。
-</code></pre></div></div>
-
-<p>2.什么是程序、进程、线程？ 说一下进程和线程的关系以及区别?</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.1 程序(Application)：
-由源代码生成的可执行应用。（例如:QQ 微信）
-
-1.2 进程：
-进程: 是指在操作系统(OS)中正在运行的一个应用程序(一般一个App就一个进程)。程序并不能单独运行，只有将程序装载到内存中，系统为它分配资源才能运行。
-所以一个正在运行的程序可以看做一个进程。（例如: 正在运行的QQ就是一个进程）
-
-1.3 线程：
-线程: 程序(进程)中独立运行的代码段。（例如: 接收QQ消息的代码）
-线程是进程的基本执行单元,一个进程的所有任务(操作)都是在线程中执行
-进程要想执行任务,必须至少有一条线程(程序启动会默认开始一条线程,这条线程被称为主线程(UI线程))
-
-大概说一下:
-每个进程之间是独立的,每个进程都运行在其专用的且受保护的内存中(每个进程拥有独立运行所需的全部资源)。
-一个程序至少包含一个进程(一般一个App就一个进程)，一个进程至少包含一个线程,一个进程中的所有线程共享当前进程所拥有的资源。
-进程有独立的地址空间，一个进程崩溃后，在保护模式的影响下不会对其他进程产生影响。而线程只是一个进程中的不同执行路径，线程有自己的堆栈和局部变量，线程之间没有单独的地址空间。
-
-
-进程与线程的区别:
-1.同一进程内的线程共享本进程的资源(如内存,I/O,CPU等),但进程之间的资源是独立的。
-2.一个进程崩溃后,在保护模式下不会对其他进程产生影响,但是一个线程崩溃整个进程都死掉。所以多进程要比多线程健壮。
-3.进程切换时,消耗的资源大,效率低。所以频繁的切换时,使用线程要高于进程。
-4.每个进程都有一个运行的入口,顺序执行。但是线程不能独立执行,必须依存在进程中,由应用程序提供多个线程操作。
-5.线程是处理器调度(执行任务)的基本单元,但是进程不是。
-</code></pre></div></div>
-
-<p>3.进程的状态有哪些？</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.新建
-2.就绪 : 线程对象加入线程池中等待 CPU 调度
-3.运行 : CPU负责调度线程中线程的执行, 线程执行完成前, 状态可能在就绪和运行之间来回切换
-4.阻塞 : 满足某个预定条件, 使用休眠或锁, 阻塞线程执行
-5.死亡 : 线程执行完毕, 或者内部中止执行线程对象
-</code></pre></div></div>
-
-<p>4.什么是线程安全？分别有哪些锁？</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>线程安全: 多个线程同时访问一块资源, 容易引发数据错乱和数据安全。
-
-1.互斥锁(加锁): 新线程访问时, 发现其他线程正在执行锁定的代码, 新线程会进入休眠
-   1.1 NSLock
-   1.2 pthread_mutex
-   1.3 @synchronized
-2.自旋锁: 忙等的锁, 新线程会用死循环的方式, 一直等待锁定的代码执行完成, 数据量少的时候用
-3.条件锁: 不满足就休眠, 资源分配到了, 条件锁打开, 进程继续运行, 例如：NSConditionLock
-4.读写锁: 用于解决多线程对公共资源读写问题。 读操作可以并发重入, 写操作是互斥的
-5.信号量: 
-</code></pre></div></div>
-
-<p>5.iOS开启多线程的方法有哪些？</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.pthread  2.NSThread  3.GCD  4.NSOperation
-</code></pre></div></div>
-
-<p>6.简单的说一下NSThread的使用 具体使用详情</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.NSThread是基于Objective-C的,更加面向对象。
-2.它可以通过三种方法开启子线程,分别是: initWithTarget:  detachNewThreadSelector:(detachNewThreadWithBlock: 至少iOS10系统) 和 performSelectorInBackground: 。 其中 initWithTarget: 需要调用 start() 方法才能开启子线程。
-3.NSThread可以通过类方法 currentThread() 获取当前线程,通过类方法 mainThread()获得主线程，还可以退出线程(exit)和睡眠线程(sleepForTimeInterval)。
-4.在实际开发中一般很少用其开始子线程,常用的也就[NSThread currentThread];(获取当前线程)和[NSThread sleepForTimeInterval:3.0];(睡眠线程)
-</code></pre></div></div>
-
-<p>7.简单的说一下GCD的使用 具体使用详情</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.GCD是基于C语言的,更加偏向于底层。
-2.使用GCD就两个步骤:
-   2.1 创建一个队列（串行队列或并发队列）
-   2.2 将任务追加到队列中，系统就会根据任务类型执行任务（同步执行或异步执行）
-3.队列的创建和获取
-   3.1 队列可以通过 dispatch_queue_create 来创建，通过设置第二个参数用来识别是串行队列还是并发队列(串行队列: DISPATCH_QUEUE_SERIAL; 并发队列: DISPATCH_QUEUE_CONCURRENT),
-   3.2 队列也可以通过 dispatch_get_global_queue 获取全局的并发队列 和 dispatch_get_main_queue 获取特殊的串行队列(主队列)。
-4.任务都是放在Block中执行的，执行任务分为同步和异步,同步是:dispatch_sync(queue, ^{}); 异步是:dispatch_async(queue, ^{});异步(async)具备开启子线程的能力，但是在主队列中不会开启子线程。同步(sync)不具备开启子线程的能力，在主队列中会造成死锁(线程相互等待)
-5.组合使用情况如下： 
-   5.1 同步(sync)  + 并发队列 (没有开启子线程,串行执行任务,在主线程)
-   5.2 同步(sync)  + 串行队列 (没有开启子线程,串行执行任务,在主线程)
-   5.3 同步(sync)  + 主线程   (造成死锁,主线程和同步任务相互等待)
-   5.4 异步(async) + 并发队列 (有开启子线程 ,并发执行任务,在子线程)
-   5.5 异步(async) + 串行队列 (只开启一条子线程,串行执行任务)
-   5.6 异步(async) + 主线程   (没有开启子线程,串行执行任务,在主线程)
-6.GCD的其他函数(方法)的使用
-   6.1 栅栏函数：dispatch_barrier_sync (同步) 和 dispatch_barrier_async (异步)
-   6.2 延时执行函数：dispatch_after  一定是将任务追加到主队列中(主线程)
-   6.3 一次性函数：dispatch_once
-   6.4 队列组函数： dispatch_group_async  通过: dispatch_group_notify 监听
-   6.5 暂停当前线程函数: dispatch_group_wait
-</code></pre></div></div>
-
-<p>8.简单的说一下NSOperation的使用 具体使用详情</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.NSOperation是基于GCD更高一层的封装，完全面向对象。
-2.NSOperation的使用三个步骤: 
-   2.1 创建操作：先将需要执行的操作封装到 NSOperation 的子类中。
-   2.2 创建队列：创建 NSOperationQueue 对象。
-   2.3 将操作加入到队列中：将 NSOperation 子类添加到 NSOperationQueue(队列) 对象中。
-3.创建操作。在不使用NSOperationQueue的情况下，单独使用 NSOperation 的子类封装操作, 不会开启子线程(同步执行操作)。
-   3.1 NSOperation的子类有 NSInvocationOperation  NSBlockOperation 和自定义继承自NSOperation(通过实现方法(main)来封装操作)。
-4.创建队列。NSOperationQueue 一共有两种队列：主队列、自定义队列。其中自定义队列同时包含了串行、并发功能。
-   4.1 通过 [NSOperationQueue mainQueue]; 获取主队列
-   4.2 通过 [[NSOperationQueue alloc] init]; 创建自定义队列（非主队列,包含了串行、并发功能）。
-5.将操作加入到队列中。NSOperation 需要配合 NSOperationQueue 来实现多线程，我们需要将创建好的操作加入到队列中去。总共有两种方法：
-   5.1 通过 addOperation: 添加操作到队列中 [queueObj addOperation:operationObj];
-   5.2 通过 addOperationWithBlock: 直接创建操作 [queueObj addOperationWithBlock:^{}];
-6.NSOperationQueue 创建的自定义队列同时具有串行、并发功能。通过设置属性 maxConcurrentOperationCount (最大并发操作数) 的个数 决定队列类型，默认情况下为 -1，表示不进行限制，可进行并发执行；为 1 时，队列为串行队列。只能串行执行；大于 1 时，队列为并发队列。
-7.NSOperation其他操作
-  7.1 操作之间添加依赖 addDependency:
-  7.2 操作完成时回调  completionBlock = ^{};
-  7.3 取消队列的所有操作 cancelAllOperations
-  7.4 判断队列是否处于暂停状态  isSuspended
-  7.5 向队列中添加操作数组 addOperations
-  7.6 可取消操作 cancel (实质是标记 isCancelled 状态)
-  7.7 判断操作状态 isFinished(操作是否已经完成)  isCancelled(操作是否已经取消) isExecuting(操作是否正在运行)  isReady(操作是否处于准备就绪状态)
-</code></pre></div></div>
-
-<p>9.NSThread GCD 和 NSOperation 之间的优缺点</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.NSThread
-   优点：比其他两种更加轻量级,使用简单。
-   缺点：线程之间的通信比较麻烦(最大缺点)。需要自己管理线程的生命周期([thread cancel];取消子线程)、线程同步、加锁、睡眠以及唤醒等。
-
-2.GCD 
-   优点：性能最高效(更接近底层)。不需要管理线程的生命周期，数据同步的事情。
-   缺点: 基于C语言实现，不好理解。添加异步操作之间的事务性，顺序性和依赖关系 需要写更多的代码来实现。
-     
-3.Operation:
-   优点：是对GCD的封装，更加面向对象。也是不需要管理线程的生命周期，数据同步的事情。
-        可以使用自定义继承 NSOperation 的类,重写 main 方法,在其里面添加操作(任务)。
-        可以更好的添加操作之间依赖和查看操作的状态，还可以设置操作的优先级和更好的取消正在执行中的操作。
-   缺点：开启操作一般需要用到 NSOperation的两个子类 NSInvocationOperation 和 NSBlockOperation
-        开启的操作需要添加到 NSOperationQueue 中才开启子线程。
-</code></pre></div></div>
-
-<p>10.iOS 代码加锁的几种方式</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.@synchronized(self)
-2.NSConditionLock
-3.NSCondition
-4.NSLock
-5.dispatch_semaphore_t (GCD中的函数)
-6.OSSpinLock
-
-这几种锁都可以带来原子性,性能的损耗从上至下依次更小。
-</code></pre></div></div>
-<p>1、使用 @synchronized(self) 给代码加锁</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@interface ViewController ()
-
-@property (nonatomic,assign) NSInteger ticketNumber;
-
-@end
-  
-#pragma mark -使用GCD创建线程
--(void)startGCDAction{
-    
-    self.ticketNumber=50;  // 50张票
-    
-    // 1.创建并发队列
-    dispatch_queue_t queueObj=dispatch_queue_create("nameValue",DISPATCH_QUEUE_CONCURRENT);
-    
-    // 2.开启多条异步线程
-    for (NSInteger i=1; i&lt;=5; i++) {
-        dispatch_async(queueObj, ^{
-            NSLog(@"做任务(%zi),当前线程:%@",i,[NSThread currentThread]);
-            [self startSaleTicket]; // 开始卖票
-        });
-    }
-}
-
-// 通过@synchronized()加锁
--(void)startSaleTicket{
-    do {
-        [NSThread sleepForTimeInterval:0.3];
-        // 下面是加锁的代码内容
-        @synchronized (self) {
-            if (self.ticketNumber&lt;=0) break;
-            NSLog(@"余票是: %zi 当前线程是: %@",self.ticketNumber,[NSThread currentThread]);
-            self.ticketNumber-=1;
-        }
-        
-    }
-    while (self.ticketNumber);
-}
-
-最终运行结果:
-
-2019-08-12 14:15:58.189393+0800 TestModel[87804:13566450] 做任务(2),当前线程:&lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:15:58.189548+0800 TestModel[87804:13566452] 做任务(1),当前线程:&lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:15:58.189868+0800 TestModel[87804:13566451] 做任务(3),当前线程:&lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:15:58.189917+0800 TestModel[87804:13566453] 做任务(4),当前线程:&lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:15:58.190395+0800 TestModel[87804:13566459] 做任务(5),当前线程:&lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:15:58.490183+0800 TestModel[87804:13566450] 余票是: 50 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:15:58.490588+0800 TestModel[87804:13566452] 余票是: 49 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:15:58.495170+0800 TestModel[87804:13566451] 余票是: 48 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:15:58.495440+0800 TestModel[87804:13566453] 余票是: 47 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:15:58.495664+0800 TestModel[87804:13566459] 余票是: 46 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:15:58.795679+0800 TestModel[87804:13566450] 余票是: 45 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:15:58.796089+0800 TestModel[87804:13566452] 余票是: 44 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:15:58.800381+0800 TestModel[87804:13566451] 余票是: 43 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:15:58.800643+0800 TestModel[87804:13566453] 余票是: 42 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:15:58.801037+0800 TestModel[87804:13566459] 余票是: 41 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:15:59.097379+0800 TestModel[87804:13566450] 余票是: 40 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:15:59.098778+0800 TestModel[87804:13566452] 余票是: 39 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:15:59.104982+0800 TestModel[87804:13566451] 余票是: 38 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:15:59.105416+0800 TestModel[87804:13566453] 余票是: 37 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:15:59.105727+0800 TestModel[87804:13566459] 余票是: 36 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:15:59.401558+0800 TestModel[87804:13566450] 余票是: 35 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:15:59.404078+0800 TestModel[87804:13566452] 余票是: 34 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:15:59.406779+0800 TestModel[87804:13566451] 余票是: 33 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:15:59.407160+0800 TestModel[87804:13566453] 余票是: 32 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:15:59.407764+0800 TestModel[87804:13566459] 余票是: 31 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:15:59.706818+0800 TestModel[87804:13566450] 余票是: 30 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:15:59.707735+0800 TestModel[87804:13566451] 余票是: 29 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:15:59.709405+0800 TestModel[87804:13566452] 余票是: 28 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:15:59.712616+0800 TestModel[87804:13566453] 余票是: 27 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:15:59.713001+0800 TestModel[87804:13566459] 余票是: 26 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:16:00.016941+0800 TestModel[87804:13566450] 余票是: 25 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:16:00.017259+0800 TestModel[87804:13566451] 余票是: 24 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:16:00.017491+0800 TestModel[87804:13566452] 余票是: 23 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:16:00.018511+0800 TestModel[87804:13566453] 余票是: 22 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:16:00.018640+0800 TestModel[87804:13566459] 余票是: 21 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:16:00.317675+0800 TestModel[87804:13566450] 余票是: 20 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:16:00.318162+0800 TestModel[87804:13566451] 余票是: 19 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:16:00.322806+0800 TestModel[87804:13566452] 余票是: 18 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:16:00.323192+0800 TestModel[87804:13566453] 余票是: 17 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:16:00.323446+0800 TestModel[87804:13566459] 余票是: 16 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:16:00.623299+0800 TestModel[87804:13566450] 余票是: 15 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:16:00.623643+0800 TestModel[87804:13566451] 余票是: 14 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:16:00.628154+0800 TestModel[87804:13566452] 余票是: 13 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:16:00.628523+0800 TestModel[87804:13566453] 余票是: 12 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:16:00.628825+0800 TestModel[87804:13566459] 余票是: 11 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:16:00.928590+0800 TestModel[87804:13566450] 余票是: 10 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:16:00.928799+0800 TestModel[87804:13566451] 余票是: 9 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:16:00.933344+0800 TestModel[87804:13566452] 余票是: 8 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:16:00.933492+0800 TestModel[87804:13566459] 余票是: 7 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-2019-08-12 14:16:00.933836+0800 TestModel[87804:13566453] 余票是: 6 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:16:01.231961+0800 TestModel[87804:13566450] 余票是: 5 当前线程是: &lt;NSThread: 0x283a16cc0&gt;{number = 3, name = (null)}
-2019-08-12 14:16:01.232049+0800 TestModel[87804:13566451] 余票是: 4 当前线程是: &lt;NSThread: 0x283a026c0&gt;{number = 5, name = (null)}
-2019-08-12 14:16:01.233846+0800 TestModel[87804:13566452] 余票是: 3 当前线程是: &lt;NSThread: 0x283a39fc0&gt;{number = 4, name = (null)}
-2019-08-12 14:16:01.234564+0800 TestModel[87804:13566453] 余票是: 2 当前线程是: &lt;NSThread: 0x283a02040&gt;{number = 6, name = (null)}
-2019-08-12 14:16:01.238114+0800 TestModel[87804:13566459] 余票是: 1 当前线程是: &lt;NSThread: 0x283a01c80&gt;{number = 7, name = (null)}
-</code></pre></div></div>
-<p>2、使用 NSLock 给代码加锁</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@interface ViewController ()
-
-@property (nonatomic,strong) NSLock *addLock;
-
-@end
-
--(NSLock *)addLock{
-    if (_addLock == nil ) {
-        _addLock = [[NSLock alloc]init];
-    }
-    return _addLock;
-}
- 
-#pragma mark -使用GCD创建线程
--(void)startGCDAction{
-    
-    self.ticketNumber=50;  // 50张票
-    
-    // 1.创建并发队列
-    dispatch_queue_t queueObj=dispatch_queue_create("nameValue",DISPATCH_QUEUE_CONCURRENT);
-    
-    // 2.开启多条异步线程
-    for (NSInteger i=1; i&lt;=5; i++) {
-        dispatch_async(queueObj, ^{
-            NSLog(@"做任务(%zi),当前线程:%@",i,[NSThread currentThread]);
-            [self startSaleTicket]; // 开始卖票
-        });
-    }
-}
-
-// 通过 NSLock 加锁
--(void)startSaleTicket{
-
-    do {
-        
-        [NSThread sleepForTimeInterval:0.3];
-        
-        [self.addLock lock];   // 加锁
-        if (self.ticketNumber&lt;=0) break;
-        NSLog(@"余票是: %zi 当前线程是: %@",self.ticketNumber,[NSThread currentThread]);
-        self.ticketNumber-=1;
-        [self.addLock unlock]; // 解锁
-    }
-    while (self.ticketNumber);
-
-}
-
-最终运行结果:
-
-2019-08-12 14:31:28.968327+0800 TestModel[87809:13567989] 做任务(2),当前线程:&lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:28.968620+0800 TestModel[87809:13567988] 做任务(1),当前线程:&lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:28.969657+0800 TestModel[87809:13567986] 做任务(3),当前线程:&lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:28.969713+0800 TestModel[87809:13567987] 做任务(4),当前线程:&lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:28.970159+0800 TestModel[87809:13567992] 做任务(5),当前线程:&lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:29.273489+0800 TestModel[87809:13567989] 余票是: 50 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:29.273594+0800 TestModel[87809:13567988] 余票是: 49 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:29.273889+0800 TestModel[87809:13567992] 余票是: 48 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:29.273965+0800 TestModel[87809:13567987] 余票是: 47 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:29.274026+0800 TestModel[87809:13567986] 余票是: 46 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:29.577287+0800 TestModel[87809:13567989] 余票是: 45 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:29.577437+0800 TestModel[87809:13567988] 余票是: 44 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:29.577606+0800 TestModel[87809:13567992] 余票是: 43 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:29.577718+0800 TestModel[87809:13567987] 余票是: 42 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:29.577993+0800 TestModel[87809:13567986] 余票是: 41 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:29.882881+0800 TestModel[87809:13567989] 余票是: 40 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:29.883291+0800 TestModel[87809:13567988] 余票是: 39 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:29.883545+0800 TestModel[87809:13567987] 余票是: 38 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:29.883949+0800 TestModel[87809:13567986] 余票是: 37 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:29.884300+0800 TestModel[87809:13567992] 余票是: 36 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:30.188301+0800 TestModel[87809:13567989] 余票是: 35 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:30.188728+0800 TestModel[87809:13567988] 余票是: 34 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:30.189026+0800 TestModel[87809:13567987] 余票是: 33 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:30.189603+0800 TestModel[87809:13567986] 余票是: 32 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:30.190006+0800 TestModel[87809:13567992] 余票是: 31 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:30.489850+0800 TestModel[87809:13567988] 余票是: 30 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:30.490175+0800 TestModel[87809:13567987] 余票是: 29 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:30.493747+0800 TestModel[87809:13567989] 余票是: 28 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:30.494048+0800 TestModel[87809:13567986] 余票是: 27 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:30.494877+0800 TestModel[87809:13567992] 余票是: 26 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:30.795292+0800 TestModel[87809:13567988] 余票是: 25 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:30.795687+0800 TestModel[87809:13567987] 余票是: 24 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:30.795958+0800 TestModel[87809:13567989] 余票是: 23 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:30.796489+0800 TestModel[87809:13567986] 余票是: 22 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:30.800184+0800 TestModel[87809:13567992] 余票是: 21 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:31.099967+0800 TestModel[87809:13567986] 余票是: 20 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:31.100050+0800 TestModel[87809:13567988] 余票是: 19 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:31.100090+0800 TestModel[87809:13567987] 余票是: 18 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:31.100198+0800 TestModel[87809:13567989] 余票是: 17 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:31.102069+0800 TestModel[87809:13567992] 余票是: 16 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:31.405114+0800 TestModel[87809:13567986] 余票是: 15 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:31.405197+0800 TestModel[87809:13567988] 余票是: 14 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:31.405238+0800 TestModel[87809:13567987] 余票是: 13 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:31.405293+0800 TestModel[87809:13567989] 余票是: 12 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:31.407180+0800 TestModel[87809:13567992] 余票是: 11 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:31.705607+0800 TestModel[87809:13567986] 余票是: 10 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:31.705747+0800 TestModel[87809:13567988] 余票是: 9 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:31.705857+0800 TestModel[87809:13567987] 余票是: 8 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:31.705953+0800 TestModel[87809:13567989] 余票是: 7 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:31.707719+0800 TestModel[87809:13567992] 余票是: 6 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-2019-08-12 14:31:32.007136+0800 TestModel[87809:13567986] 余票是: 5 当前线程是: &lt;NSThread: 0x281fcc880&gt;{number = 5, name = (null)}
-2019-08-12 14:31:32.007306+0800 TestModel[87809:13567988] 余票是: 4 当前线程是: &lt;NSThread: 0x281fe1400&gt;{number = 3, name = (null)}
-2019-08-12 14:31:32.007378+0800 TestModel[87809:13567987] 余票是: 3 当前线程是: &lt;NSThread: 0x281fc1200&gt;{number = 6, name = (null)}
-2019-08-12 14:31:32.007499+0800 TestModel[87809:13567989] 余票是: 2 当前线程是: &lt;NSThread: 0x281fcc6c0&gt;{number = 4, name = (null)}
-2019-08-12 14:31:32.012931+0800 TestModel[87809:13567992] 余票是: 1 当前线程是: &lt;NSThread: 0x281fc1100&gt;{number = 7, name = (null)}
-</code></pre></div></div>
-
-<p>11.说一下你对Runtime的认识 具体认识</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>题外话：计算机唯一能识别的语言是机器语言，高级编程语言不能被直接识别，需要先编译为汇编语言，再由汇编语言编译为机器语言才能被计算机识别。而 Objective-C语言不能被直接编译为汇编语言，它必须先编译为C语言，然后再编译为汇编语言，最后再由汇编语言编译为机器语言才能被计算机识别。 从OC到C语言的过渡就是由runtime来实现的。我们使用OC进行面向对象开发，但是C语言更多的是面向过程开发，这就需要将面向对象的类转变为面向过程的结构体。
-
-1.Runtime 是iOS中的一个运行时系统，是苹果用C语言和汇编语言编写的一套底层纯C语言API。
-2.Runtime正是 Objective-C这门动态语言的核心(数据类型的确定由编译时推迟到运行时)。从OC到C语言的过渡就是由Runtime来实现的。
-3.OC代码最终都会被编译器转化为运行时代码，通过消息机制决定函数调用方式(objc_msgSend)。
-4.OC类、对象和方法等都会被Runtime转化成C语言中的结构体。
-5.在Runtime中，id 是一个指向 objc_object 结构体的指针；class 是一个指向 objc_class 结构体的指针
-6.SEL 是一个指向 objc_selector 结构体的指针； Ivar 是一个指向 objc_ivar 的结构体的指针
-7.Method 是一个指向 objc_method 的结构体的指针；IMP 是一个函数指针
-</code></pre></div></div>
-
-<p>12.说一下Runtime的使用情景 具体使用</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.动态方法交换  (method_exchangeImplementations)
-2.给分类添加属性 (objc_setAssociatedObject 和 objc_getAssociatedObject)
-3.获取类的详细信息
-   3.1 属性列表(class_copyPropertyList)
-   3.2 获取成员变量(class_copyIvarList)
-   3.3 获取所有方法(class_copyMethodList)
-   3.4 获取当前遵循的所有协议(class_copyProtocolList)
-4.解决同一方法高频率调用的效率问题
-5.方法动态解析与消息转发
-   5.1 动态添加方法
-   5.2 解决方法无响应崩溃问题
-6.动态操作属性
-  6.1 动态修改属性变量
-  6.2 实现 NSCoding 的自动归档和解档
-  6.3 实现字典与模型的转换
-</code></pre></div></div>
 
   </article>
 

@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>基础篇 3：小程序架构及其实现机制 | gorpeln的个人博客 - gorpeln</title>
+  <title>iOS内存泄漏静态分析：Analyze的使用 | gorpeln的个人博客 - gorpeln</title>
 
-  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,微信小程序,HTML5,生命周期,数据驱动" />
-  <meta name="description" content="一、小程序 VS HTML5">
+  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,静态分析,Analyze,Memory,内存泄露,逻辑错误,声明错误,API调用错误" />
+  <meta name="description" content="Analyze简介">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -18,7 +18,7 @@
   <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
 
   <link rel="shortcut icon" href="/assets/img/favicon.ico" />
-  <link rel="canonical" href="/article/15612663893">
+  <link rel="canonical" href="/article/4">
   <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
 
   
@@ -322,13 +322,13 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">基础篇 3：小程序架构及其实现机制</h1>
+    <h1 class="post-title">iOS内存泄漏静态分析：Analyze的使用</h1>
     <div class="info">
-	    <p class="post-meta">时间：2019-06-23</p>
+	    <p class="post-meta">时间：2020-02-02</p>
 	    
 	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
-		<a class="item-date" style="color:#6666cc;" href="/categories#微信小程序" target="_blank">
-        	微信小程序
+		<a class="item-date" style="color:#6666cc;" href="/categories#其他" target="_blank">
+        	其他
 		</a>
 		&nbsp;&nbsp;&nbsp;&nbsp;标签：
 		
@@ -336,18 +336,27 @@
 		
 		    
 			
-				<a class="pjaxlink" href="/tags#微信小程序"  target="_blank">微信小程序</a>
+				<a class="pjaxlink" href="/tags#静态分析"  target="_blank">静态分析</a>
 	    	
 		
 		    
 			
-				<a class="pjaxlink" href="/tags#HTML5"  target="_blank">HTML5</a>
+				<a class="pjaxlink" href="/tags#Analyze"  target="_blank">Analyze</a>
 	    	
 		
 		    
 			
-				<a class="pjaxlink" href="/tags#生命周期"  target="_blank">生命周期</a>
+				<a class="pjaxlink" href="/tags#Memory"  target="_blank">Memory</a>
 	    	
+		
+		    
+			
+		
+		    
+			
+		
+		    
+			
 		
 		    
 			
@@ -358,123 +367,50 @@
   </header>
 
   <article class="post-content">
-    <h2 id="一小程序-vs-html5">一、小程序 VS HTML5</h2>
+    <h3 id="analyze简介">Analyze简介</h3>
 
-<p>小程序并不是 HTML5 应用，而是更偏向于传统的 CS 架构，它是基于<strong>数据驱动</strong>的模式，一切皆组件（视图组件）。下面是小程序与普通 Web App 的对比。</p>
+<p>Clang Static Analyzer是一款静态代码扫描工具，专门用于针对C，C++和Objective-C的程序进行分析。已经被Xcode集成，可以直接使用Xcode进行静态代码扫描分析，也可以单独在命令行下使用并提供html格式的输出报吿和xml格式的结果文件方便集成到Jenkins上进行展示</p>
 
-<ul>
-  <li>普通 HTML5 都是执行在浏览器的宿主环境，浏览器提供 <code class="highlighter-rouge">window</code>、<code class="highlighter-rouge">document</code> 等 BOM 对象，但小程序没有 <code class="highlighter-rouge">window</code>、<code class="highlighter-rouge">document</code>，它更像是一个类似 Node.js 的宿主环境；因此在小程序内不能使用 <code class="highlighter-rouge">document.querySelector</code> 这类 DOM 选择器，也不支持 <code class="highlighter-rouge">XMLHttpRequest</code>、<code class="highlighter-rouge">location</code>、<code class="highlighter-rouge">localStorage</code> 等这些浏览器提供的 API，只能使用小程序自己实现的 API</li>
-  <li>小程序并非是直接通过 URL 访问的，而是通过信道服务进行通信和会话管理，所以它不支持 Cookie 存储，同时访问资源使用 <code class="highlighter-rouge">wx.request</code> 则不存在跨域的问题</li>
-  <li>小程序在 JavaScript 的模块化上支持 CommonJS，通过 require 加载，跟 Node.js 类似</li>
-  <li>小程序的页面样式完全继承了 CSS 的语法，但是在选择器上面会少一些，布局支持 flex 布局</li>
-  <li>小程序的整体框架采用面向状态编程方式，状态管理从 API 来看采用类似 Redux 的设计方式；单向数据绑定方式，当 View 在 Action 操作后，只能通过 Action 的业务处理来更新 View</li>
-</ul>
-
-<p>页面组件模块上，WXML 提供了一整套的「自定义 UI 组件标签」，有些组件实际是 HTML5 实现的，有些组件为了解决权限、性能和适配等问题实际是 Native 实现的（如 map、input、canvas、video）。</p>
-
-<h2 id="二小程序架构解密">二、小程序架构解密</h2>
-
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_001.jpg" alt="blog_wxmini_3_001" /></p>
-
-<p>小程序架构如上图所示，分为视图层和逻辑层，视图层是在 WebView 内渲染，逻辑层则有 JavaScriptCore 来渲染；其中视图层可以多个（考虑到整体性能，最多可以 5 个），逻辑层则全局只有一个（实际通过开启 X5 内核另起一个 JavascriptCore 线程）。</p>
-
-<p>在小程序内，视图层负责页面渲染，逻辑层负责逻辑处理、全局状态管理、请求和接口调用。逻辑层在小程序中称为 <code class="highlighter-rouge">APP Service</code>，视图层称为 <code class="highlighter-rouge">View</code>。</p>
-
-<p>逻辑层和视图层通过微信的 <code class="highlighter-rouge">JSBridge</code> 来实现通信的，逻辑层数据变化通过 <code class="highlighter-rouge">JSBridge</code> 通知视图层，触发视图层更新；当视图层触发事件，则继续通过 <code class="highlighter-rouge">JSBridge</code> 将事件通知到逻辑层做处理，如此交互进行。</p>
-
-<p><code class="highlighter-rouge">JSBridge</code> 在三个环境（开发者工具、iOS 和 Android）中实现机制不同，在调用 Native 能力时主要使用 <code class="highlighter-rouge">invokeHandler</code>：</p>
+<p>Analyze主要的作用有：</p>
 
 <ul>
-  <li>开发者工具：通过 <code class="highlighter-rouge">window.postMessage</code> 来封装</li>
-  <li>iOS：通过 WKWebview 的 <code class="highlighter-rouge">window.webkit.messageHandlers.invokeHandler.postMessage</code></li>
-  <li>Android：通过 <code class="highlighter-rouge">WeixinJSCore.invokeHandler</code></li>
+  <li>内存泄露检查 Memory Error</li>
+  <li>逻辑错误检查 Logic Error</li>
+  <li>声明错误检查 Dead Store</li>
+  <li>API调用错误检查 API Misuse</li>
 </ul>
 
-<p>在消息分发的时候，则使用 <code class="highlighter-rouge">publishHandler</code>：</p>
+<p>点击Analyze后，Xcode会自动进行编译分析，需要一段时间，之后会像提示警告一样，提示有多少分析的结果。所有的分析结果按照如上的类别，归类显示。点击某个错误的地方，会定位到出错的地方，然后点击向上向下的箭头，会详细展示出出错的步骤。</p>
 
-<ul>
-  <li>开发者工具：通过 <code class="highlighter-rouge">addEventListener('message')</code> 来监听消息，然后处理分发</li>
-  <li>iOS：使用 WKWebview 的 <code class="highlighter-rouge">window.webkit.messageHandlers.publishHandler.postMessage</code></li>
-  <li>Android：通过 <code class="highlighter-rouge">WeixinJSCore.publishHandler</code></li>
-</ul>
+<p><img src="https://img.gorpeln.com/blog_ analyzer_001.jpeg" alt="blog_ analyzer_001" /></p>
 
-<p>其中，Android 的 <code class="highlighter-rouge">WeixinJSCore</code> 是 X5 内核暴露出来的对象，其作为 <code class="highlighter-rouge">window</code> 对象的一个属性，提供一些供 JavaScript 调用的能力。</p>
+<h3 id="1api调用错误检查api-misuseapple">1、API调用错误检查：API Misuse（Apple）</h3>
+<p>API的错误，一般是在打段的逻辑处理中没有注意OC的使用细节。如：数组不能添加空值，数组的元素不能是空值，字典的value不能是空等等。下面这单代码：str 的初始值为空，经过一段逻辑处理后，还是有可能是空，是不能添加到数组中的。</p>
 
-<p>这部分可以在开发者工具或者 X5 内核 debug 模式下，找到 <code class="highlighter-rouge">WAService.js</code></p>
+<p><img src="https://img.gorpeln.com/blog_ analyzer_002.jpeg" alt="blog_ analyzer_002" /></p>
 
-<p>WeixinJSBridge 提供的方法有 <code class="highlighter-rouge">invoke</code>、<code class="highlighter-rouge">publish</code> 和 <code class="highlighter-rouge">subscribe</code> 等，<code class="highlighter-rouge">invoke</code> 就是关键的调用 Native 端能力的方法，<code class="highlighter-rouge">publish</code> 是消息分发的方法。注意下图的 <code class="highlighter-rouge">invoke</code> 实际是来自<code class="highlighter-rouge">y</code>，<code class="highlighter-rouge">publish</code> 来自 <code class="highlighter-rouge">w</code>，<code class="highlighter-rouge">e</code> 为 <code class="highlighter-rouge">window</code>。</p>
+<h3 id="2逻辑错误检查-logic-error">2、逻辑错误检查 Logic Error</h3>
+<p>初看这段代码，并没有觉得有什么不妥，根据字符串获得index的值。这个前提是字符串一定要按照这个规则提供，如果没有按照这个规则提供，则index就没有值。通过Analyze分析，就检查出来了。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_002.jpg" alt="blog_wxmini_3_002" /></p>
+<p><img src="https://img.gorpeln.com/blog_ analyzer_003.jpeg" alt="blog_ analyzer_003" /></p>
 
-<p><code class="highlighter-rouge">y</code> 的实现最后调用了<code class="highlighter-rouge">g</code>，<code class="highlighter-rouge">w</code> 的实现最后调用了<code class="highlighter-rouge">_</code>。</p>
+<h3 id="3声明错误检查-dead-store">3、声明错误检查 Dead Store</h3>
+<p>很多时候我们创建了一些中间变量需要使用，但是在最终功能的实现上并没有用到这个变量。但是这些变量依然留在代码中，没有删除。这就造成了内存的不必要的开销。这对这部分变量，不需要的时候就要及时的删除。同理：创建类声明的属性，如果没有用到就要及时删除。因为创建类时，会根据类的属性的多少创建对应的内存。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_003.jpg" alt="blog_wxmini_3_003" /></p>
+<p><img src="https://img.gorpeln.com/blog_ analyzer_004.jpeg" alt="blog_ analyzer_004" /></p>
 
-<p>继续查找<code class="highlighter-rouge">g</code>、<code class="highlighter-rouge">_</code> 的实现，发现 <code class="highlighter-rouge">g</code>、<code class="highlighter-rouge">_</code> 最后都调用了 <code class="highlighter-rouge">d</code> 和 <code class="highlighter-rouge">f</code> 的方法（显现了关键字<code class="highlighter-rouge">invokeHandler</code>、<code class="highlighter-rouge">publishHandler</code>）。</p>
+<h3 id="4内存错误-memory-error">4、内存错误 Memory error</h3>
+<p>开发的过程中，容易给声明非空的对象赋值nil，导致出错。包括：nil 赋值给了一个期望非空值的指针、Null赋值给非空对象，返回了 nil 值,期望返回一个非空值。
+<img src="https://img.gorpeln.com/blog_ analyzer_005.jpeg" alt="blog_ analyzer_005" /></p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_004.jpg" alt="blog_wxmini_3_004" /></p>
+<h3 id="5内存泄露-memory-core-foundationobjective-c">5、内存泄露 Memory (Core Foundation/Objective-C)</h3>
+<p>虽然是在ARC模式下，但不是什么东西都可以释放，例如上述的C-types对象，都需要手动来进行释放，所以上面的问题只需手动释放就可以了:CGImageRelease(scaledImage);
+其它的如CoreFoundation对象有时候需要CFRelease，malloc/calloc等有时候需要free，还有标准IO fopen之类的需要fclose。</p>
 
-<p>继续查找，发现 <code class="highlighter-rouge">d</code> 和 <code class="highlighter-rouge">f</code> 分别是来自 <code class="highlighter-rouge">window.webkit</code>、<code class="highlighter-rouge">window.WeixinJSCore</code>。</p>
+<p>一般来说都是由于使用的CoreFoundation后没有release造成的。在RAC下Foundation框架下的不需要进行release，CoreFoundation框架下仍然需要release。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_005.jpg" alt="blog_wxmini_3_005" /></p>
+<p><img src="https://img.gorpeln.com/blog_ analyzer_006.jpeg" alt="blog_ analyzer_006" /></p>
 
-<p>因为在一个小程序中可以打开多个视图层（webview），要保证发送的消息准确送到每个具体的 webview 中，需要通过每个 webview 唯一标识 <code class="highlighter-rouge">webviewId</code> 来实现。发送消息时，携带 <code class="highlighter-rouge">webviewId</code>，然后逻辑层处理完对应的逻辑，如果需要通知或者执行对应 webview 的代码，则可以通过 <code class="highlighter-rouge">webviewId</code> 找到对应的 webview，下发通知。</p>
-
-<h2 id="三小程序生命周期">三、小程序生命周期</h2>
-
-<p>小程序生命周期包括应用的生命周期（逻辑层 App Service）和页面的生命周期（视图层 View），两者支持的事件不同，详见官方文档中的这张配图。</p>
-
-<p>!<img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_006.jpg" alt="blog_wxmini_3_006" /></p>
-
-<p>掌握了上面小程序实现原理的内容，再来看小程序的生命周期就很好理解了。</p>
-
-<p>小程序启动时，会同时启动两个线程，一个负责页面渲染的 WebView（实际不止一个，后面讲解），一个负责逻辑的 JavaScriptCore。逻辑层初始化后会将初始化数据（app.js 中的 global data）通过 JSBridge 传递给渲染层进行渲染，渲染层 WebView 页面渲染完之后又会跟逻辑层通信。</p>
-
-<p>理解了小程序架构和启动流程，小程序整个生命周期的流程只需要对着上面的流程图就可以很容易理解。</p>
-
-<h2 id="四小程序为什么感觉快">四、小程序为什么感觉快</h2>
-
-<p>小程序在体验上不仅仅页面流畅，而且点击之后，页面跳转也会比普通的 HTML5 要快很多，这是因为小程序的视图层做了预加载处理。下图是通过 X5 内核开启 inspect 版本之后，在 Chrome 中看到的手机 WebView 的页面情况。小程序选择今日头条，打开了两个页面（热点新闻列表和某条新闻详情），但实际在 Chrome 中看到的 WebView 页面总是比真实打开的页面要多一个，这个多出来的隐藏 WebView 就是提前初始化预热的，方便打开下一个小程序页面来使用，这样就节省了 WebView 初始化的时间，从而大幅提升了跳页效率。</p>
-
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_007.jpg" alt="blog_wxmini_3_007" /></p>
-
-<h2 id="五小程序-wxml-是怎么转成-html-的">五、小程序 WXML 是怎么转成 HTML 的</h2>
-
-<p>小程序的视图层最终是渲染在一个 webview 中的，通过下图就可以看到我们在 WXML 中写的 <code class="highlighter-rouge">view</code>、<code class="highlighter-rouge">icon</code>、<code class="highlighter-rouge">text</code> 等标签最终会转换成 <code class="highlighter-rouge">wx-*</code> 等标签。</p>
-
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_008.jpg" alt="blog_wxmini_3_008" /></p>
-
-<p>那么 WXML 到 HTML 的过程发生了什么呢？</p>
-
-<p>首先，WXML 写完之后经过编译工具 <code class="highlighter-rouge">wcc</code> 转成可执行的 JS，下面的命令可以将某个页面转为 JS：</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wcc -d index.wxml -o index.js
-
-</code></pre></div></div>
-
-<blockquote>
-  <p><strong>TIPS：</strong> <code class="highlighter-rouge">wcc</code> 和 <code class="highlighter-rouge">wcsc</code> 是小程序的 WXML 和 WXSS 的编译工具，是二进制文件，在 macOS 中可以在<code class="highlighter-rouge">/Applications/wechatwebdevtools.app/Contents/Resources/package.nw/js/vendor/</code> 路径中找到（应用 → 右键微信开发者工具 → 查看包文件）</p>
-</blockquote>
-
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_009.jpg" alt="blog_wxmini_3_009" /></p>
-
-<p>这个 JS 里面有个重要的函数是 <code class="highlighter-rouge">$gwx</code>：</p>
-
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_010.jpg" alt="blog_wxmini_3_010" /></p>
-
-<p>这个 JS 主要接收一个 <code class="highlighter-rouge">path</code> 将 <code class="highlighter-rouge">path</code> 的页面转换成一个 Virtual DOM：</p>
-
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_011.jpg" alt="blog_wxmini_3_011" /></p>
-
-<p>在这个 VDOM 结构里面就会找到以<code class="highlighter-rouge">wx-*</code> 开头的 tag，有了这个 VDOM 结构，就可以使用对应的 tag 创建 HTML 片段了。</p>
-
-<p>整个流程梳理如下：</p>
-
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_012.jpg" alt="blog_wxmini_3_012" /></p>
-
-<h2 id="六小结">六、小结</h2>
-
-<p>本节重点介绍了小程序和普通的 HTML5 有什么区别，从小程序底层机制上来说明小程序是如何最终展现在 WebView 界面上的。本节涉及较多的源码和反编译技巧，对于初学者来说只需要了解微信小程序由逻辑层和视图层两个不同的线程进行交互而形成，而视图层是通过将 WXML 转换成 JS，最终由 JS 生成 HTML 片段放在 WebView 中显示的。</p>
 
   </article>
 
@@ -482,18 +418,18 @@
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15612663893">https://gorpeln.com/article/15612663893</a></div>
+	<div>本文链接：<a href="https://gorpeln.com/article/4">https://gorpeln.com/article/4</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15618778699" title="实战篇 ：电商小程序云开发实战" style="color: #6666cc;font-size: 0.9em;"  target="_blank">实战篇 ：电商小程序云开发实战</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/5" title="iOS内存泄漏动态分析：leaks的使用" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS内存泄漏动态分析：leaks的使用</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15611722666" title="基础篇 2：小程序·云开发基础知识" style="color: #6666cc;font-size: 0.9em;"  target="_blank">基础篇 2：小程序·云开发基础知识</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/3" title="背诵全文三" style="color: #6666cc;font-size: 0.9em;"  target="_blank">背诵全文三</a>
 	    </div>
 	  
 	 
@@ -566,7 +502,7 @@
         </div>
     </div>
     <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
-        <div class="qrcode" id="qrcodeBtn" onclick="createQrcode('/article/15612663893')"></div>
+        <div class="qrcode" id="qrcodeBtn" onclick="createQrcode('/article/4')"></div>
         <div class="qrcodeImg" id="qrcode"></div>
         <div id="backtotop">
             <a href="#">

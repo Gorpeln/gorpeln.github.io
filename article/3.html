@@ -7,7 +7,7 @@
   <title>背诵全文三 | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,基础,面试题" />
-  <meta name="description" content="类由两个部分组成：.h和.m文件组成。*.m文件中 implemention部分是类的实现部分，内部包含类中的各种信息，包括各种实例方法或类方法。">
+  <meta name="description" content="类由两个部分组成：.h和.m文件组成。*.m文件中 @implementation部分是类的实现部分，内部包含类中的各种信息，包括各种实例方法或类方法。">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -157,7 +157,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">107</span>
+                                    <span class="site-state-item-count">113</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -169,7 +169,7 @@
                             </div>
                             <div class="site-state-item site-state-tags">
                                 <a href="/tags" target="_blank">
-                                    <span class="site-state-item-count">443</span>
+                                    <span class="site-state-item-count">454</span>
                                     <span class="site-state-item-name">标签</span>
                                 </a>
                             </div>
@@ -186,11 +186,11 @@
                                 </span>
                             </li>
                             <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
-                                <span class="articleCount">443
+                                <span class="articleCount">454
                                 </span>
                             </li>
                             <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
-                                <span class="articleCount">107
+                                <span class="articleCount">113
                                         </span>
                             </li>
                             <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
@@ -231,13 +231,13 @@
                             
                             <li onclick="pushNew('/categories#其他')" class="categoryList">
                                 <a name="其他" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">其他</a>
-                                <a name="其他" style="font-size:13px;color: white" class="articleCount">6
+                                <a name="其他" style="font-size:13px;color: white" class="articleCount">11
                                 </a>
                             </li>
                             
                             <li onclick="pushNew('/categories#iOS')" class="categoryList">
                                 <a name="iOS" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">iOS</a>
-                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">34
+                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">35
                                 </a>
                             </li>
                             
@@ -351,7 +351,7 @@
 
   <article class="post-content">
     <p><code class="highlighter-rouge">类</code>由两个部分组成：<em>.h和</em>.m文件组成。
-*.m文件中 implemention部分是类的实现部分，内部包含类中的各种信息，包括各种实例方法或类方法。</p>
+*.m文件中 @implementation部分是类的实现部分，内部包含类中的各种信息，包括各种实例方法或类方法。</p>
 
 <p><code class="highlighter-rouge">实例变量</code>(instance variable)：由类定义的实例话的变量（不包括基本数据类型，如int,double,float）。</p>
 
@@ -384,7 +384,7 @@
 <p>2）类的实现：类的实现可以理解为类中的方法的实现</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import "Person.h"
-@implemention Person
+@implementation Person
 -(void)input{
 NSLog(@"这是第一个程序！");
 }
@@ -404,6 +404,10 @@ int main(int argc, char * argv[]) {
 }
 </code></pre></div></div>
 
+<p><code class="highlighter-rouge">实例对象</code>就是通过类调用alloc来产生的instance，每一次调用的alloc都是产生新的实例对象，内存地址都是不一样的，占据着不同的内存</p>
+
+<p>一个类的<code class="highlighter-rouge">类对象</code>只有唯一的一个,Class Classobjc1 = [objc1 class];</p>
+
 
   </article>
 
@@ -417,7 +421,7 @@ int main(int argc, char * argv[]) {
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15821713417" title="优惠券设计思路浅析" style="color: #6666cc;font-size: 0.9em;"  target="_blank">优惠券设计思路浅析</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/4" title="iOS内存泄漏静态分析：Analyze的使用" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS内存泄漏静态分析：Analyze的使用</a>
 	    </div>
 	  
   	  
