@@ -128,8 +128,8 @@ https://gorpeln.com/links
 https://gorpeln.com/name
 https://gorpeln.com/sitemap.xml
 https://gorpeln.com/archives
+https://gorpeln.com/privacy
 https://gorpeln.com/sitemap.txt
-https://gorpeln.com/shiguangben
 https://gorpeln.com/categories
 https://gorpeln.com/page2/
 https://gorpeln.com/page3/
