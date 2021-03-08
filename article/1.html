@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>背诵全文 | gorpeln的个人博客 - gorpeln</title>
+  <title>杂记一 | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,基础,面试题" />
   <meta name="description" content="1、设计模式是什么？ 你知道哪些设计模式，并简要叙述？设计模式是一种编码经验，就是用比较成熟的逻辑去处理某一种类型的事情。  在iOS开发中经常用到的设计模式主要有以下几种：1.MVC模式2.MVVM模式3.单例模式4.代理模式5.观察者模式（通知和KVO）6.工厂模式">
@@ -322,7 +322,7 @@
                     <div class="page-content" id="pjax"><div class="post">
 
   <header class="post-header">
-    <h1 class="post-title">背诵全文</h1>
+    <h1 class="post-title">杂记一</h1>
     <div class="info">
 	    <p class="post-meta">时间：2020-02-02</p>
 	    
@@ -788,7 +788,10 @@ NSArray *array = [persons filteredArrayUsingPredicate:predicate];
 </code></pre></div></div>
 
 <p>40、一个objc对象的isa的指针指向什么？有什么作用？</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>答：指向他的类对象,从而可以找到对象上的方法。
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>答：指向他的类对象,从而可以找到对象上的方法。  
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>isa指针是和Class同类型的objc_class结构指针，类对象的指针指向其所属的类，即元类。元类中存储着类对象的类方法，当访问某个类的类方法时会通过该isa指针从元类中寻找方法对应的函数指针。
 </code></pre></div></div>
 
 <p>41、下面的代码输出什么？</p>
@@ -809,34 +812,66 @@ super是一个Magic Keyword，它本质是一个编译器标示符，和self是�
 </code></pre></div></div>
 
 <p>42、写一个完整的代理，包括声明、实现</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 创建
-@protocol MyDelagate
-@required
--(void)eat:(NSString *)foodName; 
-@optional
--(void)run;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/**
+ *  A向B传递信息 就在A中声明delegate 在B中挂上
+ */
+
+
+//  a.h
+/**
+ *  下面是声明协议的固定格式，AViewControllerDelegate是协议的名称，因为是代理协议，名称格式为：类名+Delegate
+ */
+@protocol AViewControllerDelegate &lt;NSObject&gt;
+- (void)doSomething;
 @end
 
-//  声明 .h
-@interface person: NSObject&lt;MyDelagate&gt;
+/**
+ *  delegate 是AViewController类的一个属性，weak 关键字是为了避免循环引用，&lt;AViewControllerDelegate&gt;表示遵守AViewControllerDelegate协议
+ *  更加直白点：A控制器需要其他控制器或视图接收他完成某件事情的信号去做一些事情，具体的控制器或视图是谁，A控制器不关心，取代号是delegate
+ */
+@property (nonatomic, weak) id &lt;AViewControllerDelegate&gt; delegate;
 
-@end
 
-//  实现 .m
-@implementation person
-- (void)eat:(NSString *)foodName { 
-   NSLog(@"吃:%@!", foodName);
-} 
-- (void)run {
-   NSLog(@"run!");
+//a.m
+
+/**
+ *  下面这句是判断一下delegate是否实现了doSomething方法，如果delegate没有实现
+ *  直接[self.delegate doSomethingAftercaiZuohaole];
+ */
+
+/**
+ *  传值
+ *  if ([_delegate respondsToSelector:@selector(sendValue:)]) { // 如果协议响应
+ *  了sendValue:方法
+ *  [_delegate sendValue:_textField.text]; // 通知执行协议方法
+ *  }
+ */
+
+if ([self.delegate respondsToSelector:@selector(doSomething)]) {
+    [self.delegate doSomething];
 }
 
-@end
+// /////////////////////////////////////////////////////////////////////
+
+//b.m
+
+&lt;AViewControllerDelegate&gt;
+
+- (void)methodOfBViewController{
+    
+    AViewController *aViewController = [[AViewController alloc] init];
+    aViewController.delegate = self;//说明A控制器充当代理的角色，负责接收A动作完成的信号。
+}
+//代理方法
+- (void)doSomething{
+    NSLog(@"delegate 回调");
+}
+
 </code></pre></div></div>
 
 <p>43、isKindOfClass、isMemberOfClass、selector作用分别是什么</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>isKindOfClass：作用是某个对象属于某个类型或者继承自某类型。
-isMemberOfClass：某个对象确切属于某个类型。
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>isKindOfClass：判断是否是某个类型或者子类的实例。
+isMemberOfClass：判断是否是某个类型的实例，必须完全匹配。
 selector：通过方法名，获取在内存中的函数的入口地址。
 </code></pre></div></div>
 
@@ -1195,6 +1230,25 @@ APNS的原理：
 </code></pre></div></div>
 <p><img src="https://img.gorpeln.com/blog_Interview_APNS.png" alt="blog_Interview_APNS" /></p>
 
+<p>77、iOS之事件的传递和响应机制</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.点击一个UIView或产生一个触摸事件A，这个触摸事件A会被添加到由UIApplication管理的事件队列中（即，首先接收到事件的是UIApplication）。
+2.UIApplication会从事件对列中取出最前面的事件（此处假设为触摸事件A），把事件A传递给应用程序的主窗口（keyWindow）。
+3.窗口会在视图层次结构中找到一个最合适的视图来处理触摸事件。（至此，第一步已完成）
+
+
+产生触摸事件-&gt;UIApplication事件队列-&gt;[UIWindow hitTest:withEvent:]-&gt;返回更合适的view-&gt;[子控件 hitTest:withEvent:]-&gt;返回最合适的view
+
+
+</code></pre></div></div>
+
+<p>78、UIView 􏰸􏰸和 CALayer 􏰘􏷻􏵥 区别</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1）CALayer 无法响应用户事件。UTView 和 CALayer 的最明显区别在于它们的可交互性，即 UIView 可以响应用户事件，而 CALayer 不可以，UTView 是继承自 UIResponder 的，决定了 UTView 类及其子类能够通过响应链（iOS 通过视图层级关系来传递触摸事件）接收并响应用户事件。而 CALayer 直接继承于 NSObject 类，所以它不清楚具体的响应链，也就无法响应用户事件。
+
+2）分工不同。UIView 类侧重于对显示内容的管理和整体布局，而 CALayer 侧重于显示内容的绘制、显示和动画。
+3）所属框架不同。UTView 类是属于 UIKit.fiamework 框架的，UIKit框架主要就是用来构建用户界面的。CALayer 类是属于 QuartzCore.famework 框架的，而且 CALayer 是作为一个低级的，可以承载绘制内容的底层对象出现在该框架的。
+
+</code></pre></div></div>
+
 <hr />
 <hr />
 <hr />
@@ -1212,7 +1266,7 @@ APNS的原理：
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/2" title="背诵全文二" style="color: #6666cc;font-size: 0.9em;"  target="_blank">背诵全文二</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/2" title="杂记二" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记二</a>
 	    </div>
 	  
   	  

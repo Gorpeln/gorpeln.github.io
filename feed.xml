@@ -3507,7 +3507,7 @@ thread.threadPriority = 1;
       </item>
     
       <item>
-        <title>iOS内存泄漏动态分析：leaks的使用</title>
+        <title>杂记八</title>
         <link>https://gorpeln.com/article/8</link>
         <guid isPermaLink="true">https://gorpeln.com/article/8</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
@@ -3542,7 +3542,7 @@ https://blog.csdn.net/qq_18505715/article/details/78411052&lt;/p&gt;
       </item>
     
       <item>
-        <title>iOS内存泄漏动态分析：leaks的使用</title>
+        <title>杂记七</title>
         <link>https://gorpeln.com/article/7</link>
         <guid isPermaLink="true">https://gorpeln.com/article/7</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
@@ -3943,7 +3943,7 @@ https://blog.csdn.net/qq_18505715/article/details/78411052&lt;/p&gt;
       </item>
     
       <item>
-        <title>iOS内存泄漏动态分析：leaks的使用</title>
+        <title>杂记六</title>
         <link>https://gorpeln.com/article/6</link>
         <guid isPermaLink="true">https://gorpeln.com/article/6</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
@@ -4493,7 +4493,7 @@ Graphics Hardware|&lt;br /&gt;
       </item>
     
       <item>
-        <title>iOS内存泄漏动态分析：leaks的使用</title>
+        <title>杂记五</title>
         <link>https://gorpeln.com/article/5</link>
         <guid isPermaLink="true">https://gorpeln.com/article/5</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
@@ -4535,7 +4535,7 @@ Graphics Hardware|&lt;br /&gt;
       </item>
     
       <item>
-        <title>iOS内存泄漏静态分析：Analyze的使用</title>
+        <title>杂记四</title>
         <link>https://gorpeln.com/article/4</link>
         <guid isPermaLink="true">https://gorpeln.com/article/4</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
@@ -4587,7 +4587,7 @@ Graphics Hardware|&lt;br /&gt;
       </item>
     
       <item>
-        <title>背诵全文三</title>
+        <title>杂记三</title>
         <link>https://gorpeln.com/article/3</link>
         <guid isPermaLink="true">https://gorpeln.com/article/3</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
@@ -4653,7 +4653,7 @@ int main(int argc, char * argv[]) {
       </item>
     
       <item>
-        <title>背诵全文二</title>
+        <title>杂记二</title>
         <link>https://gorpeln.com/article/2</link>
         <guid isPermaLink="true">https://gorpeln.com/article/2</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
@@ -5132,7 +5132,7 @@ conformsToProtocol : 用来判断对象是否实现了指定协议类的方法
       </item>
     
       <item>
-        <title>背诵全文</title>
+        <title>杂记一</title>
         <link>https://gorpeln.com/article/1</link>
         <guid isPermaLink="true">https://gorpeln.com/article/1</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
@@ -5574,7 +5574,10 @@ NSArray *array = [persons filteredArrayUsingPredicate:predicate];
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;40、一个objc对象的isa的指针指向什么？有什么作用？&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;答：指向他的类对象,从而可以找到对象上的方法。
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;答：指向他的类对象,从而可以找到对象上的方法。  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;isa指针是和Class同类型的objc_class结构指针，类对象的指针指向其所属的类，即元类。元类中存储着类对象的类方法，当访问某个类的类方法时会通过该isa指针从元类中寻找方法对应的函数指针。
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;41、下面的代码输出什么？&lt;/p&gt;
@@ -5595,34 +5598,66 @@ super是一个Magic Keyword，它本质是一个编译器标示符，和self是�
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;42、写一个完整的代理，包括声明、实现&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;// 创建
-@protocol MyDelagate
-@required
--(void)eat:(NSString *)foodName; 
-@optional
--(void)run;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/**
+ *  A向B传递信息 就在A中声明delegate 在B中挂上
+ */
+
+
+//  a.h
+/**
+ *  下面是声明协议的固定格式，AViewControllerDelegate是协议的名称，因为是代理协议，名称格式为：类名+Delegate
+ */
+@protocol AViewControllerDelegate &amp;lt;NSObject&amp;gt;
+- (void)doSomething;
 @end
 
-//  声明 .h
-@interface person: NSObject&amp;lt;MyDelagate&amp;gt;
+/**
+ *  delegate 是AViewController类的一个属性，weak 关键字是为了避免循环引用，&amp;lt;AViewControllerDelegate&amp;gt;表示遵守AViewControllerDelegate协议
+ *  更加直白点：A控制器需要其他控制器或视图接收他完成某件事情的信号去做一些事情，具体的控制器或视图是谁，A控制器不关心，取代号是delegate
+ */
+@property (nonatomic, weak) id &amp;lt;AViewControllerDelegate&amp;gt; delegate;
 
-@end
 
-//  实现 .m
-@implementation person
-- (void)eat:(NSString *)foodName { 
-   NSLog(@&quot;吃:%@!&quot;, foodName);
-} 
-- (void)run {
-   NSLog(@&quot;run!&quot;);
+//a.m
+
+/**
+ *  下面这句是判断一下delegate是否实现了doSomething方法，如果delegate没有实现
+ *  直接[self.delegate doSomethingAftercaiZuohaole];
+ */
+
+/**
+ *  传值
+ *  if ([_delegate respondsToSelector:@selector(sendValue:)]) { // 如果协议响应
+ *  了sendValue:方法
+ *  [_delegate sendValue:_textField.text]; // 通知执行协议方法
+ *  }
+ */
+
+if ([self.delegate respondsToSelector:@selector(doSomething)]) {
+    [self.delegate doSomething];
 }
 
-@end
+// /////////////////////////////////////////////////////////////////////
+
+//b.m
+
+&amp;lt;AViewControllerDelegate&amp;gt;
+
+- (void)methodOfBViewController{
+    
+    AViewController *aViewController = [[AViewController alloc] init];
+    aViewController.delegate = self;//说明A控制器充当代理的角色，负责接收A动作完成的信号。
+}
+//代理方法
+- (void)doSomething{
+    NSLog(@&quot;delegate 回调&quot;);
+}
+
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;43、isKindOfClass、isMemberOfClass、selector作用分别是什么&lt;/p&gt;
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;isKindOfClass：作用是某个对象属于某个类型或者继承自某类型。
-isMemberOfClass：某个对象确切属于某个类型。
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;isKindOfClass：判断是否是某个类型或者子类的实例。
+isMemberOfClass：判断是否是某个类型的实例，必须完全匹配。
 selector：通过方法名，获取在内存中的函数的入口地址。
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -5980,6 +6015,25 @@ APNS的原理：
     4). APNS根据设备令牌找到设备，再由iOS根据APPID把推送内容展示
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_Interview_APNS.png&quot; alt=&quot;blog_Interview_APNS&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;77、iOS之事件的传递和响应机制&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1.点击一个UIView或产生一个触摸事件A，这个触摸事件A会被添加到由UIApplication管理的事件队列中（即，首先接收到事件的是UIApplication）。
+2.UIApplication会从事件对列中取出最前面的事件（此处假设为触摸事件A），把事件A传递给应用程序的主窗口（keyWindow）。
+3.窗口会在视图层次结构中找到一个最合适的视图来处理触摸事件。（至此，第一步已完成）
+
+
+产生触摸事件-&amp;gt;UIApplication事件队列-&amp;gt;[UIWindow hitTest:withEvent:]-&amp;gt;返回更合适的view-&amp;gt;[子控件 hitTest:withEvent:]-&amp;gt;返回最合适的view
+
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;78、UIView 􏰸􏰸和 CALayer 􏰘􏷻􏵥 区别&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1）CALayer 无法响应用户事件。UTView 和 CALayer 的最明显区别在于它们的可交互性，即 UIView 可以响应用户事件，而 CALayer 不可以，UTView 是继承自 UIResponder 的，决定了 UTView 类及其子类能够通过响应链（iOS 通过视图层级关系来传递触摸事件）接收并响应用户事件。而 CALayer 直接继承于 NSObject 类，所以它不清楚具体的响应链，也就无法响应用户事件。
+
+2）分工不同。UIView 类侧重于对显示内容的管理和整体布局，而 CALayer 侧重于显示内容的绘制、显示和动画。
+3）所属框架不同。UTView 类是属于 UIKit.fiamework 框架的，UIKit框架主要就是用来构建用户界面的。CALayer 类是属于 QuartzCore.famework 框架的，而且 CALayer 是作为一个低级的，可以承载绘制内容的底层对象出现在该框架的。
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;hr /&gt;
 &lt;hr /&gt;
