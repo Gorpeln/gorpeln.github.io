@@ -524,6 +524,7 @@ block 使用 copy 是从 MRC 遗留下来的“传统”,在 MRC 中,方法内�
 3.综上，用property声明NSArray数组时，最好使用copy。用property声明NSMutableArray数组时，最好使用strong。如果使用copy，又self.mArray来赋值，后面增删改查，程序肯定会crash的。使用_.mArray是可以的。   
    
 </code></pre></div></div>
+<p><img src="https://img.gorpeln.com//blog_article_note_001.png" alt="blog_article_note_001" /></p>
 
 <p>14、这个写法会出什么问题：@property (nonatomic, copy) NSMutableArray *arr;</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>问题：添加,删除,修改数组内的元素的时候,程序会因为找不到对应的方法而崩溃。
@@ -657,7 +658,7 @@ UIViewController是官方类，我们只能调用期接口，并不能修改他�
 
 </code></pre></div></div>
 <p>23、我们说的OC是动态运行时语言是什么意思？</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>答：主要是将数据类型的确定由编译时，推迟到了运行时。...。
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>答：主要是将数据类型的确定由编译时，推迟到了运行时。简单来说，运行时机制使我们直到运行时才去确定一个对象的类别，以及调用该类别对象指定方法。
 </code></pre></div></div>
 
 <p>24、为什么我们常见的delegate属性都用是week而不是retain/strong？</p>
@@ -1231,28 +1232,65 @@ APNS的原理：
 <p><img src="https://img.gorpeln.com/blog_Interview_APNS.png" alt="blog_Interview_APNS" /></p>
 
 <p>77、iOS之事件的传递和响应机制</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.点击一个UIView或产生一个触摸事件A，这个触摸事件A会被添加到由UIApplication管理的事件队列中（即，首先接收到事件的是UIApplication）。
-2.UIApplication会从事件对列中取出最前面的事件（此处假设为触摸事件A），把事件A传递给应用程序的主窗口（keyWindow）。
-3.窗口会在视图层次结构中找到一个最合适的视图来处理触摸事件。（至此，第一步已完成）
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>响应者链的事件传递过程：  
+  
+首先看initial view （初始view、当前view）能否处理这个事件，如果不能则会将事件传递给其上级视图（inital view的superView）；如果上级视图仍然无法处理则会继续往上传递；一直传递到视图控制器view controller，首先判断视图控制器的根视图view是否能处理此事件；如果不能则接着判断该视图控制器能否处理此事件，如果还是不能则继续向上传 递；（对于第二个图视图控制器本身还在另一个视图控制器中，则继续交给父视图控制器的根视图，如果根视图不能处理则交给父视图控制器处理）；一直到 window，如果window还是不能处理此事件则继续交给application处理，如果最后application还是不能处理此事件则将其丢弃
 
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>事件处理的整个流程总结：  
+  
+　　1、触摸屏幕产生触摸事件后，触摸事件会被添加到由UIApplication管理的事件队列中（即，首先接收到事件的是UIApplication）。
+　　2、UIApplication会从事件队列中取出最前面的事件，把事件传递给应用程序的主窗口（keyWindow）。
+　　3、主窗口会在视图层次结构中找到一个最合适的视图来处理触摸事件。（至此，第一步已完成)
+　　4、最合适的view会调用自己的touches方法处理事件
+　　5、touches默认做法是把事件顺着响应者链条向上抛。
+</code></pre></div></div>
 
-产生触摸事件-&gt;UIApplication事件队列-&gt;[UIWindow hitTest:withEvent:]-&gt;返回更合适的view-&gt;[子控件 hitTest:withEvent:]-&gt;返回最合适的view
-
-
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>如何做到一个事件多个对象处理：   
+     
+因为系统默认做法是把事件上抛给父控件，所以可以通过重写自己的touches方法和父控件的touches方法来达到一个事件多个对象处理的目的。
 </code></pre></div></div>
 
 <p>78、UIView 􏰸􏰸和 CALayer 􏰘􏷻􏵥 区别</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1）CALayer 无法响应用户事件。UTView 和 CALayer 的最明显区别在于它们的可交互性，即 UIView 可以响应用户事件，而 CALayer 不可以，UTView 是继承自 UIResponder 的，决定了 UTView 类及其子类能够通过响应链（iOS 通过视图层级关系来传递触摸事件）接收并响应用户事件。而 CALayer 直接继承于 NSObject 类，所以它不清楚具体的响应链，也就无法响应用户事件。
-
 2）分工不同。UIView 类侧重于对显示内容的管理和整体布局，而 CALayer 侧重于显示内容的绘制、显示和动画。
 3）所属框架不同。UTView 类是属于 UIKit.fiamework 框架的，UIKit框架主要就是用来构建用户界面的。CALayer 类是属于 QuartzCore.famework 框架的，而且 CALayer 是作为一个低级的，可以承载绘制内容的底层对象出现在该框架的。
-
 </code></pre></div></div>
 
-<hr />
-<hr />
-<hr />
+<p>79、冒泡排序</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    NSMutableArray * arr = [NSMutableArray arrayWithObjects:@16,@1,@2,@9,@7,@12,@5,@3,@8,@13,@10, nil];;
+    for (int i = 0; i  &lt; arr.count; i++) {
+        for (int j = 0; j &lt; arr.count - i - 1; j++) {
+            if ([arr[j] intValue] &gt; [arr[j+1] intValue]) {
+                [arr exchangeObjectAtIndex:j withObjectAtIndex:j+1];
+            }
+        }
+    }
+    
+    for (int i = 0 ; i &lt; arr.count; i++) {
+        for (int j = i+1; j &lt; arr.count; j++) {
+            if ([arr[i] intValue] &gt; [arr[j] intValue]) {
+                [arr exchangeObjectAtIndex:i withObjectAtIndex:j];
+            }
+        }
+    }
+    DLog(@"=====%@",arr);
 
+</code></pre></div></div>
+<p>80、APP启动
+<img src="https://img.gorpeln.com//blog_article_note_002.jpeg" alt="blog_article_note_002" />
+<img src="https://img.gorpeln.com//blog_article_note_003.png" alt="blog_article_note_003" /></p>
+
+<p>81、UITableView 如何优化</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1、正确使用 reuseIdentifier 来重用 Cells  
+2、提前计算并缓存好高度(布局)，因为 heightForRowAtIndexPath:是调
+用最频繁的方法  
+3、尽量少用 addView 给 Cell 动态添加 View，可以初始化时就添加，然 后通过 hide 来控制是否显示  
+4、大量图片展示，异步加载  
+5、尽量少用或不用透明图层  
+6、减少 subviews 的数量  
+7、复杂界面，异步绘制
+</code></pre></div></div>
 
   </article>
 
