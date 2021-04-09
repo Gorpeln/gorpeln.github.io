@@ -1803,7 +1803,8 @@ dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;,DISPA
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;h3 id=&quot;3-不同队列及任务的不同执行方式对比&quot;&gt;3、 不同队列及任务的不同执行方式对比&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002.png&quot; alt=&quot;blog_gcd_002&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002_2.png&quot; alt=&quot;blog_gcd_002&quot; /&gt;
+&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002_3.jpeg&quot; alt=&quot;blog_gcd_002_3&quot; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;由上我们可以看出：要想并发执行某些任务，只有使用 〖并发队列 + 异步执行〗这种组合方式。这也是我们开发中最常用的组合方式。&lt;/p&gt;
@@ -1845,7 +1846,8 @@ end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, n
 &lt;blockquote&gt;
   &lt;p&gt;1.所有任务都在主线程中执行(【串行+同步】不会开启新线程)。&lt;br /&gt;
 2.所有任务按照追加顺序依次执行。&lt;br /&gt;
-3.任务执行在begin和end之间，同步执行任务会阻塞主线程。&lt;/p&gt;
+3.任务执行在begin和end之间，同步执行任务会阻塞主线程。&lt;br /&gt;
+&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002_4.png&quot; alt=&quot;blog_gcd_002_4&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h4 id=&quot;32-串行队列--异步执行&quot;&gt;3.2 串行队列 + 异步执行&lt;/h4&gt;
@@ -1996,7 +1998,8 @@ end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0263e00&amp;gt;{number = 1, n
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;结论:&lt;/p&gt;
 &lt;blockquote&gt;
-  &lt;p&gt;发生死锁，任务不会执行。由于主队列为串行队列，主线程在执行mainAndSync 函数，而 mainAndSync 在等待主线程执行结束，就造成了互相等待，均不会执行。(开发中要极力避免这种情况)&lt;/p&gt;
+  &lt;p&gt;发生死锁，任务不会执行。由于主队列为串行队列，主线程在执行mainAndSync 函数，而 mainAndSync 在等待主线程执行结束，就造成了互相等待，均不会执行。(开发中要极力避免这种情况)
+&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002_5.png&quot; alt=&quot;blog_gcd_002_5&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h4 id=&quot;36-主队列--异步执行&quot;&gt;3.6 主队列 + 异步执行&lt;/h4&gt;
@@ -5310,7 +5313,7 @@ block 使用 copy 是从 MRC 遗留下来的“传统”,在 MRC 中,方法内�
 3.综上，用property声明NSArray数组时，最好使用copy。用property声明NSMutableArray数组时，最好使用strong。如果使用copy，又self.mArray来赋值，后面增删改查，程序肯定会crash的。使用_.mArray是可以的。   
    
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com//blog_article_note_001.png&quot; alt=&quot;blog_article_note_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_article_note_001.png&quot; alt=&quot;blog_article_note_001&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;14、这个写法会出什么问题：@property (nonatomic, copy) NSMutableArray *arr;&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;问题：添加,删除,修改数组内的元素的时候,程序会因为找不到对应的方法而崩溃。
@@ -6064,8 +6067,8 @@ APNS的原理：
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;80、APP启动
-&lt;img src=&quot;https://img.gorpeln.com//blog_article_note_002.jpeg&quot; alt=&quot;blog_article_note_002&quot; /&gt;
-&lt;img src=&quot;https://img.gorpeln.com//blog_article_note_003.png&quot; alt=&quot;blog_article_note_003&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://img.gorpeln.com/blog_article_note_002.jpeg&quot; alt=&quot;blog_article_note_002&quot; /&gt;
+&lt;img src=&quot;https://img.gorpeln.com/blog_article_note_003.png&quot; alt=&quot;blog_article_note_003&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;81、UITableView 如何优化&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1、正确使用 reuseIdentifier 来重用 Cells  

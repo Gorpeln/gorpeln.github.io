@@ -157,7 +157,7 @@
                         <div class="site-state">
                             <div class="site-state-item site-state-posts">
                                 <a href="/archives" target="_blank">
-                                    <span class="site-state-item-count">113</span>
+                                    <span class="site-state-item-count">114</span>
                                     <span class="site-state-item-name">日志</span>
                                 </a>
                             </div>
@@ -190,7 +190,7 @@
                                 </span>
                             </li>
                             <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
-                                <span class="articleCount">113
+                                <span class="articleCount">114
                                         </span>
                             </li>
                             <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
@@ -231,7 +231,7 @@
                             
                             <li onclick="pushNew('/categories#其他')" class="categoryList">
                                 <a name="其他" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">其他</a>
-                                <a name="其他" style="font-size:13px;color: white" class="articleCount">11
+                                <a name="其他" style="font-size:13px;color: white" class="articleCount">12
                                 </a>
                             </li>
                             
@@ -458,7 +458,8 @@ dispatch_queue_t queue = dispatch_queue_create("com.example.gcd",DISPATCH_QUEUE_
 </code></pre></div></div>
 <h3 id="3-不同队列及任务的不同执行方式对比">3、 不同队列及任务的不同执行方式对比</h3>
 
-<p><img src="https://img.gorpeln.com/blog_gcd_002.png" alt="blog_gcd_002" /></p>
+<p><img src="https://img.gorpeln.com/blog_gcd_002_2.png" alt="blog_gcd_002" />
+<img src="https://img.gorpeln.com/blog_gcd_002_3.jpeg" alt="blog_gcd_002_3" /></p>
 
 <blockquote>
   <p>由上我们可以看出：要想并发执行某些任务，只有使用 〖并发队列 + 异步执行〗这种组合方式。这也是我们开发中最常用的组合方式。</p>
@@ -500,7 +501,8 @@ end   ==== &gt;&gt;: &lt;NSThread: 0x1d4074f80&gt;{number = 1, name = main}
 <blockquote>
   <p>1.所有任务都在主线程中执行(【串行+同步】不会开启新线程)。<br />
 2.所有任务按照追加顺序依次执行。<br />
-3.任务执行在begin和end之间，同步执行任务会阻塞主线程。</p>
+3.任务执行在begin和end之间，同步执行任务会阻塞主线程。<br />
+<img src="https://img.gorpeln.com/blog_gcd_002_4.png" alt="blog_gcd_002_4" /></p>
 </blockquote>
 
 <h4 id="32-串行队列--异步执行">3.2 串行队列 + 异步执行</h4>
@@ -651,7 +653,8 @@ end   ==== &gt;&gt;: &lt;NSThread: 0x1d0263e00&gt;{number = 1, name = main}
 </code></pre></div></div>
 <p>结论:</p>
 <blockquote>
-  <p>发生死锁，任务不会执行。由于主队列为串行队列，主线程在执行mainAndSync 函数，而 mainAndSync 在等待主线程执行结束，就造成了互相等待，均不会执行。(开发中要极力避免这种情况)</p>
+  <p>发生死锁，任务不会执行。由于主队列为串行队列，主线程在执行mainAndSync 函数，而 mainAndSync 在等待主线程执行结束，就造成了互相等待，均不会执行。(开发中要极力避免这种情况)
+<img src="https://img.gorpeln.com/blog_gcd_002_5.png" alt="blog_gcd_002_5" /></p>
 </blockquote>
 
 <h4 id="36-主队列--异步执行">3.6 主队列 + 异步执行</h4>

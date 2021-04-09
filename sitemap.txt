@@ -19,6 +19,7 @@ https://gorpeln.com/article/4
 https://gorpeln.com/article/3
 https://gorpeln.com/article/2
 https://gorpeln.com/article/1
+https://gorpeln.com/article/0
 https://gorpeln.com/article/15805392787
 https://gorpeln.com/article/15788283058
 https://gorpeln.com/article/15786589400
@@ -122,6 +123,7 @@ https://gorpeln.com/timeline
 https://gorpeln.com/404
 https://gorpeln.com/apple-app-site-association
 https://gorpeln.com/login
+https://gorpeln.com/app-ads.txt
 https://gorpeln.com/works
 https://gorpeln.com/mysite
 https://gorpeln.com/links

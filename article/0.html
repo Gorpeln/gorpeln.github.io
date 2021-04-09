@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>杂记零 | gorpeln的个人博客 - gorpeln</title>
+
+  <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,基础,面试题" />
+  <meta name="description" content="一、UI视图1. UITableView 复用">
+  <meta name="baidu-site-verification" content="V7C06t3NGW" />
+  <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
+  <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
+
+  <link rel="stylesheet" href="/assets/css/bootstrap.css">
+  <link rel="stylesheet" href="/assets/css/main.css" >
+  <link rel="stylesheet" href="/assets/js/prettify/prettify.css">
+  <link rel="stylesheet" href="/assets/fontawesome-pro/css/all.css">
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico" />
+  <link rel="canonical" href="/article/0">
+  <link rel="alternate" type="application/rss+xml" title="gorpeln的个人博客 - gorpeln" href="/feed.xml" />
+
+  
+</head>
+
+
+
+
+<header class="site-header">
+    <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+    <style type="text/css">
+    html * {
+        
+    }
+
+    .menuNav {
+        margin-top: 100px;
+        position: absolute;
+    }
+
+    .menuNav * {
+        text-decoration: none;
+        font-size: 9pt;
+    }
+
+    .menuNav * a:hover {
+        /*background-color: rgba(0, 0, 0, 0.75);*/
+    }
+
+    .menuNav {
+        list-style: none;
+        display: none;
+        margin-left: -1px;
+    }
+
+    .menuNav li {
+        float: left;
+        border-top: 1px solid #aaa;
+        background-color: rgba(0, 0, 0, 0.75);
+
+    }
+
+    .menuNav li a {
+    color: #fff;
+    padding: 15px 0;
+    display: block;
+    width: 2em;
+    text-align: center;
+    }
+
+    .menuNav li a:focus {
+        -moz-outline-style: none;
+    }
+
+    .menuNav li .sub-nav {
+     position: absolute;
+    top: -110%;
+    left: calc(2em - 30px);
+    list-style: none;
+    /*background-color: rgba(0, 0, 0, 0.6);*/
+    display: none;
+    }
+
+    .menuNav li .sub-nav li {
+        text-align: center;
+        clear: left;
+        width: 140px;
+        height: 35px;
+        line-height: 35px;
+        position: relative;
+    }
+
+    .menuNav li .sub-nav li a {
+        height: 34px;
+        line-height: 34px;
+        width: 138px;
+        padding: 0;
+        display: inline-block;
+    }
+
+    @media (max-width: 678px) {
+        .menuNav {
+            display: block;
+        }
+    }
+    </style>
+    <script type="text/javascript">
+    $(function() {
+        $(".menuNav>li").hover(function() {
+            $(this).children('ul').stop(true, true).show(300);
+        }, function() {
+            $(this).children('ul').stop(true, true).hide(300);
+        })
+    })
+    </script>
+            <ul class="menuNav">
+                <li><a href="#">菜<br/>单</a>
+                    <ul class="sub-nav">
+                        <li><a href="/">首页</a></li>
+                        <li><a href="/categories">分类</a></li>
+                        <li><a href="/tags">标签</a></li>
+                        <li><a href="/archives">归档</a></li>
+                        <li><a href="/about">关于</a></li>
+                        <li><a href="/works">项目</a></li>
+                        <li><a href="/mysite">导航</a></li>
+                    </ul>
+                </li>
+            </ul>
+</header>
+
+<body>
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $('#toc').toc();
+    });
+    </script>
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+                    <div class="profile box-shadow center">
+                        <div class="overlay"></div>
+                        <div class="center gavatar">
+                            <a href="/" class="profile_gavatar"><img class="circle" src="/assets/img/gorpeln.png"></a>
+                        </div>
+                        <div class="nickname">
+                            风未止
+                        </div>
+                        <div class="center profile_desc">
+                            趁年轻，做自己想做的！
+                        </div>
+                        <div class="center profile_subdesc">
+                            There is no best, only better!
+                            <br />
+                        </div>
+                        <div class="site-state">
+                            <div class="site-state-item site-state-posts">
+                                <a href="/archives" target="_blank">
+                                    <span class="site-state-item-count">114</span>
+                                    <span class="site-state-item-name">日志</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-categories">
+                                <a href="/categories" target="_blank">
+                                    <span class="site-state-item-count">10</span>
+                                    <span class="site-state-item-name">分类</span>
+                                </a>
+                            </div>
+                            <div class="site-state-item site-state-tags">
+                                <a href="/tags" target="_blank">
+                                    <span class="site-state-item-count">454</span>
+                                    <span class="site-state-item-name">标签</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="rss-subscribe"><a target="_blank" href="/feed.xml"><i class="fas fa-rss" style="padding-right:5px;"></i>RSS</a>
+                        </div>
+                    </div>
+                    <div class="siteNav">
+                        <div class="navTitle">博客导航</div>
+                        <ul>
+                            <li onclick="pushNew('/')"><a><i class="fas fa-home fa-fw"></i>首页</a></li>
+                            <li onclick="pushNew('/categories')"><a><i class="fas fa-th fa-fw"></i>分类</a>
+                                <span class="articleCount">10
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/tags')"><a><i class="fas fa-tag fa-fw"></i>标签</a>
+                                <span class="articleCount">454
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/archives')"><a><i class="fas fa-archive fa-fw""></i>归档</a>
+                                <span class="articleCount">114
+                                        </span>
+                            </li>
+                            <li onclick="pushNew('/about')"><a><i class="fas fa-user fa-fw"></i>关于</a></li>
+                            <li onclick="pushNew('/links')"><a><i class="fas fa-comment-dots fa-fw"></i>友链</a></li>
+                            <li onclick="pushNew('/login')"><a><i class="fas fa-envelope-open-text fa-fw"></i>简历</a>
+                                <span class="articleCount">※
+                                </span>
+                            </li>
+                            <li onclick="pushNew('/mysite')"><a><i class="fas fa-globe-asia fa-fw"></i>导航</a></li>
+                            <li onclick="pushNew('/works')"><a><i class="fab fa-git-square fa-fw"></i>项目</a>
+                                <span class="articleCount">3
+                                </span>
+                            </li>
+                            <li id="cb-search-btn-two"><a><i class="fas fa-search fa-fw"></i>搜索</a></li>
+                        </ul>
+                    </div>
+                    <div class="categoryNav">
+                        <div class="categoryNavTitle">文章分类</div>
+                        <ul>
+                            
+                            <li onclick="pushNew('/categories#个人博客')" class="categoryList">
+                                <a name="个人博客" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">个人博客</a>
+                                <a name="个人博客" style="font-size:13px;color: white" class="articleCount">8
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Linux')" class="categoryList">
+                                <a name="Linux" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">Linux</a>
+                                <a name="Linux" style="font-size:13px;color: white" class="articleCount">1
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#web前端')" class="categoryList">
+                                <a name="web前端" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">web前端</a>
+                                <a name="web前端" style="font-size:13px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#其他')" class="categoryList">
+                                <a name="其他" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">其他</a>
+                                <a name="其他" style="font-size:13px;color: white" class="articleCount">12
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#iOS')" class="categoryList">
+                                <a name="iOS" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">iOS</a>
+                                <a name="iOS" style="font-size:13px;color: white" class="articleCount">35
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#程序人生')" class="categoryList">
+                                <a name="程序人生" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">程序人生</a>
+                                <a name="程序人生" style="font-size:13px;color: white" class="articleCount">19
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Software MAC')" class="categoryList">
+                                <a name="Software MAC" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">Software MAC</a>
+                                <a name="Software MAC" style="font-size:13px;color: white" class="articleCount">11
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#架构和算法')" class="categoryList">
+                                <a name="架构和算法" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">架构和算法</a>
+                                <a name="架构和算法" style="font-size:13px;color: white" class="articleCount">8
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#Git')" class="categoryList">
+                                <a name="Git" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">Git</a>
+                                <a name="Git" style="font-size:13px;color: white" class="articleCount">5
+                                </a>
+                            </li>
+                            
+                            <li onclick="pushNew('/categories#微信小程序')" class="categoryList">
+                                <a name="微信小程序" style="display: inline-block;white-space: nowrap;width: calc(100% - 42px);overflow: hidden;text-overflow: ellipsis;">微信小程序</a>
+                                <a name="微信小程序" style="font-size:13px;color: white" class="articleCount">10
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                    <div class="contactNav">
+                        <div class="contactNavTitle">个人档案</div>
+                        <div class="contact-container">
+                            <a class="contact-item" href="/assets/img/social/qqQRCode.jpg" target="_blank">
+                                <img src="/assets/img/social/qqLogo.png">
+                                <span class="contact-name">33964471</span>
+                            </a>
+                            <a class="contact-item" href="/" target="_blank">
+                                <img src="/assets/img/social/gmailLogo.png">
+                                <span class="contact-name">gorpeln*163.com(*=>@)</span>
+                            </a>
+                            <a class="contact-item" href="https://gorpeln.blog.csdn.net" target="_blank">
+                                <img src="/assets/img/social/csdnLogo.png">
+                                <span class="contact-name">gorpeln.blog.csdn.net</span>
+                            </a>
+                            <a class="contact-item" href="/about" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="contact-name">更多...</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="friendlinkNav" id="friendlinkNav">
+                        <div class="friendlinkNavTitle">友情链接</div>
+                        <div class="friend-container">
+                            
+                            <a class="friend-item" href="https://blogwe.com/" target="_blank">
+                                <img src="/assets/img/blogwe.ico">
+                                <span class="friend-name">博客大全</span>
+                            </a>
+                            
+                            <a class="friend-item" href="https://www.foreverblog.cn/" target="_blank">
+                                <img src="/assets/img/foreverblog.ico">
+                                <span class="friend-name">十年之约</span>
+                            </a>
+                            
+                            <a class="friend-item" href="/links" target="_blank">
+                                <img src="/assets/img/list_more.png">
+                                <span class="friend-name">更多...</span>
+                            </a>
+                            
+                        </div>
+                    </div>
+                    <!-- <div id="toc" class="navbar navbar-default customCatalog"></div> -->
+                    <div id="toc" class="customCatalog"></div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 box-shadow aside2" onclick="hiddenQRCode()">
+                    <div class="page-content" id="pjax"><div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">杂记零</h1>
+    <div class="info">
+	    <p class="post-meta">时间：2020-02-02</p>
+	    
+	    &nbsp;&nbsp;&nbsp;&nbsp;个人分类：
+		<a class="item-date" style="color:#6666cc;" href="/categories#其他" target="_blank">
+        	其他
+		</a>
+		&nbsp;&nbsp;&nbsp;&nbsp;标签：
+		
+		<span class="index-post-tag">
+		
+		    
+			
+				<a class="pjaxlink" href="/tags#基础"  target="_blank">基础</a>
+	    	
+		
+		    
+			
+				<a class="pjaxlink" href="/tags#面试题"  target="_blank">面试题</a>
+	    	
+		
+		</span>
+	    
+    </div>
+  </header>
+
+  <article class="post-content">
+    <h3 id="一ui视图">一、UI视图</h3>
+<h4 id="1-uitableview-复用">1. UITableView 复用</h4>
+<p><img src="https://img.gorpeln.com/blog_article_0_001.png" alt="blog_article_0_001" /></p>
+
+<h4 id="2-普通view复用">2. 普通view复用</h4>
+<p>-(void)scrollViewDidScroll:(UIScrollView *)scrollView；
+<img src="https://img.gorpeln.com/blog_article_0_002.jpg" alt="blog_article_0_002" /></p>
+
+<h4 id="3-数据源同步">3. 数据源同步</h4>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- 并发访问，数据拷贝，  数据拷贝之类的耗时
+- 串行访问，如果子线程比较耗时，  主线程就需要等待
+</code></pre></div></div>
+
+<h4 id="4-uiview-和-calayer">4. UIView 和 CALayer</h4>
+<p><img src="https://img.gorpeln.com/blog_article_0_003.png" alt="blog_article_0_003" /></p>
+
+<h4 id="5-事件传递-和-事件响应">5. 事件传递 和 事件响应</h4>
+<p><a href="https://www.jianshu.com/p/53885ef25c7f">https://www.jianshu.com/p/53885ef25c7f</a><br />
+<img src="https://img.gorpeln.com/blog_article_0_004_1 .png" alt="blog_article_0_004_1 " /></p>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_004_2.png" alt="blog_article_0_004_2" /></p>
+
+<h4 id="6-图像显示原理">6. 图像显示原理</h4>
+<p>layout UI布局、文本计算<br />
+display 绘制<br />
+UI卡顿和掉帧的原因？  <br />
+<a href="https://www.jianshu.com/p/a96b7dd7d3ad">https://www.jianshu.com/p/a96b7dd7d3ad</a></p>
+
+<p>60fps （每秒传输帧数(Frames Per Second)）<br />
+<img src="https://img.gorpeln.com/blog_article_0_005_1.png" alt="blog_article_0_005_1" /></p>
+
+<p><strong>卡顿的优化主要是针对CPU GPU进行优化</strong></p>
+
+<p>CPU:</p>
+<ul>
+  <li>尽量把耗时的操作放到子线程
+    <ul>
+      <li>文本处理（尺寸计算、异步绘制)</li>
+      <li>图片处理（解码、绘制）</li>
+      <li>布局计算</li>
+    </ul>
+  </li>
+  <li>控制一下线程的最大并发数量</li>
+  <li>不要频繁地调用UIView的相关属性，比如frame、bounds、transform等属性，尽量减少不必要的修改</li>
+  <li>尽量用轻量级的对象，比如用不到事件处理的地方，可以考虑使用CALayer取代UIView</li>
+</ul>
+
+<p>GPU:</p>
+<ul>
+  <li>GPU能处理的最大纹理尺寸是4096x4096，一旦超过这个尺寸，就会占用- CPU资源进行处理，所以纹理尽量不要超过这个尺寸</li>
+  <li>尽量减少视图数量和层次</li>
+  <li>减少透明的视图（alpha&lt;1），不透明的就设置opaque为YES</li>
+  <li>尽量避免出现离屏渲染</li>
+</ul>
+
+<p>UITableView 如何优化</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1、正确使用 reuseIdentifier 来重用 Cells  
+2、提前计算并缓存好高度(布局)，因为 heightForRowAtIndexPath:是调
+用最频繁的方法  
+3、尽量少用 addView 给 Cell 动态添加 View，可以初始化时就添加，然 后通过 hide 来控制是否显示  
+4、大量图片展示，异步加载  
+5、尽量少用或不用透明图层  
+6、减少 subviews 的数量  
+7、复杂界面，异步绘制
+</code></pre></div></div>
+
+<p>异步绘制<br />
+在 UIView 中有一个 CALayer 的属性，负责 UIView 具体内容的显示。具体过程是系统会把 UIView 显示的内容（包括 UILabel 的文字，UIImageView 的图片等）绘制在一张画布上，完成后倒出图片赋值给 CALayer 的 contents 属性，完成显示。</p>
+
+<p>这其中的工作都是在主线程中完成的，这就导致了主线程频繁的处理 UI 绘制的工作，如果要绘制的元素过多，过于频繁，就会造成卡顿。</p>
+
+<p><a href="https://www.jianshu.com/p/1c1b3f7cf087">https://www.jianshu.com/p/1c1b3f7cf087</a></p>
+
+<p>离屏渲染<br />
+<a href="https://juejin.cn/post/6847902220017467406">https://juejin.cn/post/6847902220017467406</a></p>
+
+<h3 id="二oc语言相关特性">二、OC语言相关特性</h3>
+
+<h4 id="1-分类">1. 分类</h4>
+
+<p><code class="highlighter-rouge">category</code> 可以在不获悉，不改变原来代码的情况下往里面添加新的 方法，只能添加，不能删除修改。<br />
+并且如果类别和原来类中的方法产生名称冲突，则类别将覆盖原来的 方法，因为类别具有更高的优先级。<br />
+<code class="highlighter-rouge">category</code>是运行时决议，<code class="highlighter-rouge">extensions </code>是编译时决议。<br />
+category 和 <code class="highlighter-rouge">extensions </code>的不同在于 后者可以添加属性。另外后者添 加的方法是必须要实现的。extensions 可以认为是一个私有的 Category。 不能为系统类添加扩展。</p>
+
+<p><code class="highlighter-rouge">继承</code>可以增加，修改或者删除方法，并且可以增加属性。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>struct category_t {
+    const char *name;
+    classref_t cls;
+    struct method_list_t *instanceMethods; // 实例方法
+    struct method_list_t *classMethods; // 类方法
+    struct protocol_list_t *protocols; // 协议
+    struct property_list_t *instanceProperties; // 属性
+    // Fields below this point are not always present on disk.
+    struct property_list_t *_classProperties;
+
+    method_list_t *methodsForMeta(bool isMeta) {
+        if (isMeta) return classMethods;
+        else return instanceMethods;
+    }
+
+    property_list_t *propertiesForMeta(bool isMeta, struct header_info *hi);
+};
+</code></pre></div></div>
+<p>从源码基本可以看出我们平时使用categroy的方式，实例方法，类方法，协议，和属性都可以找到对应的存储方式。并且我们发现分类结构体中是不存在成员变量的，因此分类中是不允许添加成员变量的。分类中添加的属性并不会帮助我们自动生成成员变量，只会生成get set方法的声明，需要我们自己去实现。</p>
+
+<p>在分类转化为c++文件中可以看出_category_t结构体中，存放着类名，对象方法列表，类方法列表，协议列表，以及属性列表。</p>
+
+<p>分类的方法，属性，协议列表被放在了类对象中原本存储的方法，属性，协议列表前面。</p>
+
+<p>那么为什么要将分类方法的列表追加到本来的对象方法前面呢，这样做的目的是为了保证分类方法优先调用，我们知道当分类重写本类的方法时，会覆盖本类的方法。
+其实经过上面的分析我们知道本质上并不是覆盖，而是优先调用。本类的方法依然在内存中的。我们可以通过打印所有类的所有方法名来查看</p>
+
+<p>问： Category的实现原理，以及Category为什么只能加方法不能加属性?</p>
+
+<p>答：分类的实现原理是将category中的方法，属性，协议数据放在category_t结构体中，然后将结构体内的方法列表拷贝到类对象的方法列表中。
+Category可以添加属性，但是并不会自动生成成员变量及set/get方法。因为category_t结构体中并不存在成员变量。通过之前对对象的分析我们知道成员变量是存放在实例对象中的，并且编译的那一刻就已经决定好了。而分类是在运行时才去加载的。那么我们就无法再程序运行时将分类的成员变量中添加到实例对象的结构体中。因此分类中不可以添加成员变量。</p>
+
+<h4 id="2-关联对象">2. 关联对象</h4>
+
+<p>关联对象由 全局的结构AssociationManager 管理，并在AssociationsHashMap存储； <br />
+所有对象的关联内容都在 同一个全局容器 中。 <br />
+一个实例对象 对应 一个AssociationsHashMap；<br />
+AssociationsHashMap中存储着 多个此实例对象 的关联对象的Key和ObjcAssociation；<br />
+ObjcAssociation存储着关联对象的value和policy策略。</p>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_006.jpeg" alt="blog_article_0_006" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>id objc_getAssociatedObject(id object, const void *key);
+void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy);
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import "DKObject+Category.h"
+#import &lt;objc/runtime.h&gt;
+
+@implementation DKObject (Category)
+
+- (NSString *)categoryProperty {
+    return objc_getAssociatedObject(self, @"categoryProperty");
+}
+
+- (void)setCategoryProperty:(NSString *)categoryProperty {
+    objc_setAssociatedObject(self, @"categoryProperty", categoryProperty, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+@end
+</code></pre></div></div>
+
+<p><strong>使用runtime associate 方法关联的对象，需要在主对象dealloc的时候释放吗？</strong><br />
+无论在ARC还是MRC均不需要，被关联的对象在生命周期要比对象本身释放的晚很多，他们会在被NSObject -dealloc 调用的object_dispose()方法中释放。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1、调用 -release ：引用计数变为零
+对象正在被销毁，生命周期即将结束. 
+不能再有新的 __weak 弱引用，否则将指向 nil.
+调用 [self dealloc]
+  
+2、 父类调用 -dealloc 
+继承关系中最直接继承的父类再调用 -dealloc 
+如果是 MRC 代码 则会手动释放实例变量们（iVars）
+继承关系中每一层的父类 都再调用 -dealloc
+  
+3、NSObject 调 -dealloc 
+只做一件事：调用 Objective-C runtime 中object_dispose() 方法
+  
+4. 调用 object_dispose()
+为 C++ 的实例变量们（iVars）调用 destructors
+为 ARC 状态下的 实例变量们（iVars） 调用 -release 
+解除所有使用 runtime Associate方法关联的对象 
+解除所有 __weak 引用 
+调用 free()
+</code></pre></div></div>
+
+<h4 id="3-代理-和-通知">3. 代理 和 通知</h4>
+<p>代理</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@protocol AViewControllerDelegate &lt;NSObject&gt;
+- (void)doSomething;
+@end
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@property (nonatomic, weak) id &lt;AViewControllerDelegate&gt; delegate;
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>if ([self.delegate respondsToSelector:@selector(doSomething)]) {
+    [self.delegate doSomething];
+}
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>aViewController.delegate = self;
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//代理方法
+- (void)doSomething{
+    NSLog(@"delegate 回调");
+}
+</code></pre></div></div>
+
+<p>通知</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//创建一个消息对象 发送消息
+NSNotification * notice = [NSNotification notificationWithName:@"notification" object:nil userInfo:@{@"key":@"value"}];
+[[NSNotificationCenter defaultCenter]postNotification:notice];
+
+  
+  
+
+//获取通知中心单例对象  添加当前类对象为一个观察者，name和object设置为nil，表示接收一切通知
+NSNotificationCenter * center = [NSNotificationCenter defaultCenter];
+[center addObserver:self selector:@selector(notice:) name:@"notification" object:nil];
+  
+  
+
+  
+-(void)notice:(NSNotification *)sender{
+    NSLog(@"%@",sender.userInfo[@"key"]);
+}
+    
+      
+//在接收通知控制器 移除   谁监听谁注销
+-(void)delloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+</code></pre></div></div>
+
+<h4 id="4-kvo">4. KVO</h4>
+<p>KVO则是被观察的对象直接向观察者发送通知，观察某个属性的状态，状态发生变化时通知观察者，主要是绑定于特定对象属性的值</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//添加监听
+[_abook addObserver:self forKeyPath:@"price" options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew context:nil];
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//实现监听
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqual:@"price"]) {
+        NSLog(@"old price: %@",[change objectForKey:@"old"]);
+        NSLog(@"new price: %@",[change objectForKey:@"new"]);
+    }
+}
+</code></pre></div></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-(void)dealloc
+{
+    //移除监听
+    [_abook removeObserver:self forKeyPath:@"price"];
+}
+</code></pre></div></div>
+<p>1、KVO的本质是什么？ <br />
+当我们给对象注册一个观察者添加了KVO监听时，系统会修改这个对象的isa指针指向。在运行时，动态创建一个新的子类，NSKVONotifying_A类，将A的isa指针指向这个子类，来重写原来类的set方法；set方法实现内部会顺序调用willChangeValueForKey方法、原来的setter方法实现、didChangeValueForKey方法，而didChangeValueForKey方法内部又会调用监听器的observeValueForKeyPath:ofObject:change:context:监听方法。</p>
+
+<p>2、如何手动触发KVO<br />
+答. 被监听的属性的值被修改时，就会自动触发KVO。如果想要手动触发KVO，则需要我们自己调用willChangeValueForKey和didChangeValueForKey方法即可在不改变属性值的情况下手动触发KVO，并且这两个方法缺一不可。</p>
+
+<h4 id="5-kvc">5. KVC</h4>
+<p>键值编码 是一种通过字符串间接访问对象的方式</p>
+
+<p>KVC赋值原理</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.按照setKey:,_setKey:顺序查找方法，找到了就调用方法传递参数。
+2.第一步没找到就会调用accessInstanceVariablesDirectly方法，该方法返回值为NO时直接调用setValue:forUndefinedKey:并抛出异常NSUnknownKeyException，方法返回值是YES的时候进入第三步。该方法默认值是返回YES。
+3.按照_key、_isKey、key、isKey顺序查找成员变量，找到了就直接赋值，没找到依然是调用setValue:forUndefinedKey:并抛出异常NSUnknownKeyException。
+</code></pre></div></div>
+
+<p>KVC取值原理</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1.kvc取值按照 getKey、key、iskey、_key 顺序查找方法
+存在直接调用
+2.没找到同样，先查看accessInstanceVariablesDirectly方法
+如果return YES; &gt; 可以直接访问成员变量
+如果return NO; &gt; 不可以直接访问成员变量,
+3.如果可以访问会按照 _key、_isKey、key、iskey的顺序查找成员变量
+找到直接复制
+未找到报错NSUnkonwKeyException错误
+</code></pre></div></div>
+
+<h4 id="6-属性关键字">6. 属性关键字</h4>
+<p>读写权限：<code class="highlighter-rouge">readwrite</code>，readonly<br />
+原子类：<code class="highlighter-rouge">atomic</code>，nonatomic<br />
+内存管理：assign,weak,strong,copy</p>
+
+<p>weak 只可以修饰对象  <br />
+assign 可修饰对象，和基本数据类型  <br />
+weak 不会产生野指针问题。因为weak修饰的对象释放后（引用计数器值为0），指针会自动被置nil，之后再向该对象发消息也不会崩溃。 weak是安全的。<br />
+assign 如果修饰对象，会产生野指针问题；如果修饰基本数据类型则是安全的。修饰的对象释放后，指针不会自动被置空，此时向对象发消息会崩溃。</p>
+
+<h4 id="7-weak">7. Weak</h4>
+<p>weak是Runtime维护了一个hash(哈希)表，用于存储指向某个对象的所有weak指针。weak表其实是一个hash（哈希）表，Key是所指对象的地址，Value是weak指针的地址（这个地址的值是所指对象指针的地址）数组。</p>
+
+<p>runtime机制来维护这个hash表，详细步骤如下：</p>
+
+<p>第一步：初始化时，runtime调用objc_initWeak函数，初始化一个新的weak指针指向对象的地址;</p>
+
+<p>第二步：添加引用时，objc_initWeak函数会调用objc_storeWeak函数更新指针的指向，创建对应的弱引用表；</p>
+
+<p>第三步：释放时，调用clearDeallocating函数：根据key(对象的地址)，找到对应的value(指向该对象的所有weak指针的地址数组)，遍历这个数组，把所有的weak指针置为nil;最后删除weak表，清理对象记录.</p>
+
+<p>当对象的引用计数为0时，调用dealloc函数，以对象的内存地址为key，到hash表中找到对应的存放weak指针地址的数组，遍历数组，并将weak指针置为nil;最后删除hash表，清理对象记录.</p>
+
+<p>和<code class="highlighter-rouge">关联对象</code>的<code class="highlighter-rouge">associationManager</code>全局管理类似</p>
+<h4 id="8其他">8、其他</h4>
+<p><strong>id 和 instancetype的区别?</strong><br />
+id可以作为方法的返回以及参数类型 也可以用来定义变量<br />
+instancetype 只能作为函数或者方法的返回值<br />
+instancetype对比id的好处就是: 能精确的限制返回值的具体类型</p>
+
+<p><strong>New 作用是什么?</strong><br />
+向计算机(堆区)申请内存空间;<br />
+给实例变量初始化;<br />
+返回所申请空间的首地址;</p>
+
+<p><strong>id类型, nil , Nil ,NULL和NSNULL的区别?</strong><br />
+id类型: 是一个独特的数据类型，可以转换为任何数据类型，id类型的变量可以存放任何数据类型的对象，在内部处理上，这种类型被定义为指向对象的指针，实际上是一个指向这种对象的实例变量的指针; id 声明的对象具有运行时特性，既可以指向任意类型的对象<br />
+nil 是一个实例对象值;如果我们要把一个对象设置为空的时候,就用nil<br />
+Nil 是一个类对象的值,如果我们要把一个class的对象设置为空的时候,就用Nil<br />
+NULL 指向基本数据类型的空指针(C语言的变量的指针为空)<br />
+NSNull 是一个对象,它用在不能使用nil的场合</p>
+
+<h3 id="三runtime">三、Runtime</h3>
+<h4 id="1-数据结构">1. 数据结构</h4>
+
+<p><code class="highlighter-rouge">实例对象(objc_object)</code>  <br />
+<code class="highlighter-rouge">类对象(objc_class)</code></p>
+<ul>
+  <li>保存了实例方法列表</li>
+</ul>
+
+<p><code class="highlighter-rouge">元类(Meta Class)</code></p>
+<ul>
+  <li>元类保存了类方法列表</li>
+</ul>
+
+<p><code class="highlighter-rouge">Method(objc_method)</code></p>
+<ul>
+  <li>SEL method_name 方法名</li>
+  <li>char *method_types 方法类型</li>
+  <li>IMP method_imp 方法实现</li>
+</ul>
+
+<p><code class="highlighter-rouge">SEL(objc_selector)</code><br />
+<code class="highlighter-rouge">IMP</code></p>
+<ul>
+  <li>实际上是一个函数指针，指向方法实现的地址。</li>
+</ul>
+
+<p><code class="highlighter-rouge">类缓存(objc_cache)</code></p>
+<ul>
+  <li>为了加速消息分发， 系统会对方法和对应的地址进行缓存，就放在上述的objc_cache</li>
+</ul>
+
+<p>Person *p = [Person new];p为实例对象，Person为类对象  <br />
+实例对象的isa指针指向类对象，类对象的isa指针指向元类对象，  <br />
+类对象保存了实例方法列表，元类保存了类方法列表。  <br />
+当p调用run方法时 [p run]，通过实例对象的isa指针找到类对象，然后在类对象中查找对象方法，如果没有找到，就通过类对象的superclass指针找到父类对象，接着去寻找run方法。</p>
+
+<p>由于根元类的superclass指向了根类对象，当我们在元类中查找类方法没有查找到时候，他就会去查找实例方法列表中去查找，如果有同名方法，就回去调用同名方法的实例方法调用。</p>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_007_1.jpeg" alt="blog_article_0_007_1" />
+<img src="https://img.gorpeln.com/blog_article_0_007_3.png" alt="blog_article_0_007_3" /></p>
+
+<p>Runtime库里面包含了跟类、成员变量、方法相关的API。<br />
+比如：<br />
+（1）获取类里面的所有成员变量。<br />
+（2）为类动态添加成员变量。<br />
+（3）动态改变类的方法实现。<br />
+（4）为类动态添加新的方法等。</p>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_007_6.png" alt="blog_article_0_007_6" /></p>
+
+<h4 id="2-消息传递">2. 消息传递</h4>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_007_4.png" alt="blog_article_0_007_4" /></p>
+
+<p><strong>缓存查找</strong><br />
+根据给定SEL（方法选择器），通过哈希查找，找到对应的IMP。</p>
+
+<p><strong>当前类中查找</strong><br />
+对于已排序好的列表，采用二分法算法查找对应执行函数<br />
+对于没有排序的列表，采用一般遍历查找方法查找对应执行函数</p>
+
+<p><strong>父类逐级查找</strong><br />
+通过superclass访问父类，然后判断父类是否为nil，如果是，就结束，不是就查找方法缓存，如果缓存也没查到，查找父类的方法列表，没查到就继续查找父类的父类。<br />
+<img src="https://img.gorpeln.com/blog_article_0_007_5.png" alt="blog_article_0_007_5" /></p>
+
+<h4 id="3-消息转发">3. 消息转发</h4>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_007_2.jpeg" alt="blog_article_0_007_2" /></p>
+
+<p><a href="https://www.jianshu.com/p/6ebda3cd8052">https://www.jianshu.com/p/6ebda3cd8052</a></p>
+
+<h4 id="4-runtime应用">4. Runtime应用</h4>
+<ul>
+  <li>关联对象(Objective-C Associated Objects)给分类增加属性</li>
+  <li>方法魔法(Method Swizzling)方法添加和替换和KVO实现</li>
+  <li>实现NSCoding的自动归档和自动解档</li>
+</ul>
+
+<h5 id="1-关联对象">(1) 关联对象</h5>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//关联对象
+void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy)
+//获取关联的对象
+id objc_getAssociatedObject(id object, const void *key)
+//移除关联的对象
+void objc_removeAssociatedObjects(id object)
+</code></pre></div></div>
+
+<h5 id="2-method-swizzling-方法添加和替换kvo实现">(2) Method Swizzling 方法添加和替换、KVO实现</h5>
+<p><strong>方法添加</strong></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class_addMethod([self class], sel, (IMP)fooMethod, "v@:");
+</code></pre></div></div>
+<p><strong>方法替换</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@implementation UIViewController (Swizzling)
+
+// 交换 原方法 和 替换方法 的方法实现
++ (void)load {
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        // 当前类
+        Class class = [self class];
+        
+        // 原方法名 和 替换方法名
+        SEL originalSelector = @selector(originalFunction);
+        SEL swizzledSelector = @selector(swizzledFunction);
+        
+        // 原方法结构体 和 替换方法结构体
+        Method originalMethod = class_getInstanceMethod(class, originalSelector);
+        Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
+        
+        /* 如果当前类没有 原方法的 IMP，说明在从父类继承过来的方法实现，
+         * 需要在当前类中添加一个 originalSelector 方法，
+         * 但是用 替换方法 swizzledMethod 去实现它 
+         */
+        BOOL didAddMethod = class_addMethod(class,
+                                            originalSelector,
+                                            method_getImplementation(swizzledMethod),
+                                            method_getTypeEncoding(swizzledMethod));
+        
+        if (didAddMethod) {
+            // 原方法的 IMP 添加成功后，修改 替换方法的 IMP 为 原始方法的 IMP
+            class_replaceMethod(class,
+                                swizzledSelector,
+                                method_getImplementation(originalMethod),
+                                method_getTypeEncoding(originalMethod));
+        } else {
+            // 添加失败（说明已包含原方法的 IMP），调用交换两个方法的实现
+            method_exchangeImplementations(originalMethod, swizzledMethod);
+        }
+    });
+}
+
+// 原始方法
+- (void)originalFunction {
+    NSLog(@"originalFunction");
+}
+
+// 替换方法
+- (void)swizzledFunction {
+    NSLog(@"swizzledFunction");
+}
+
+@end
+</code></pre></div></div>
+<h6 id="实际使用"><strong>实际使用</strong></h6>
+<p><code class="highlighter-rouge">利用分类 + Method Swizzling</code><br />
+<code class="highlighter-rouge">全局页面统计功能</code> ： 在所有页面添加统计功能，用户每进入一次页面就统计一次。</p>
+
+<p>第一种：利用继承<br />
+第二种：为 UIViewController 建立一个 Category，自定义的xxx_viewWillAppear: 方法  ，然后方法交换</p>
+
+<p><code class="highlighter-rouge">字体根据屏幕尺寸适配</code> ： 所有的控件字体必须依据屏幕的尺寸等比缩放<br />
+第一种：利用宏定义<br />
+第二种：为 UIFont 建立一个 Category，自定义的xxx_systemFontOfSize: 方法  ，然后方法交换</p>
+
+<p><code class="highlighter-rouge">处理按钮重复点击</code> ： 避免一个按钮被快速多次点击<br />
+第一种：利用 Delay 延迟，和不可点击方法。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)buttonClick:(UIButton *)sender {
+    sender.enabled = NO;
+    [self performSelector:@selector(changeButtonStatus:) withObject:sender afterDelay:0.8f];
+    
+    NSLog(@"点击了按钮");
+}
+
+- (void)changeButtonStatus:(UIButton *)sender {
+    sender.enabled = YES;
+}
+</code></pre></div></div>
+
+<p>第二种：为 UIControl 或 UIButton 建立一个 Category。自定义的 xxx_sendAction:to:forEvent: 方法，方法交换</p>
+
+<p><code class="highlighter-rouge">TableView、CollectionView 异常加载占位图</code> <br />
+第一种：刷新数据后进行判断<br />
+第二种：为 TableView 建立一个 Category，自定义的 xxx_reloadData 方法，方法交换</p>
+
+<p><code class="highlighter-rouge">应用性能管理</code> ，<code class="highlighter-rouge">防止程序崩溃</code><br />
+通过 Method Swizzling 替换 NSURLConnection , NSURLSession 相关的原始实现（例如 NSURLConnection 的构造方法和 start 方法），在实现中加入网络性能埋点行为，然后调用原始实现。从而来监控网络。</p>
+
+<p>防止程序崩溃，可以通过 Method Swizzling 拦截容易造成崩溃的系统方法，然后在替换方法捕获异常类型 NSException ，再对异常进行处理。最常见的例子就是拦截 arrayWithObjects:count: 方法避免数组越界，这种例子网上很多，就不再展示代码了</p>
+
+<p><a href="https://www.jianshu.com/p/1ab7e611107c">https://www.jianshu.com/p/1ab7e611107c</a></p>
+
+<p>在 Objective-C 的运行时中，每个类有两个方法都会自动调用。<br />
+<code class="highlighter-rouge">+load</code> 是加载 类、分类 的时候调用(只会调用一次)，<br />
+<code class="highlighter-rouge">+initialize</code> 是类第一次接收到消息的时候调用, 每一个类只会initialize一次(如果子类没有实现initialize方法, 会调用父类的initialize方法, 所以父类的initialize方法可能会调用多次)</p>
+<h5 id="3-kvo实现">(3) KVO实现</h5>
+<p>NSKVONotifying_A</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)setName:(NSString *)newName { 
+      [self willChangeValueForKey:@"name"];    //KVO 在调用存取方法之前总调用 
+      [super setValue:newName forKey:@"name"]; //调用父类的存取方法 
+      [self didChangeValueForKey:@"name"];     //KVO 在调用存取方法之后总调用
+}
+</code></pre></div></div>
+
+<h5 id="4-实现nscoding的自动归档和自动解档">(4) 实现NSCoding的自动归档和自动解档</h5>
+<p>普通方式实现：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)encodeWithCoder:(NSCoder *)coder
+{
+    //告诉系统归档的属性是哪些
+    [coder encodeObject:self.name forKey:@"name"];
+    [coder encodeInteger:self.age forKey:@"age"];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (self) {
+        //解档
+        self.name = [coder decodeObjectForKey:@"name"];
+        self.age = [coder decodeIntegerForKey:@"age"];
+    }
+    return self;
+}
+</code></pre></div></div>
+<p>使用runtime方法实现：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- (void)encodeWithCoder:(NSCoder *)coder
+{
+    //告诉系统归档的属性是哪些
+    unsigned int count = 0;//表示对象的属性个数
+    Ivar *ivars = class_copyIvarList([Person class], &amp;count);
+    for (int i = 0; i&lt;count; i++) {
+        //拿到Ivar
+        Ivar ivar = ivars[i];
+        const char *name = ivar_getName(ivar);//获取到属性的C字符串名称
+        NSString *key = [NSString stringWithUTF8String:name];//转成对应的OC名称
+        //归档 -- 利用KVC
+        [coder encodeObject:[self valueForKey:key] forKey:key];
+    }
+    free(ivars);//在OC中使用了Copy、Creat、New类型的函数，需要释放指针！！（注：ARC管不了C函数）
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [super init];
+    if (self) {
+        //解档
+        unsigned int count = 0;
+        Ivar *ivars = class_copyIvarList([Person class], &amp;count);
+        for (int i = 0; i&lt;count; i++) {
+            //拿到Ivar
+            Ivar ivar = ivars[i];
+            const char *name = ivar_getName(ivar);
+            NSString *key = [NSString stringWithUTF8String:name];
+            //解档
+            id value = [coder decodeObjectForKey:key];
+            // 利用KVC赋值
+            [self setValue:value forKey:key];
+        }
+        free(ivars);
+    }
+    return self;
+}
+</code></pre></div></div>
+
+<h3 id="四内存管理">四、内存管理</h3>
+<h4 id="1-内存布局">1. 内存布局</h4>
+<p><img src="https://img.gorpeln.com/blog_article_0_010_1.jpeg" alt="blog_article_0_010_1" /></p>
+
+<h4 id="2-内存管理方案">2. 内存管理方案</h4>
+<p><strong>1.Tagged Pointer</strong></p>
+
+<p>Tagged Pointer（用于存储NSNumber、NSDate、小于11位的小String等）指针存储的不是地址，是具有标识的地址值。本质上可以理解为常量，直接进行读取。优点是占用空间小/节省内存</p>
+
+<p>Tagged Pointer类型不会进行retain和 release操作，意味着不需要ARC进行管理，可以直接被系统自主的释放和回收</p>
+
+<p>Tagged Pointer的内存并不存储在堆中，而是在常量区中，也不需要malloc和free，效率快</p>
+
+<p>Tagged Pointer的64位地址中，前4位代表类型，后4位主要适用于系统做一些处理，中间56位用于存储值</p>
+
+<p><strong>2.NONPOINTER_ISA</strong></p>
+
+<p>对于64位下的，isa 指针占64个比特位，但是其中可能只有32位够用了，剩余的就浪费了，苹果为了不让内存浪费更好的管理内存，剩下的32位，苹果用来存储和内存管理相关的内容，用来节约内存</p>
+
+<p>在64位架构下，isa 指针占64个比特位，如果他的<br />
+第1位是0 。则代表他是一个 isa 指针,表示当前对象的类对象的地址，如果是1，则不仅代表一个 isa 指针,类对象的地址，里面还存储内存管理相关的内容，<br />
+第2位代表是否有关联对象，0代表没有，1代表有（has_assoc）,<br />
+第3位,代表当前对象是否含有C++代码（has_cxx_dtor）,<br />
+4-35位这些位表示内存地址，<br />
+36-41位为 magic 字段，<br />
+第42位来，来表示是否含有弱引用指针，（weakly_referenced），<br />
+第43位表示当前指针是否正在进行dealloc操作（deallocating），<br />
+第44位，表示当前isa指针的引用计数是否达到上限（has_sidetable_rc）,如果达到了上限需要一个sidetable,来额外存储相关的引用计数内容，<br />
+第45-63位（extra_rc），表示额外的引用计数，当引用计数很小的时候就直接存在isa指针当中.</p>
+
+<p><strong>3.散列表</strong></p>
+
+<p>引用计数表和弱引用表 <br />
+sideTable 其实是一个 hash 表，下面挂了很多的 sideTable，sidetable 包括自旋锁（spinlock_t），引用计数表（refcountMap），弱引用表（weak_table_t）</p>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_010_2.png" alt="blog_article_0_010_2" /></p>
+
+<p>sidetables 为什么是多张表，而不是一张表？</p>
+
+<p>如果只有一张表，如果想操作某一个对象的引用计数，由于不同的对象是在不同的线程操作，由于不同线程需要来操作这张表，所以就有资源访问的问题，那么就需要对这张大表进行加锁操作，如果成千上万对自己进行引用计数操作，那么需要加锁排队，就会有效率问题，所以系统引用了 “分离锁” 概念，比如 A，B同时进行操作的话，可以并发进行，因为A，B，在不同的表中</p>
+
+<p><code class="highlighter-rouge">自旋锁</code>：忙等，如果锁已被其他线程获取，那么当前线程会自己去不断的获取是否被释放，直到其他线程释放，适用于轻量访问，如+1，-1。</p>
+
+<p><code class="highlighter-rouge">引用计数表</code>（refcountmap）：其实就是hash查找，提高查找效率，插入和查找通过同一个hash函数来获取，避免了循环遍历。ptr-&gt;hash-&gt;size_t,其中的size_t就是引用计数值，比如用64位存储，第一位表示（weakly_referenced），表示对象是否存在弱引用，下一位表示当前对象是都正在dealoc（deallocating），剩下的位表示引用计数值。</p>
+
+<p><code class="highlighter-rouge">弱引用表</code>（weak_table_t）：也是一个hash表，key-&gt;hash-&gt;weak_entry_t,weak_entry_t，其实是一个结构体数组（weakPtr），比如被weak修饰，就存在这个弱引用表中</p>
+
+<h4 id="3-arc--mrc">3. ARC &amp; MRC</h4>
+<p><code class="highlighter-rouge">MRC手动内存管理</code><br />
+引用计数器:在MRC时代，系统判定一个对象是否销毁是根据这个对象的引用计数器来判断的。<br />
+1.每个对象被创建时引用计数都为1<br />
+2.每当对象被其他指针引用时，需要手动使用[obj retain];让该对象引用计数+1。<br />
+3.当指针变量不在使用这个对象的时候，需要手动释放release这个对象。 让其的引用计数-1.<br />
+4.当一个对象的引用计数为0的时候，系统就会销毁这个对象。</p>
+
+<p>在MRC模式下必须遵循谁创建，谁释放，谁引用，谁管理</p>
+
+<p><code class="highlighter-rouge">ARC自动内存管理</code><br />
+它不是垃圾回收机制而是编译器的一种特性。ARC管理机制与MRC手动机制差不多，只是不再需要手动调用retain、release、autorelease；当你使用ARC时，编译器会在在适当位置插入release和autorelease；ARC时代引入了strong强引用来带代替retain，引入了weak弱引用。</p>
+
+<h4 id="4-引用计数">4. 引用计数</h4>
+<p><strong><em>alloc的实现机制</em></strong>   <br />
+经过一系列操作，最终调用了C函数的calloc。<br />
+此时并没有设置引用计数为1.</p>
+
+<p><strong><em>Retain的实现机制</em></strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SideTable&amp; table = SideTables()[This];//根据当前对象的指针，在SideTables中找到对应的SideTable
+size_t&amp; refcntStorage = table.refcnts[This];//根据当前对象的指针，在SideTable（引用计数表）中获取到当前对象的引用值
+refcntStorage += SIDE_TABLE_RC_ONE;// 引用计数加1（偏移量）
+</code></pre></div></div>
+
+<p><strong><em>Release的实现机制</em></strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SideTable&amp; table = SideTables()[This];
+size_t&amp; refcntStorage = table.refcnts[This];
+refcntStorage -= SIDE_TABLE_RC_ONE;
+</code></pre></div></div>
+
+<p>二者的实现机制类似，概括讲就是通过第一层 hash 算法，找到 指针变量 所对应的 sideTable。然后再通过一层 hash 算法，找到存储 引用计数 的 size_t，然后对其进行增减操作。retainCount 不是固定的 1，SIZE_TABLE_RC_ONE 是一个宏定义，实际上是一个值为 4 的偏移量。</p>
+
+<p><strong><em>retainCount的实现机制</em></strong></p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SideTable&amp; table = SideTables()[This];
+size_t refcnt_result = 1; // 声明局部变量 初始化为1
+RefcountMap::iterator it = table.refcnts.find(this);//根据当前对象指针，查找count
+refcnt_result += it-&gt;second &gt;&gt; SIDE_TABLE_RC_SHIFT;//查找的结果做一个向右偏移，然后再进行+1操作，新alloc的对象，不存在key，value的映射，所以value=0，加一操作后就成1了
+</code></pre></div></div>
+
+<p><strong><em>Dealloc的实现机制</em></strong> <br />
+<img src="https://img.gorpeln.com/blog_article_0_010_3.jpeg" alt="blog_article_0_010_3" /></p>
+
+<h4 id="5-弱引用">5. 弱引用</h4>
+<p>weak是Runtime维护了一个hash(哈希)表，用于存储指向某个对象的所有weak指针。weak表其实是一个hash（哈希）表，Key是所指对象的地址，Value是weak指针的地址（这个地址的值是所指对象指针的地址）数组。</p>
+
+<p>runtime机制来维护这个hash表，详细步骤如下：</p>
+
+<p>第一步：初始化时，runtime调用objc_initWeak函数，初始化一个新的weak指针指向对象的地址;</p>
+
+<p>第二步：添加引用时，objc_initWeak函数会调用objc_storeWeak函数更新指针的指向，创建对应的弱引用表；</p>
+
+<p>第三步：释放时，调用clearDeallocating函数：根据key(对象的地址)，找到对应的value(指向该对象的所有weak指针的地址数组)，遍历这个数组，把所有的weak指针置为nil;最后删除weak表，清理对象记录.</p>
+
+<p>当对象的引用计数为0时，调用dealloc函数，以对象的内存地址为key，到hash表中找到对应的存放weak指针地址的数组，遍历数组，并将weak指针置为nil;最后删除hash表，清理对象记录.</p>
+
+<p>和<code class="highlighter-rouge">关联对象</code>的<code class="highlighter-rouge">associationManager</code>全局管理类似</p>
+<h4 id="6-自动释放池">6. 自动释放池</h4>
+<p>实现原理:自动释放池以栈的形式实现:当你创建一个新的自动释放池时,它将被添加到
+栈顶.当一个对象收到autorelease消息的时候,它被添加到当前线程的处于
+栈顶的的自动释放池中,当自动释放池被回收时,他们就从栈中被删除,并且会
+给池子里面的所有对象都会做一次release操作</p>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_010_4.png" alt="blog_article_0_010_4" /></p>
+
+<p>autoreleasepool是以栈为节点，通过双向链表的形式组合而成的，autoreleasepool是与线程一一对应的。</p>
+
+<p>在AutoreleasePool中有四个变量分别是：1.id <em>next一个id类型的指针，指向的是下一个可存储对象的位置，2.AutoreleasepoolPage</em> const parent;这就是当前page父节点page的地址指针。3.AutoreleasepoolPage* child，同理，是子节点表地址的指针。4.pthread_t const thread;这个变量中就记录了线程的情况，所以说自动释放池是与线程一一对应的关系。</p>
+
+<p><strong>自动释放池的三个步骤：</strong></p>
+
+<p>第一步调用objc_autoreleasepoolPush()方法，在当前autoreleasepoolPage中的next指针位置创建一个为nil的哨兵对象，随后将next指针的位置指向下一个内存地址。</p>
+
+<p>第二步就是执行代码了，在自动释放池范围内的代码被执行，给逐个对象调用[object autorelease]方法。其实在autorelease方法内部实现的步骤为：1.判断next指针是否已经在栈顶了，如果是，则增加一个栈节点到链表上，随后增加一个对象到新的栈节点链表中，如果不是的话则在next指针所指的位置添加一个调用autorelease方法的对象。</p>
+
+<p>第三部就是执行objc_autoreleasepoolPop()方法,该方法会根据传入的哨兵对象找到对应的内存位置，然后根据哨兵对象的位置给上次push后添加的对象依次发送release消息，然后回退next指针到正确的位置</p>
+
+<p>所以总结一下，main函数中的autoreleasepool是在runloop结束的时候调用objc_autoreleasepoolPop的方法的，多层嵌套的autoreleasepool其实就是在栈中多次插入哨兵对象，而在我们开发的过程中，通过for循环加载一些占用内存较大的对象时可以嵌套使用autoreleasepool，在这些对象使用完毕的时候及时被释放掉，这样就不会造成内存过大或过多浪费的情况</p>
+
+<h4 id="7-循环引用">7. 循环引用</h4>
+<p><strong>1.delegate属性用strong关键字循环引用</strong><br />
+class A强引用BView, BView的代理指向A，因为delegate是strong关键字修饰，所以BView会强引用A的实例，造成循环引用</p>
+
+<p>所以delegate关键字应该用weak修饰</p>
+
+<p><strong>2.block捕获变量，循环引用</strong><br />
+self<br />
+__block</p>
+
+<p><strong>3.NSTimer循环引用</strong><br />
+<a href="https://www.jianshu.com/p/823ef4fb63bc?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation">https://www.jianshu.com/p/823ef4fb63bc?utm_campaign=maleskine&amp;utm_content=note&amp;utm_medium=seo_notes&amp;utm_source=recommendation</a></p>
+
+<h3 id="五block">五、Block</h3>
+<h4 id="1-block本质">1. Block本质</h4>
+
+<p><code class="highlighter-rouge">Block</code>是将<code class="highlighter-rouge">函数</code>及其<code class="highlighter-rouge">执行上下文</code>封装起来的<code class="highlighter-rouge">对象</code>  <br />
+block本质上也是一个OC对象，它内部也有个isa指针<br />
+block是封装了函数调用以及函数调用环境的OC对象<br />
+block是封装函数及其上下文的OC对象</p>
+
+<p>block的调用就是函数调用</p>
+
+<h4 id="2-捕获变量">2. 捕获变量</h4>
+<p>auto变量是声明在函数内部的变量</p>
+
+<p>block 引用外部变量，block 默认是将其复制到blcok数据结构中来实现访问的。并且block的变量截获只针对block内部使用的变量, 不使用则不截获, 因为截获的变量会存储于block的结构体内部, 会导致block体积变大。默认情况下block只能访问不能修改局部变量的值</p>
+
+<p>Block 如何截获变量？<br />
+1.<code class="highlighter-rouge">基本数据</code>类型的<code class="highlighter-rouge">局部变量</code>截获其值<br />
+2.<code class="highlighter-rouge">对象</code>类型的局部变量连同<code class="highlighter-rouge">所有权修饰符</code>一起截获<br />
+3.<code class="highlighter-rouge">局部静态变量</code>以<code class="highlighter-rouge">指针</code>形式截获<br />
+4.<code class="highlighter-rouge">不截获</code>全局变量、静态全局变量</p>
+
+<h4 id="3-__block-修饰符">3. __block 修饰符</h4>
+<p>__block修饰符的作用：是将block中用到的变量，拷贝到堆中，并且外部的变量本身地址也改变到堆中。  <br />
+__block不能解决循环引用，需要在block执行尾部将变量设置成nil<br />
+<code class="highlighter-rouge">__block可以用于解决block内部无法修改局部变量值的问题</code><br />
+一般情况下，对被截获变量进行赋值操作需要添加__block修饰符 赋值 != 使用  <br />
+__block不能修饰全局变量、静态变量（static）<br />
+ 编译器会将__block变量包装成一个对象</p>
+
+<p>block进行copy操作，就会复制到堆上 <br />
+block在堆上，程序员就可以对block做内存管理等操作，可以控制block的生命周期</p>
+
+<p>__weak 本身是可以避免循环引用的问题的，但是其会导致外部对象释放了之后，block 内部也访问不到这个对象的问题，我们可以通过在 block 内部声明一个 __strong 的变量来指向 weakObj，使外部对象既能在 block 内部保持住，又能避免循环引用的问题。</p>
+
+<p>__block 本身无法避免循环引用的问题，但是我们可以通过在 block 内部手动把 blockObj 赋值为 nil 的方式来避免循环引用的问题。另外一点就是 __block 修饰的变量在 block 内外都是唯一的，要注意这个特性可能带来的隐患。<br />
+<img src="https://img.gorpeln.com/blog_article_0_008_4.jpeg" alt="blog_article_0_008_4" /></p>
+
+<p>__forwarding存在的意义 <br />
+无论在栈还是堆上，__forwarding都可以顺利访问到同一个__block变量<br />
+<img src="https://img.gorpeln.com/blog_article_0_008_3.jpeg" alt="blog_article_0_008_3" /></p>
+
+<p>一般情况下，对被截获变量进行<code class="highlighter-rouge">赋值</code>操作需要添加__block修饰符<br />
+<img src="https://img.gorpeln.com/blog_article_0_008_1.jpeg" alt="blog_article_0_008_1" />
+<img src="https://img.gorpeln.com/blog_article_0_008_2.jpeg" alt="blog_article_0_008_2" /></p>
+
+<h4 id="4-block内存管理">4. Block内存管理</h4>
+<p>block有三种类型：</p>
+
+<p>__NSGlobalBlock __ 在数据区<br />
+__NSMallocBlock __ 在堆区<br />
+__NSStackBlock __ 在栈区</p>
+
+<p><strong>ARC下，访问外界变量的 Block为什么要自动从栈区拷贝到堆区呢？</strong><br />
+栈上的Block，如果其所属的变量作用域结束，该Block就被废弃，如同一般的自动变量。当然，Block中的__block变量也同时被废弃。<br />
+为了解决栈块在其变量作用域结束之后被废弃（释放）的问题，我们需要把Block复制到堆中，延长其生命周期。开启ARC时，大多数情况下编译器会恰当地进行判断是否有需要将Block从栈复制到堆，如果有，自动生成将Block从栈上复制到堆上的代码。Block的复制操作执行的是copy实例方法。Block只要调用了copy方法，栈块就会变成堆块。</p>
+
+<p><strong>为什么block用copy属性？</strong><br />
+block内部没有调用外部局部变量时存放在全局区(ARC和MRC下均是)</p>
+
+<p>block使用了外部局部变量,这种情况也正是我们平时所常用的方式。MRC：Block的内存地址显示在栈区,栈区的特点就是创建的对象随时可能被销毁,一旦被销毁后续再次调用空对象就可能会造成程序崩溃,在对block进行copy后,block存放在堆区.所以在使用Block属性时使用copy修饰。但是ARC中的Block都会在堆上的，系统会默认对Block进行copy操作</p>
+
+<p>用copy，strong修饰block在ARC和MRC都是可以的，都是在堆区</p>
+
+<h4 id="5-block循环引用">5. Block循环引用</h4>
+<p>为什么block会产生循环引用？<br />
+1） block的变量截获是会将变量的所有权修饰符一同截获<br />
+2） __block</p>
+
+<p>Block 循环引用的情况：<br />
+<em>1.第一种方式：__weak</em>
+<strong>某个类将 block 作为自己的属性变量，然后该类在 block 的方法体里面又使用了该类本身。</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>self.someBlock = ^(Type var){
+    [self dosomething];
+};
+</code></pre></div></div>
+<p>解决办法：使用 __weak</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>__weak typeof(self) weakSelf = self;
+self.someBlock = ^(Type var){
+   [weakSelf dosomething];
+};
+</code></pre></div></div>
+<p><em>2.第二种方式：__unsafe_unretained</em></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>__unsafe_unretained Person *person = [[Person alloc] init];
+person.block = ^{
+    NSLog(@"age is %d", weakPerson.age);
+};
+</code></pre></div></div>
+<p><em>3.第三种方式：__block</em></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>__block Person *person = [[Person alloc] init];
+person.block = ^{
+    NSLog(@"age is %d", person.age);
+    person = nil;
+};
+person.block();
+</code></pre></div></div>
+
+<p>4.三种方法比较<br />
+__weak：不会产生强引用，指向的对象销毁时，会自动让指针置为nil<br />
+__unsafe_unretained：不会产生强引用，不安全，指向的对象销毁时，指针存储的地址值不变<br />
+__block：必须把引用对象置位nil，并且要调用该block</p>
+
+<p><a href="https://www.jianshu.com/p/25a7ba546eac">https://www.jianshu.com/p/25a7ba546eac</a><br />
+<a href="https://www.jianshu.com/p/4e79e9a0dd82">https://www.jianshu.com/p/4e79e9a0dd82</a></p>
+
+<h3 id="六多线程">六、多线程</h3>
+<h4 id="1-nsthread">1. NSThread</h4>
+
+<p><a href="/article/15860813363">iOS多线程：NSThread (二)</a></p>
+<h4 id="2-gcd">2. GCD</h4>
+<p><code class="highlighter-rouge">任务</code>：就是你想让系统执行的操作，GCD中通常是放在dispatch_block_t中的代码<br />
+<code class="highlighter-rouge">同步执行</code>：任务被同步添加到指定的队列中，在该任务执行结束前会一直等待。不具备开启线程的能力，只能在当前线程中同步执行任务<br />
+<code class="highlighter-rouge">异步执行</code>：任务被异步添加到指定队列中，不会等待该任务执行。具备开启线程的能力，可在新线程中执行任务。但只有该任务追加到并发队列才会开启新线程<br />
+<code class="highlighter-rouge">队列</code>：是执行任务的的等待队列<br />
+<code class="highlighter-rouge">串行队列</code>：只开启一条新的线程，追加到该队列中的任务会依次按顺序执行<br />
+<code class="highlighter-rouge">并发队列</code>：会开辟多条新的线程，追加到该队列中的任务会并行执行。但是只有在异步执行任务时才会开启新线程，并发队列开启的新线程个数并不等同于任务个数，取决于队列的任务数、CPU核数、以及CPU负荷等当前系统状态</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dispatch_async(queue, ^{
+    //创建异步任务
+});
+dispatch_sync(queue, ^{
+    //创建同步任务
+});
+</code></pre></div></div>
+<p><a href="/article/15861494710">iOS多线程：GCD (三)</a></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    NSArray *imageArray = @[
+        @"image_1",
+        @"image_2",
+        @"image_3",
+        @"image_4",
+        @"image_5",
+        @"image_6",
+        @"image_7",
+        @"image_8",
+        @"image_9",
+    ];
+    
+    NSMutableArray *resultArray = [NSMutableArray array];
+    dispatch_queue_t globalQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_group_t group = dispatch_group_create();
+    NSLock *lock = [[NSLock alloc]init];
+    for (int i = 0; i &lt; imageArray.count; i++) {
+
+        dispatch_group_async(group,globalQueue, ^{
+            NSMutableDictionary *dic = [NSMutableDictionary dictionary];
+            [lock lock];
+            [dic setValue:imageArray[i] forKey:@"url"];
+            [dic setValue:@(i) forKey:@"id"];
+            [resultArray addObject:dic];
+            [lock unlock];
+
+        });
+    }
+    
+    dispatch_group_notify(group, globalQueue, ^{
+        DLog(@"=========%@",resultArray);
+    });
+</code></pre></div></div>
+<h4 id="3-nsoperation">3. NSOperation</h4>
+<ul>
+  <li>GCD 是纯 C 语言的 API，NSOperationQueue 是基于 GCD 的 OC 版 本封装</li>
+  <li>GCD 只支持 FIFO 的队列，NSOperationQueue 可以很方便地调整执 行顺序、设置最大并发数量</li>
+  <li>NSOperationQueue 可以在轻松在 Operation 间设置依赖关系，而 GCD 需要写很多的代码才能实现</li>
+  <li>NSOperationQueue 支持 KVO，可以监测 operation 是否正在执行 (isExecuted)、是否结束(isFinished)，是否取消(isCanceld)</li>
+  <li>GCD 的执行速度比 NSOperationQueue 快</li>
+</ul>
+
+<p>任务之间不太互相依赖:GCD<br />
+任务之间有依赖\或者要监听任务的执行情况:NSOperationQueue</p>
+
+<p><a href="/article/15884027619">iOS多线程：NSOperation、NSOperationQueue (五)</a></p>
+
+<h4 id="4-多线程-与-锁">4. 多线程 与 锁</h4>
+<p>@synchronized<br />
+atomic<br />
+OSSpinLock  内存中的retain +1 - 1<br />
+NSLock<br />
+NSRecursiveLock  递归锁<br />
+dispatch_semaphore</p>
+
+<p><a href="/article/15931534585">iOS多线程：线程安全 常见锁 (六)</a></p>
+
+<h3 id="七runloop">七、RunLoop</h3>
+<h4 id="1-概念">1. 概念</h4>
+
+<p>RunLoop是运行循环，它内部就是do-while循环，在这个循环内部不断地处理各种任务。
+一个线程对应一个RunLoop，基本作用就是保持程序的持续运行，处理app中的各种事件。通过runloop，有事运行，没事就休息，可以节省cpu资源，提高程序性能。</p>
+
+<p><strong>RunLoop 基本作用</strong><br />
+1.保持程序持续运行<br />
+2.处理App中各种事件（比如：触摸事件 ,定时器事件,Selector事件）<br />
+3.节省CPU资源，提高程序性能<br />
+<img src="https://img.gorpeln.com/blog_article_0_009_4.jpeg" alt="blog_article_0_009_4" /></p>
+
+<p>RunLoop通过mach_msg()函数接收、发送消息。它的本质是调用函数mach_msg_trap()，相当于是一个系统调用，会触发内核状态切换。在用户态调用 mach_msg_trap()时会切换到内核态；内核态中内核实现的mach_msg()函数会完成实际的工作。</p>
+
+<h4 id="2-数据结构">2. 数据结构</h4>
+<p>RunLoop有两组对象，一组是C语言的CoreFoundation框架的<code class="highlighter-rouge">CFRunLoopRef</code>对象，另一组是OC语言的Fundation框架的<code class="highlighter-rouge">NSRunLoop</code>对象。其中Fundation框架是基于CFRunLoopRef的一层分装，这里我们主要研究CFRunLoopRef源码。</p>
+
+<ol>
+  <li>CFRunLoopRef：获取线程对应的RunLoop对象</li>
+  <li>CFRunLoopModeRef：RunLoop运行模式，只能选择一种，在不同的模式中做不同的操作。</li>
+  <li>CFRunLoopSourceRef：事件源，输入源</li>
+  <li>CFRunLoopTimerRef：定时器时间</li>
+  <li>CFRunLoopObserverRef：观察者</li>
+</ol>
+
+<p><strong><em>1. CFRunLoopModeRef</em></strong> <br />
+CFRunLoopModeRef代表RunLoop的运行模式<br />
+一个RunLoop包含若干个Mode，每个Mode中又包含若干个Source、Timer、Observer，每次RunLoop启动时，只能指定其中一个Mode，这个Mode被称为CurrentMode，如果需要切换Mode，只能退出当前Mode，重新进入一个Mode，这样做的目的是<br />
+为了分隔不同组的Source、Timer、Observer，让其互不影响，如果Mode里没有任何Source0/Source1/Timer/Observer,RunLoop会立刻退出该Mode。<br />
+<img src="https://img.gorpeln.com/blog_article_0_009_2.png" alt="blog_article_0_009_2" /></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. kCFRunLoopDefaultMode：App的默认Mode，通常主线程是在这个Mode下运行
+2. UITrackingRunLoopMode：跟踪用户交互事件，用于 ScrollView 追踪触摸滑动，保证界面滑动时不受其他 Mode 影响
+3. UIInitializationRunLoopMode: 在刚启动 App 时第进入的第一个 Mode，启动完成后就不再使用，会切换到kCFRunLoopDefaultMode
+4. GSEventReceiveRunLoopMode: 接受系统事件的内部 Mode，通常用不到
+5. kCFRunLoopCommonModes: 这是一个伪模式，作为标记kCFRunLoopDefaultMode和UITrackingRunLoopMode用，并不是一种真正的Mode
+</code></pre></div></div>
+
+<p><strong><em>2. CFRunLoopSourceRef（事件源，输入源）</em></strong><br />
+Source分为两种，</p>
+
+<p><code class="highlighter-rouge">source0</code>:<br />
+1.触摸事件<br />
+2.performSelector :OnThread</p>
+
+<p><code class="highlighter-rouge">source1</code><br />
+1.基于Port的线程间通信<br />
+2.系统事件的捕捉<br />
+3.具备唤醒线程的作用</p>
+
+<p><strong><em>3. CFRunLoopObserverRef（观察者）</em></strong><br />
+CFRunLoopObserverRef确实是监听RunLoop的状态，包括唤醒，休息，以及处理各种事件</p>
+
+<p><code class="highlighter-rouge">Observers</code><br />
+1.监听runloop的状态<br />
+2.UI刷新(在runloop休眠之前)<br />
+3.自动释放池(在runloop休眠之前)</p>
+
+<h4 id="3-事件循环机制">3. 事件循环机制</h4>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_009_5.png" alt="blog_article_0_009_5" /></p>
+
+<h4 id="4-runloop-与-nstimer">4. RunLoop 与 NSTimer</h4>
+<p>timer默认被添加到RunLoop的NSDefaultRunLoopMode中，tableview滑动时，RunLoop的mode会从kCFRunLoopDefaultMode切换到UITrackingRunLoopMode，此时定时器就失效了。</p>
+
+<p>解决方案：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
+</code></pre></div></div>
+
+<h4 id="5-runloop-与-多线程">5. RunLoop 与 多线程</h4>
+<p>1.每条线程都有唯一的一个与之对应的RunLoop对象。<br />
+2.RunLoop保存在一个全局的Dictionary里，线程作为key，RunLoop作为value。<br />
+3.主线程的RunLoop在程序启动的时候自动创建好了，子线程的RunLoop需要主动创建。<br />
+4.RunLoop在第一次获取时创建，在线程结束时销毁。</p>
+
+<p>UIApplicationMain函数中，开启了一个和主线程相关的RunLoop。导致UIApplicationMain函数不会返回，一直在运行中，也就是保证了程序的持续运行。</p>
+
+<p>线程刚创建时并没有 RunLoop，如果你不主动获取，那它一直都不会有 ,RunLoop 的创建是发生在第一次获取时，RunLoop 的销毁是发生在线程结束时。你只能在一个线程的内部获取其 RunLoop（主线程除外）</p>
+
+<p><strong>怎样开启一个常驻线程？</strong><br />
+1.为当前线程开启一个RunLoop。 <br />
+2.向该RunLoop中添加port、source来维持RunLoop的事件循环。<br />
+3.启动RunLoop。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+[runLoop addPort:[NSMachPort port] forMode:NSDefaultRunLoopMode];
+[runLoop run];
+</code></pre></div></div>
+
+<h4 id="6-runloop-的应用">6. RunLoop 的应用</h4>
+
+<ul>
+  <li>
+    <p>1、runloop可以实现常驻线程<br />
+这也是Runloop存在的意义，保证不退出且不消耗资源。比如检测网络状态等</p>
+  </li>
+  <li>
+    <p>2、保证NSTimer正常运转</p>
+  </li>
+</ul>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_009_7.jpeg" alt="blog_article_0_009_7" /></p>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_009_6.jpeg" alt="blog_article_0_009_6" /></p>
+
+<ul>
+  <li>
+    <p>3、滚动视图流畅性优化 <br />
+由于图片渲染到屏幕需要消耗较多资源，为了提高用户体验，当用户滚动TableView的时候，只在后台下载图片，但是不显示图片，当用户停下来的时候才显示图片</p>
+  </li>
+  <li>
+    <p>4、滚动的ScrollView导致定时器失效</p>
+  </li>
+  <li>
+    <p>5、PerformSelecter <br />
+当调用 NSObject 的 performSelecter:afterDelay: 后，实际上其内部会创建一个 Timer 并添加到当前线程的 RunLoop 中。所以如果当前线程没有 RunLoop，则这个方法会失效。<br />
+当调用 performSelector:onThread: 时，实际上其会创建一个 Timer 加到对应的线程去，同样的，如果对应线程没有 RunLoop 该方法也会失效。</p>
+  </li>
+  <li>
+    <p>6、事件响应<br />
+我们触摸屏幕,先摸到硬件(屏幕)，屏幕表面的事件会被IOKit先包装成Event,通过mach_Port传给正在活跃的APP , Event先告诉source1（mach_port）,source1唤醒RunLoop, 然后将事件Event分发给source0,然后由source0来处理。</p>
+  </li>
+</ul>
+
+<p><a href="https://www.jishudog.com/30329/html">https://www.jishudog.com/30329/html</a><br />
+<a href="https://www.jianshu.com/p/5f20efc68cf5">https://www.jianshu.com/p/5f20efc68cf5</a></p>
+
+<h3 id="八网络">八、网络</h3>
+
+<p>HTTP协议中 POST 方法和 GET 方法有那些区别?</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. GET用于向服务器请求数据，POST用于提交数据
+2. GET请求，请求参数拼接形式暴露在地址栏，而POST请求参数则放在请求体里面，因此GET请求不适合用于验证密码等操作
+3. GET请求的URL有长度限制，POST请求不会有长度限制
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">charles</code> 查尔斯</p>
+
+<p><a href="https://www.jianshu.com/p/a7666a73af0d">https://www.jianshu.com/p/a7666a73af0d</a></p>
+
+<p>如何解决DNS劫持？<br />
+httpDNS<br />
+长链接</p>
+
+<h3 id="js-和-oc-的相互调用">JS 和 OC 的相互调用</h3>
+<p>WebViewJavascriptBridge</p>
+
+<p><a href="https://www.jianshu.com/p/5a21959dea8d">https://www.jianshu.com/p/5a21959dea8d</a><br />
+<a href="https://blog.csdn.net/y550918116j/article/details/50134625">https://blog.csdn.net/y550918116j/article/details/50134625</a></p>
+
+  </article>
+
+</div>
+
+  <div class="copyright">
+  	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
+	<div>本文链接：<a href="https://gorpeln.com/article/0">https://gorpeln.com/article/0</a></div>
+</div>
+
+  <div class="prevandnext">
+    	  
+	    <div>
+	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/1" title="杂记一" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记一</a>
+	    </div>
+	  
+  	  
+	    <div>
+	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15805392787" title="关于 ASO 优化（一）" style="color: #6666cc;font-size: 0.9em;"  target="_blank">关于 ASO 优化（一）</a>
+	    </div>
+	  
+	 
+  </div>
+  
+  <div class="livere">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<script type="text/javascript" src="/assets/js/md5.min.js"></script>
+<div id="gitalk-container"></div>     
+<script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '5c495e6cc6996908ba54',
+        clientSecret: 'ae8ca701484e4e412df777e83a090a28c57fffb7',
+        repo: 'Gitalk',
+        owner: 'gorpeln',
+        admin: ['gorpeln'],
+        id: md5(location.pathname),
+
+    });
+    gitalk.render('gitalk-container');
+</script>  -->
+
+<head>
+    <script type="text/javascript" src="/assets/js/Valine.min.js"></script>
+</head>
+<style>
+#veditor {
+    background-image: url(https://cdn.jsdelivr.net/gh/drew233/cdn/20200409110727.webp);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+    background-color: rgba(255, 255, 255, 0);
+    resize: vertical
+}
+
+.v .vwrap {
+    border: 1px solid #37374b !important;
+}
+</style>
+
+<body>
+    <div id="vcomments"></div>
+    <script>
+    new Valine({
+        el: '#vcomments',
+        appId: 'Jc31cFDJbalRKtcpsQ9kpnaH-gzGzoHsz',
+        appKey: '6MfHpQqh9MFU43xg4bwjGAJu',
+        placeholder: '无需注册，支持Markdown语法，填写邮箱可以收到回复通知。',
+        avatar: 'monsterid',
+        pageSize: '10',
+        lang: 'zh-cn',
+        recordIP: 'true',
+        serverURLs: '',
+        enableQQ: true,
+        visitor: true,
+        requiredFields: ['nick', 'mail']
+    })
+
+    document.getElementsByTagName('input')[0].placeholder = "昵称/QQ号(必填)";
+    document.getElementsByTagName('input')[1].placeholder = "邮箱（必填，完全保密）";
+    </script>
+</body>
+  </div>
+
+
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-3 hidden-xs hidden-sm aside1">
+        <div class="qrcode" id="qrcodeBtn" onclick="createQrcode('/article/0')"></div>
+        <div class="qrcodeImg" id="qrcode"></div>
+        <div id="backtotop">
+            <a href="#">
+                <div class="bttbg"></div>
+            </a>
+        </div>
+    </div>
+    <footer class="site-footer">
+    <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
+    <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
+        ©2015-2021 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+    </div>
+</footer>
+<script type="text/javascript" src="/assets/js/jquery.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.pjax.js"></script>
+<script type="text/javascript" src="/assets/js/prettify/prettify.js"></script>
+<script type="text/javascript" src="/assets/js/stickUp.min.js"></script>
+<script type="text/javascript" src="/assets/js/main.js"></script>
+<script type="text/javascript" src="/assets/js/toc.js"></script>
+<!-- search -->
+<div class="cb-search-tool" style="position: fixed; top: 0px ; bottom: 0px; left: 0px; right:  0px;
+      opacity: 0.95; background-color: #111111; z-index: 9999; display: none;">
+    <input type="text" class="form-control cb-search-content" id="cb-search-content" style="position: fixed; top: 6em" placeholder="文章标题 日期 标签">
+    <div style="position: fixed; top: 2.5em; right: 2.5em;">
+        <img src="/search/img/cb-close.png" id="cb-close-btn" />
+    </div>
+</div>
+<link rel="stylesheet" href="/search/css/cb-search.css">
+<script src="/search/js/bootstrap3-typeahead.min.js"></script>
+<script src="/search/js/cb-search.js"></script>
+<!-- <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> -->
+<!-- 动态显示网站运行时间 -->
+<script language=javascript>
+function siteTime() {
+    window.setTimeout("siteTime()", 1000);
+    var seconds = 1000
+    var minutes = seconds * 60
+    var hours = minutes * 60
+    var days = hours * 24
+    var years = days * 365
+    var today = new Date()
+    var todayYear = today.getFullYear()
+    var todayMonth = today.getMonth() + 1
+    var todayDate = today.getDate()
+    var todayHour = today.getHours()
+    var todayMinute = today.getMinutes()
+    var todaySecond = today.getSeconds()
+    /* Date.UTC() -- 返回date对象距世界标准时间(UTC)1970年1月1日午夜之间的毫秒数(时间戳) 
+    year - 作为date对象的年份，为4位年份值
+    month - 0-11之间的整数，做为date对象的月份 0为1月
+    day - 1-31之间的整数，做为date对象的天数
+    hours - 0(午夜24点)-23之间的整数，做为date对象的小时数
+    minutes - 0-59之间的整数，做为date对象的分钟数
+    seconds - 0-59之间的整数，做为date对象的秒数
+    microseconds - 0-999之间的整数，做为date对象的毫秒数 */
+    var t1 = Date.UTC(2015, 8, 23, 0, 0, 0)
+    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond)
+    var diff = t2 - t1
+    var diffYears = Math.floor(diff / years)
+    var diffDays = Math.floor((diff / days) - diffYears * 365)
+    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours)
+    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) / minutes)
+    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours - diffMinutes * minutes) / seconds)
+    document.getElementById("htmer_time").innerHTML = " 本站已安全运行：" + diffYears + " 年 " + diffDays + " 天 " + diffHours + " 时 " + diffMinutes + " 分 " + diffSeconds + " 秒";
+    console.log(todayMonth);
+
+}
+siteTime();
+</script>
+
+<script language=JavaScript>
+
+function over(obj) {
+    obj.innerHTML = "隐秘的角落：gorpeln,gorpeln的个人博客,冠鹏,gpchen,风未止,风未止的个人博客,个人博客,iOS,时光本";
+}
+
+function out(obj) {
+
+}
+</script>
+<!-- 百度统计 -->
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4a8ef4ce6ae9529ceb8626becc0053c0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+<!-- 百度自动收录 -->
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<!-- 谷歌统计 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-117093386-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-117093386-1');
+</script>
+
+<!-- 360 自动收录 -->
+<script>
+(function(){
+var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+document.write('<script src="' + src + '" id="sozz"><\/script>');
+})();
+</script>
+
+
+
+
+<style>
+.runTime {
+    color: #666;
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+}
+</style>
+</body>
+<script>
+function pushNew(path) {
+    if (path == '/') {
+        window.location.href = path;
+    } else {
+        window.open(path);
+    }
+}
+</script>
+<script type="text/javascript">
+function menuFixed(id, otherId) {
+    var obj = document.getElementById(id);
+    var _getHeight = obj.offsetTop;
+
+    window.onscroll = function() {
+        changePos(id, _getHeight, otherId);
+    }
+}
+
+function changePos(id, height, otherId) {
+    var obj = document.getElementById(id);
+    var friendlinkObj = document.getElementById(otherId);
+    var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+    if (scrollTop < height) {
+        obj.style.position = 'relative';
+        obj.style.width = friendlinkObj.offsetWidth + 'px';
+    } else {
+        obj.style.position = 'fixed';
+        obj.style.width = friendlinkObj.offsetWidth + 'px';
+    }
+}
+window.onload = function() {
+    menuFixed('toc', 'friendlinkNav');
+}
+</script>
+<script type="text/javascript" src="/assets/js/qrcode.js"></script>
+<script>
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+    width : 180,
+    height : 180
+});
+
+
+function createQrcode(url) {
+    console.log('生成我二维码' + url);
+
+        qrcode.makeCode('https://gorpeln.com' + url);
+
+    var qrcodeImg = document.getElementById('qrcode');
+    if (qrcodeImg.style.display == 'block') {
+        qrcodeImg.style.display = 'none';
+        qrcode.clear();
+    } else {
+        qrcodeImg.style.display = 'block';
+    }
+
+
+}
+
+function hiddenQRCode() {
+    var qrcodeImg = document.getElementById('qrcode');
+    if (qrcodeImg.style.display == 'block') {
+        qrcodeImg.style.display = 'none';
+        qrcode.clear();
+    }
+}
+</script>
+<style>
+.articleCount {
+    color: #ffffff;
+    background: #ddd;
+    border-radius: 6px;
+    font-size: 13px;
+    width: 32px;
+    text-align: center;
+    line-height: 1.5em;
+    height: 1.5em;
+    margin-left: 10px;
+}
+
+.customCatalog {
+    display: block;
+    margin-top: 1em;
+    background: #fff;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    width: 100%;
+    padding-bottom: 7.5%;
+    padding: 1em;
+    position: relative;
+    top: 0;
+    overflow-y: scroll;
+    max-height: calc(100% - 2em);
+}
+
+.element::-webkit-scrollbar {
+    width: 0 !important
+}
+
+.element {
+    -ms-overflow-style: none;
+}
+
+.element {
+    overflow: -moz-scrollbars-none;
+}
+.categoryList{
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+</style>
+
+</html>
