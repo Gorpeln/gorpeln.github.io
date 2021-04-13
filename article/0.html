@@ -367,8 +367,11 @@
 <p><img src="https://img.gorpeln.com/blog_article_0_003.png" alt="blog_article_0_003" /></p>
 
 <h4 id="5-事件传递-和-事件响应">5. 事件传递 和 事件响应</h4>
-<p><a href="https://www.jianshu.com/p/53885ef25c7f">https://www.jianshu.com/p/53885ef25c7f</a><br />
-<img src="https://img.gorpeln.com/blog_article_0_004_1 .png" alt="blog_article_0_004_1 " /></p>
+<p><a href="https://www.jianshu.com/p/53885ef25c7f">https://www.jianshu.com/p/53885ef25c7f</a>  <br />
+<a href="https://www.jianshu.com/p/847432c2cb3b">https://www.jianshu.com/p/847432c2cb3b</a><br />
+<a href="https://www.jianshu.com/p/1a4570895df5">https://www.jianshu.com/p/1a4570895df5</a></p>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_004_1 .png" alt="blog_article_0_004_1 " /></p>
 
 <p><img src="https://img.gorpeln.com/blog_article_0_004_2.png" alt="blog_article_0_004_2" /></p>
 
@@ -603,8 +606,12 @@ NSNotificationCenter * center = [NSNotificationCenter defaultCenter];
 <p>2、如何手动触发KVO<br />
 答. 被监听的属性的值被修改时，就会自动触发KVO。如果想要手动触发KVO，则需要我们自己调用willChangeValueForKey和didChangeValueForKey方法即可在不改变属性值的情况下手动触发KVO，并且这两个方法缺一不可。</p>
 
+<p><strong>KVO—手动触发</strong><br />
+<a href="https://www.jianshu.com/p/5ffc418a0f6f">https://www.jianshu.com/p/5ffc418a0f6f</a></p>
+
 <h4 id="5-kvc">5. KVC</h4>
-<p>键值编码 是一种通过字符串间接访问对象的方式</p>
+<p>键值编码 是一种通过字符串间接访问对象的方式<br />
+<a href="https://www.jianshu.com/p/65184aea8046">https://www.jianshu.com/p/65184aea8046</a></p>
 
 <p>KVC赋值原理</p>
 
@@ -1393,15 +1400,115 @@ CFRunLoopObserverRef确实是监听RunLoop的状态，包括唤醒，休息，�
 
 <p><a href="https://www.jianshu.com/p/a7666a73af0d">https://www.jianshu.com/p/a7666a73af0d</a></p>
 
+<p><strong>HTTP报文之”请求报文”和”响应报文”详解</strong><br />
+<a href="https://blog.csdn.net/weixin_45393094/article/details/105819645">https://blog.csdn.net/weixin_45393094/article/details/105819645</a></p>
+
+<p><strong>详解TCP 连接的“ 三次握手 ”与“ 四次挥手 ”</strong><br />
+<a href="https://blog.csdn.net/qq_38950316/article/details/81087809">https://blog.csdn.net/qq_38950316/article/details/81087809</a></p>
+
 <p>如何解决DNS劫持？<br />
 httpDNS<br />
 长链接</p>
+
+<h3 id="九设计模式">九、设计模式</h3>
+<h4 id="1六大设计原则">1.六大设计原则</h4>
+<p><code class="highlighter-rouge">单一职责原则</code>主要说明类的职责要单一；UIView和CALayer <br />
+<code class="highlighter-rouge">开闭原则</code>讲述的是对扩展开放，对修改关闭。   <br />
+<code class="highlighter-rouge">接口隔离原则</code>讲解设计接口的时候要精简；UITableViewDelegate,UITableViewDataSource<br />
+<code class="highlighter-rouge">依赖倒置原则</code>描述要面向接口编程；抽象不应该依赖细节；细节应该依赖抽象；      <br />
+<code class="highlighter-rouge">里氏替换原则</code>在使用基类的的地方可以任意使用其子类，能保证子类完美替换基类。kvo  <br />
+<code class="highlighter-rouge">迪米特法则</code>告诉我们要降低耦合；高内聚，低耦合   <br />
+<a href="https://blog.csdn.net/qq_40201300/article/details/79261656">https://blog.csdn.net/qq_40201300/article/details/79261656</a></p>
+
+<h4 id="2责任链模式">2.责任链模式</h4>
+<p>责任链模式的主要思想是，对象引用了同一类型的另一个对象，形成一条链。链中的每个对象实现了同样的方法，处理对链中第一个对象发起的同一个请求。如果一个对象不知道如何处理请求，它就把请求传给下一个响应器。</p>
+
+<h4 id="3桥接">3.桥接</h4>
+<p><img src="https://img.gorpeln.com/blog_article_0_011_1.png" alt="blog_article_0_011_1" /></p>
+
+<h4 id="4适配器">4.适配器</h4>
+<p>适配器模式就是将一个原始接口转成客户端需要的接口；当原始接口不兼容新的接口，将它们连接起来一起工作就是适配器模式<br />
+classA 中的方法[a methodA];
+classB 添加类对象 classA *a; 方法methodB, 方法methodB中调用methodA并处理一些其他操作</p>
+<h4 id="5单例">5.单例</h4>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#import "Singleton.h"
+
+@implementation Singleton
+
+static Singleton *shareSingleton = nil;
+
++ (instancetype)shareSingleton {
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        shareSingleton = [[super allocWithZone:NULL] init];
+    });
+    return shareSingleton;
+}
+
++ (instancetype)allocWithZone:(struct _NSZone *)zone {
+    return [Singleton shareSingleton];
+}
+
+- (id)copyWithZone:(struct _NSZone *)zone {
+    return [Singleton shareSingleton];
+}
+
+@end
+</code></pre></div></div>
+
+<h3 id="十构架框架">十、构架/框架</h3>
+<h4 id="1图片缓存">1.图片缓存</h4>
+<p><img src="https://img.gorpeln.com/blog_article_0_012_1.png" alt="blog_article_0_012_1" />
+图片是怎么进行读写的？以图片的URL的单向hash值作为key</p>
+
+<p><strong>内存设计</strong><br />
+存储size    <br />
+淘汰策略 1，根据存储size先进先出删除，2，根据缓存时间30min，超过就删除，每次进行读写时或者进入后台时候进行遍历判断是否超时</p>
+
+<p><strong>硬盘设计</strong> <br />
+存储方式<br />
+存储size<br />
+淘汰策略 7天</p>
+
+<p><strong>网络设计</strong> 
+图片请求并发量<br />
+请求超时策略，超时再次请求，在超时就不请求了<br />
+请求优先级</p>
+
+<p><strong>图片解码</strong>   <br />
+在哪个阶段进行图片解码？<br />
+1、从磁盘读取后，解码放入内存
+2、网络请求返回后，解码</p>
+
+<h4 id="2阅读时长">2.阅读时长</h4>
+<p><img src="https://img.gorpeln.com/blog_article_0_012_2.png" alt="blog_article_0_012_2" />
+记录的数据由于某些原因可能丢失，你是怎么处理的？<br />
+定时写磁盘，没有条数的限制<br />
+限制内存缓存条数，缓存10条就写磁盘</p>
+
+<p>延时上传的场景 <br />
+前后台切换<br />
+网络切换时，无网到有网</p>
+
+<p>立即上传<br />
+延时长传<br />
+定时上传</p>
+
+<h4 id="3复杂页面构架">3.复杂页面构架</h4>
+<p>mvvm
+<img src="https://img.gorpeln.com/blog_article_0_012_3.png" alt="blog_article_0_012_3" /></p>
+
+<h4 id="4客户端整体框架">4.客户端整体框架</h4>
+
+<p><img src="https://img.gorpeln.com/blog_article_0_012_4.png" alt="blog_article_0_012_4" /></p>
 
 <h3 id="js-和-oc-的相互调用">JS 和 OC 的相互调用</h3>
 <p>WebViewJavascriptBridge</p>
 
 <p><a href="https://www.jianshu.com/p/5a21959dea8d">https://www.jianshu.com/p/5a21959dea8d</a><br />
 <a href="https://blog.csdn.net/y550918116j/article/details/50134625">https://blog.csdn.net/y550918116j/article/details/50134625</a></p>
+
 
   </article>
 
