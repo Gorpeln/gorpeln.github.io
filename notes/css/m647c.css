@@ -1,0 +1,303 @@
+*, *::before, *::after {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-weight: normal;
+}
+body {
+  background: #FFF;
+  font-size: 24px;
+  font-family: HELVETICA, sans-serif;
+}
+.header {
+  width: 100%;
+  height: 96px;
+  background:#FFF;
+}
+.header .logo {
+  width: 196px;
+  height: 96px;
+  background: url(../img/logo.svg) no-repeat center center;
+  background-size: 90% 90%;
+  position: absolute;
+  left: 32px;
+  top: 20px;
+}
+
+.download {
+  display: block;
+  width: 360px;
+  height: 84px;
+  line-height: 84px;
+  font-size: 32px;
+  text-align: center;
+  color:#FFF;
+  background: #4ba0ff;
+  border-radius: 42px;
+  margin: auto;
+}
+
+.main {
+  width: 100%;
+  margin: 100px auto 0;
+  overflow: hidden;
+  position: relative;
+}
+.contains {
+  width: 100%;
+  line-height: 1;
+  position: relative;
+}
+.contains::after {
+  display: block;
+  content: "";
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  margin: 0 auto 0;
+}
+#m .contains {
+  padding: 50px 0 40px;
+  text-align: center;
+}
+#m .contains > .content {
+  text-align: center;
+  margin:auto;
+  margin-bottom: 50px;
+}
+#m .contains > .content > h2 {
+  width: 80%;
+  line-height: 100px;
+  font-size: 48px;
+  font-weight: normal;
+  text-align: center;
+  margin:auto;
+}
+#m .contains > .content > h3 {
+  width: 80%;
+  font-size: 28px;
+  line-height: 52px;
+  text-align: center;
+  font-weight: normal;
+  color:#666;
+  margin: 0 auto;
+}
+#m .contains > .content > p {
+  width: 80%;
+  font-size: 24px;
+  line-height: 40px;
+  color:#999;
+  text-align: center;
+  margin: 0 auto;
+}
+#m .versionInfo {
+  width: 80%;
+  font-size: 24px;
+  line-height: 40px;
+  color:#999;
+  text-align: center;
+  margin: 0 auto;
+}
+
+#m .contains[name="sg"] {
+  padding-top:0;
+  background-image: linear-gradient(180deg, rgba(255,128,0,0.00) 0%, rgba(255, 128, 0, 0.02) 100%);
+}
+#m .contains[name="sg"]::after {
+  width: 614px;
+  height: 662px;
+  background-image: url(../../assets/img/notes/sg.png);
+}
+#m .contains[name="sg"] > .content {
+  width: 100%;
+}
+#m .contains[name="sg"] .logo {
+  width: 144px;
+  height: 144px;
+  margin: 64px auto 26px;
+  background:url(../img/logo-h.png) no-repeat center center;
+  background-size: 100% 100%;
+  box-shadow: 0px 0px 10px #4ba0ff;
+  border-radius: 16px;
+}
+#m .contains[name="sg"] h2 {
+  font-size: 40px;
+  line-height: 62px;
+}
+#m .download {
+  margin: 0 auto 22px;
+}
+#m .contains[name="sg"] .download {
+  margin: 100px auto 22px;
+}
+
+#m .contains[name="xc"] {
+  background-image: linear-gradient(180deg, rgba(255,128,0,0.00) 0%, rgba(255, 128, 0, 0.02) 100%);
+}
+#m .contains[name="xc"]::after {
+  width: 479px;
+  height: 1036px;
+  background-image: url(../../assets/img/notes/xc.png);
+}
+
+#m .contains[name="lt"] {
+  background-image: linear-gradient(180deg, rgba(0, 136, 62,0.00) 0%, rgba(0, 136, 62, 0.02) 100%);
+}
+#m .contains[name="lt"]::after {
+  width: 479px;
+  height: 1036px;
+  background-image: url(../../assets/img/notes/lt.png);
+}
+
+#m .contains[name="sr"] {
+  background-image: linear-gradient(180deg, rgba(255,128,0,0.00) 0%, rgba(255, 128, 0, 0.02) 100%);
+}
+#m .contains[name="sr"]::after {
+  width: 479px;
+  height: 1036px;
+  background-image: url(../../assets/img/notes/sr.png);
+}
+
+#m .contains[name="jz"] {
+  background-image: linear-gradient(180deg, rgba(255,128,0,0.00) 0%, rgba(255, 128, 0, 0.02) 100%);
+}
+#m .contains[name="jz"]::after {
+  width: 479px;
+  height: 1036px;
+  background-image: url(../../assets/img/notes/jz.png);
+}
+
+#m .contains[name="mt"] {
+  background-image: linear-gradient(180deg, rgba(0,137,62,0.00) 0%, rgba(255,47,47, 0.02) 100%);
+}
+#m .contains[name="mt"]::after {
+  width: 479px;
+  height: 1036px;
+  background-image: url(../../assets/img/notes/mt.png);
+}
+
+#m .contains[name="txl"] {
+  background-image: linear-gradient(180deg, rgba(0,137,62,0.00) 0%, rgba(0,122,255, 0.02) 100%);
+}
+#m .contains[name="txl"]::after {
+  width: 479px;
+  height: 1036px;
+  background-image: url(../../assets/img/notes/txl.png);
+}
+
+#m .contains[name="gd"] {
+  height: auto;
+}
+#m .contains[name="gd"] > .content {
+  width: 100%;
+}
+#m .contains[name="gd"] > ul {
+  width: 91.2%;
+  overflow: hidden;
+  text-align: center;
+  margin: 80px auto 0;
+  position: relative;
+}
+#m .contains[name="gd"] > ul > li {
+  display: block;
+  float:left;
+  width: 33%;
+  padding-top: 104px;
+  padding-bottom: 60px;
+  line-height: 56px;
+  color:#999;
+  text-align: center;
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: 104px 104px;
+}
+#m .contains[name="gd"] > ul > li.icon-shijian {
+  background-image: url(../img/icon-shijian.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-tongxunlu {
+  background-image: url(../img/icon-tongxunlu.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-tianqi {
+  background-image: url(../img/icon-tianqi.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-zhishi {
+  background-image: url(../img/icon-zhishi.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-rili {
+  background-image: url(../img/icon-rili.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-meiting {
+  background-image: url(../img/icon-meiting.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-shengri {
+  background-image: url(../img/icon-shengri.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-wifi {
+  background-image: url(../img/icon-wifi.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-weizhi {
+  background-image: url(../img/icon-weizhi.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-shenghuo {
+  background-image: url(../img/icon-shenghuo.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-renwu {
+  background-image: url(../img/icon-renwu.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-jingqi {
+  background-image: url(../img/icon-jingqi.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-jizhang {
+  background-image: url(../img/icon-jizhang.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-suji {
+  background-image: url(../img/icon-suji.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-bianqian {
+  background-image: url(../img/icon-bianqian.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-meiji {
+  background-image: url(../img/icon-meiji.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-gupiao {
+  background-image: url(../img/icon-gupiao.svg);
+}
+#m .contains[name="gd"] > ul > li.icon-caipiao {
+  background-image: url(../img/icon-caipiao.svg);
+}
+
+@media screen and (max-width: 1000px) {
+  #m .contains[name="xc"] > h2,
+  #m .contains[name="xc"] > p,
+  #m .contains[name="lt"] > h2,
+  #m .contains[name="lt"] > p,
+  #m .contains[name="sr"] > h2,
+  #m .contains[name="sr"] > p,
+  #m .contains[name="jz"] > h2,
+  #m .contains[name="jz"] > p,
+  #m .contains[name="mt"] > h2,
+  #m .contains[name="mt"] > p,
+  #m .contains[name="txl"] > h2,
+  #m .contains[name="txl"] > p {
+    width: 100%;
+    text-align: center;
+    position: static;
+    margin:auto;
+  }
+}
+
+.footer {
+	line-height: 1.75;
+	padding: 40px 0 40px;
+	text-align: center;
+	color:#666;
+	font-size: 16px;
+}
+
+.footer a{
+  color:#666;
+
+}
