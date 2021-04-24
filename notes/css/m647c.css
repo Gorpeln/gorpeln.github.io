@@ -92,6 +92,7 @@ body {
   color:#999;
   text-align: center;
   margin: 0 auto;
+  margin-bottom: 60px;
 }
 #m .versionInfo {
   width: 80%;
@@ -117,7 +118,7 @@ body {
 #m .contains[name="sg"] .logo {
   width: 144px;
   height: 144px;
-  margin: 64px auto 26px;
+  margin: 64px auto 64px;
   background:url(../../assets/img/notes/logo-h.png) no-repeat center center;
   background-size: 100% 100%;
   box-shadow: 0px 0px 10px #4ba0ff;
