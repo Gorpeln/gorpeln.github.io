@@ -132,7 +132,6 @@ https://gorpeln.com/notes/js/jquery-1.11.1.min.js
 https://gorpeln.com/notes/js/ma6ca.js
 https://gorpeln.com/notes/img/icon-weizhi.svg
 https://gorpeln.com/notes/img/icon-zhishi.svg
-https://gorpeln.com/notes/img/logo-h.png
 https://gorpeln.com/notes/img/icon-shenghuo.svg
 https://gorpeln.com/notes/img/icon-renwu.svg
 https://gorpeln.com/notes/img/icon-rili.svg

@@ -118,7 +118,7 @@ body {
   width: 144px;
   height: 144px;
   margin: 64px auto 26px;
-  background:url(../img/logo-h.png) no-repeat center center;
+  background:url(../../assets/img/notes/logo-h.png) no-repeat center center;
   background-size: 100% 100%;
   box-shadow: 0px 0px 10px #4ba0ff;
   border-radius: 16px;
@@ -294,7 +294,7 @@ body {
 	padding: 40px 0 40px;
 	text-align: center;
 	color:#666;
-	font-size: 16px;
+	font-size: 18px;
 }
 
 .footer a{
