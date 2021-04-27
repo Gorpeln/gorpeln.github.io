@@ -676,6 +676,14 @@ NSNull 是一个对象,它用在不能使用nil的场合</p>
 
 <h3 id="三runtime">三、Runtime</h3>
 <h4 id="1-数据结构">1. 数据结构</h4>
+<p>Runtime又叫运行时，是一套底层的C语言API，其为iOS内部的核心之一，我们平时编写的OC代码，底层都是基于它来实现的。</p>
+
+<p>Runtime库里面包含了跟类、成员变量、方法相关的API。<br />
+比如：<br />
+（1）获取类里面的所有成员变量。<br />
+（2）为类动态添加成员变量。<br />
+（3）动态改变类的方法实现。<br />
+（4）为类动态添加新的方法等。</p>
 
 <p><code class="highlighter-rouge">实例对象(objc_object)</code>  <br />
 <code class="highlighter-rouge">类对象(objc_class)</code></p>
@@ -715,13 +723,6 @@ NSNull 是一个对象,它用在不能使用nil的场合</p>
 
 <p><img src="https://img.gorpeln.com/blog_article_0_007_1.jpeg" alt="blog_article_0_007_1" />
 <img src="https://img.gorpeln.com/blog_article_0_007_3.png" alt="blog_article_0_007_3" /></p>
-
-<p>Runtime库里面包含了跟类、成员变量、方法相关的API。<br />
-比如：<br />
-（1）获取类里面的所有成员变量。<br />
-（2）为类动态添加成员变量。<br />
-（3）动态改变类的方法实现。<br />
-（4）为类动态添加新的方法等。</p>
 
 <p><img src="https://img.gorpeln.com/blog_article_0_007_6.png" alt="blog_article_0_007_6" /></p>
 
@@ -1139,7 +1140,7 @@ block内部没有调用外部局部变量时存放在全局区(ARC和MRC下均�
 
 <h4 id="5-block循环引用">5. Block循环引用</h4>
 <p>为什么block会产生循环引用？<br />
-1） block的变量截获是会将变量的所有权修饰符一同截获<br />
+1） block的变量截获是会将变量的所有权修饰符一同截获、self  <br />
 2） __block</p>
 
 <p>Block 循环引用的情况：<br />
@@ -1183,6 +1184,22 @@ __block：必须把引用对象置位nil，并且要调用该block</p>
 <a href="https://www.jianshu.com/p/4e79e9a0dd82">https://www.jianshu.com/p/4e79e9a0dd82</a></p>
 
 <h3 id="六多线程">六、多线程</h3>
+
+<p>currentThread<br />
+sleepForTimeInterval</p>
+
+<p>dispatch_group_t<br />
+dispatch_barrier_sync<br />
+dispatch_semaphore_t</p>
+
+<p>NSInvocationOperation<br />
+NSBlockOperation<br />
+NSOperationQueue<br />
+maxConcurrentOperationCount<br />
+addDependency<br />
+setQueuePriority<br />
+isFinished、isCancelled、isExecuting、isReady</p>
+
 <h4 id="1-nsthread">1. NSThread</h4>
 
 <p><a href="/article/15860813363">iOS多线程：NSThread (二)</a></p>
@@ -1611,7 +1628,7 @@ static Singleton *shareSingleton = nil;
     <footer class="site-footer">
     <div id="htmer_time" class="runTime" onmouseover="over(this)" onmouseout="out(this)">安全运行</div>
     <div class="center sitedesc" style="width: 100%;bottom: -0.25em;font-size: 14px;">
-        ©2015-2021 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号</a>
+        ©2015-2021 gorpeln 版权所有&nbsp; | &nbsp;<a style="color: #333" href="http://beian.miit.gov.cn/">京ICP备18035462号-1</a>
     </div>
 </footer>
 <script type="text/javascript" src="/assets/js/jquery.js"></script>
