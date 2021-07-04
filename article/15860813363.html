@@ -493,7 +493,7 @@ NSThread *current = [NSThread currentThread];
     NSLog(@"current thread -- %@", [NSThread currentThread]);
     
     // 1. 获取图片 imageUrl
-    NSURL *imageUrl = [NSURL URLWithString:@"https://img.gorpeln.com/blog_logo_shiguangben.png"];
+    NSURL *imageUrl = [NSURL URLWithString:@"https://img.gorpeln.cn/blog_logo_shiguangben.png"];
     
     // 2. 从 imageUrl 中读取数据(下载图片) -- 耗时操作
     NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
@@ -662,14 +662,14 @@ NSThread *current = [NSThread currentThread];
 <h3 id="26-线程的状态转换">2.6 线程的状态转换</h3>
 <p>当我们新建一条线程<code class="highlighter-rouge">NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];</code>，在内存中的表现为：</p>
 
-<p><img src="https://img.gorpeln.com/blog_ thread_001.png" alt="blog_ thread_001" /></p>
+<p><img src="https://img.gorpeln.cn/blog_ thread_001.png" alt="blog_ thread_001" /></p>
 
 <p>当调用<code class="highlighter-rouge">[thread start];</code>后，系统把线程对象放入可调度线程池中，线程对象进入就绪状态，如下图所示。</p>
 
-<p><img src="https://img.gorpeln.com/blog_ thread_002.png" alt="blog_ thread_002" /></p>
+<p><img src="https://img.gorpeln.cn/blog_ thread_002.png" alt="blog_ thread_002" /></p>
 
 <p>当然，可调度线程池中，会有其他的线程对象，如下图所示。在这里我们只关心左边的线程对象。
-<img src="https://img.gorpeln.com/blog_ thread_003.png" alt="blog_ thread_003" /></p>
+<img src="https://img.gorpeln.cn/blog_ thread_003.png" alt="blog_ thread_003" /></p>
 
 <p><strong>下边我们来看看当前线程的状态转换:</strong></p>
 <ul>
@@ -678,7 +678,7 @@ NSThread *current = [NSThread currentThread];
   <li>如果CPU在运行当前线程对象的时候线程任务执行完毕\异常强制退出，则当前线程对象进入死亡状态。</li>
 </ul>
 
-<p><img src="https://img.gorpeln.com/blog_ thread_004.png" alt="blog_ thread_004" /></p>
+<p><img src="https://img.gorpeln.cn/blog_ thread_004.png" alt="blog_ thread_004" /></p>
 
   </article>
 
@@ -686,18 +686,18 @@ NSThread *current = [NSThread currentThread];
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15860813363">https://gorpeln.com/article/15860813363</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/15860813363">https://gorpeln.cn/article/15860813363</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15861494710" title="iOS多线程：GCD (三)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：GCD (三)</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/15861494710" title="iOS多线程：GCD (三)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：GCD (三)</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15854795957" title="iOS多线程：基础 (一)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：基础 (一)</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/15854795957" title="iOS多线程：基础 (一)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：基础 (一)</a>
 	    </div>
 	  
 	 
@@ -956,7 +956,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

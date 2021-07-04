@@ -374,7 +374,7 @@
 
 <h2 id="二小程序架构解密">二、小程序架构解密</h2>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_001.jpg" alt="blog_wxmini_3_001" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_001.jpg" alt="blog_wxmini_3_001" /></p>
 
 <p>小程序架构如上图所示，分为视图层和逻辑层，视图层是在 WebView 内渲染，逻辑层则有 JavaScriptCore 来渲染；其中视图层可以多个（考虑到整体性能，最多可以 5 个），逻辑层则全局只有一个（实际通过开启 X5 内核另起一个 JavascriptCore 线程）。</p>
 
@@ -404,19 +404,19 @@
 
 <p>WeixinJSBridge 提供的方法有 <code class="highlighter-rouge">invoke</code>、<code class="highlighter-rouge">publish</code> 和 <code class="highlighter-rouge">subscribe</code> 等，<code class="highlighter-rouge">invoke</code> 就是关键的调用 Native 端能力的方法，<code class="highlighter-rouge">publish</code> 是消息分发的方法。注意下图的 <code class="highlighter-rouge">invoke</code> 实际是来自<code class="highlighter-rouge">y</code>，<code class="highlighter-rouge">publish</code> 来自 <code class="highlighter-rouge">w</code>，<code class="highlighter-rouge">e</code> 为 <code class="highlighter-rouge">window</code>。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_002.jpg" alt="blog_wxmini_3_002" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_002.jpg" alt="blog_wxmini_3_002" /></p>
 
 <p><code class="highlighter-rouge">y</code> 的实现最后调用了<code class="highlighter-rouge">g</code>，<code class="highlighter-rouge">w</code> 的实现最后调用了<code class="highlighter-rouge">_</code>。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_003.jpg" alt="blog_wxmini_3_003" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_003.jpg" alt="blog_wxmini_3_003" /></p>
 
 <p>继续查找<code class="highlighter-rouge">g</code>、<code class="highlighter-rouge">_</code> 的实现，发现 <code class="highlighter-rouge">g</code>、<code class="highlighter-rouge">_</code> 最后都调用了 <code class="highlighter-rouge">d</code> 和 <code class="highlighter-rouge">f</code> 的方法（显现了关键字<code class="highlighter-rouge">invokeHandler</code>、<code class="highlighter-rouge">publishHandler</code>）。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_004.jpg" alt="blog_wxmini_3_004" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_004.jpg" alt="blog_wxmini_3_004" /></p>
 
 <p>继续查找，发现 <code class="highlighter-rouge">d</code> 和 <code class="highlighter-rouge">f</code> 分别是来自 <code class="highlighter-rouge">window.webkit</code>、<code class="highlighter-rouge">window.WeixinJSCore</code>。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_005.jpg" alt="blog_wxmini_3_005" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_005.jpg" alt="blog_wxmini_3_005" /></p>
 
 <p>因为在一个小程序中可以打开多个视图层（webview），要保证发送的消息准确送到每个具体的 webview 中，需要通过每个 webview 唯一标识 <code class="highlighter-rouge">webviewId</code> 来实现。发送消息时，携带 <code class="highlighter-rouge">webviewId</code>，然后逻辑层处理完对应的逻辑，如果需要通知或者执行对应 webview 的代码，则可以通过 <code class="highlighter-rouge">webviewId</code> 找到对应的 webview，下发通知。</p>
 
@@ -424,7 +424,7 @@
 
 <p>小程序生命周期包括应用的生命周期（逻辑层 App Service）和页面的生命周期（视图层 View），两者支持的事件不同，详见官方文档中的这张配图。</p>
 
-<p>!<img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_006.jpg" alt="blog_wxmini_3_006" /></p>
+<p>!<img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_006.jpg" alt="blog_wxmini_3_006" /></p>
 
 <p>掌握了上面小程序实现原理的内容，再来看小程序的生命周期就很好理解了。</p>
 
@@ -436,13 +436,13 @@
 
 <p>小程序在体验上不仅仅页面流畅，而且点击之后，页面跳转也会比普通的 HTML5 要快很多，这是因为小程序的视图层做了预加载处理。下图是通过 X5 内核开启 inspect 版本之后，在 Chrome 中看到的手机 WebView 的页面情况。小程序选择今日头条，打开了两个页面（热点新闻列表和某条新闻详情），但实际在 Chrome 中看到的 WebView 页面总是比真实打开的页面要多一个，这个多出来的隐藏 WebView 就是提前初始化预热的，方便打开下一个小程序页面来使用，这样就节省了 WebView 初始化的时间，从而大幅提升了跳页效率。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_007.jpg" alt="blog_wxmini_3_007" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_007.jpg" alt="blog_wxmini_3_007" /></p>
 
 <h2 id="五小程序-wxml-是怎么转成-html-的">五、小程序 WXML 是怎么转成 HTML 的</h2>
 
 <p>小程序的视图层最终是渲染在一个 webview 中的，通过下图就可以看到我们在 WXML 中写的 <code class="highlighter-rouge">view</code>、<code class="highlighter-rouge">icon</code>、<code class="highlighter-rouge">text</code> 等标签最终会转换成 <code class="highlighter-rouge">wx-*</code> 等标签。</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_008.jpg" alt="blog_wxmini_3_008" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_008.jpg" alt="blog_wxmini_3_008" /></p>
 
 <p>那么 WXML 到 HTML 的过程发生了什么呢？</p>
 
@@ -456,21 +456,21 @@
   <p><strong>TIPS：</strong> <code class="highlighter-rouge">wcc</code> 和 <code class="highlighter-rouge">wcsc</code> 是小程序的 WXML 和 WXSS 的编译工具，是二进制文件，在 macOS 中可以在<code class="highlighter-rouge">/Applications/wechatwebdevtools.app/Contents/Resources/package.nw/js/vendor/</code> 路径中找到（应用 → 右键微信开发者工具 → 查看包文件）</p>
 </blockquote>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_009.jpg" alt="blog_wxmini_3_009" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_009.jpg" alt="blog_wxmini_3_009" /></p>
 
 <p>这个 JS 里面有个重要的函数是 <code class="highlighter-rouge">$gwx</code>：</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_010.jpg" alt="blog_wxmini_3_010" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_010.jpg" alt="blog_wxmini_3_010" /></p>
 
 <p>这个 JS 主要接收一个 <code class="highlighter-rouge">path</code> 将 <code class="highlighter-rouge">path</code> 的页面转换成一个 Virtual DOM：</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_011.jpg" alt="blog_wxmini_3_011" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_011.jpg" alt="blog_wxmini_3_011" /></p>
 
 <p>在这个 VDOM 结构里面就会找到以<code class="highlighter-rouge">wx-*</code> 开头的 tag，有了这个 VDOM 结构，就可以使用对应的 tag 创建 HTML 片段了。</p>
 
 <p>整个流程梳理如下：</p>
 
-<p><img src="https://img.gorpeln.com/2019-06-24-blog_wxmini_3_012.jpg" alt="blog_wxmini_3_012" /></p>
+<p><img src="https://img.gorpeln.cn/2019-06-24-blog_wxmini_3_012.jpg" alt="blog_wxmini_3_012" /></p>
 
 <h2 id="六小结">六、小结</h2>
 
@@ -482,18 +482,18 @@
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15612663893">https://gorpeln.com/article/15612663893</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/15612663893">https://gorpeln.cn/article/15612663893</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15618778699" title="实战篇 ：电商小程序云开发实战" style="color: #6666cc;font-size: 0.9em;"  target="_blank">实战篇 ：电商小程序云开发实战</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/15618778699" title="实战篇 ：电商小程序云开发实战" style="color: #6666cc;font-size: 0.9em;"  target="_blank">实战篇 ：电商小程序云开发实战</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15611722666" title="基础篇 2：小程序·云开发基础知识" style="color: #6666cc;font-size: 0.9em;"  target="_blank">基础篇 2：小程序·云开发基础知识</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/15611722666" title="基础篇 2：小程序·云开发基础知识" style="color: #6666cc;font-size: 0.9em;"  target="_blank">基础篇 2：小程序·云开发基础知识</a>
 	    </div>
 	  
 	 
@@ -752,7 +752,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

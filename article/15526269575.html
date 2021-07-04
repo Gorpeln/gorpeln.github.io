@@ -389,7 +389,7 @@
 
 <p>有了上述非对称加密算法，就可以实现这个需求：</p>
 
-<p><img src="https://img.gorpeln.com/blog_certificate_001.png" alt="blog_certificate_001" /></p>
+<p><img src="https://img.gorpeln.cn/blog_certificate_001.png" alt="blog_certificate_001" /></p>
 
 <p>　　1、首先用一种算法，算出原始数据的摘要。需满足 <br />
 　　　　a.若原始数据有任何变化，计算出来的摘要值都会变化。 <br />
@@ -405,7 +405,7 @@
 <h3 id="最简单的签名">最简单的签名</h3>
 <p>要实现这个需求很简单，最直接的方式，苹果官方生成一对公私钥，在 iOS 里内置一个公钥，私钥由苹果后台保存，我们传 App 上 AppStore 时，苹果后台用私钥对 APP 数据进行签名，iOS 系统下载这个 APP 后，用公钥验证这个签名，若签名正确，这个 APP 肯定是由苹果后台认证的，并且没有被修改过，也就达到了苹果的需求：保证安装的每一个 APP 都是经过苹果官方允许的。</p>
 
-<p><img src="https://img.gorpeln.com/blog_certificate_002.png" alt="blog_certificate_002" /></p>
+<p><img src="https://img.gorpeln.cn/blog_certificate_002.png" alt="blog_certificate_002" /></p>
 
 <p>如果我们 iOS 设备安装 APP 只有从 AppStore 下载这一种方式的话，这件事就结束了，没有任何复杂的东西，只有一个数字签名，非常简单地解决问题。</p>
 
@@ -429,7 +429,7 @@
 
 <p>苹果这里给出的方案是使用了双层签名，会比较绕，流程大概是这样的：</p>
 
-<p><img src="https://img.gorpeln.com/blog_certificate_003.png" alt="blog_certificate_003" /></p>
+<p><img src="https://img.gorpeln.cn/blog_certificate_003.png" alt="blog_certificate_003" /></p>
 
 <p>　　1、在你的 Mac 开发机器生成一对公私钥，这里称为公钥L，私钥L。L:Local<br />
 　　2、苹果自己有固定的一对公私钥，跟上面 AppStore 例子一样，私钥在苹果后台，公钥在每个 iOS 设备上。这里称为公钥A，私钥A。A:Apple<br />
@@ -443,7 +443,7 @@
 
 <p>怎么加的？在上述第三步，苹果用私钥 A 签名我们本地公钥 L 时，实际上除了签名公钥 L，还可以加上无限多数据，这些数据都可以保证是经过苹果官方认证的，不会有被篡改的可能。</p>
 
-<p><img src="https://img.gorpeln.com/blog_certificate_004.png" alt="blog_certificate_004" /></p>
+<p><img src="https://img.gorpeln.cn/blog_certificate_004.png" alt="blog_certificate_004" /></p>
 
 <p>可以想到把 允许安装的设备 ID 列表 和 App对应的 AppID 等数据，都在第三步这里跟公钥L一起组成证书，再用苹果私钥 A 对这个证书签名。在最后第 5 步验证时就可以拿到设备 ID 列表，判断当前设备是否符合要求。根据数字签名的原理，只要数字签名通过验证，第 5 步这里的设备 IDs / AppID / 公钥 L 就都是经过苹果认证的，无法被修改，苹果就可以限制可安装的设备和 APP，避免滥用。</p>
 
@@ -454,7 +454,7 @@
 
 <p>所以整个流程稍微变一下，就变成这样了：</p>
 
-<p><img src="https://img.gorpeln.com/blog_certificate_005.png" alt="blog_certificate_005" /></p>
+<p><img src="https://img.gorpeln.cn/blog_certificate_005.png" alt="blog_certificate_005" /></p>
 
 <p>因为步骤有小变动，这里我们不辞啰嗦重新再列一遍整个流程：</p>
 
@@ -521,18 +521,18 @@
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15526269575">https://gorpeln.com/article/15526269575</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/15526269575">https://gorpeln.cn/article/15526269575</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15547100706" title="批量修改文件后缀名" style="color: #6666cc;font-size: 0.9em;"  target="_blank">批量修改文件后缀名</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/15547100706" title="批量修改文件后缀名" style="color: #6666cc;font-size: 0.9em;"  target="_blank">批量修改文件后缀名</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15524857215" title="移动 APP 网络优化概述" style="color: #6666cc;font-size: 0.9em;"  target="_blank">移动 APP 网络优化概述</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/15524857215" title="移动 APP 网络优化概述" style="color: #6666cc;font-size: 0.9em;"  target="_blank">移动 APP 网络优化概述</a>
 	    </div>
 	  
 	 
@@ -791,7 +791,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

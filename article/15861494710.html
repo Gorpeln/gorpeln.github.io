@@ -458,8 +458,8 @@ dispatch_queue_t queue = dispatch_queue_create("com.example.gcd",DISPATCH_QUEUE_
 </code></pre></div></div>
 <h3 id="3-不同队列及任务的不同执行方式对比">3、 不同队列及任务的不同执行方式对比</h3>
 
-<p><img src="https://img.gorpeln.com/blog_gcd_002_2.png" alt="blog_gcd_002" />
-<img src="https://img.gorpeln.com/blog_gcd_002_3.jpeg" alt="blog_gcd_002_3" /></p>
+<p><img src="https://img.gorpeln.cn/blog_gcd_002_2.png" alt="blog_gcd_002" />
+<img src="https://img.gorpeln.cn/blog_gcd_002_3.jpeg" alt="blog_gcd_002_3" /></p>
 
 <blockquote>
   <p>由上我们可以看出：要想并发执行某些任务，只有使用 〖并发队列 + 异步执行〗这种组合方式。这也是我们开发中最常用的组合方式。</p>
@@ -502,7 +502,7 @@ end   ==== &gt;&gt;: &lt;NSThread: 0x1d4074f80&gt;{number = 1, name = main}
   <p>1.所有任务都在主线程中执行(【串行+同步】不会开启新线程)。<br />
 2.所有任务按照追加顺序依次执行。<br />
 3.任务执行在begin和end之间，同步执行任务会阻塞主线程。<br />
-<img src="https://img.gorpeln.com/blog_gcd_002_4.png" alt="blog_gcd_002_4" /></p>
+<img src="https://img.gorpeln.cn/blog_gcd_002_4.png" alt="blog_gcd_002_4" /></p>
 </blockquote>
 
 <h4 id="32-串行队列--异步执行">3.2 串行队列 + 异步执行</h4>
@@ -654,7 +654,7 @@ end   ==== &gt;&gt;: &lt;NSThread: 0x1d0263e00&gt;{number = 1, name = main}
 <p>结论:</p>
 <blockquote>
   <p>发生死锁，任务不会执行。由于主队列为串行队列，主线程在执行mainAndSync 函数，而 mainAndSync 在等待主线程执行结束，就造成了互相等待，均不会执行。(开发中要极力避免这种情况)
-<img src="https://img.gorpeln.com/blog_gcd_002_5.png" alt="blog_gcd_002_5" /></p>
+<img src="https://img.gorpeln.cn/blog_gcd_002_5.png" alt="blog_gcd_002_5" /></p>
 </blockquote>
 
 <h4 id="36-主队列--异步执行">3.6 主队列 + 异步执行</h4>
@@ -1088,7 +1088,7 @@ dispatch_barrier_sync(queue, ^{
 
 <p>因此修改后的代码执行顺序为 reading1和reading2并发执行在前，之后为 writing1 和 writing2 串行执行，最后 reading3和reading4并发执行。</p>
 
-<p><img src="https://img.gorpeln.com/blog_gcd_003.png" alt="blog_gcd_003" /></p>
+<p><img src="https://img.gorpeln.cn/blog_gcd_003.png" alt="blog_gcd_003" /></p>
 
 <h3 id="9-gcd信号量-dispatch_semaphore_t">9. GCD信号量 （dispatch_semaphore_t）</h3>
 <p>信号量(dispatch_semaphore_t)可以理解为有信号通过，无信号则等待。具体的我们慢慢来分析。</p>
@@ -1297,7 +1297,7 @@ static int count = 0;
 <h3 id="13-gcd的实际使用">13. GCD的实际使用</h3>
 <p><a href="/article/15862323579">多线程使用总结 GCD的实际使用 (四)</a></p>
 
-<p><img src="https://img.gorpeln.com/blog_gcd_001.png" alt="blog_gcd_001" /></p>
+<p><img src="https://img.gorpeln.cn/blog_gcd_001.png" alt="blog_gcd_001" /></p>
 
 
   </article>
@@ -1306,18 +1306,18 @@ static int count = 0;
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15861494710">https://gorpeln.com/article/15861494710</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/15861494710">https://gorpeln.cn/article/15861494710</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15862323579" title="iOS多线程：GCD的实际使用 (四)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：GCD的实际使用 (四)</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/15862323579" title="iOS多线程：GCD的实际使用 (四)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：GCD的实际使用 (四)</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15860813363" title="iOS多线程：NSThread (二)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：NSThread (二)</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/15860813363" title="iOS多线程：NSThread (二)" style="color: #6666cc;font-size: 0.9em;"  target="_blank">iOS多线程：NSThread (二)</a>
 	    </div>
 	  
 	 
@@ -1576,7 +1576,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

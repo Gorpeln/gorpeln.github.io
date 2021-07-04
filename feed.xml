@@ -2,13 +2,13 @@
 <rss version="2.0">
   <channel>
     <title>gorpeln的个人博客 - gorpeln</title>
-    <link>https://gorpeln.com</link>
+    <link>https://gorpeln.cn</link>
     <description>一个涉猎广泛（iOS、UI、PHP、VUE、APIClound、HTML、小程序、运维、产品、服务器、数据库）且致力于成为一名架构师的、狂热的iOS程序猿，充满新奇的想法并正在付诸于实际，幻想着有一天能升职加薪，当上总经理，出任CEO，迎娶白富美，走上人生巅峰！</description>
     
       <item>
         <title>5周年：岁月使然而我在等你</title>
-        <link>https://gorpeln.com/article/15981552003</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15981552003</guid>
+        <link>https://gorpeln.cn/article/15981552003</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15981552003</guid>
         <pubDate>Sun, 23 Aug 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;gorpeln的个人博客 - gorpeln&lt;/code&gt;&lt;/strong&gt; 博客&lt;strong&gt;五周年&lt;/strong&gt;了。&lt;br /&gt;
   &lt;br /&gt;
@@ -20,7 +20,7 @@
 &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;博 客 五 周 年 快 乐 ！&lt;/code&gt;&lt;/strong&gt; 
 &lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_fiveyear_002.jpg&quot; alt=&quot;blog_fiveyear_002&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_fiveyear_002.jpg&quot; alt=&quot;blog_fiveyear_002&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;五年前，从最初使用开放模板搭建博客开始…… &lt;br /&gt;
 到后来，GitHub pages，Coding pages，虚拟主机，VPS，云服务器、云数据库，CDN……   &lt;br /&gt;
@@ -31,32 +31,32 @@
 &lt;strong&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;趁 年 轻 ，做 自 己 想 做 的 ！&lt;/code&gt;&lt;/strong&gt;&lt;br /&gt;
 &lt;br /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_fiveyear_001.jpg&quot; alt=&quot;blog_fiveyear_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_fiveyear_001.jpg&quot; alt=&quot;blog_fiveyear_001&quot; /&gt;&lt;/p&gt;
 </description>
       </item>
     
       <item>
         <title>如果打开iCloud同步 - 时光本</title>
-        <link>https://gorpeln.com/article/15942881574</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15942881574</guid>
+        <link>https://gorpeln.cn/article/15942881574</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15942881574</guid>
         <pubDate>Thu, 09 Jul 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;打开系统设置 - 登录 iPhone - iCloud - iCloud云盘。&lt;/p&gt;
 
 &lt;h4 id=&quot;1第一步-登录-iphone&quot;&gt;1、第一步 登录 iPhone&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_icloud_step_01.png&quot; alt=&quot;blog_icloud_step_01&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_icloud_step_01.png&quot; alt=&quot;blog_icloud_step_01&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;2第二步-icloud&quot;&gt;2、第二步 iCloud&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_icloud_step_02.png&quot; alt=&quot;blog_icloud_step_02&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_icloud_step_02.png&quot; alt=&quot;blog_icloud_step_02&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;3第三步-icloud云盘&quot;&gt;3、第三步 iCloud云盘&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_icloud_step_03.png&quot; alt=&quot;blog_icloud_step_03&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_icloud_step_03.png&quot; alt=&quot;blog_icloud_step_03&quot; /&gt;&lt;/p&gt;
 </description>
       </item>
     
       <item>
         <title>为什么现在很多平台都要手机号注册？</title>
-        <link>https://gorpeln.com/article/15937625033</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15937625033</guid>
+        <link>https://gorpeln.cn/article/15937625033</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15937625033</guid>
         <pubDate>Fri, 03 Jul 2020 00:00:00 +0800</pubDate>
         <description>&lt;h4 id=&quot;1-国家实名制要求&quot;&gt;1. 国家实名制要求&lt;/h4&gt;
 
@@ -85,8 +85,8 @@
     
       <item>
         <title>开发环境、测试环境、预发布环境、生产环境的区别</title>
-        <link>https://gorpeln.com/article/15932337513</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15932337513</guid>
+        <link>https://gorpeln.cn/article/15932337513</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15932337513</guid>
         <pubDate>Sat, 27 Jun 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;一个软件产品从开发到用户使用都涉及哪些环境？
 开发环境、测试环境、回归环境、预发布环境、生产环境。&lt;/p&gt;
@@ -139,8 +139,8 @@
     
       <item>
         <title>iOS多线程：线程安全 常见锁 (六)</title>
-        <link>https://gorpeln.com/article/15931534585</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15931534585</guid>
+        <link>https://gorpeln.cn/article/15931534585</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15931534585</guid>
         <pubDate>Fri, 26 Jun 2020 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;一前言&quot;&gt;一、前言&lt;/h3&gt;
 &lt;p&gt;前段时间看了几个开源项目，发现他们保持线程同步的方式各不相同，有&lt;code class=&quot;highlighter-rouge&quot;&gt;@synchronized&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;NSLock&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;dispatch_semaphore&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;NSCondition&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;pthread_mutex&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;OSSpinLock&lt;/code&gt;。后来网上查了一下，发现他们的实现机制各不相同，性能也各不一样。下面我们先分别介绍每个加锁方式的使用，在使用一个案例来对他们进行性能对比。&lt;/p&gt;
@@ -687,14 +687,14 @@ dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 &lt;p&gt;OSSpinLock 是一种自旋锁，也只有加锁，解锁，尝试加锁三个方法。和 NSLock 不同的是 NSLock 请求加锁失败的话，会先轮询，但一秒过后便会使线程进入 waiting 状态，等待唤醒。而 OSSpinLock 会一直轮询，等待时会消耗大量 CPU 资源，不适用于较长时间的任务。&lt;/p&gt;
 
 &lt;h3 id=&quot;四性能对比&quot;&gt;四、性能对比&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_lock_001.png&quot; alt=&quot;blog_lock_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_lock_001.png&quot; alt=&quot;blog_lock_001&quot; /&gt;&lt;/p&gt;
 </description>
       </item>
     
       <item>
         <title>iOS多线程：NSOperation、NSOperationQueue (五)</title>
-        <link>https://gorpeln.com/article/15884027619</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15884027619</guid>
+        <link>https://gorpeln.cn/article/15884027619</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15884027619</guid>
         <pubDate>Sat, 02 May 2020 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;1-nsoperationnsoperationqueue-简介&quot;&gt;1. NSOperation、NSOperationQueue 简介&lt;/h3&gt;
 &lt;p&gt;NSOperation、NSOperationQueue 是苹果提供给我们的一套多线程解决方案。实际上 NSOperation、NSOperationQueue 是基于 GCD 更高一层的封装，完全面向对象。但是比 GCD 更简单易用、代码可读性也更高。&lt;/p&gt;
@@ -1546,8 +1546,8 @@ typedef NS_ENUM(NSInteger, NSOperationQueuePriority) {
     
       <item>
         <title>iOS多线程：GCD的实际使用 (四)</title>
-        <link>https://gorpeln.com/article/15862323579</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15862323579</guid>
+        <link>https://gorpeln.cn/article/15862323579</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15862323579</guid>
         <pubDate>Tue, 07 Apr 2020 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;1dispatch_async&quot;&gt;1、dispatch_async&lt;/h3&gt;
 
@@ -1706,8 +1706,8 @@ dispatch_resume(queue);  //恢复队列queue
     
       <item>
         <title>iOS多线程：GCD (三)</title>
-        <link>https://gorpeln.com/article/15861494710</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15861494710</guid>
+        <link>https://gorpeln.cn/article/15861494710</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15861494710</guid>
         <pubDate>Mon, 06 Apr 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;什么是CGD呢？以下摘自苹果的官方说明。&lt;/p&gt;
 
@@ -1803,8 +1803,8 @@ dispatch_queue_t queue = dispatch_queue_create(&quot;com.example.gcd&quot;,DISPA
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;h3 id=&quot;3-不同队列及任务的不同执行方式对比&quot;&gt;3、 不同队列及任务的不同执行方式对比&lt;/h3&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002_2.png&quot; alt=&quot;blog_gcd_002&quot; /&gt;
-&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002_3.jpeg&quot; alt=&quot;blog_gcd_002_3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_gcd_002_2.png&quot; alt=&quot;blog_gcd_002&quot; /&gt;
+&lt;img src=&quot;https://img.gorpeln.cn/blog_gcd_002_3.jpeg&quot; alt=&quot;blog_gcd_002_3&quot; /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;由上我们可以看出：要想并发执行某些任务，只有使用 〖并发队列 + 异步执行〗这种组合方式。这也是我们开发中最常用的组合方式。&lt;/p&gt;
@@ -1847,7 +1847,7 @@ end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d4074f80&amp;gt;{number = 1, n
   &lt;p&gt;1.所有任务都在主线程中执行(【串行+同步】不会开启新线程)。&lt;br /&gt;
 2.所有任务按照追加顺序依次执行。&lt;br /&gt;
 3.任务执行在begin和end之间，同步执行任务会阻塞主线程。&lt;br /&gt;
-&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002_4.png&quot; alt=&quot;blog_gcd_002_4&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://img.gorpeln.cn/blog_gcd_002_4.png&quot; alt=&quot;blog_gcd_002_4&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h4 id=&quot;32-串行队列--异步执行&quot;&gt;3.2 串行队列 + 异步执行&lt;/h4&gt;
@@ -1999,7 +1999,7 @@ end   ==== &amp;gt;&amp;gt;: &amp;lt;NSThread: 0x1d0263e00&amp;gt;{number = 1, n
 &lt;p&gt;结论:&lt;/p&gt;
 &lt;blockquote&gt;
   &lt;p&gt;发生死锁，任务不会执行。由于主队列为串行队列，主线程在执行mainAndSync 函数，而 mainAndSync 在等待主线程执行结束，就造成了互相等待，均不会执行。(开发中要极力避免这种情况)
-&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_002_5.png&quot; alt=&quot;blog_gcd_002_5&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://img.gorpeln.cn/blog_gcd_002_5.png&quot; alt=&quot;blog_gcd_002_5&quot; /&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h4 id=&quot;36-主队列--异步执行&quot;&gt;3.6 主队列 + 异步执行&lt;/h4&gt;
@@ -2433,7 +2433,7 @@ dispatch_barrier_sync(queue, ^{
 
 &lt;p&gt;因此修改后的代码执行顺序为 reading1和reading2并发执行在前，之后为 writing1 和 writing2 串行执行，最后 reading3和reading4并发执行。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_003.png&quot; alt=&quot;blog_gcd_003&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_gcd_003.png&quot; alt=&quot;blog_gcd_003&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;9-gcd信号量-dispatch_semaphore_t&quot;&gt;9. GCD信号量 （dispatch_semaphore_t）&lt;/h3&gt;
 &lt;p&gt;信号量(dispatch_semaphore_t)可以理解为有信号通过，无信号则等待。具体的我们慢慢来分析。&lt;/p&gt;
@@ -2642,15 +2642,15 @@ static int count = 0;
 &lt;h3 id=&quot;13-gcd的实际使用&quot;&gt;13. GCD的实际使用&lt;/h3&gt;
 &lt;p&gt;&lt;a href=&quot;/article/15862323579&quot;&gt;多线程使用总结 GCD的实际使用 (四)&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_gcd_001.png&quot; alt=&quot;blog_gcd_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_gcd_001.png&quot; alt=&quot;blog_gcd_001&quot; /&gt;&lt;/p&gt;
 
 </description>
       </item>
     
       <item>
         <title>iOS多线程：NSThread (二)</title>
-        <link>https://gorpeln.com/article/15860813363</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15860813363</guid>
+        <link>https://gorpeln.cn/article/15860813363</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15860813363</guid>
         <pubDate>Sun, 05 Apr 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;NSThread 是苹果官方提供的，简单易用，可以直接操作线程对象。不过也需要需要程序员自己管理线程的生命周期(主要是创建)，我们在开发的过程中偶尔使用 NSThread。比如我们会经常调用[NSThread currentThread]来显示当前的进程信息。&lt;/p&gt;
 
@@ -2781,7 +2781,7 @@ NSThread *current = [NSThread currentThread];
     NSLog(@&quot;current thread -- %@&quot;, [NSThread currentThread]);
     
     // 1. 获取图片 imageUrl
-    NSURL *imageUrl = [NSURL URLWithString:@&quot;https://img.gorpeln.com/blog_logo_shiguangben.png&quot;];
+    NSURL *imageUrl = [NSURL URLWithString:@&quot;https://img.gorpeln.cn/blog_logo_shiguangben.png&quot;];
     
     // 2. 从 imageUrl 中读取数据(下载图片) -- 耗时操作
     NSData *imageData = [NSData dataWithContentsOfURL:imageUrl];
@@ -2950,14 +2950,14 @@ NSThread *current = [NSThread currentThread];
 &lt;h3 id=&quot;26-线程的状态转换&quot;&gt;2.6 线程的状态转换&lt;/h3&gt;
 &lt;p&gt;当我们新建一条线程&lt;code class=&quot;highlighter-rouge&quot;&gt;NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(run) object:nil];&lt;/code&gt;，在内存中的表现为：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ thread_001.png&quot; alt=&quot;blog_ thread_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ thread_001.png&quot; alt=&quot;blog_ thread_001&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;当调用&lt;code class=&quot;highlighter-rouge&quot;&gt;[thread start];&lt;/code&gt;后，系统把线程对象放入可调度线程池中，线程对象进入就绪状态，如下图所示。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ thread_002.png&quot; alt=&quot;blog_ thread_002&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ thread_002.png&quot; alt=&quot;blog_ thread_002&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;当然，可调度线程池中，会有其他的线程对象，如下图所示。在这里我们只关心左边的线程对象。
-&lt;img src=&quot;https://img.gorpeln.com/blog_ thread_003.png&quot; alt=&quot;blog_ thread_003&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://img.gorpeln.cn/blog_ thread_003.png&quot; alt=&quot;blog_ thread_003&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;下边我们来看看当前线程的状态转换:&lt;/strong&gt;&lt;/p&gt;
 &lt;ul&gt;
@@ -2966,14 +2966,14 @@ NSThread *current = [NSThread currentThread];
   &lt;li&gt;如果CPU在运行当前线程对象的时候线程任务执行完毕\异常强制退出，则当前线程对象进入死亡状态。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ thread_004.png&quot; alt=&quot;blog_ thread_004&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ thread_004.png&quot; alt=&quot;blog_ thread_004&quot; /&gt;&lt;/p&gt;
 </description>
       </item>
     
       <item>
         <title>iOS多线程：基础 (一)</title>
-        <link>https://gorpeln.com/article/15854795957</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15854795957</guid>
+        <link>https://gorpeln.cn/article/15854795957</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15854795957</guid>
         <pubDate>Sun, 29 Mar 2020 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;一-进程&quot;&gt;一、 进程：&lt;/h3&gt;
 &lt;ol&gt;
@@ -3047,7 +3047,7 @@ NSThread *current = [NSThread currentThread];
   &lt;li&gt;
     &lt;p&gt;并发队列（Concurrent Dispatch Queue）：&lt;br /&gt;
 同时允许多个任务并发执行。（可以开启多个线程，并且同时执行任务）。并发队列的并发功能只有在异步（dispatch_async）函数下才有效
-&lt;img src=&quot;https://img.gorpeln.com/blog_ multithreading_001.png&quot; alt=&quot;blog_ multithreading_001&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://img.gorpeln.cn/blog_ multithreading_001.png&quot; alt=&quot;blog_ multithreading_001&quot; /&gt;&lt;/p&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
 
@@ -3119,14 +3119,14 @@ thread.threadPriority = 1;
     
       <item>
         <title>北京国贸,600块群租房里的24个女孩</title>
-        <link>https://gorpeln.com/article/15846874151</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15846874151</guid>
+        <link>https://gorpeln.cn/article/15846874151</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15846874151</guid>
         <pubDate>Fri, 20 Mar 2020 00:00:00 +0800</pubDate>
-        <description>&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_002.jpeg&quot; alt=&quot;blog_24girls_002&quot; /&gt;&lt;/p&gt;
+        <description>&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_002.jpeg&quot; alt=&quot;blog_24girls_002&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;80后“蚁居”的新闻曾震撼社会，接着90后出现在一线城市群租房。拥挤、肮脏却价格低廉，群租房是部分年轻人进入大城市的第一站点。在北京最核心的国贸商圈，一群风华正茂的女孩，住进了一间24人的民宅，在这里，一个床位月租只要600元。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_001.png&quot; alt=&quot;blog_24girls_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_001.png&quot; alt=&quot;blog_24girls_001&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;2016年的暑假，为了给家里省钱，我决定放弃考研，投入求职大军。我的小理想，是成为一个内容创作者，但海投了上百份简历，最终只收到一个面试邀请。那天夜里，我急忙从村里坐火车赶往北京面试，意外顺利地拿到了offer。那是国内一线艺人的工作室，坐落在国贸核心区的一栋写字楼里，人生第一次，我踏进那么高档的地方。&lt;/p&gt;
 
@@ -3144,7 +3144,7 @@ thread.threadPriority = 1;
 
 &lt;p&gt;黄昏刚至，不到3平米的厨房里，已经有4个室友在准备晚饭。我想把自己刚买的吃食放进冰箱，打开一看，各种菜、肉、馒头已经占满空间，其他柜子里，也塞满了调料、炒锅、电饭锅，我只能先把东西放在床底。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_003.jpeg&quot; alt=&quot;blog_24girls_003&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_003.jpeg&quot; alt=&quot;blog_24girls_003&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;卫生间用一块发黄的塑料碎花窗帘，隔开了淋浴和洗漱、马桶区&lt;/code&gt;。一个室友正在洗澡，蒸腾的热气在狭小的屋子里蔓延，旁边洗漱区里传来洗衣服的声响，而另一边，一个室友正在方便，我觉得这比大澡堂还尴尬。卫生间的人来来回回，我等了一个多小时才抓到一个没人的机会。差点就没憋住。&lt;/p&gt;
 
@@ -3156,7 +3156,7 @@ thread.threadPriority = 1;
 
 &lt;p&gt;或许正如父母所说，做老师、考公务员才是人生最好的选择。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_004.png&quot; alt=&quot;blog_24girls_004&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_004.png&quot; alt=&quot;blog_24girls_004&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;入住第四天，一个叫阳阳的女孩搬进来了。&lt;/p&gt;
 
@@ -3200,7 +3200,7 @@ thread.threadPriority = 1;
 
 &lt;p&gt;加班的时候，&lt;code class=&quot;highlighter-rouge&quot;&gt;知道有人在等你&lt;/code&gt;。回家的时候还能吃到热腾腾的饭菜，&lt;code class=&quot;highlighter-rouge&quot;&gt;那种幸福感冲淡了我对于北漂的惶恐不安&lt;/code&gt;，我感觉自己好像融入了新集体。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_005.png&quot; alt=&quot;blog_24girls_005&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_005.png&quot; alt=&quot;blog_24girls_005&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;一个周末的下午，我被一阵谩骂声吵醒。阳阳的辣椒酱瓶子被打碎了，她正在屋子中央，发泄怒火。&lt;/p&gt;
 
@@ -3264,7 +3264,7 @@ thread.threadPriority = 1;
 
 &lt;p&gt;来不及想自己会不会流落街头，我就开始忙着敲老板当天价值几万的时尚套装解读、记录现场金句发微博、完成新闻稿。工作结束，领导说酒店的套房开了一整晚，大家要是不想回家可以留下来，点餐可以挂房账。我拒绝了同事的邀请，即使那里一晚的房价能抵上我半年的房租，我牵肠挂肚的是，晚上回去我还有没有床位。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_006.jpeg&quot; alt=&quot;blog_24girls_006&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_006.jpeg&quot; alt=&quot;blog_24girls_006&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;回到小屋，房东已经为大家安排好了去处，一部分人去了房东其他房子的空床，另一部分留下来&lt;code class=&quot;highlighter-rouge&quot;&gt;打地铺&lt;/code&gt;。我选择留下，熟悉的环境能让我安心一些。&lt;/p&gt;
 
@@ -3282,7 +3282,7 @@ thread.threadPriority = 1;
 
 &lt;p&gt;聊着聊着，我觉得查房也没多郁闷，可以算是我人生的一大谈资了，并且我们小团体的感情进入了新的蜜月期。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_007.png&quot; alt=&quot;blog_24girls_007&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_007.png&quot; alt=&quot;blog_24girls_007&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;2017年夏天，因为毕业要回学校，我办了短期退租，&lt;code class=&quot;highlighter-rouge&quot;&gt;行李由阳阳帮忙藏着&lt;/code&gt;。天天的工作越来越忙，也很少跟大家聚在一起了。阳阳和艳芬处于换工作的空档期，大部分时间都黏在一起，关系越发亲密，也越容易引发龃龉。&lt;/p&gt;
 
@@ -3348,7 +3348,7 @@ thread.threadPriority = 1;
 
 &lt;p&gt;我开始盘算着搬出去，打电话给父母，他们强调还是先忍忍，攒钱还助学贷款才是要紧事。我父亲用他一贯庄严的口吻说，吃得苦中苦，方为人上人。我心里想着，群租房插座漏电导致死人的可能性，咀嚼再三，还是没说什么。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_008.png&quot; alt=&quot;blog_24girls_008&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_008.png&quot; alt=&quot;blog_24girls_008&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;2017年底，西红门新建二村发生火灾事故，北京开启了安全隐患大排查大清理大整治专项行动，一时间大量地下室、群租房被查封，很多找不到去处的外来务工者选择了回乡。&lt;code class=&quot;highlighter-rouge&quot;&gt;相比可怕的事故，大家更害怕的是北京没有一张容纳自己的床&lt;/code&gt;。&lt;/p&gt;
 
@@ -3364,7 +3364,7 @@ thread.threadPriority = 1;
 
 &lt;p&gt;电梯在3楼停下，我强装镇定快步走出去。忽然听到那男人来了一句“美女，再见”，我吓了一跳，确定他没跟上来后，快速回到了小屋。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_24girls_009.jpeg&quot; alt=&quot;blog_24girls_009&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_24girls_009.jpeg&quot; alt=&quot;blog_24girls_009&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;这番惊心动魄，让我搬家的念头更深了。&lt;/p&gt;
 
@@ -3406,8 +3406,8 @@ thread.threadPriority = 1;
     
       <item>
         <title>优惠券设计思路浅析</title>
-        <link>https://gorpeln.com/article/15821713417</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/15821713417</guid>
+        <link>https://gorpeln.cn/article/15821713417</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/15821713417</guid>
         <pubDate>Thu, 20 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;一明确优惠券活动的目的及意义&quot;&gt;一、明确优惠券活动的目的及意义&lt;/h3&gt;
 &lt;p&gt;　　优惠券随处可见，基本你知道的行业，都有优惠券的存在，通过发放优惠券，让用户在下单的时候抵扣一定的费用，达到促销的目的。优惠券另一个用处就是合理的提高客单价，从而提高产品的销售利润。&lt;/p&gt;
@@ -3426,13 +3426,13 @@ thread.threadPriority = 1;
   &lt;li&gt;适用范围： 单品券、品类券、店铺券、包邮券（运费券）。&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_coupon_01.png&quot; alt=&quot;blog_coupon_01&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_coupon_01.png&quot; alt=&quot;blog_coupon_01&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;实际上，因为折扣方式的优惠，用户对自己获得的优惠金额不敏感，且商家或平台方对成本核算比较困难，所以折扣券很少会在电商平台中出现。比较常见的是满减券，满减券一般有一定的使用门槛，需要达到一定的订单金额才能使用。这里“满减”不同于“每满xxx 减”，订单结算时，只计算一次。&lt;/p&gt;
 
 &lt;p&gt;简单总结一下优惠券大致是这样的：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_coupon_02.png&quot; alt=&quot;blog_coupon_02&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_coupon_02.png&quot; alt=&quot;blog_coupon_02&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;二优惠券常见的六种发放形式&quot;&gt;二、优惠券常见的六种发放形式&lt;/h3&gt;
 &lt;h5 id=&quot;1主动发券&quot;&gt;（1）主动发券&lt;/h5&gt;
@@ -3488,7 +3488,7 @@ thread.threadPriority = 1;
 &lt;p&gt;为了刺激用户留存使用，需要针对潜在流失人群发放优惠券，最常见的就是支付宝红包，支付宝红包的逻辑就是，长时间未使用支付宝的用户红包金额，会大于高活跃用户，这也是防止用户流失的一个手段。&lt;/p&gt;
 
 &lt;h5 id=&quot;33-优惠券使用逻辑&quot;&gt;3.3、 优惠券使用逻辑&lt;/h5&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_coupon_03.png&quot; alt=&quot;blog_coupon_03&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_coupon_03.png&quot; alt=&quot;blog_coupon_03&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;四数据统计分析&quot;&gt;四、数据统计分析&lt;/h3&gt;
 &lt;p&gt;数据是衡量工作的一个重要标准，既然发放了优惠券，在结束后要有相应的数据统计。&lt;br /&gt;
@@ -3511,8 +3511,8 @@ thread.threadPriority = 1;
     
       <item>
         <title>杂记八</title>
-        <link>https://gorpeln.com/article/8</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/8</guid>
+        <link>https://gorpeln.cn/article/8</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/8</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;h4 id=&quot;进程&quot;&gt;​进程：&lt;/h4&gt;
 &lt;p&gt;一个正在运行的程序可以看做一个进程。（例如：正在运行的QQ就是一个进程），进程拥有独立运行所需的全部资源&lt;/p&gt;
@@ -3546,8 +3546,8 @@ https://blog.csdn.net/qq_18505715/article/details/78411052&lt;/p&gt;
     
       <item>
         <title>杂记七</title>
-        <link>https://gorpeln.com/article/7</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/7</guid>
+        <link>https://gorpeln.cn/article/7</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/7</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;​&lt;/p&gt;
 
@@ -3947,8 +3947,8 @@ https://blog.csdn.net/qq_18505715/article/details/78411052&lt;/p&gt;
     
       <item>
         <title>杂记六</title>
-        <link>https://gorpeln.com/article/6</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/6</guid>
+        <link>https://gorpeln.cn/article/6</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/6</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;​&lt;/p&gt;
 &lt;h3 id=&quot;第三方框架&quot;&gt;第三方框架&lt;/h3&gt;
@@ -4497,8 +4497,8 @@ Graphics Hardware|&lt;br /&gt;
     
       <item>
         <title>杂记五</title>
-        <link>https://gorpeln.com/article/5</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/5</guid>
+        <link>https://gorpeln.cn/article/5</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/5</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;一概述&quot;&gt;一、概述&lt;/h3&gt;
 &lt;p&gt;内存泄漏就是“程序中已动态分配的堆内存由于某种原因程序未释放或无法释放，造成系统内存的浪费，导致程序运行速度减慢甚至系统崩溃等严重后果”。&lt;/p&gt;
@@ -4516,31 +4516,31 @@ Graphics Hardware|&lt;br /&gt;
 &lt;h3 id=&quot;三内存泄漏检测&quot;&gt;三、内存泄漏检测&lt;/h3&gt;
 &lt;p&gt;打开Xcode菜单栏中的&lt;code class=&quot;highlighter-rouge&quot;&gt;Product&lt;/code&gt;选项中的&lt;code class=&quot;highlighter-rouge&quot;&gt;Profile&lt;/code&gt;选项,也可以使用快捷键&lt;code class=&quot;highlighter-rouge&quot;&gt; command + I&lt;/code&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ leaks_001.jpeg&quot; alt=&quot;blog_ leaks_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ leaks_001.jpeg&quot; alt=&quot;blog_ leaks_001&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;然后在Instruments菜单中找到&lt;code class=&quot;highlighter-rouge&quot;&gt;Leaks&lt;/code&gt;,如下图所示.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ leaks_002.jpeg&quot; alt=&quot;blog_ leaks_002&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ leaks_002.jpeg&quot; alt=&quot;blog_ leaks_002&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;打开&lt;code class=&quot;highlighter-rouge&quot;&gt;Leaks&lt;/code&gt;工具之后,我们首先在左上角选择我们需要检测的程序,这里我们可以检测当前Mac上任意一个开启的程序,这里我们选择模拟器的Demo程序,如下所示.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ leaks_003.jpeg&quot; alt=&quot;blog_ leaks_003&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ leaks_003.jpeg&quot; alt=&quot;blog_ leaks_003&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;工具默认的是&lt;code class=&quot;highlighter-rouge&quot;&gt;Allocations&lt;/code&gt;选项,然后我们需要选择Leaks选项,点击红色⭕️按钮,启动检测程序.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ leaks_004.jpeg&quot; alt=&quot;blog_ leaks_004&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ leaks_004.jpeg&quot; alt=&quot;blog_ leaks_004&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;然后我们运行完成之后,就会得到下面的页面,我们就可以通过页面的信息找到我们内存泄漏的具体位置了.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ leaks_005.jpeg&quot; alt=&quot;blog_ leaks_005&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ leaks_005.jpeg&quot; alt=&quot;blog_ leaks_005&quot; /&gt;&lt;/p&gt;
 
 </description>
       </item>
     
       <item>
         <title>杂记四</title>
-        <link>https://gorpeln.com/article/4</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/4</guid>
+        <link>https://gorpeln.cn/article/4</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/4</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;h3 id=&quot;analyze简介&quot;&gt;Analyze简介&lt;/h3&gt;
 
@@ -4557,26 +4557,26 @@ Graphics Hardware|&lt;br /&gt;
 
 &lt;p&gt;点击Analyze后，Xcode会自动进行编译分析，需要一段时间，之后会像提示警告一样，提示有多少分析的结果。所有的分析结果按照如上的类别，归类显示。点击某个错误的地方，会定位到出错的地方，然后点击向上向下的箭头，会详细展示出出错的步骤。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ analyzer_001.jpeg&quot; alt=&quot;blog_ analyzer_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ analyzer_001.jpeg&quot; alt=&quot;blog_ analyzer_001&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;1api调用错误检查api-misuseapple&quot;&gt;1、API调用错误检查：API Misuse（Apple）&lt;/h3&gt;
 &lt;p&gt;API的错误，一般是在打段的逻辑处理中没有注意OC的使用细节。如：数组不能添加空值，数组的元素不能是空值，字典的value不能是空等等。下面这单代码：str 的初始值为空，经过一段逻辑处理后，还是有可能是空，是不能添加到数组中的。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ analyzer_002.jpeg&quot; alt=&quot;blog_ analyzer_002&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ analyzer_002.jpeg&quot; alt=&quot;blog_ analyzer_002&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;2逻辑错误检查-logic-error&quot;&gt;2、逻辑错误检查 Logic Error&lt;/h3&gt;
 &lt;p&gt;初看这段代码，并没有觉得有什么不妥，根据字符串获得index的值。这个前提是字符串一定要按照这个规则提供，如果没有按照这个规则提供，则index就没有值。通过Analyze分析，就检查出来了。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ analyzer_003.jpeg&quot; alt=&quot;blog_ analyzer_003&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ analyzer_003.jpeg&quot; alt=&quot;blog_ analyzer_003&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;3声明错误检查-dead-store&quot;&gt;3、声明错误检查 Dead Store&lt;/h3&gt;
 &lt;p&gt;很多时候我们创建了一些中间变量需要使用，但是在最终功能的实现上并没有用到这个变量。但是这些变量依然留在代码中，没有删除。这就造成了内存的不必要的开销。这对这部分变量，不需要的时候就要及时的删除。同理：创建类声明的属性，如果没有用到就要及时删除。因为创建类时，会根据类的属性的多少创建对应的内存。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ analyzer_004.jpeg&quot; alt=&quot;blog_ analyzer_004&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ analyzer_004.jpeg&quot; alt=&quot;blog_ analyzer_004&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;4内存错误-memory-error&quot;&gt;4、内存错误 Memory error&lt;/h3&gt;
 &lt;p&gt;开发的过程中，容易给声明非空的对象赋值nil，导致出错。包括：nil 赋值给了一个期望非空值的指针、Null赋值给非空对象，返回了 nil 值,期望返回一个非空值。
-&lt;img src=&quot;https://img.gorpeln.com/blog_ analyzer_005.jpeg&quot; alt=&quot;blog_ analyzer_005&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://img.gorpeln.cn/blog_ analyzer_005.jpeg&quot; alt=&quot;blog_ analyzer_005&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;5内存泄露-memory-core-foundationobjective-c&quot;&gt;5、内存泄露 Memory (Core Foundation/Objective-C)&lt;/h3&gt;
 &lt;p&gt;虽然是在ARC模式下，但不是什么东西都可以释放，例如上述的C-types对象，都需要手动来进行释放，所以上面的问题只需手动释放就可以了:CGImageRelease(scaledImage);
@@ -4584,15 +4584,15 @@ Graphics Hardware|&lt;br /&gt;
 
 &lt;p&gt;一般来说都是由于使用的CoreFoundation后没有release造成的。在RAC下Foundation框架下的不需要进行release，CoreFoundation框架下仍然需要release。&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_ analyzer_006.jpeg&quot; alt=&quot;blog_ analyzer_006&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_ analyzer_006.jpeg&quot; alt=&quot;blog_ analyzer_006&quot; /&gt;&lt;/p&gt;
 
 </description>
       </item>
     
       <item>
         <title>杂记三</title>
-        <link>https://gorpeln.com/article/3</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/3</guid>
+        <link>https://gorpeln.cn/article/3</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/3</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;类&lt;/code&gt;由两个部分组成：&lt;em&gt;.h和&lt;/em&gt;.m文件组成。
 *.m文件中 @implementation部分是类的实现部分，内部包含类中的各种信息，包括各种实例方法或类方法。&lt;/p&gt;
@@ -4657,8 +4657,8 @@ int main(int argc, char * argv[]) {
     
       <item>
         <title>杂记二</title>
-        <link>https://gorpeln.com/article/2</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/2</guid>
+        <link>https://gorpeln.cn/article/2</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/2</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;1.为什么说Objective-C是一门动态的语言？&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;数据类型的确定由编译时推迟到运行时！objective-C 可以通过Runtime 这个运行时机制，在运行时动态的添加和修改变量、方法、类等，所以说Objective-C 是一门动态的语言。
@@ -5136,8 +5136,8 @@ conformsToProtocol : 用来判断对象是否实现了指定协议类的方法
     
       <item>
         <title>杂记一</title>
-        <link>https://gorpeln.com/article/1</link>
-        <guid isPermaLink="true">https://gorpeln.com/article/1</guid>
+        <link>https://gorpeln.cn/article/1</link>
+        <guid isPermaLink="true">https://gorpeln.cn/article/1</guid>
         <pubDate>Sun, 02 Feb 2020 00:00:00 +0800</pubDate>
         <description>&lt;p&gt;1、设计模式是什么？ 你知道哪些设计模式，并简要叙述？&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;设计模式是一种编码经验，就是用比较成熟的逻辑去处理某一种类型的事情。
@@ -5313,7 +5313,7 @@ block 使用 copy 是从 MRC 遗留下来的“传统”,在 MRC 中,方法内�
 3.综上，用property声明NSArray数组时，最好使用copy。用property声明NSMutableArray数组时，最好使用strong。如果使用copy，又self.mArray来赋值，后面增删改查，程序肯定会crash的。使用_.mArray是可以的。   
    
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_article_note_001.png&quot; alt=&quot;blog_article_note_001&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_article_note_001.png&quot; alt=&quot;blog_article_note_001&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;14、这个写法会出什么问题：@property (nonatomic, copy) NSMutableArray *arr;&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;问题：添加,删除,修改数组内的元素的时候,程序会因为找不到对应的方法而崩溃。
@@ -5460,7 +5460,7 @@ UIViewController是官方类，我们只能调用期接口，并不能修改他�
 Notification(通知模式)：只想要把消息发送出去，告知某些状态的变化。但是并不关心谁想要知道这个。
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;26、什么是 KVO 和 KVC？&lt;a href=&quot;https://gorpeln.com/article/15326844120&quot;&gt;KVO用法总结&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;26、什么是 KVO 和 KVC？&lt;a href=&quot;https://gorpeln.cn/article/15326844120&quot;&gt;KVO用法总结&lt;/a&gt;&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1). KVC(Key-Value-Coding)：键值编码 是一种通过字符串间接访问对象的方式（即给属性赋值）
     举例说明：
     stu.name = @&quot;张三&quot; // 点语法给属性赋值
@@ -5734,7 +5734,7 @@ selector：通过方法名，获取在内存中的函数的入口地址。
     其中File有三种方式：plist、Archive（归档）
     DB包括：SQLite、FMDB、CoreData
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_Interview_save.png&quot; alt=&quot;blog_Interview_save&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_Interview_save.png&quot; alt=&quot;blog_Interview_save&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;52、iOS的沙盒目录结构是怎样的？&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;沙盒结构：
@@ -6018,7 +6018,7 @@ APNS的原理：
     3). 服务器把要推送的内容和设备发送给APNS
     4). APNS根据设备令牌找到设备，再由iOS根据APPID把推送内容展示
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.com/blog_Interview_APNS.png&quot; alt=&quot;blog_Interview_APNS&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.gorpeln.cn/blog_Interview_APNS.png&quot; alt=&quot;blog_Interview_APNS&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;77、iOS之事件的传递和响应机制&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;响应者链的事件传递过程：  
@@ -6067,8 +6067,8 @@ APNS的原理：
 
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;80、APP启动
-&lt;img src=&quot;https://img.gorpeln.com/blog_article_note_002.jpeg&quot; alt=&quot;blog_article_note_002&quot; /&gt;
-&lt;img src=&quot;https://img.gorpeln.com/blog_article_note_003.png&quot; alt=&quot;blog_article_note_003&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://img.gorpeln.cn/blog_article_note_002.jpeg&quot; alt=&quot;blog_article_note_002&quot; /&gt;
+&lt;img src=&quot;https://img.gorpeln.cn/blog_article_note_003.png&quot; alt=&quot;blog_article_note_003&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;81、UITableView 如何优化&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1、正确使用 reuseIdentifier 来重用 Cells  

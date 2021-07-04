@@ -363,14 +363,14 @@
   <article class="post-content">
     <h3 id="一屏幕显示图像原理">一、屏幕显示图像原理</h3>
 
-<p><img src="https://img.gorpeln.com/blog_fluent_001.png" alt="blog_fluent_001" /></p>
+<p><img src="https://img.gorpeln.cn/blog_fluent_001.png" alt="blog_fluent_001" /></p>
 
 <p>首先明确两个概念：水平同步信号、垂直同步信号。<br />
 CRT的电子枪按照上图中的方式，从上到下一行行扫描扫描完成后显示器就呈现一帧画面，随后电子枪回到初始位置继续下一次的扫描。当电子枪切换到新的一行准备扫描时，显示器会发送一个水平同步信号（Horizonal Synchronization），简称HSync；完成一帧画面绘制后，电子枪会回到原位，显示器会发送一个垂直同步信号（Vertical Synchronization），简称VSync。</p>
 
 <p>CUP计算好显示内容提交到GPU，GPU渲染完成后将渲染结果放入帧缓冲区，之后视频控制器按照VSync 信号逐行读取帧缓冲区中的数据，最后经过各种数模转换传递给显示器显示。</p>
 
-<p><img src="https://img.gorpeln.com/blog_fluent_002.png" alt="blog_fluent_002" /></p>
+<p><img src="https://img.gorpeln.cn/blog_fluent_002.png" alt="blog_fluent_002" /></p>
 
 <h3 id="二卡顿产生的原因">二、卡顿产生的原因</h3>
 <p>如果在一个 VSync 时间内，CPU 或者 GPU 没有完成内容提交，则那一帧就会被丢弃，等待下一次再显示，而这时显示屏会保留之前的内容不变，这就是卡顿的原因。</p>
@@ -456,18 +456,18 @@ CRT的电子枪按照上图中的方式，从上到下一行行扫描扫描完�
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15119562214">https://gorpeln.com/article/15119562214</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/15119562214">https://gorpeln.cn/article/15119562214</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15136989613" title="GCD 应用场景" style="color: #6666cc;font-size: 0.9em;"  target="_blank">GCD 应用场景</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/15136989613" title="GCD 应用场景" style="color: #6666cc;font-size: 0.9em;"  target="_blank">GCD 应用场景</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15115957926" title="整站下载工具httrack使用 MAC" style="color: #6666cc;font-size: 0.9em;"  target="_blank">整站下载工具httrack使用 MAC</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/15115957926" title="整站下载工具httrack使用 MAC" style="color: #6666cc;font-size: 0.9em;"  target="_blank">整站下载工具httrack使用 MAC</a>
 	    </div>
 	  
 	 
@@ -726,7 +726,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

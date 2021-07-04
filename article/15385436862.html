@@ -373,22 +373,22 @@
 <p>计划是这样的：创建一个应用程序，双击之后可以让我们选择一组照片，或者我们可以将一组照片直接拖到这个应用程序的图标上，之后会弹出对话框让我们输入想要更改的尺寸大小，然后指定文件夹将更改后的照片全部输出到这个文件夹中，而原始照片保持不变。</p>
 
 <p>有了计划，就来动手实施吧。在Automator中新建一个工程，这次选择“应用程序”类型，因为我们想创建一个新的应用程序。
-<img src="https://img.gorpeln.com/blog_automator_001.png" alt="blog_automator_001" /></p>
+<img src="https://img.gorpeln.cn/blog_automator_001.png" alt="blog_automator_001" /></p>
 
 <p>进入工作流界面之后，首先点击左边资源库中的“文件和文件夹”，选择其中的“请求Finder项目”拖入到工作流面板中，将“允许多个选择”勾上，因为我们要批量选择一组照片。这个操作会提示我们选择需要进行更改的文件。
-<img src="https://img.gorpeln.com/blog_automator_002.png" alt="blog_automator_002" /></p>
+<img src="https://img.gorpeln.cn/blog_automator_002.png" alt="blog_automator_002" /></p>
 
 <p>因为我们想保留原始照片，而是对照片进行复制，在复制照片的基础上进行尺寸更改，因此选择“拷贝Finder项目”拖入到面板中。
-<img src="https://img.gorpeln.com/blog_automator_003.png" alt="blog_automator_003" /></p>
+<img src="https://img.gorpeln.cn/blog_automator_003.png" alt="blog_automator_003" /></p>
 
 <p>现在我们已经选择了照片并且进行了复制，接下来就是对尺寸进行修改了。点击资源库中的“照片”，选择“缩放图像”拖入到面板中。在更改尺寸的时候我们需要有提示，来让我们进行尺寸大小的输入，因此将选项中的“工作流程运行时显示此操作”勾选上。
-<img src="https://img.gorpeln.com/blog_automator_004.png" alt="blog_automator_004" /></p>
+<img src="https://img.gorpeln.cn/blog_automator_004.png" alt="blog_automator_004" /></p>
 
 <p>最后我们需要做的是创建一个新的文件夹，用来存放这些已经经过修改的照片。点击资源库中的“文件和文件夹”，将“新建文件夹”操作拖入到工作流面板中。这里同样将选项中的“工作流程运行时显示此操作”勾选上，因为我们想任意指定文件夹的位置。
-<img src="https://img.gorpeln.com/blog_automator_005.png" alt="blog_automator_005" /></p>
+<img src="https://img.gorpeln.cn/blog_automator_005.png" alt="blog_automator_005" /></p>
 
 <p>到此，工作流创建结束。点击保存，在“文件格式”中选择“应用程序”，保存之后会生成一个程序，双击它，会让你选择想要更改的照片，然后输入尺寸，指定保存位置，一切按照你想要的步骤来。
-<img src="https://img.gorpeln.com/blog_automator_006.png" alt="blog_automator_006" /></p>
+<img src="https://img.gorpeln.cn/blog_automator_006.png" alt="blog_automator_006" /></p>
 
 <h4 id="2批量重命名一组照片">2.批量重命名一组照片</h4>
 <p>对于喜欢摄影的人来说，把一大堆片子按日期和拍摄地点分类是一件极其痛苦的事情，索性就让它乱着。其实，借助 Automator 创建一个批量命名的工作流，就可以解决问题。</p>
@@ -396,14 +396,14 @@
 <p>在 Automator 中新建一个文稿，选择「应用程序」，在左侧的资源库搜索「获得文件夹内容」，将它拖到右侧编辑区，然后搜索「给 Finder 项目重新命名」，同样的拖到右边。这时系统会问是否要对所变更项目做拷贝，这里可以根据需要自行选择，我这里选择的是否。</p>
 
 <p>首先给照片设置一个连续的编号，在上面的动作选项卡选择「连续编号」，然后按照我的偏好设置成我想要的文件命名方法。然后，我们在拉一个「给 Finder 项目重新命名」到右侧的编辑区，选择「添加日期或时间」，继续根据个人喜好设置相关操作。
-<img src="https://img.gorpeln.com/blog_automator_007.png" alt="blog_automator_007" /></p>
+<img src="https://img.gorpeln.cn/blog_automator_007.png" alt="blog_automator_007" /></p>
 
 <p>设置完成后，保存，这时会生成一个应用程序，我们把拍的照片拷贝到电脑的任意一个文件夹，然后把这个文件夹拖到这个应用程序上，眨眼之间，照片的命名就完成了。</p>
 
 <h4 id="3退出所有程序">3.退出所有程序</h4>
 <p>有时候你打开了很多程序，想要工作时却发现桌面上显得一团糟。如果只需要用鼠标点两下，桌面上的所有程序全部退出，是不是会清爽很多？可以用Automator创建一个小程序来帮你。
 这个工作流只需要一个操作，点击资源库中的“实用工具”，将“退出所有应用程序”拖入面板，这时你可以在其中添加一些程序，这样会在工作流运行时，忽略这些程序而关掉其他所有程序。保存这个工作流，将生成的应用程序拖入到Dock中，然后在你想要更新桌面的任何时候点击它吧。
-<img src="https://img.gorpeln.com/blog_automator_008.png" alt="blog_automator_008" /></p>
+<img src="https://img.gorpeln.cn/blog_automator_008.png" alt="blog_automator_008" /></p>
 
 <h3 id="总结">总结</h3>
 <p>尽管它是 macOS 里自带的应用，但却被放在了 Launchpad 的「其他」文件夹里，因而导致使用它的人并不多。但这并不影响 Automator 成为一个强大的自动化工具。它可以帮助我们把日常的一些操作变成一个自动化的流程，大大的节省时间并且提高效率。不仅如此，我们还可以用它来进行批处理、运行 AppleScript 、运行 Xshell ，甚至录制动作等等。</p>
@@ -416,18 +416,18 @@
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15385436862">https://gorpeln.com/article/15385436862</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/15385436862">https://gorpeln.cn/article/15385436862</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15389885669" title="微信小程序：回退到首页" style="color: #6666cc;font-size: 0.9em;"  target="_blank">微信小程序：回退到首页</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/15389885669" title="微信小程序：回退到首页" style="color: #6666cc;font-size: 0.9em;"  target="_blank">微信小程序：回退到首页</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15368306590" title="云调用 - 生成小程序码" style="color: #6666cc;font-size: 0.9em;"  target="_blank">云调用 - 生成小程序码</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/15368306590" title="云调用 - 生成小程序码" style="color: #6666cc;font-size: 0.9em;"  target="_blank">云调用 - 生成小程序码</a>
 	    </div>
 	  
 	 
@@ -686,7 +686,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

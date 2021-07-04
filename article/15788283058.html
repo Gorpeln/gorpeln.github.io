@@ -395,7 +395,7 @@
 <h3 id="四需求实现步骤">四、需求实现步骤</h3>
 <h4 id="1-创建一个json文件名称必须为-apple-app-site-association️该文件不可带-json-的后缀名">1. 创建一个json文件，名称必须为 apple-app-site-association，⚠️该文件不可带 .json 的后缀名</h4>
 
-<p>apple-app-site-association 文件必须放在https服务器的根目录下，例：<code class="highlighter-rouge">https://gorpeln.com</code> 这个路径下 ⚠️一定是根目录，也就是说该文件必须是一级目录，供下载使用</p>
+<p>apple-app-site-association 文件必须放在https服务器的根目录下，例：<code class="highlighter-rouge">https://gorpeln.cn</code> 这个路径下 ⚠️一定是根目录，也就是说该文件必须是一级目录，供下载使用</p>
 
 <p>apple-app-site-association 文件格式：</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
@@ -416,7 +416,7 @@
 　　appID 格式为 teamID.bundleId形式，譬如说我的teamID是xxxxxxxxxxx，bundleId是com.gorpeln.notes那么我的appID就是：xxxxxxxxxxx.com.gorpeln.notes。<br />
 　　teamID：打开<a href="https://developer.apple.com/account/">苹果官网</a>，点击Account，点击左边栏的 Membership,查找teamID</p>
 
-<p><img src="https://img.gorpeln.com/blog_universalLinks_01.png" alt="blog_universalLinks_01" /></p>
+<p><img src="https://img.gorpeln.cn/blog_universalLinks_01.png" alt="blog_universalLinks_01" /></p>
 
 <p><strong><em>2) paths：</em></strong>  <br />
 　　设定一个App的路径支持列表，只有这些指定的路径链接才会被App所处理。格式如下：</p>
@@ -425,7 +425,7 @@
 <ul>
   <li>使用*配置，则整个网站都可以使用</li>
   <li>使用特定的URL，例如<code class="highlighter-rouge">/wwdc/news/</code>来指定某一个特殊的链接。</li>
-  <li>在特定URL后面添加<code class="highlighter-rouge">*</code>，例如 <code class="highlighter-rouge">/videos/wwdc/2015/*</code>, 来指定网站的某一部分。如果你的网站是gorpeln.com,你的path写的是<code class="highlighter-rouge">/support/*</code>,那么当用户点击<code class="highlighter-rouge">gorpeln.com/support/myDoucument</code>,就可以进入你的app了,相反<code class="highlighter-rouge">gorpeln.com/other</code> 就不会.</li>
+  <li>在特定URL后面添加<code class="highlighter-rouge">*</code>，例如 <code class="highlighter-rouge">/videos/wwdc/2015/*</code>, 来指定网站的某一部分。如果你的网站是gorpeln.cn,你的path写的是<code class="highlighter-rouge">/support/*</code>,那么当用户点击<code class="highlighter-rouge">gorpeln.cn/support/myDoucument</code>,就可以进入你的app了,相反<code class="highlighter-rouge">gorpeln.cn/other</code> 就不会.</li>
   <li>除了使用<code class="highlighter-rouge">*</code>来匹配任意字符，你也可以使用 ?来匹配单个字符，你可以在路径当中结合这两个字符使用，例如 <code class="highlighter-rouge">/foo/*/bar/201?/mypage</code>。（配置的paths路径，是区分大小写的）</li>
 </ul>
 
@@ -435,19 +435,19 @@
 <ul>
   <li>确保使用<code class="highlighter-rouge">https://yourdomain.com/apple-app-site-association</code>这个链接可以访问到，<code class="highlighter-rouge">yourdomain.com</code>为你的服务器域名。</li>
   <li>也可以使用苹果的<a href="https://search.developer.apple.com/appsearch-validation-tool">验证网站</a>，验证文件是否能被苹果请求到。出现该提示为<code class="highlighter-rouge">apple-app-site-association</code>文件配置正确。
-<img src="https://img.gorpeln.com/blog_universalLinks_02.png" alt="blog_universalLinks_02" /></li>
+<img src="https://img.gorpeln.cn/blog_universalLinks_02.png" alt="blog_universalLinks_02" /></li>
   <li>出现404错误码提示，则为<code class="highlighter-rouge">apple-app-site-association</code>文件未上传成功，或者使用<code class="highlighter-rouge">https://yourdomain.com/apple-app-site-association</code>路径无法访问。</li>
 </ul>
 
 <h4 id="2-建立web网页和app应用之间的关联---app-ids配置-和-项目配置">2. 建立web网页和app应用之间的关联 -&gt; app IDs配置 和 项目配置</h4>
 <p><strong><em>（1）app IDs 配置</em></strong><br />
 　　进入开发者网站，找到你自己的bundleId，可以点击edit按钮，开启associate domains，如下图：
-<img src="https://img.gorpeln.com/blog_universalLinks_03.png" alt="blog_universalLinks_03" /></p>
+<img src="https://img.gorpeln.cn/blog_universalLinks_03.png" alt="blog_universalLinks_03" /></p>
 
 <p><strong><em>（2）项目配置</em></strong> <br />
 　　在项目的Capablities中开启Associated domains，如下图：</p>
 
-<p><img src="https://img.gorpeln.com/blog_universalLinks_04.png" alt="blog_universalLinks_04" /></p>
+<p><img src="https://img.gorpeln.cn/blog_universalLinks_04.png" alt="blog_universalLinks_04" /></p>
 
 <p>注意<code class="highlighter-rouge">domains</code>可以添加多个，前缀必须为<code class="highlighter-rouge">applinks:</code>，<code class="highlighter-rouge">applinks:</code>后为你的服务器的域名。</p>
 
@@ -458,7 +458,7 @@
     if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
         NSURL *webpageURL = userActivity.webpageURL;
         NSString *host = webpageURL.host;
-        if ([host isEqualToString:@"gorpeln.com"]) {
+        if ([host isEqualToString:@"gorpeln.cn"]) {
             //进行我们需要的处理
         }
         else {
@@ -473,7 +473,7 @@
 <p><strong><em>（3）验证以上配置</em></strong> <br />
 　　快捷验证，在备忘录中输入<code class="highlighter-rouge">https://yourdomain.com/apple-app-site-association</code>，长按这个链接，出现下图提示则配置成功。</p>
 
-<p><img src="https://img.gorpeln.com/blog_universalLinks_05.png" alt="blog_universalLinks_05" /></p>
+<p><img src="https://img.gorpeln.cn/blog_universalLinks_05.png" alt="blog_universalLinks_05" /></p>
 
 <p>备注：如果我们在手机上没有安装相应的应用，就可以通过Universal Links重定向进行跳转到下载也进行下载操作。因为我们在paths设置了路径限制，只要我们重定向的路径符合限制，就能先走本地是否安装程序，如果没有再跳转到相应下载页。</p>
 
@@ -484,18 +484,18 @@
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15788283058">https://gorpeln.com/article/15788283058</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/15788283058">https://gorpeln.cn/article/15788283058</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15805392787" title="关于 ASO 优化（一）" style="color: #6666cc;font-size: 0.9em;"  target="_blank">关于 ASO 优化（一）</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/15805392787" title="关于 ASO 优化（一）" style="color: #6666cc;font-size: 0.9em;"  target="_blank">关于 ASO 优化（一）</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15786589400" title="临时邮箱 和 短信接码平台" style="color: #6666cc;font-size: 0.9em;"  target="_blank">临时邮箱 和 短信接码平台</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/15786589400" title="临时邮箱 和 短信接码平台" style="color: #6666cc;font-size: 0.9em;"  target="_blank">临时邮箱 和 短信接码平台</a>
 	    </div>
 	  
 	 
@@ -754,7 +754,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

@@ -7,7 +7,7 @@
   <title>实战篇 ：电商小程序云开发实战 | gorpeln的个人博客 - gorpeln</title>
 
   <meta name="keywords" content="gorpeln,个人博客,gpchen,风未止,iOS,陈冠鹏,时光本,微信小程序,电商,在线预约,购物车,商品详情" />
-  <meta name="description" content="小程序名称：gorpeln（已上线）  在线预约">
+  <meta name="description" content="小程序名称：gorpeln (可以在微信搜索gorpeln查看)">
   <meta name="baidu-site-verification" content="V7C06t3NGW" />
   <meta name="google-site-verification" content="rQsj1bQKemnnFtTHPVeAzNS7TVuqN00fSAkdaQiGQQA" />
   <meta name="shenma-site-verification" content="d30b79795d2a66baca2b74a5a82d841e_1586839651">
@@ -361,23 +361,22 @@
   </header>
 
   <article class="post-content">
-    <p>小程序名称：gorpeln（已上线）</p>
-<ul>
-  <li>在线预约</li>
-</ul>
+    <p><strong>小程序名称</strong>：<code class="highlighter-rouge">gorpeln</code> <text style="color:#999999;font-size:0.8em;">(可以在微信搜索gorpeln查看)</text></p>
 
-<p><img src="https://img.gorpeln.com/blog_wxmini_qrcode.jpg" alt="blog_wxmini_qrcode" /></p>
+<p><img src="https://img.gorpeln.cn/blog_wxmini_qrcode.jpg" alt="blog_wxmini_qrcode" /></p>
 
 <p><br />
 <br /></p>
 
-<p>演示视频：<a href="http://demo.gorpeln.com/blog_wxmini_video.mp4">视频链接</a></p>
+<p><strong>演示视频</strong>：<a href="http://demo.gorpeln.cn/blog_wxmini_video.mp4">视频链接</a></p>
 
 <p><br /></p>
 
 <hr />
+<p><br /></p>
 
-<p>小程序端主要包括：（开发中…）</p>
+<p><strong>小程序端</strong>主要包括：（开发中…）</p>
+
 <ul>
   <li>首页</li>
   <li>分类</li>
@@ -399,14 +398,31 @@
   <li>客服</li>
 </ul>
 
-<p><br />
-<br /></p>
+<p><br /></p>
 
 <hr />
 
-<p>后端：（开发中…）</p>
+<p><br /></p>
+
+<p><strong>后端</strong>：（开发中…）</p>
 <ul>
   <li>轮播图上传、下线</li>
+</ul>
+
+<p><br /></p>
+
+<hr />
+
+<p><br /></p>
+
+<p><strong>学习记录：</strong></p>
+<ul>
+  <li><a href="/article/15623480718">扩展篇 ：开发框架及前景</a></li>
+  <li><a href="/article/15618778699">实战篇 ：电商小程序云开发实战</a></li>
+  <li><a href="/article/15612663893">基础篇 3：小程序架构及其实现机制</a></li>
+  <li><a href="/article/15611722666">基础篇 2：小程序·云开发基础知识</a></li>
+  <li><a href="/article/15605697133">基础篇 1：小程序开发基础知识</a></li>
+  <li><a href="/article/15599710733">概述 ：微信小程序概述</a></li>
 </ul>
 
 
@@ -416,18 +432,18 @@
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/15618778699">https://gorpeln.com/article/15618778699</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/15618778699">https://gorpeln.cn/article/15618778699</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/15623480718" title="扩展篇 ：开发框架及前景" style="color: #6666cc;font-size: 0.9em;"  target="_blank">扩展篇 ：开发框架及前景</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/15623480718" title="扩展篇 ：开发框架及前景" style="color: #6666cc;font-size: 0.9em;"  target="_blank">扩展篇 ：开发框架及前景</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/15612663893" title="基础篇 3：小程序架构及其实现机制" style="color: #6666cc;font-size: 0.9em;"  target="_blank">基础篇 3：小程序架构及其实现机制</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/15612663893" title="基础篇 3：小程序架构及其实现机制" style="color: #6666cc;font-size: 0.9em;"  target="_blank">基础篇 3：小程序架构及其实现机制</a>
 	    </div>
 	  
 	 
@@ -686,7 +702,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

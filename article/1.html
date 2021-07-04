@@ -524,7 +524,7 @@ block 使用 copy 是从 MRC 遗留下来的“传统”,在 MRC 中,方法内�
 3.综上，用property声明NSArray数组时，最好使用copy。用property声明NSMutableArray数组时，最好使用strong。如果使用copy，又self.mArray来赋值，后面增删改查，程序肯定会crash的。使用_.mArray是可以的。   
    
 </code></pre></div></div>
-<p><img src="https://img.gorpeln.com/blog_article_note_001.png" alt="blog_article_note_001" /></p>
+<p><img src="https://img.gorpeln.cn/blog_article_note_001.png" alt="blog_article_note_001" /></p>
 
 <p>14、这个写法会出什么问题：@property (nonatomic, copy) NSMutableArray *arr;</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>问题：添加,删除,修改数组内的元素的时候,程序会因为找不到对应的方法而崩溃。
@@ -671,7 +671,7 @@ UIViewController是官方类，我们只能调用期接口，并不能修改他�
 Notification(通知模式)：只想要把消息发送出去，告知某些状态的变化。但是并不关心谁想要知道这个。
 </code></pre></div></div>
 
-<p>26、什么是 KVO 和 KVC？<a href="https://gorpeln.com/article/15326844120">KVO用法总结</a></p>
+<p>26、什么是 KVO 和 KVC？<a href="https://gorpeln.cn/article/15326844120">KVO用法总结</a></p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1). KVC(Key-Value-Coding)：键值编码 是一种通过字符串间接访问对象的方式（即给属性赋值）
     举例说明：
     stu.name = @"张三" // 点语法给属性赋值
@@ -945,7 +945,7 @@ selector：通过方法名，获取在内存中的函数的入口地址。
     其中File有三种方式：plist、Archive（归档）
     DB包括：SQLite、FMDB、CoreData
 </code></pre></div></div>
-<p><img src="https://img.gorpeln.com/blog_Interview_save.png" alt="blog_Interview_save" /></p>
+<p><img src="https://img.gorpeln.cn/blog_Interview_save.png" alt="blog_Interview_save" /></p>
 
 <p>52、iOS的沙盒目录结构是怎样的？</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>沙盒结构：
@@ -1229,7 +1229,7 @@ APNS的原理：
     3). 服务器把要推送的内容和设备发送给APNS
     4). APNS根据设备令牌找到设备，再由iOS根据APPID把推送内容展示
 </code></pre></div></div>
-<p><img src="https://img.gorpeln.com/blog_Interview_APNS.png" alt="blog_Interview_APNS" /></p>
+<p><img src="https://img.gorpeln.cn/blog_Interview_APNS.png" alt="blog_Interview_APNS" /></p>
 
 <p>77、iOS之事件的传递和响应机制</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>响应者链的事件传递过程：  
@@ -1278,8 +1278,8 @@ APNS的原理：
 
 </code></pre></div></div>
 <p>80、APP启动
-<img src="https://img.gorpeln.com/blog_article_note_002.jpeg" alt="blog_article_note_002" />
-<img src="https://img.gorpeln.com/blog_article_note_003.png" alt="blog_article_note_003" /></p>
+<img src="https://img.gorpeln.cn/blog_article_note_002.jpeg" alt="blog_article_note_002" />
+<img src="https://img.gorpeln.cn/blog_article_note_003.png" alt="blog_article_note_003" /></p>
 
 <p>81、UITableView 如何优化</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1、正确使用 reuseIdentifier 来重用 Cells  
@@ -1298,18 +1298,18 @@ APNS的原理：
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/1">https://gorpeln.com/article/1</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/1">https://gorpeln.cn/article/1</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/2" title="杂记二" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记二</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/2" title="杂记二" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记二</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/0" title="杂记零" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记零</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/0" title="杂记零" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记零</a>
 	    </div>
 	  
 	 
@@ -1568,7 +1568,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {

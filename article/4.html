@@ -382,26 +382,26 @@
 
 <p>点击Analyze后，Xcode会自动进行编译分析，需要一段时间，之后会像提示警告一样，提示有多少分析的结果。所有的分析结果按照如上的类别，归类显示。点击某个错误的地方，会定位到出错的地方，然后点击向上向下的箭头，会详细展示出出错的步骤。</p>
 
-<p><img src="https://img.gorpeln.com/blog_ analyzer_001.jpeg" alt="blog_ analyzer_001" /></p>
+<p><img src="https://img.gorpeln.cn/blog_ analyzer_001.jpeg" alt="blog_ analyzer_001" /></p>
 
 <h3 id="1api调用错误检查api-misuseapple">1、API调用错误检查：API Misuse（Apple）</h3>
 <p>API的错误，一般是在打段的逻辑处理中没有注意OC的使用细节。如：数组不能添加空值，数组的元素不能是空值，字典的value不能是空等等。下面这单代码：str 的初始值为空，经过一段逻辑处理后，还是有可能是空，是不能添加到数组中的。</p>
 
-<p><img src="https://img.gorpeln.com/blog_ analyzer_002.jpeg" alt="blog_ analyzer_002" /></p>
+<p><img src="https://img.gorpeln.cn/blog_ analyzer_002.jpeg" alt="blog_ analyzer_002" /></p>
 
 <h3 id="2逻辑错误检查-logic-error">2、逻辑错误检查 Logic Error</h3>
 <p>初看这段代码，并没有觉得有什么不妥，根据字符串获得index的值。这个前提是字符串一定要按照这个规则提供，如果没有按照这个规则提供，则index就没有值。通过Analyze分析，就检查出来了。</p>
 
-<p><img src="https://img.gorpeln.com/blog_ analyzer_003.jpeg" alt="blog_ analyzer_003" /></p>
+<p><img src="https://img.gorpeln.cn/blog_ analyzer_003.jpeg" alt="blog_ analyzer_003" /></p>
 
 <h3 id="3声明错误检查-dead-store">3、声明错误检查 Dead Store</h3>
 <p>很多时候我们创建了一些中间变量需要使用，但是在最终功能的实现上并没有用到这个变量。但是这些变量依然留在代码中，没有删除。这就造成了内存的不必要的开销。这对这部分变量，不需要的时候就要及时的删除。同理：创建类声明的属性，如果没有用到就要及时删除。因为创建类时，会根据类的属性的多少创建对应的内存。</p>
 
-<p><img src="https://img.gorpeln.com/blog_ analyzer_004.jpeg" alt="blog_ analyzer_004" /></p>
+<p><img src="https://img.gorpeln.cn/blog_ analyzer_004.jpeg" alt="blog_ analyzer_004" /></p>
 
 <h3 id="4内存错误-memory-error">4、内存错误 Memory error</h3>
 <p>开发的过程中，容易给声明非空的对象赋值nil，导致出错。包括：nil 赋值给了一个期望非空值的指针、Null赋值给非空对象，返回了 nil 值,期望返回一个非空值。
-<img src="https://img.gorpeln.com/blog_ analyzer_005.jpeg" alt="blog_ analyzer_005" /></p>
+<img src="https://img.gorpeln.cn/blog_ analyzer_005.jpeg" alt="blog_ analyzer_005" /></p>
 
 <h3 id="5内存泄露-memory-core-foundationobjective-c">5、内存泄露 Memory (Core Foundation/Objective-C)</h3>
 <p>虽然是在ARC模式下，但不是什么东西都可以释放，例如上述的C-types对象，都需要手动来进行释放，所以上面的问题只需手动释放就可以了:CGImageRelease(scaledImage);
@@ -409,7 +409,7 @@
 
 <p>一般来说都是由于使用的CoreFoundation后没有release造成的。在RAC下Foundation框架下的不需要进行release，CoreFoundation框架下仍然需要release。</p>
 
-<p><img src="https://img.gorpeln.com/blog_ analyzer_006.jpeg" alt="blog_ analyzer_006" /></p>
+<p><img src="https://img.gorpeln.cn/blog_ analyzer_006.jpeg" alt="blog_ analyzer_006" /></p>
 
 
   </article>
@@ -418,18 +418,18 @@
 
   <div class="copyright">
   	<div>版权声明：本文为博主原创文章，遵循 <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC 4.0 BY-SA</a> 版权协议，转载请附上原文出处链接和本声明。</div>
-	<div>本文链接：<a href="https://gorpeln.com/article/4">https://gorpeln.com/article/4</a></div>
+	<div>本文链接：<a href="https://gorpeln.cn/article/4">https://gorpeln.cn/article/4</a></div>
 </div>
 
   <div class="prevandnext">
     	  
 	    <div>
-	    <span>上一篇 ：</span><a href="https://gorpeln.com/article/5" title="杂记五" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记五</a>
+	    <span>上一篇 ：</span><a href="https://gorpeln.cn/article/5" title="杂记五" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记五</a>
 	    </div>
 	  
   	  
 	    <div>
-	    <span>下一篇 ：</span><a href="https://gorpeln.com/article/3" title="杂记三" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记三</a>
+	    <span>下一篇 ：</span><a href="https://gorpeln.cn/article/3" title="杂记三" style="color: #6666cc;font-size: 0.9em;"  target="_blank">杂记三</a>
 	    </div>
 	  
 	 
@@ -688,7 +688,7 @@ window.onload = function() {
 function createQrcode(url) {
     console.log('生成我二维码' + url);
 
-        qrcode.makeCode('https://gorpeln.com' + url);
+        qrcode.makeCode('https://gorpeln.cn' + url);
 
     var qrcodeImg = document.getElementById('qrcode');
     if (qrcodeImg.style.display == 'block') {
